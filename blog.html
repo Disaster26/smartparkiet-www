@@ -1,4 +1,5 @@
 <!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Blog - w budowie | SMARTPARKIET</title>
+<link rel="icon" href="img/favicon.png" type="image/png">
 <meta name="description" content="Podstrona w przygotowaniu. Wycena ze zdjęć i kontakt działają normalnie.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&display=swap">
@@ -321,11 +322,68 @@ footer.site .fine{margin-top:40px;padding-top:20px;border-top:1px solid rgba(255
 @media(max-width:800px){footer.site .cols{grid-template-columns:1fr 1fr}}
 .note{position:fixed;bottom:14px;left:14px;z-index:60;background:#1B1815;color:#EFE7DA;font-size:.72rem;padding:8px 12px;border-radius:4px;border:1px solid rgba(255,255,255,.15);opacity:.9}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* === odswiezenie wizualne 22.09 === */
+:root{--gold1:#E7B44F;--gold2:#C8862A;--glass:rgba(23,20,17,.72)}
+::selection{background:var(--amber);color:#fff}
+body{-webkit-font-smoothing:antialiased}
+.topbar{background:#12100E;color:#BDB2A3;font-size:.78rem;letter-spacing:.02em;border-bottom:1px solid rgba(255,255,255,.07)}
+.topbar .wrap{display:flex;gap:20px;align-items:center;justify-content:space-between;padding:9px 20px;flex-wrap:wrap}
+.topbar b{color:#EFE7DA;font-weight:600}
+.topbar .gw{color:var(--gold1);letter-spacing:2px}
+.topbar a{color:inherit;text-decoration:none}
+.topbar a:hover{color:#fff}
+header.nav{background:rgba(241,236,228,.82);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid rgba(0,0,0,.07)}
+header.nav .brand img{height:38px;width:auto}
+header.nav .brand{letter-spacing:.06em;gap:12px}
+header.nav nav a{position:relative;padding-bottom:4px}
+header.nav nav a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:2px;background:linear-gradient(90deg,var(--gold1),var(--gold2));transition:right .35s cubic-bezier(.2,.8,.2,1)}
+header.nav nav a:hover::after,header.nav nav a.akt::after{right:0}
+.btn{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,background .25s}
+.btn-amber{background:linear-gradient(180deg,var(--gold1),var(--gold2));border-color:transparent;box-shadow:0 8px 22px -10px rgba(200,134,42,.9)}
+.btn-amber:hover{transform:translateY(-2px);box-shadow:0 14px 30px -12px rgba(200,134,42,1)}
+.btn-ghost:hover{transform:translateY(-2px)}
+.hero{min-height:92vh;display:flex;align-items:center}
+.hero-img,.hero-old{object-position:center 55%;opacity:.72}
+.hero::after{background:
+   radial-gradient(120% 90% at 78% 45%,rgba(0,0,0,0) 0%,rgba(18,16,14,.55) 62%,rgba(18,16,14,.92) 100%),
+   linear-gradient(90deg,rgba(18,16,14,.96) 0%,rgba(18,16,14,.78) 44%,rgba(18,16,14,.18) 100%)}
+.hero .wrap{padding-top:92px;padding-bottom:84px}
+.hero .tag{position:relative;padding-left:52px;letter-spacing:.16em}
+.hero .tag::before{content:"";position:absolute;left:0;top:50%;width:40px;height:1px;background:linear-gradient(90deg,var(--gold1),transparent)}
+.hero h1{font-size:clamp(2.6rem,6.4vw,5rem);line-height:.98;letter-spacing:-.025em;max-width:15ch;text-wrap:balance}
+.hero h1 em{background:linear-gradient(90deg,var(--gold1),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .lead{font-size:1.06rem;line-height:1.7}
+.hero-quote{margin-top:44px;border-left:0;padding-left:0;position:relative}
+.hero-quote::before{content:"";position:absolute;left:0;top:-22px;width:64px;height:1px;background:linear-gradient(90deg,var(--gold1),transparent)}
+.facts{background:linear-gradient(180deg,#12100E,#171411);border-bottom:1px solid rgba(255,255,255,.06)}
+.facts b{background:linear-gradient(180deg,var(--gold1),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+/* sekcja sprzet */
+.atelier{background:linear-gradient(180deg,#171411,#12100E);color:var(--on-dark)}
+.atelier h2{color:#fff}
+.atelier .wstep{color:var(--on-dark2);max-width:60ch;margin-bottom:38px}
+.atelier .siatka{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}
+.atelier .kol{display:grid;gap:18px}
+.atelier .kadr{position:relative;border-radius:16px;overflow:hidden;background:#0e0c0b}
+.atelier .kadr img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.atelier .kadr:hover img{transform:scale(1.04)}
+.atelier .kadr figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 22px 18px;background:linear-gradient(transparent,rgba(10,9,8,.88));font-size:.92rem;color:#EFE7DA}
+.atelier .kadr figcaption b{display:block;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold1);margin-bottom:5px;font-weight:700}
+.atelier .duzy{aspect-ratio:16/11}
+.atelier .maly{aspect-ratio:4/3}
+@media(max-width:860px){.atelier .siatka{grid-template-columns:1fr}.hero{min-height:84vh}}
+
 </style>
 
+<div class="topbar">
+  <div class="wrap">
+    <span><span class="gw">★★★★★</span> <b>5,0</b> z 221 opinii Google &middot; cztery oddziały w Warszawie</span>
+    <span>Wycena ze zdjęć w 2 godziny &middot; <a href="tel:+48602242815"><b>602 242 815</b></a></span>
+  </div>
+</div>
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="index.html"><img src="img/69883d9cae.webp" alt="SMARTPARKIET"> SMARTPARKIET</a>
+    <a class="brand" href="index.html"><img src="img/logo-znak.png" alt="SMARTPARKIET"> SMARTPARKIET</a>
     <nav>
       <a href="metoda.html">Metoda</a>
       <a href="cennik.html">Cennik</a>
@@ -352,7 +410,7 @@ footer.site .fine{margin-top:40px;padding-top:20px;border-top:1px solid rgba(255
   <div class="wrap">
     <div class="cols">
       <div>
-        <a class="brand" href="index.html" style="color:var(--on-dark)"><img src="img/69883d9cae.webp" alt=""> SMARTPARKIET</a>
+        <a class="brand" href="index.html" style="color:var(--on-dark)"><img src="img/logo-znak.png" alt=""> SMARTPARKIET</a>
         <p style="margin-top:14px;max-width:38ch">Cyklinowanie SMART™ – bezpyłowa renowacja podłóg drewnianych w Warszawie. Artur Trembiński i cztery ekipy.</p>
       </div>
       <div><h4>Kontakt</h4><a href="tel:+48602242815">602 242 815</a><a href="mailto:smartparkiet@gmail.com">smartparkiet@gmail.com</a><a href="https://wa.me/48602242815">WhatsApp</a></div>
