@@ -405,6 +405,11 @@ footer.site{background:#000;color:#9AA1AB}
 footer.site a:hover{color:var(--pom)}
 a{color:inherit}
 
+
+/* odstep pierwszej sekcji na podstronach (naglowek jest przyklejony) */
+header.nav + section:not(.hero){padding-top:72px!important}
+header.nav + section:not(.hero) > .wrap > h2:first-child,
+header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
 </style>
 
 <div class="topbar">
