@@ -368,6 +368,23 @@ header.nav nav a:hover::after,header.nav nav a.akt::after{right:0}
 .atelier .maly{aspect-ratio:4/3}
 @media(max-width:860px){.atelier .siatka{grid-template-columns:1fr}.hero{min-height:84vh}}
 
+
+/* === hero v2 + kontrast naglowka === */
+header.nav .brand{color:var(--ink)!important;font-weight:800}
+header.nav .brand img{height:40px}
+.hero-img{opacity:1;object-position:72% 55%}
+.hero::after{background:
+   linear-gradient(90deg,rgba(14,12,11,.97) 0%,rgba(14,12,11,.9) 30%,rgba(14,12,11,.55) 62%,rgba(14,12,11,.25) 100%),
+   linear-gradient(180deg,rgba(14,12,11,.7) 0%,rgba(14,12,11,0) 26%,rgba(14,12,11,0) 62%,rgba(14,12,11,.75) 100%)}
+.hero .tag{display:inline-block;background:rgba(231,180,79,.1);border:1px solid rgba(231,180,79,.45);color:#F0DDB4;
+  padding:8px 16px 8px 52px;border-radius:999px;font-size:.72rem;font-weight:700;text-transform:uppercase}
+.hero .tag::before{left:16px;width:26px}
+.hero h1{text-shadow:0 2px 40px rgba(0,0,0,.55)}
+.hero .lead{color:#E3DACB;text-shadow:0 1px 18px rgba(0,0,0,.5)}
+.hero-cap{color:#D9C79F;opacity:.85}
+.hero-quote{color:#D6CCBD}
+.hero-quote b{color:#fff}
+
 </style>
 
 <div class="topbar">
@@ -391,10 +408,10 @@ header.nav nav a:hover::after,header.nav nav a.akt::after{right:0}
     <a class="btn btn-amber tel" href="tel:+48602242815">602 242 815</a>
   </div>
 </header><section class="hero" id="top">
-  <img class="hero-img" src="img/hero.webp" alt="">
-  <img class="hero-old" src="img/hero.webp" alt="">
-  <div class="hero-edge"></div>
-  <div class="hero-cap">dzień 1 → dzień 2: cyklinowanie SMART</div>
+  <img class="hero-img" src="img/praca-ciemna.webp" alt="Technik SMARTPARKIET szlifuje podłogę">
+  
+  
+  <div class="hero-cap">Lägler Hummel &middot; odciąg klasy M</div>
   <div class="wrap">
     <span class="tag">Nowoczesne cyklinowanie · Warszawa · 4 oddziały</span>
     <h1>Cyklinowanie SMART™. Bez kurzu, bałaganu <em style="white-space:nowrap">i stresu.</em></h1>
