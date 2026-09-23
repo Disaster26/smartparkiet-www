@@ -876,12 +876,16 @@ figure{margin:0}
      od polowy ekranu robi sie kosc sloniowa i tam siedzi tekst */
   .hero{min-height:92vh;display:block}
   .hero-img{object-position:54% 46%}
+  /* welon przepuszcza zdjecie takze pod tekstem - maszyna i czlowiek
+     sa widoczni przez caly ekran, tak jak w poprzednim motywie,
+     tylko jasno zamiast ciemno */
   .hero::after{background:linear-gradient(180deg,
-    rgba(250,247,242,.20) 0%,rgba(250,247,242,.04) 22%,
-    rgba(250,247,242,.34) 33%,rgba(250,247,242,.80) 42%,
-    rgba(250,247,242,.95) 50%,rgba(250,247,242,.98) 70%,
-    rgba(250,247,242,1) 100%)}
-  .hero .wrap{padding-top:36vh;padding-bottom:40px}
+    rgba(250,247,242,.18) 0%,rgba(250,247,242,.10) 14%,
+    rgba(250,247,242,.42) 24%,rgba(250,247,242,.62) 32%,
+    rgba(250,247,242,.66) 60%,rgba(250,247,242,.72) 92%,
+    rgba(250,247,242,.95) 100%)}
+  .hero .wrap{padding-top:22vh;padding-bottom:44px}
+  .hero .tag{background:rgba(250,247,242,.80)}
   .hero .wrap>*{max-width:100%}
   .hero-cap{right:14px;bottom:auto;top:14px;font-size:.56rem;padding:6px 10px}
   .hero .tag{display:block;text-align:center}
