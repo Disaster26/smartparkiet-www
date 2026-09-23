@@ -836,6 +836,58 @@ figure{margin:0}
 
 /* ostatni element ponizej progu kontrastu: 4,48 zamiast 4,5 */
 .empty,.ai-out .empty{color:var(--grafit2)}
+
+/* ============================================================
+   HERO: LITERY NA ZDJECIU, JASNY WELON
+   Odwrotnosc poprzedniej ciemnej zaslony - zamiast grafitu
+   welon w kolorze kosci sloniowej, tekst ciemny.
+   ============================================================ */
+.hero{background:var(--kosc);min-height:88vh;display:flex;align-items:center;
+  padding:0;position:relative;overflow:hidden}
+.hero-img{position:absolute;inset:0;left:0;right:0;top:0;bottom:0;
+  width:100%;height:100%;max-height:none;opacity:1;
+  object-fit:cover;object-position:64% 54%}
+.hero::after{content:"";position:absolute;inset:0;top:0;bottom:0;height:auto;
+  max-height:none;min-height:0;display:block;pointer-events:none;z-index:1;
+  background:
+    linear-gradient(90deg,
+      rgba(250,247,242,.985) 0%,rgba(250,247,242,.965) 32%,
+      rgba(250,247,242,.90) 44%,rgba(250,247,242,.58) 56%,
+      rgba(250,247,242,.22) 68%,rgba(250,247,242,.04) 80%,
+      rgba(250,247,242,0) 90%),
+    linear-gradient(180deg,
+      rgba(250,247,242,.50) 0%,rgba(250,247,242,0) 20%,
+      rgba(250,247,242,0) 74%,rgba(250,247,242,.55) 100%)}
+.hero .wrap{position:relative;z-index:2;margin-top:0;background:transparent;
+  box-shadow:none;border-radius:0;padding-top:100px;padding-bottom:100px}
+.hero .wrap>*{max-width:min(100%,530px)}
+
+/* delikatna jasna poswiata pod literami - nie widac jej, a dodaje
+   kilka punktow kontrastu tam, gdzie welon jest cienszy */
+.hero h1,.hero .lead,.hero h1 .mark,.hero-quote{
+  text-shadow:0 1px 0 rgba(250,247,242,.85),0 0 18px rgba(250,247,242,.6)}
+.hero .tag{background:rgba(250,247,242,.72);backdrop-filter:blur(3px)}
+.hero-cap{display:block;right:24px;bottom:22px;top:auto;left:auto;
+  background:rgba(16,14,11,.55);color:#FFFFFF;padding:7px 12px;border-radius:2px;
+  backdrop-filter:blur(4px);font-size:.64rem;letter-spacing:.16em}
+
+@media(max-width:860px){
+  /* na telefonie welon idzie z gory na dol: gora to czyste zdjecie,
+     od polowy ekranu robi sie kosc sloniowa i tam siedzi tekst */
+  .hero{min-height:92vh;display:block}
+  .hero-img{object-position:54% 46%}
+  .hero::after{background:linear-gradient(180deg,
+    rgba(250,247,242,.20) 0%,rgba(250,247,242,.04) 22%,
+    rgba(250,247,242,.34) 33%,rgba(250,247,242,.80) 42%,
+    rgba(250,247,242,.95) 50%,rgba(250,247,242,.98) 70%,
+    rgba(250,247,242,1) 100%)}
+  .hero .wrap{padding-top:36vh;padding-bottom:40px}
+  .hero .wrap>*{max-width:100%}
+  .hero-cap{right:14px;bottom:auto;top:14px;font-size:.56rem;padding:6px 10px}
+  .hero .tag{display:block;text-align:center}
+  .hero h1{margin:12px 0 14px}
+  .hero-quote{margin-top:26px}
+}
 </style>
 
 
