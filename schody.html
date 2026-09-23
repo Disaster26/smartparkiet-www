@@ -659,6 +659,81 @@ footer.site .fine{border-top:1px solid var(--kreska)}
 /* etykiety i podpisy lezace na zdjeciach zostaja biale */
 .lbl,.kadr figcaption,.atelier .kadr figcaption,.ba .lbl{color:#FFFFFF!important}
 .atelier .kadr figcaption b{color:#FF7A3C!important}
+
+/* ============================================================
+   DOPRACOWANIE - detale jasnego motywu
+   ============================================================ */
+
+/* --- MAPA DZIELNIC: byla ciemna plama, reguly [data-b] mialy
+       wyzsza specycznosc niz ogolna regula motywu --- */
+.map{background:#FFFFFF;border:1px solid var(--kreska);border-radius:6px;padding:10px;
+  box-shadow:0 1px 2px rgba(26,21,18,.04),0 14px 34px -22px rgba(26,21,18,.22)}
+.map .d path,
+.map .d[data-b="1"] path,
+.map .d[data-b="2"] path,
+.map .d[data-b="3"] path,
+.map .d[data-b="4"] path{fill:#EFE7DA;stroke:#FFFFFF;stroke-width:1.4}
+.map .d[data-b="2"] path{fill:#ECE3D4}
+.map .d[data-b="3"] path{fill:#F1EADE}
+.map .d[data-b="4"] path{fill:#EDE5D7}
+.map .d:hover path{fill:#E2D5C0}
+.map .d.on path{fill:#FBDCC2;stroke:#F8580E;stroke-width:1.8}
+.map .d text{fill:#5C544B;stroke:#FFFFFF;stroke-width:3px;font-weight:700}
+.map .d:hover text,.map .d.on text{fill:#1A1512}
+.map .pin circle{stroke:#FFFFFF!important}
+.map .pin text{fill:#FFFFFF!important;font-weight:800}
+.map .pin.on circle.ring{opacity:.22}
+
+/* --- HERO NA KOMPUTERZE: styk zdjecia z tlem ma byc niewidoczny --- */
+.hero-img{width:62%;right:0;left:auto;object-position:56% 56%}
+.hero::after{background:linear-gradient(90deg,
+  #FAF7F2 0%,#FAF7F2 30%,rgba(250,247,242,.985) 38%,rgba(250,247,242,.88) 46%,
+  rgba(250,247,242,.58) 55%,rgba(250,247,242,.26) 65%,rgba(250,247,242,.06) 74%,
+  rgba(250,247,242,0) 82%)}
+.hero .wrap{padding-top:96px;padding-bottom:96px}
+.hero h1{letter-spacing:-.025em}
+.hero .tag{letter-spacing:.2em;font-size:.68rem;padding:8px 16px;border-radius:2px}
+
+/* --- HERO NA TELEFONIE: zdjecie ma sie rozpuszczac w tle,
+       a nie konczyc rowna kreska --- */
+@media(max-width:860px){
+  .hero{--foto:46vh;position:relative}
+  .hero-img{height:var(--foto);min-height:262px;width:100%;object-position:48% 66%}
+  .hero::after{display:block;content:"";position:absolute;left:0;right:0;top:0;bottom:auto;
+    height:var(--foto);min-height:262px;pointer-events:none;
+    background:linear-gradient(180deg,
+      rgba(250,247,242,0) 54%,rgba(250,247,242,.30) 74%,
+      rgba(250,247,242,.78) 90%,#FAF7F2 100%)}
+  .hero .wrap{padding-top:6px;padding-bottom:40px}
+  .hero .tag{font-size:.62rem;letter-spacing:.16em;padding:7px 12px}
+  .hero h1{margin:14px 0 16px}
+  .hero-quote{margin-top:26px;padding-left:16px}
+}
+
+/* --- STOPKA CIEMNA: strona potrzebuje punktu oparcia,
+       inaczej caly ekran jest jedna jasna plama --- */
+footer.site{background:#14110E;color:#B5ADA3;border-top:0}
+footer.site h4{color:#FFFFFF;letter-spacing:.14em}
+footer.site a{color:#B5ADA3}
+footer.site a:hover{color:#FF7A3C}
+footer.site .brand{color:#FFFFFF!important}
+footer.site .fine{border-top:1px solid rgba(255,255,255,.10);color:#8F877E}
+footer.site p{color:#B5ADA3}
+
+/* --- KARTY: wlosowa linia plus bardzo miekki cien --- */
+.rv-head .g,.branch,.facts,.lab-stage,.ba{border-radius:6px}
+.rv-head .g{box-shadow:0 1px 2px rgba(26,21,18,.04),0 14px 34px -22px rgba(26,21,18,.22)}
+.branch{border:1px solid var(--kreska);border-radius:6px;transition:box-shadow .2s,border-color .2s}
+.branch:hover{box-shadow:0 1px 2px rgba(26,21,18,.04),0 12px 28px -20px rgba(26,21,18,.26)}
+.branch.on{border-color:#F8580E;box-shadow:0 1px 2px rgba(248,88,14,.10),0 14px 30px -20px rgba(248,88,14,.35)}
+
+/* --- typografia: spokojniejsze naglowki --- */
+h1,h2,h3{letter-spacing:-.018em}
+h2{line-height:1.12}
+.lead{line-height:1.7}
+
+/* --- przyciski: mniej zaokraglen, wiecej spokoju --- */
+.btn{border-radius:2px;letter-spacing:.005em}
 </style>
 
 
