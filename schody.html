@@ -638,6 +638,17 @@ footer.site .fine{border-top:1px solid var(--kreska)}
   .hero .tag{display:inline-block;text-align:left}
   .hero-quote{margin-top:30px;max-width:100%}
 }
+
+/* --- czytelnosc: kazdy tekst >= 4,5 kontrastu, pomarancz z logo bez zmian --- */
+:root{--szept:#6F675E}
+.btn-amber{background:var(--pom)!important;color:var(--grafit)!important;border-color:var(--pom)!important}
+.btn-amber:hover{background:var(--grafit)!important;color:var(--kosc)!important;border-color:var(--grafit)!important}
+.topbar .gw,.rv-head .g .stars,.hero-quote b span,.stars,.rv-card .stars{color:#BE4709}
+.hero-cap{color:#6F675E}
+.mute,small,.facts span{color:var(--grafit2)}
+@media(max-width:900px){
+  .cta-bar a.pri{background:var(--pom);color:var(--grafit)}
+}
 </style>
 
 
