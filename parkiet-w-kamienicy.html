@@ -435,6 +435,16 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
   .hero-quote{font-size:.85rem}
   .hero-cap{display:none}
 }
+
+/* czytelnosc hero na jasnym zdjeciu */
+.hero-img{object-position:80% 58%}
+.hero::after{background:
+  linear-gradient(90deg,rgba(6,7,9,.97) 0%,rgba(6,7,9,.93) 40%,rgba(6,7,9,.72) 62%,rgba(6,7,9,.3) 100%),
+  linear-gradient(180deg,rgba(6,7,9,.8) 0%,rgba(6,7,9,0) 26%,rgba(6,7,9,0) 56%,rgba(6,7,9,.85) 100%)}
+@media(max-width:860px){
+  .hero-img{object-position:72% 60%}
+  .hero::after{background:linear-gradient(180deg,rgba(6,7,9,.93) 0%,rgba(6,7,9,.72) 42%,rgba(6,7,9,.88) 100%)}
+}
 </style>
 
 
