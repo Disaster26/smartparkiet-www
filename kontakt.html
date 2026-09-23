@@ -774,6 +774,62 @@ h2{line-height:1.12}
   .hero h1{font-size:clamp(1.75rem,7.4vw,2.3rem)}
   h2{font-size:clamp(1.35rem,5.4vw,1.8rem)}
 }
+
+/* ============================================================
+   WERSJA MOBILNA - drugie podejscie
+   ============================================================ */
+
+/* --- BLAD: .kadr to <figure>, a przegladarka daje mu domyslnie
+       margin: 1em 40px. Na telefonie kadr wychodzil 40 px w prawo
+       i wystawal poza ekran. --- */
+figure{margin:0}
+.atelier .kadr,.atelier .siatka figure{margin:0}
+
+@media(max-width:860px){
+  /* --- HERO: zamiast "zdjecie, a pod nim opis" - karta z trescia
+         nachodzaca na zdjecie. Na pierwszym ekranie klient widzi
+         zdjecie, naglowek, zdanie o czym to jest i pierwszy przycisk. --- */
+  .hero{--foto:30vh}
+  .hero-img{height:var(--foto);min-height:196px;max-height:250px;object-position:48% 64%}
+  .hero::after{height:var(--foto);min-height:196px;max-height:250px;
+    background:linear-gradient(180deg,rgba(250,247,242,0) 40%,rgba(250,247,242,.22) 78%,rgba(250,247,242,.55) 100%)}
+  .hero .wrap{position:relative;z-index:3;margin-top:-30px;
+    background:var(--kosc);border-radius:16px 16px 0 0;
+    padding-top:24px;padding-bottom:34px;
+    box-shadow:0 -14px 32px -20px rgba(26,21,18,.45)}
+
+  /* podpis na zdjeciu - mowi, co to za sprzet, zamiast samego kadru */
+  .hero-cap{display:block;top:14px;right:14px;bottom:auto;left:auto;
+    background:rgba(16,14,11,.62);color:#FFFFFF;padding:6px 10px;border-radius:2px;
+    font-size:.58rem;letter-spacing:.14em;backdrop-filter:blur(4px)}
+
+  .hero .tag{margin-bottom:2px}
+  .hero h1{margin:12px 0 14px}
+  .hero .lead{margin-bottom:22px}
+  .hero-quote{margin-top:24px}
+}
+
+/* --- PASEK Z LICZBAMI: komorki zaczynaly sie na samej krawedzi
+       ekranu i marnowaly 48 px na odstepy, przez co "1000+ odnowionych
+       podlog w Warszawie" lamalo sie w poprzek --- */
+@media(max-width:800px){
+  .facts .wrap{grid-template-columns:1fr 1fr;gap:0;padding-left:24px;padding-right:24px}
+  .facts div{padding:18px 14px 18px 0;margin-right:0;
+    border-right:1px solid var(--kreska);border-bottom:1px solid var(--kreska)}
+  .facts div:nth-child(2n){padding-right:0;padding-left:14px;border-right:0}
+  .facts div:nth-last-child(-n+2){border-bottom:0}
+  .facts b{font-size:1.75rem}
+  .facts span{font-size:.78rem;line-height:1.45;margin-top:4px}
+}
+
+/* --- sekcja technologii na telefonie --- */
+@media(max-width:860px){
+  .atelier .siatka{grid-template-columns:1fr;gap:10px}
+  .atelier .duzy{aspect-ratio:4/3;width:100%;height:auto}
+  .atelier .kol{grid-template-rows:auto auto;gap:10px}
+  .atelier .maly{aspect-ratio:16/10;height:auto}
+  .atelier .kadr figcaption{padding:16px 14px 12px}
+}
 </style>
 
 
