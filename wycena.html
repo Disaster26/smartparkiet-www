@@ -451,13 +451,52 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
   .hero-img{object-position:72% 60%}
   .hero::after{background:linear-gradient(180deg,rgba(6,7,9,.93) 0%,rgba(6,7,9,.72) 42%,rgba(6,7,9,.88) 100%)}
 }
+
+/* --- kosmetyka pod telefon, 23.09 --- */
+.cta-bar{display:none}
+@media(max-width:900px){
+  body{padding-bottom:62px}
+  .cta-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;position:fixed;left:0;right:0;bottom:0;z-index:60;
+    background:rgba(255,255,255,.12);border-top:1px solid rgba(255,255,255,.14);
+    padding-bottom:env(safe-area-inset-bottom)}
+  .cta-bar a{display:flex;align-items:center;justify-content:center;gap:6px;min-height:54px;
+    background:#0C0D10;color:#fff;text-decoration:none;font-weight:700;font-size:.86rem;letter-spacing:.01em}
+  .cta-bar a span{font-size:1rem;line-height:1}
+  .cta-bar a.pri{background:var(--pom);color:#0C0D10}
+  .cta-bar a:active{filter:brightness(1.25)}
+
+  /* palec ma 44 px - linki musza byc w to wielkosci */
+  .topbar .tb-x{display:none}
+  .topbar .wrap{gap:10px;padding:6px 16px;font-size:.74rem}
+  .topbar a{display:inline-block;padding:6px 0}
+  footer.site a{margin-bottom:0;padding:10px 0;min-height:44px}
+  footer.site h4{margin-bottom:4px}
+  footer.site{padding:40px 0 28px}
+  .nav nav a{padding:14px 0!important;min-height:44px;display:flex;align-items:center}
+  .brand{min-height:44px;display:flex;align-items:center}
+
+  /* opinie: karty nie musza byc rownej wysokosci, krotsza nie robi dziury */
+  .rv-strip{align-items:start;grid-auto-columns:88%}
+
+  /* kalendarz ekip: nazwa oddzialu zostaje na ekranie przy przewijaniu w bok */
+  .cal-grid{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  .cal-grid .lab{position:sticky;left:0;z-index:2;background:var(--dark);padding-right:10px}
+  .cal-grid .c{scroll-snap-align:start}
+}
+@media(max-width:560px){
+  .cal-grid{grid-template-columns:92px repeat(14,40px);font-size:.68rem}
+  .cal-grid .lab{font-size:.74rem}
+}
+@media(max-width:400px){
+  .cta-bar a{font-size:.78rem;gap:4px}
+}
 </style>
 
 
 <div class="topbar">
   <div class="wrap">
-    <span><span class="gw">★★★★★</span> <b>5,0</b> z 221 opinii Google &middot; cztery oddziały w Warszawie</span>
-    <span>Wycena ze zdjęć w 2 godziny &middot; <a href="tel:+48602242815"><b>602 242 815</b></a></span>
+    <span><span class="gw">★★★★★</span> <b>5,0</b> z 221 opinii Google<span class="tb-x"> &middot; cztery oddziały w Warszawie</span></span>
+    <span><span class="tb-x">Wycena ze zdjęć w 2 godziny &middot; </span><a href="tel:+48602242815"><b>602 242 815</b></a></span>
   </div>
 </div>
 <header class="nav">
@@ -524,21 +563,27 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
 (function(){
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  (function(){
   /* before / after */
-  const ba=document.getElementById('ba'), rng=ba.querySelector('input');
+  const ba=document.getElementById('ba'), rng=ba&&ba.querySelector('input');
+  if(!ba||!rng)return;
   rng.addEventListener('input',()=>ba.style.setProperty('--x',rng.value+'%'));
-
+  })();
+  (function(){
   /* hero: sanding sweep, once, after load */
   const hero=document.querySelector('.hero');
+  if(!hero)return;
   if(reduce){hero.style.setProperty('--s','100%');hero.style.setProperty('--eo','0');}
   else{
     let t0=null; const D=2600, delay=700;
     function sweep(ts){ if(!t0)t0=ts; const k=Math.min(1,Math.max(0,(ts-t0-delay)/D)); const e=k<.5?2*k*k:-1+(4-2*k)*k; hero.style.setProperty('--s',(e*100).toFixed(2)+'%'); if(k<1)requestAnimationFrame(sweep); else hero.style.setProperty('--eo','0'); }
     requestAnimationFrame(sweep);
   }
-
+  })();
+  (function(){
   /* finish lab: photo of the real floor, finish applied as a wipe, window light follows the pointer */
   const lab=document.getElementById('lab'), labFin=document.getElementById('labFin'), labRange=document.getElementById('labRange'), labName=document.getElementById('labName'), labDesc=document.getElementById('labDesc');
+  if(!lab||!labFin||!labRange||!labName||!labDesc)return;
   const LF={
     polysk:{f:'saturate(1.14) contrast(1.16) brightness(1.02)',sh:.85,sw:'12%',shh:'55%',tc:'#5a3a22',to:0,name:'lakier wodny półmat',desc:'Dwie warstwy lakieru wodnego. Po podłodze chodzi się nazajutrz, meble wracają na miejsce następnego dnia.'},
     mat:{f:'saturate(1.04) contrast(1.02) brightness(.96)',sh:.16,sw:'40%',shh:'80%',tc:'#5a3a22',to:0,name:'lakier matowy',desc:'Wygląd surowego drewna, ale zabezpieczony. Nie pokazuje rys ani śladów butów, dlatego najczęściej wybierany do mieszkań z dziećmi i zwierzętami.'},
@@ -560,7 +605,8 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
   setFinish('polysk',false);
   if(!reduce){ let a=0, moved=false; lab.addEventListener('pointermove',()=>moved=true,{once:true}); const idle=setInterval(()=>{ if(moved){clearInterval(idle);return;} a+=.02; lab.style.setProperty('--lx',(55+Math.sin(a)*22).toFixed(1)+'%'); lab.style.setProperty('--ly',(40+Math.cos(a*.7)*14).toFixed(1)+'%'); },40);
     const io=new IntersectionObserver(es=>{ if(es[0].isIntersecting){ setFinish('polysk',true); io.disconnect(); } },{threshold:.5}); io.observe(lab); }
-
+  })();
+  (function(){
   /* crew calendar */
   (function(){
     const grid=document.getElementById('cal'), pick=document.getElementById('calPick'); if(!grid)return;
@@ -574,10 +620,12 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
     const mies=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
     grid.addEventListener('click',e=>{const c=e.target.closest('.c.f,.c.h'); if(!c)return; grid.querySelectorAll('.c.on').forEach(x=>x.classList.remove('on')); c.classList.add('on'); const dt=new Date(start); dt.setDate(start.getDate()+ +c.dataset.d); const cr=crews[+c.dataset.c]; pick.textContent='Ekipa '+cr[0]+' ('+cr[1]+'), '+dt.getDate()+' '+mies[dt.getMonth()]+', start 8:00'+(c.classList.contains('h')?' – dostępne pół dnia':'')+'. Rezerwacja wstępna po wycenie.';});
   })();
-
+  })();
+  (function(){
   /* estimate */
   const m2=document.getElementById('m2'),typ=document.getElementById('typ'),wyk=document.getElementById('wyk');
   const oN=document.getElementById('oN'),oT=document.getElementById('oT');
+  if(!m2||!typ||!wyk||!oN||!oT)return;
   const pln=n=>(Math.round(n/10)*10).toLocaleString('pl-PL').replace(/ /g,' ');
   function est(){
     const a=Math.max(5,+m2.value||0),k=+typ.value,w=+wyk.value;
@@ -591,6 +639,7 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
   /* photo analysis (client side, colour + texture heuristics) */
   const SAMPLES={dab:'img/d816138dd0.webp',merbau:'img/90987ef07e.webp',brodno:'img/dc0ebb0010.webp',sukupira:'img/7b5127fb56.webp'};
   const photo=document.getElementById('aiPhoto'), out=document.getElementById('aiOut');
+  if(!photo||!out)return;
   const lines=[...out.querySelectorAll('.line')];
   function analyze(src){
     photo.innerHTML='<img alt=""><div class="scan"></div>'; const im=photo.querySelector('img'); im.src=src;
@@ -618,13 +667,16 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
   }
   document.querySelectorAll('.samples button').forEach(b=>b.addEventListener('click',()=>analyze(SAMPLES[b.dataset.s])));
   const drop=document.getElementById('drop'), file=document.getElementById('file');
+  if(!drop||!file)return;
   file.addEventListener('change',()=>{const f=file.files[0]; if(f) analyze(URL.createObjectURL(f));});
   ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over');}));
   ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
   drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')) analyze(URL.createObjectURL(f));});
   setTimeout(()=>analyze(SAMPLES.dab),reduce?0:600);
-
+  })();
+  (function(){
   /* map */
+  if(!document.getElementById('dz'))return;
   function pick(b){
     document.querySelectorAll('#dz .d').forEach(d=>d.classList.toggle('on',d.dataset.b===b));
     document.querySelectorAll('#wawa .pin').forEach(p=>p.classList.toggle('on',p.dataset.b===b));
@@ -633,15 +685,26 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
   document.querySelectorAll('#dz .d').forEach(d=>d.addEventListener('click',()=>pick(d.dataset.b)));
   document.querySelectorAll('#branches .branch').forEach(x=>x.addEventListener('click',()=>pick(x.dataset.b)));
   pick('4');
-
+  })();
+  (function(){
   /* mobile menu */
-  const nav=document.querySelector('.nav'), burger=nav.querySelector('.burger');
+  const nav=document.querySelector('.nav'), burger=nav&&nav.querySelector('.burger');
+  if(!nav||!burger)return;
   burger.addEventListener('click',()=>{const o=nav.classList.toggle('open'); burger.setAttribute('aria-expanded',o);});
   nav.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
-
+  })();
+  (function(){
   /* reviews strip */
   const strip=document.getElementById('rvStrip');
-  document.getElementById('rvPrev').addEventListener('click',()=>strip.scrollBy({left:-strip.clientWidth*.9,behavior:'smooth'}));
-  document.getElementById('rvNext').addEventListener('click',()=>strip.scrollBy({left:strip.clientWidth*.9,behavior:'smooth'}));
+  const rvP=document.getElementById('rvPrev'), rvN=document.getElementById('rvNext');
+  if(!strip||!rvP||!rvN)return;
+  rvP.addEventListener('click',()=>strip.scrollBy({left:-strip.clientWidth*.9,behavior:'smooth'}));
+  rvN.addEventListener('click',()=>strip.scrollBy({left:strip.clientWidth*.9,behavior:'smooth'}));
+  })();
 })();
 </script>
+<div class="cta-bar" aria-label="Szybki kontakt">
+  <a href="tel:+48602242815"><span>&#9742;</span>Zadzwoń</a>
+  <a href="https://wa.me/48602242815" rel="noopener"><span>&#128172;</span>WhatsApp</a>
+  <a class="pri" href="wycena.html"><span>&#128247;</span>Wycena</a>
+</div>
