@@ -745,6 +745,30 @@ h2{line-height:1.12}
 @media(max-width:860px){
   .hero .tag{display:block;text-align:center}
 }
+
+/* --- GALERIA REALIZACJI --- */
+/* podpisy lezą na ciemnym gradiencie, wiec musza zostac biale */
+.gallery figcaption{color:#FFFFFF!important;
+  background:linear-gradient(0deg,rgba(16,14,11,.88) 0%,rgba(16,14,11,.55) 55%,transparent 100%);
+  padding:14px 14px 12px}
+.gallery figcaption small{color:#E6DFD6!important}
+.gallery figure{border:1px solid var(--kreska)}
+
+@media(max-width:560px){
+  /* mozaika z kafelkami roznej wielkosci robi balagan na waskim ekranie */
+  .gallery{grid-template-columns:1fr 1fr;grid-auto-rows:168px;gap:8px;margin-top:28px}
+  .gallery .tall{grid-row:span 1}
+  .gallery .wide{grid-column:span 1}
+  .gallery figcaption{font-size:.86rem;padding:10px 10px 9px}
+  .gallery figcaption small{font-size:.7rem}
+}
+
+/* --- naglowki podstron na telefonie byly za duze (po 6 linijek) --- */
+@media(max-width:860px){
+  h1{font-size:clamp(1.62rem,6.4vw,2.15rem);line-height:1.14;letter-spacing:-.02em}
+  .hero h1{font-size:clamp(1.75rem,7.4vw,2.3rem)}
+  h2{font-size:clamp(1.35rem,5.4vw,1.8rem)}
+}
 </style>
 
 
