@@ -514,6 +514,125 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
   /* "4 oddzialy" nie moze wisiec z lewej w drugiej linii plakietki */
   .hero .tag{display:block;text-align:center}
 }
+
+/* ============================================================
+   JASNY MOTYW - 23.09 wieczor
+   Kosc sloniowa zamiast grafitu, zdjecie bez zaslony.
+   Blok jest ostatni w arkuszu, wiec nadpisuje wszystko powyzej.
+   ============================================================ */
+:root{
+  --kosc:#FAF7F2;          /* tlo strony */
+  --kosc2:#F2EBE1;         /* pasy i karty */
+  --kosc3:#EDE4D8;         /* obramowania wypelnien */
+  --grafit:#1A1512;        /* tekst glowny */
+  --grafit2:#5C544B;       /* tekst drugorzedny */
+  --szept:#8A8177;         /* podpisy */
+  --kreska:#E6DCCE;        /* wlosowe linie */
+  --pom-tekst:#BE4709;     /* pomarancz czytelny na jasnym */
+
+  --bg:#FFFFFF; --bg2:var(--kosc2);
+  --ink:var(--grafit); --ink2:var(--grafit2); --mute:var(--szept);
+  --line:var(--kreska); --white:#FFFFFF;
+  --dark:var(--kosc); --dark2:#FFFFFF;
+  --on-dark:var(--grafit); --on-dark2:var(--grafit2);
+}
+html,body{background:var(--kosc);color:var(--grafit)}
+
+/* --- gorny pasek i naglowek --- */
+.topbar{background:var(--kosc2);color:var(--grafit2);border-bottom:1px solid var(--kreska)}
+.topbar b{color:var(--grafit)}
+.topbar .gw{color:var(--pom)}
+.topbar a{color:inherit}
+.topbar a:hover{color:var(--pom-tekst)}
+.nav,header.nav{background:rgba(250,247,242,.86);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--kreska);color:var(--grafit)}
+header.nav .brand{color:var(--grafit)!important}
+header.nav nav a{color:var(--grafit2)!important}
+header.nav nav a:hover{color:var(--grafit)!important}
+header.nav nav a.akt{color:var(--pom-tekst)!important}
+.burger{border-color:var(--kreska);color:var(--grafit)}
+@media(max-width:900px){
+  header.nav nav{background:rgba(250,247,242,.98)!important;border-bottom:1px solid var(--kreska)}
+  .nav nav a{border-bottom:1px solid var(--kreska)}
+}
+
+/* --- hero: zdjecie obok tekstu, zero zaslony --- */
+.hero{background:var(--kosc);color:var(--grafit);min-height:84vh}
+.hero-img{left:auto;right:0;width:53%;opacity:1;object-position:58% 58%}
+.hero::after{background:linear-gradient(90deg,
+  #FAF7F2 0%,#FAF7F2 40%,rgba(250,247,242,.94) 45%,rgba(250,247,242,.55) 50%,rgba(250,247,242,0) 56%)}
+.hero .wrap>*{max-width:min(100%,520px)}
+.hero .tag{background:transparent;backdrop-filter:none;border:1px solid var(--pom-tekst);
+  color:var(--pom-tekst);display:inline-block;text-align:left}
+.hero h1{color:var(--grafit);text-shadow:none}
+.hero h1 .mark{color:var(--pom-tekst)}
+.hero h1 em{color:var(--pom-tekst);-webkit-text-fill-color:var(--pom-tekst)}
+.hero .lead{color:var(--grafit2);text-shadow:none}
+.hero-quote{color:var(--grafit2);border-left-color:var(--pom);text-shadow:none;max-width:44ch}
+.hero-quote b{color:var(--grafit)}
+.hero-cap{color:var(--szept);right:24px}
+.hero .btn-ghost{background:transparent;border-color:var(--grafit);color:var(--grafit);backdrop-filter:none}
+.hero .btn-ghost:hover{background:var(--grafit);color:var(--kosc)}
+
+/* --- pasek z liczbami --- */
+.facts{background:#FFFFFF;color:var(--grafit);border-top:1px solid var(--kreska);border-bottom:1px solid var(--kreska)}
+.facts div{border-right:1px solid var(--kreska)}
+.facts b{color:var(--grafit)}
+.facts span{color:var(--grafit2)}
+
+/* --- sekcje, ktore byly ciemne --- */
+.dark,.atelier{background:var(--kosc2)!important;color:var(--grafit)}
+.atelier h2,.dark h2,.dark h3{color:var(--grafit)}
+.atelier .wstep,.dark .lead,.dark .demo-note{color:var(--grafit2)}
+.dark .tag{color:var(--pom-tekst);border-color:var(--pom-tekst)}
+.dark .btn-ghost{border-color:var(--grafit);color:var(--grafit)}
+.dark .btn-ghost:hover{background:var(--grafit);color:var(--kosc)}
+.atelier .kadr{background:var(--kosc3)}
+
+/* --- opinie --- */
+.rv-head .g{background:#FFFFFF;border-color:var(--kreska)}
+.rv-nav button{background:#FFFFFF;border-color:var(--kreska);color:var(--grafit)}
+
+/* --- kalendarz ekip --- */
+.cal-grid .lab{color:var(--grafit);background:var(--kosc2)}
+.cal-grid .dh{color:var(--grafit2)}
+.cal-grid .dh b{color:var(--grafit)}
+.cal-grid .c{background:var(--kosc3)}
+.cal-grid .c.f{background:rgba(248,88,14,.30)}
+.cal-grid .c.f:hover{background:rgba(248,88,14,.55)}
+.cal-grid .c.h{background:linear-gradient(135deg,rgba(248,88,14,.30) 50%,var(--kosc3) 50%)}
+.cal-grid .c.on{border-color:var(--grafit);background:var(--pom)}
+
+/* --- mapa dzielnic --- */
+.map .d path{fill:#E4D9C9;stroke:#FAF7F2}
+.map .d text{fill:#6E655B;stroke:#FAF7F2}
+
+/* --- stopka --- */
+footer.site{background:var(--kosc2);color:var(--grafit2);border-top:1px solid var(--kreska)}
+footer.site h4{color:var(--grafit)}
+footer.site a{color:var(--grafit2)}
+footer.site a:hover{color:var(--pom-tekst)}
+footer.site .brand{color:var(--grafit)!important}
+footer.site .fine{border-top:1px solid var(--kreska)}
+
+/* --- pasek kontaktu na dole telefonu --- */
+@media(max-width:900px){
+  .cta-bar{background:var(--kreska);border-top:1px solid var(--kreska)}
+  .cta-bar a{background:#FFFFFF;color:var(--grafit)}
+  .cta-bar a.pri{background:var(--pom);color:#FFFFFF}
+}
+
+/* --- hero na telefonie: zdjecie pasem nad tekstem --- */
+@media(max-width:860px){
+  .hero{display:block;min-height:0}
+  .hero-img{position:relative;inset:auto;width:100%;height:38vh;min-height:230px;
+    object-position:50% 62%;display:block}
+  .hero::after{display:none}
+  .hero .wrap{padding-top:30px;padding-bottom:38px}
+  .hero .wrap>*{max-width:100%}
+  .hero .tag{display:inline-block;text-align:left}
+  .hero-quote{margin-top:30px;max-width:100%}
+}
 </style>
 
 
