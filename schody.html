@@ -736,6 +736,20 @@ h2{line-height:1.12}
 
 /* --- przyciski: mniej zaokraglen, wiecej spokoju --- */
 .btn{border-radius:2px;letter-spacing:.005em}
+
+/* --- klamra: ciemny pasek u gory i ciemna stopka u dolu,
+       jasna tresc w srodku. Strona przestaje byc jedna plama --- */
+.topbar{background:#14110E;color:#B5ADA3;border-bottom:0}
+.topbar b{color:#FFFFFF}
+.topbar .gw{color:#FF7A3C!important}
+.topbar a:hover{color:#FF7A3C}
+.nav,header.nav{border-bottom:1px solid var(--kreska)!important;
+  box-shadow:0 1px 0 rgba(26,21,18,.03),0 10px 30px -26px rgba(26,21,18,.5)}
+
+/* --- plakietka w hero: Artur prosil o wysrodkowanie --- */
+@media(max-width:860px){
+  .hero .tag{display:block;text-align:center}
+}
 </style>
 
 
