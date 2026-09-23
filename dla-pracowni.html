@@ -339,7 +339,7 @@ body{background:var(--bg);color:var(--ink)}
 /* naglowek: ciemny, jak w materialach firmy */
 header.nav{background:rgba(12,13,16,.92)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   border-bottom:1px solid rgba(255,255,255,.08);color:#fff}
-header.nav .brand{color:#fff!important;font-weight:800;letter-spacing:.08em;gap:12px}
+header.nav .brand{color:#fff!important;font-weight:800;letter-spacing:.08em;gap:12px;font-size:1.3rem}
 header.nav .brand img{height:34px;width:34px;border-radius:0}
 header.nav nav a{color:#C9CDD4!important;position:relative;padding-bottom:4px;font-weight:600}
 header.nav nav a:hover{color:#fff!important}
@@ -430,26 +430,26 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
   .hero-quote{font-size:.85rem}
   .hero-cap{display:none}
   /* naglowek: logo nie moze wchodzic na hamburger */
-  .brand{font-size:.78rem!important;letter-spacing:.06em!important;gap:8px;min-width:0}
-  .brand img{width:28px!important;height:28px!important}
+  .brand{font-size:.98rem!important;letter-spacing:.05em!important;gap:9px;min-width:0}
+  .brand img{width:35px!important;height:35px!important}
   .burger{width:38px;height:38px;flex:0 0 auto}
   .nav .tel{padding:9px 11px;font-size:.8rem}
   .note{display:none}
 }
 @media(max-width:400px){
-  .brand{font-size:.68rem!important;letter-spacing:.03em!important}
-  .brand img{width:26px!important;height:26px!important}
+  .brand{font-size:.86rem!important;letter-spacing:.02em!important}
+  .brand img{width:32px!important;height:32px!important}
   .nav .tel{padding:8px 9px;font-size:.75rem}
 }
 
 /* czytelnosc hero na jasnym zdjeciu */
 .hero-img{object-position:80% 58%}
 .hero::after{background:
-  linear-gradient(90deg,rgba(6,7,9,.97) 0%,rgba(6,7,9,.93) 40%,rgba(6,7,9,.72) 62%,rgba(6,7,9,.3) 100%),
-  linear-gradient(180deg,rgba(6,7,9,.8) 0%,rgba(6,7,9,0) 26%,rgba(6,7,9,0) 56%,rgba(6,7,9,.85) 100%)}
+  linear-gradient(90deg,rgba(6,7,9,.88) 0%,rgba(6,7,9,.76) 40%,rgba(6,7,9,.42) 62%,rgba(6,7,9,.06) 100%),
+  linear-gradient(180deg,rgba(6,7,9,.58) 0%,rgba(6,7,9,0) 24%,rgba(6,7,9,0) 58%,rgba(6,7,9,.68) 100%)}
 @media(max-width:860px){
   .hero-img{object-position:72% 60%}
-  .hero::after{background:linear-gradient(180deg,rgba(6,7,9,.93) 0%,rgba(6,7,9,.72) 42%,rgba(6,7,9,.88) 100%)}
+  .hero::after{background:linear-gradient(180deg,rgba(6,7,9,.78) 0%,rgba(6,7,9,.42) 42%,rgba(6,7,9,.72) 100%)}
 }
 
 /* --- kosmetyka pod telefon, 23.09 --- */
@@ -500,13 +500,26 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
 @media(max-width:400px){
   .cta-bar a{font-size:.78rem;gap:4px}
 }
+
+/* --- uwagi Artura, WhatsApp 22:01-22:04 --- */
+.tb-m{display:none}
+/* jasniejszy filtr = wiecej zdjecia, wiec tekst dostaje wlasny cien */
+.hero h1,.hero .lead,.hero-quote{text-shadow:0 2px 20px rgba(0,0,0,.6),0 1px 4px rgba(0,0,0,.5)}
+.hero .tag{backdrop-filter:blur(2px);background:rgba(6,7,9,.3)}
+@media(max-width:900px){
+  /* telefon z gornego paska usuniety - zostaje ocena i cztery oddzialy, centralnie w osi */
+  .tb-m{display:inline}
+  .topbar .wrap{justify-content:center;text-align:center}
+  /* "4 oddzialy" nie moze wisiec z lewej w drugiej linii plakietki */
+  .hero .tag{display:block;text-align:center}
+}
 </style>
 
 
 <div class="topbar">
   <div class="wrap">
-    <span><span class="gw">★★★★★</span> <b>5,0</b> z 221 opinii Google<span class="tb-x"> &middot; cztery oddziały w Warszawie</span></span>
-    <span><span class="tb-x">Wycena ze zdjęć w 2 godziny &middot; </span><a href="tel:+48602242815"><b>602 242 815</b></a></span>
+    <span><span class="gw">★★★★★</span> <b>5,0</b> z 221 opinii Google<span class="tb-x"> &middot; cztery oddziały w Warszawie</span><span class="tb-m"> &middot; 4 oddziały</span></span>
+    <span class="tb-x">Wycena ze zdjęć w 2 godziny</span>
   </div>
 </div>
 <header class="nav">
@@ -555,7 +568,6 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
     <div class="fine"><span>© 2026 SMARTPARKIET Artur Trembiński</span><span>Cyklinowanie SMART™ i nazwy pakietów są znakami SMARTPARKIET.</span></div>
   </div>
 </footer>
-<div class="note">Koncepcja · Ł. Stasiak · 09.2026</div>
 
 <script>
 (function(){
