@@ -825,6 +825,14 @@ figure{margin:0}
   .atelier .maly{aspect-ratio:16/10;height:auto}
   .atelier .kadr figcaption{padding:16px 14px 12px}
 }
+
+/* --- podpisy na kadrach: pomaranczowa etykieta wypadala tam, gdzie
+       gradient byl jeszcze przezroczysty, i zlewala sie ze zdjeciem --- */
+.atelier .kadr figcaption{
+  background:linear-gradient(0deg,rgba(16,14,11,.95) 0%,rgba(16,14,11,.90) 42%,
+    rgba(16,14,11,.66) 72%,rgba(16,14,11,.18) 92%,rgba(16,14,11,0) 100%);
+  padding-top:38px}
+.atelier .kadr figcaption b{color:#FF9A66!important;letter-spacing:.16em;margin-bottom:6px}
 </style>
 
 
