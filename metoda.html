@@ -881,11 +881,15 @@ figure{margin:0}
      tylko jasno zamiast ciemno */
   .hero::after{background:linear-gradient(180deg,
     rgba(250,247,242,.18) 0%,rgba(250,247,242,.10) 14%,
-    rgba(250,247,242,.42) 24%,rgba(250,247,242,.62) 32%,
-    rgba(250,247,242,.66) 60%,rgba(250,247,242,.72) 92%,
-    rgba(250,247,242,.95) 100%)}
+    rgba(250,247,242,.50) 24%,rgba(250,247,242,.70) 32%,
+    rgba(250,247,242,.72) 60%,rgba(250,247,242,.78) 92%,
+    rgba(250,247,242,.96) 100%)}
   .hero .wrap{padding-top:22vh;padding-bottom:44px}
-  .hero .tag{background:rgba(250,247,242,.80)}
+  .hero .tag{background:rgba(250,247,242,.90)}
+  /* na zdjeciu tekst drugorzedny bylby za slaby - caly tekst hero
+     idzie w kolorze glownym */
+  .hero .lead,.hero-quote{color:var(--grafit)}
+  .hero-quote b{color:var(--grafit)}
   .hero .wrap>*{max-width:100%}
   .hero-cap{right:14px;bottom:auto;top:14px;font-size:.56rem;padding:6px 10px}
   .hero .tag{display:block;text-align:center}
