@@ -1310,14 +1310,20 @@ footer.site .haslo{display:none}
 
 @media(min-width:801px){
   footer.site .cols{
-    grid-template-columns:minmax(190px,.9fr) 1.6fr 1.25fr;
+    grid-template-columns:minmax(180px,.8fr) minmax(230px,1fr) minmax(250px,1.05fr);
     grid-template-areas:"marka oddzialy wiecej" "kontakt oddzialy wiecej";
-    column-gap:36px;row-gap:24px;align-items:start}
+    column-gap:48px;row-gap:22px;align-items:start}
   footer.site .c-marka{grid-area:marka;display:flex;justify-content:flex-start}
   footer.site .c-kontakt{grid-area:kontakt}
   footer.site .c-oddzialy{grid-area:oddzialy}
   footer.site .c-wiecej{grid-area:wiecej}
   footer.site .c-oddzialy a{white-space:nowrap}
+  /* ODDZIALY i WIECEJ na tej samej linii co slowo SMARTPARKIET:
+     rezerwa nad naglowkami rowna kolku z logo */
+  footer.site .c-oddzialy>h4,
+  footer.site .c-wiecej>h4{margin-top:calc(var(--kolko) + 12px)!important}
+  /* copyright jeden pod drugim, a nie rozrzucony na dwa konce */
+  footer.site .fine{flex-direction:column;align-items:flex-start;gap:6px}
 }
 @media(max-width:800px){
   footer.site .cols{

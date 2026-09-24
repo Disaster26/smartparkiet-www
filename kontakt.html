@@ -947,7 +947,7 @@ figure{margin:0}
           <p style="margin:0 0 12px;opacity:.75">Obsługuje: Rembertów, Wawer, Wesoła, Sulejówek</p>
           <p style="margin:0 0 12px;opacity:.75">pn-pt 9:00-18:00, sob 10:00-17:00</p>
           <a class="btn btn-amber" href="tel:+48602242815">602 242 815</a>
-          <a class="btn btn-ghost" href="https://maps.google.com/?q=Suflerska+4,+04-471+Warszawa" target="_blank" rel="noopener">Nawiguj</a>
+          <a class="btn btn-ghost" href="https://maps.google.com/?q=Suflerska+4,+04-471+Warszawa" target="_blank" rel="noopener">Nawiguj</a><a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=SMARTPARKIET+TREMBI%C5%83SKI+Suflerska+4+Warszawa" target="_blank" rel="noopener">Opinie Google</a>
         </div>
       </div>
       <div class="odd-karta">
@@ -958,7 +958,7 @@ figure{margin:0}
           <p style="margin:0 0 12px;opacity:.75">Obsługuje: Ochota, Wola, Włochy, Bemowo, Ursus</p>
           <p style="margin:0 0 12px;opacity:.75">pn-pt 9:00-18:00, sob 10:00-17:00</p>
           <a class="btn btn-amber" href="tel:+48602242815">602 242 815</a>
-          <a class="btn btn-ghost" href="https://maps.google.com/?q=Gr%C3%B3jecka+208,+02-390+Warszawa" target="_blank" rel="noopener">Nawiguj</a>
+          <a class="btn btn-ghost" href="https://maps.google.com/?q=Gr%C3%B3jecka+208,+02-390+Warszawa" target="_blank" rel="noopener">Nawiguj</a><a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=SMARTPARKIET+TREMBI%C5%83SKI+Gr%C3%B3jecka+208+Warszawa" target="_blank" rel="noopener">Opinie Google</a>
         </div>
       </div>
       <div class="odd-karta">
@@ -969,7 +969,7 @@ figure{margin:0}
           <p style="margin:0 0 12px;opacity:.75">Obsługuje: Targówek, Bródno, Praga, Białołęka, Marki, Ząbki</p>
           <p style="margin:0 0 12px;opacity:.75">pn-pt 9:00-18:00, sob 10:00-17:00</p>
           <a class="btn btn-amber" href="tel:+48602242815">602 242 815</a>
-          <a class="btn btn-ghost" href="https://maps.google.com/?q=Turmoncka+17A,+03-254+Warszawa" target="_blank" rel="noopener">Nawiguj</a>
+          <a class="btn btn-ghost" href="https://maps.google.com/?q=Turmoncka+17A,+03-254+Warszawa" target="_blank" rel="noopener">Nawiguj</a><a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=SMARTPARKIET+TREMBI%C5%83SKI+Turmoncka+17A+Warszawa" target="_blank" rel="noopener">Opinie Google</a>
         </div>
       </div>
       <div class="odd-karta">
@@ -980,7 +980,7 @@ figure{margin:0}
           <p style="margin:0 0 12px;opacity:.75">Obsługuje: Mokotów, Śródmieście, Wilanów, Ursynów</p>
           <p style="margin:0 0 12px;opacity:.75">pn-pt 9:00-18:00, sob 10:00-17:00</p>
           <a class="btn btn-amber" href="tel:+48602242815">602 242 815</a>
-          <a class="btn btn-ghost" href="https://maps.google.com/?q=Belwederska+23,+00-592+Warszawa" target="_blank" rel="noopener">Nawiguj</a>
+          <a class="btn btn-ghost" href="https://maps.google.com/?q=Belwederska+23,+00-592+Warszawa" target="_blank" rel="noopener">Nawiguj</a><a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=SMARTPARKIET+TREMBI%C5%83SKI+Belwederska+23+Warszawa" target="_blank" rel="noopener">Opinie Google</a>
         </div>
       </div>
     </div>
@@ -1319,14 +1319,20 @@ footer.site .haslo{display:none}
 
 @media(min-width:801px){
   footer.site .cols{
-    grid-template-columns:minmax(190px,.9fr) 1.6fr 1.25fr;
+    grid-template-columns:minmax(180px,.8fr) minmax(230px,1fr) minmax(250px,1.05fr);
     grid-template-areas:"marka oddzialy wiecej" "kontakt oddzialy wiecej";
-    column-gap:36px;row-gap:24px;align-items:start}
+    column-gap:48px;row-gap:22px;align-items:start}
   footer.site .c-marka{grid-area:marka;display:flex;justify-content:flex-start}
   footer.site .c-kontakt{grid-area:kontakt}
   footer.site .c-oddzialy{grid-area:oddzialy}
   footer.site .c-wiecej{grid-area:wiecej}
   footer.site .c-oddzialy a{white-space:nowrap}
+  /* ODDZIALY i WIECEJ na tej samej linii co slowo SMARTPARKIET:
+     rezerwa nad naglowkami rowna kolku z logo */
+  footer.site .c-oddzialy>h4,
+  footer.site .c-wiecej>h4{margin-top:calc(var(--kolko) + 12px)!important}
+  /* copyright jeden pod drugim, a nie rozrzucony na dwa konce */
+  footer.site .fine{flex-direction:column;align-items:flex-start;gap:6px}
 }
 @media(max-width:800px){
   footer.site .cols{
