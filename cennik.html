@@ -1146,7 +1146,7 @@ figure{margin:0}
    ============================================================ */
 :root{
   /* czcionka "drukowanych" napisow - ta sama rodzina co logo */
-  --f-druk:Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --f-druk:"Helvetica Neue",Helvetica,Inter,Arial,sans-serif;
   /* zlota gwiazdka Google (00:36) */
   --gwiazdka:#F9AB00;
   /* 01:01 - naglowek i dolny pasek to "dwa batony": ta sama wysokosc, odchudzone */
@@ -1358,7 +1358,7 @@ footer.site .fine i{font-style:normal;color:#FF7A3C;margin:0 .45em;font-weight:4
   footer.site .cols{row-gap:22px}
   footer.site .c-wiecej{margin-top:6px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}
   footer.site .c-wiecej>h4{text-align:center;margin-bottom:10px!important}
-  footer.site .c-wiecej .ww{column-gap:0}
+  footer.site .c-wiecej .ww{column-gap:18px}
   footer.site .c-wiecej .ww>div{text-align:center}
   footer.site .c-wiecej .ww a{padding:8px 0;min-height:36px}
   footer.site .cols>div.c-oddzialy a,
@@ -1395,26 +1395,49 @@ footer.site .fine i{font-style:normal;color:#FF7A3C;margin:0 .45em;font-weight:4
   .hero .wrap{padding-top:36vh;padding-bottom:40px}
 }
 
-/* TELEFON - hero bez mgly: zdjecie jako czysty pas u gory, tekst pod nim
-   na kosci sloniowej. Maszyna, napis HUMMEL i technik widoczni w calosci,
-   a tekst i przyciski nie leza na zdjeciu. */
+
+/* ============================================================
+   UWAGI ARTURA 24.09 pozno - uklad, nie czcionki
+   ============================================================ */
+/* HERO wraca do zdjecia w tle z tekstem na nim (jak bylo), tylko
+   welon cienszy, zeby maszyna i technik nie tonely we mgle */
 @media(max-width:860px){
-  .hero{min-height:0;display:block;background:var(--kosc)}
-  .hero-img{position:absolute;left:0;right:0;top:0;bottom:auto;
-    width:100%;height:44vh;min-height:280px;max-height:360px;
-    object-fit:cover;object-position:59% 50%}
-  .hero::after{top:0;bottom:auto;height:44vh;min-height:280px;max-height:360px;
+  .hero{min-height:92vh;display:block;background:var(--kosc)}
+  .hero-img{position:absolute;inset:0;left:0;right:0;top:0;bottom:0;
+    width:100%;height:100%;min-height:0;max-height:none;
+    object-fit:cover;object-position:57% 48%}
+  .hero::after{top:0;bottom:0;height:auto;min-height:0;max-height:none;
     background:linear-gradient(180deg,
-      rgba(250,247,242,0) 0%,rgba(250,247,242,0) 62%,
-      rgba(250,247,242,.55) 86%,rgba(250,247,242,.96) 97%,
-      rgba(250,247,242,1) 100%)}
-  .hero .wrap{padding-top:calc(44vh + 14px);padding-bottom:36px}
-  .hero h1,.hero .lead,.hero h1 .mark,.hero-quote{text-shadow:none}
-  .hero .tag{background:transparent;backdrop-filter:none;padding-left:0;padding-right:0}
-  .hero-cap{right:14px;top:14px;bottom:auto}
+      rgba(250,247,242,.06) 0%,rgba(250,247,242,.04) 24%,
+      rgba(250,247,242,.26) 33%,rgba(250,247,242,.60) 42%,
+      rgba(250,247,242,.74) 52%,rgba(250,247,242,.80) 74%,
+      rgba(250,247,242,.97) 100%)}
+  .hero .wrap{padding-top:36vh;padding-bottom:40px}
+  .hero h1,.hero .lead,.hero h1 .mark,.hero-quote{
+    text-shadow:0 1px 0 rgba(250,247,242,.85),0 0 18px rgba(250,247,242,.7)}
+  .hero .tag{background:rgba(250,247,242,.92);backdrop-filter:blur(3px);
+    padding-left:14px;padding-right:14px}
 }
-@media(max-width:860px) and (min-height:900px){
-  .hero-img,.hero::after{height:40vh}
-  .hero .wrap{padding-top:calc(40vh + 14px)}
+
+/* GORNY PASEK - tekst z opiniami na bialo */
+.topbar{color:#FFFFFF}
+.topbar b{color:#FFFFFF}
+
+/* NUMER W NAGLOWKU - wiekszy, baton dluzszy */
+.nav .tel{font-size:1rem!important;padding:0 18px!important;letter-spacing:.01em}
+@media(max-width:480px){.nav .tel{font-size:.95rem!important;padding:0 14px!important}}
+@media(max-width:380px){.nav .tel{font-size:.88rem!important;padding:0 11px!important}}
+
+/* STOPKA NA TELEFONIE - symetrycznie w osi, jeden kroj, rozne rozmiary */
+@media(max-width:800px){
+  footer.site .cols>div.c-oddzialy,
+  footer.site .cols>div.c-kontakt{text-align:center}
+  footer.site .cols>div.c-oddzialy>h4,
+  footer.site .cols>div.c-kontakt>h4{text-align:center}
+  footer.site .c-wiecej .ww>div{text-align:center}
+  footer.site .cols>div>h4{font-size:.9rem!important;letter-spacing:.12em!important;font-weight:700}
+  footer.site .cols>div a:not(.brand){font-size:.62rem!important;letter-spacing:.12em!important;font-weight:400}
+  footer.site .cols>div.c-oddzialy a,
+  footer.site .cols>div.c-kontakt a{white-space:nowrap!important;font-size:.56rem!important;letter-spacing:.06em!important}
 }
 </style>
