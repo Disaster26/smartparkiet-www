@@ -1372,4 +1372,18 @@ footer.site .fine i{font-style:normal;color:#FF7A3C;margin:0 .45em;font-weight:4
 .rv-head .g .gtop{display:flex;align-items:center;gap:.3em;font-size:2.8rem;line-height:1}
 .rv-head .g .gtop b{font-size:1em;font-weight:500;letter-spacing:-.02em;margin:0;line-height:1}
 .rv-head .g .glogo{position:static;width:.72em;height:.72em;display:block;flex:0 0 auto}
+
+/* TELEFON - blok WIECEJ przestaje odstawac: naglowek i obie kolumny
+   jako jedna wysrodkowana calosc, mniejszy odstep od gornego rzedu,
+   adresy oddzialow kazdy w jednej linii */
+@media(max-width:800px){
+  footer.site .cols{row-gap:22px}
+  footer.site .c-wiecej{margin-top:6px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}
+  footer.site .c-wiecej>h4{text-align:center;margin-bottom:10px!important}
+  footer.site .c-wiecej .ww{column-gap:0}
+  footer.site .c-wiecej .ww>div{text-align:center}
+  footer.site .c-wiecej .ww a{padding:8px 0;min-height:36px}
+  footer.site .cols>div.c-oddzialy a,
+  footer.site .cols>div.c-kontakt a{white-space:nowrap!important;font-size:.52rem!important;letter-spacing:.02em!important}
+}
 </style>
