@@ -981,13 +981,13 @@ figure{margin:0}
     <div class="cols">
       <div>
         <a class="brand" href="index.html" style="color:var(--on-dark)"><img src="img/logo-znak.png" alt=""> SMARTPARKIET</a>
-        <p class="haslo">SMARTPARKIET <i>|</i> TREMBIŃSKI <span><i>·</i> 4 EKIPY</span></p>
+        <p class="haslo"><span>SMARTPARKIET <i>|</i></span> <span>TREMBIŃSKI</span> <span><i>·</i> 4 ODDZIAŁY</span></p>
       </div>
       <div><h4>Kontakt</h4><a href="tel:+48602242815">602 242 815</a><a href="mailto:smartparkiet@gmail.com">smartparkiet@gmail.com</a><a href="https://wa.me/48602242815">WhatsApp</a></div>
       <div><h4>Oddziały</h4><a href="oddzialy.html">Suflerska 4, Rembertów</a><a href="oddzialy.html">Grójecka 208, Ochota</a><a href="oddzialy.html">Turmoncka 17A, Targówek</a><a href="oddzialy.html">Belwederska 23, Mokotów</a></div>
       <div><h4>Więcej</h4><a href="cennik.html">Pakiety</a><a href="realizacje.html">Realizacje</a><a href="dla-pracowni.html">Dla pracowni</a><a href="blog.html">Poradniki</a><a href="cennik.html">Cennik</a></div>
     </div>
-    <div class="fine"><span>© 2026 SMARTPARKIET Artur Trembiński</span><span>Cyklinowanie SMART™ i nazwy pakietów są znakami SMARTPARKIET.</span></div>
+    <div class="fine"><span>© 2026 SMARTPARKIET <span class="autor">Artur Trembiński</span></span><span>Cyklinowanie SMART™ i nazwy pakietów są znakami SMARTPARKIET.</span></div>
   </div>
 </footer>
 
@@ -1247,4 +1247,31 @@ footer.site .haslo i{font-style:normal;color:#FF7A3C;margin:0 .3em;font-weight:4
   .nav .tel{padding:0 8px;font-size:.68rem}
 }
 
+
+/* ============================================================
+   UWAGI ARTURA ZE ZRZUTOW 24.09 18:35-18:39
+   ============================================================ */
+/* 18:36 - akapit: 4 ODDZIALY zamiast 4 EKIPY (zmiana w tresci)
+   18:35 - adresy oddzialow ta sama czcionka i wielkosc co ten akapit */
+footer.site .cols>div:nth-child(3) a{
+  font-family:var(--f-druk);text-transform:uppercase;font-weight:300;
+  letter-spacing:.18em;font-size:.7rem}
+/* 18:37 - nazwisko w linijce na dole drukowanymi */
+footer.site .fine .autor{font-family:var(--f-druk);text-transform:uppercase;letter-spacing:.14em}
+/* 18:35 - dwie kreski: lewa kolumna w tym samym rytmie co prawa.
+   Link w stopce na telefonie ma padding 10px i min-height 44px, wiec
+   jego tekst stoi 22 px od gory wiersza. Ten sam rytm dla akapitu:
+   line-height 44px daje srodek wiersza tez na 22 px. Pierwszy wiersz
+   rowno z 602 242 815, a przy trzech wierszach po obu stronach
+   dol obu kolumn wypada na jednej linii. */
+@media(max-width:800px){
+  footer.site .haslo{font-size:.62rem;letter-spacing:.12em;line-height:44px}
+  /* kreska | zostaje przy SMARTPARKIET, kropka przy 4 ODDZIALY znika */
+  footer.site .haslo span:first-child i{display:inline}
+  footer.site .cols>div:nth-child(3) a{font-size:.62rem;letter-spacing:.12em}
+}
+/* 18:37 - kolorowe logo Google przy ocenie */
+.rv-head .g{position:relative}
+.rv-head .g .glogo{position:absolute;top:18px;right:20px;width:30px;height:30px;display:block}
+@media(max-width:480px){.rv-head .g .glogo{top:14px;right:14px;width:26px;height:26px}}
 </style>
