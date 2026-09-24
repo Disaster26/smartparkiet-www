@@ -962,10 +962,10 @@ figure{margin:0}
           </svg>
       </div>
       <div class="branches" id="branches">
-        <div class="branch" data-b="1"><div class="k">1</div><div><b>Rembertów · ul. Suflerska 4</b><span>Oddział główny, magazyn, biuro. 210 opinii Google.</span><div class="eta">Do Państwa: <i>ok. 15–25 min</i> · najbliższy wolny termin: <i>22 września</i></div></div></div>
-        <div class="branch" data-b="2"><div class="k">2</div><div><b>Ochota · ul. Grójecka 208, lok. 229</b><span>Ekipa zachodnia: Wola, Włochy, Bemowo, Ursus.</span><div class="eta">Do Państwa: <i>ok. 10–20 min</i> · najbliższy wolny termin: <i>25 września</i></div></div></div>
-        <div class="branch" data-b="3"><div class="k">3</div><div><b>Targówek · ul. Turmoncka 17A, lok. 21</b><span>Ekipa północna: Bródno, Białołęka, Praga Płn., Żoliborz, Bielany.</span><div class="eta">Do Państwa: <i>ok. 10–25 min</i> · najbliższy wolny termin: <i>23 września</i></div></div></div>
-        <div class="branch" data-b="4"><div class="k">4</div><div><b>Mokotów · ul. Belwederska 23</b><span>SMARTPARKIET | BLVD 23. Mokotów, Śródmieście, Ursynów, Wilanów.</span><div class="eta">Do Państwa: <i>ok. 10–20 min</i> · najbliższy wolny termin: <i>29 września</i></div></div></div>
+        <div class="branch" data-b="1"><div class="k">1</div><div><b>Rembertów · ul. Suflerska 4</b><span>Oddział główny, magazyn, biuro. 210 opinii Google.</span><div class="eta">Do Państwa: <i>ok. 15–25 min</i> · najbliższy wolny termin: <i>22 września</i></div><a class="opinie-link" href="https://maps.google.com/?cid=4565719495930749944" target="_blank" rel="noopener" onclick="event.stopPropagation()">Wizytówka i opinie Google →</a></div></div>
+        <div class="branch" data-b="2"><div class="k">2</div><div><b>Ochota · ul. Grójecka 208, lok. 229</b><span>Ekipa zachodnia: Wola, Włochy, Bemowo, Ursus.</span><div class="eta">Do Państwa: <i>ok. 10–20 min</i> · najbliższy wolny termin: <i>25 września</i></div><a class="opinie-link" href="https://maps.google.com/?cid=4435256749743705982" target="_blank" rel="noopener" onclick="event.stopPropagation()">Wizytówka i opinie Google →</a></div></div>
+        <div class="branch" data-b="3"><div class="k">3</div><div><b>Targówek · ul. Turmoncka 17A, lok. 21</b><span>Ekipa północna: Bródno, Białołęka, Praga Płn., Żoliborz, Bielany.</span><div class="eta">Do Państwa: <i>ok. 10–25 min</i> · najbliższy wolny termin: <i>23 września</i></div><a class="opinie-link" href="https://maps.google.com/?cid=3093966538504001070" target="_blank" rel="noopener" onclick="event.stopPropagation()">Wizytówka i opinie Google →</a></div></div>
+        <div class="branch" data-b="4"><div class="k">4</div><div><b>Mokotów · ul. Belwederska 23</b><span>SMARTPARKIET | BLVD 23. Mokotów, Śródmieście, Ursynów, Wilanów.</span><div class="eta">Do Państwa: <i>ok. 10–20 min</i> · najbliższy wolny termin: <i>29 września</i></div><a class="opinie-link" href="https://maps.google.com/?cid=8329908770735610659" target="_blank" rel="noopener" onclick="event.stopPropagation()">Wizytówka i opinie Google →</a></div></div>
       </div>
     </div>
     <div class="cal">
@@ -1308,22 +1308,26 @@ footer.site .c-marka .brand{margin-bottom:0!important}
 footer.site .c-wiecej .ww{display:grid;grid-template-columns:1fr 1fr;column-gap:18px}
 footer.site .haslo{display:none}
 
+/* KOMPUTER - uklad jak przed przebudowa: cztery kolumny w jednym rzedzie,
+   marka, kontakt, oddzialy, wiecej. Nowy uklad zostaje tylko na telefonie. */
 @media(min-width:801px){
   footer.site .cols{
-    grid-template-columns:minmax(180px,.8fr) minmax(230px,1fr) minmax(250px,1.05fr);
-    grid-template-areas:"marka oddzialy wiecej" "kontakt oddzialy wiecej";
-    column-gap:48px;row-gap:22px;align-items:start}
-  footer.site .c-marka{grid-area:marka;display:flex;justify-content:flex-start}
-  footer.site .c-kontakt{grid-area:kontakt}
-  footer.site .c-oddzialy{grid-area:oddzialy}
-  footer.site .c-wiecej{grid-area:wiecej}
-  footer.site .c-oddzialy a{white-space:nowrap}
-  /* ODDZIALY i WIECEJ na tej samej linii co slowo SMARTPARKIET:
-     rezerwa nad naglowkami rowna kolku z logo */
+    grid-template-columns:2fr 1fr 1.1fr 1.1fr;
+    grid-template-areas:none;
+    column-gap:32px;row-gap:0;align-items:start}
+  footer.site .c-marka,
+  footer.site .c-kontakt,
+  footer.site .c-oddzialy,
+  footer.site .c-wiecej{grid-area:auto}
+  footer.site .c-marka{display:block}
+  /* naglowki kolumn w jednej linii ze slowem SMARTPARKIET */
+  footer.site .c-kontakt>h4,
   footer.site .c-oddzialy>h4,
   footer.site .c-wiecej>h4{margin-top:calc(var(--kolko) + 12px)!important}
-  /* copyright jeden pod drugim, a nie rozrzucony na dwa konce */
-  footer.site .fine{flex-direction:column;align-items:flex-start;gap:6px}
+  footer.site .c-oddzialy a{white-space:nowrap}
+  /* WIECEJ z powrotem jedna kolumna, tak jak bylo */
+  footer.site .c-wiecej .ww{display:block}
+  footer.site .fine{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
 }
 @media(max-width:800px){
   footer.site .cols{
@@ -1347,4 +1351,8 @@ footer.site .fine i{font-style:normal;color:#FF7A3C;margin:0 .45em;font-weight:4
 .rv-head .g .gtop{display:flex;align-items:center;gap:.3em;font-size:2.8rem;line-height:1}
 .rv-head .g .gtop b{font-size:1em;font-weight:500;letter-spacing:-.02em;margin:0;line-height:1}
 .rv-head .g .glogo{position:static;width:.72em;height:.72em;display:block;flex:0 0 auto}
+
+/* link do wizytowki przy kazdym oddziale */
+.branch .opinie-link{display:inline-block;margin-top:8px;font-size:.82rem;color:var(--pom-tekst,#C2410C);text-decoration:underline;text-underline-offset:3px}
+.branch .opinie-link:hover{color:var(--pom,#FF7A3C)}
 </style>

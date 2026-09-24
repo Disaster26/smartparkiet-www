@@ -1279,22 +1279,26 @@ footer.site .c-marka .brand{margin-bottom:0!important}
 footer.site .c-wiecej .ww{display:grid;grid-template-columns:1fr 1fr;column-gap:18px}
 footer.site .haslo{display:none}
 
+/* KOMPUTER - uklad jak przed przebudowa: cztery kolumny w jednym rzedzie,
+   marka, kontakt, oddzialy, wiecej. Nowy uklad zostaje tylko na telefonie. */
 @media(min-width:801px){
   footer.site .cols{
-    grid-template-columns:minmax(180px,.8fr) minmax(230px,1fr) minmax(250px,1.05fr);
-    grid-template-areas:"marka oddzialy wiecej" "kontakt oddzialy wiecej";
-    column-gap:48px;row-gap:22px;align-items:start}
-  footer.site .c-marka{grid-area:marka;display:flex;justify-content:flex-start}
-  footer.site .c-kontakt{grid-area:kontakt}
-  footer.site .c-oddzialy{grid-area:oddzialy}
-  footer.site .c-wiecej{grid-area:wiecej}
-  footer.site .c-oddzialy a{white-space:nowrap}
-  /* ODDZIALY i WIECEJ na tej samej linii co slowo SMARTPARKIET:
-     rezerwa nad naglowkami rowna kolku z logo */
+    grid-template-columns:2fr 1fr 1.1fr 1.1fr;
+    grid-template-areas:none;
+    column-gap:32px;row-gap:0;align-items:start}
+  footer.site .c-marka,
+  footer.site .c-kontakt,
+  footer.site .c-oddzialy,
+  footer.site .c-wiecej{grid-area:auto}
+  footer.site .c-marka{display:block}
+  /* naglowki kolumn w jednej linii ze slowem SMARTPARKIET */
+  footer.site .c-kontakt>h4,
   footer.site .c-oddzialy>h4,
   footer.site .c-wiecej>h4{margin-top:calc(var(--kolko) + 12px)!important}
-  /* copyright jeden pod drugim, a nie rozrzucony na dwa konce */
-  footer.site .fine{flex-direction:column;align-items:flex-start;gap:6px}
+  footer.site .c-oddzialy a{white-space:nowrap}
+  /* WIECEJ z powrotem jedna kolumna, tak jak bylo */
+  footer.site .c-wiecej .ww{display:block}
+  footer.site .fine{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
 }
 @media(max-width:800px){
   footer.site .cols{
