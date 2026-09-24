@@ -927,16 +927,17 @@ figure{margin:0}
   <div class="wrap split">
     <div class="sticky">
       <h2>Tradycyjne cyklinowanie kojarzy się z brudem, bałaganem i tygodniem koczowania u rodziny. To już nie musi tak wyglądać.</h2>
-      <p class="lead" style="margin-top:16px">Zdjęcie z realizacji w połowie szlifu. Szlif bezpyłowy, uzupełnienie szczelin masą z pyłu tego samego drewna, trzy warstwy lakieru premium 2K. Po podłodze można chodzić następnego dnia, bez skarpet.</p>
-      <p class="demo-note">Zdjęcie z połowy roboty, bez retuszu: jasne deski są już po szlifie, reszta podłogi jeszcze przed. Docelowo przy każdej realizacji pełna para zdjęć przed i po.</p>
+      <p class="lead" style="margin-top:16px">Szlif bezpyłowy, uzupełnienie szczelin masą z pyłu tego samego drewna, trzy warstwy lakieru premium 2K. Po podłodze można chodzić następnego dnia, bez skarpet.</p>
+      <p class="demo-note">Wersja robocza: to prawdziwa para zdjęć tego samego pokoju przed renowacją i po niej, ale z cudzej realizacji – zdjęcia na wolnej licencji CC BY-ND, autor osiristhe (Flickr). Wstawione po to, żeby pokazać działanie suwaka. Na gotowej stronie: własne pary zdjęć z realizacji SMARTPARKIET.</p>
     </div>
     <div>
-      <figure class="ba-real">
-        <img src="img/szlif-w-trakcie.webp" width="1400" height="1050" loading="lazy"
-             alt="Podłoga w połowie szlifu: jasne deski już po cyklinowaniu, obok stary lakier">
-        <span class="zn zn-po">po szlifie</span>
-        <span class="zn zn-przed">przed</span>
-      </figure>
+      <div class="ba" id="ba" style="--x:52%">
+        <img src="img/floor-po.webp" alt="Podłoga po cyklinowaniu i lakierowaniu">
+        <img class="before" src="img/floor-przed.webp" alt="Ta sama podłoga przed renowacją">
+        <div class="handle"></div><div class="knob">⇔</div>
+        <span class="lbl l">przed</span><span class="lbl r">po</span>
+        <input type="range" min="0" max="100" value="52" aria-label="Porównanie przed i po">
+      </div>
       <div class="vs">
         <div class="row head"><div></div><div>Tradycyjnie</div><div>Cyklinowanie SMART</div></div>
         <div class="row"><div>Pył</div><div class="old">na wszystkim, mimo folii</div><div class="new"><b>0</b>odciąg klasy M na każdej maszynie</div></div>
@@ -1144,7 +1145,7 @@ figure{margin:0}
    ============================================================ */
 :root{
   /* czcionka "drukowanych" napisow - ta sama rodzina co logo */
-  --f-druk:"Helvetica Neue",Helvetica,Inter,Arial,sans-serif;
+  --f-druk:Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;
   /* zlota gwiazdka Google (00:36) */
   --gwiazdka:#F9AB00;
   /* 01:01 - naglowek i dolny pasek to "dwa batony": ta sama wysokosc, odchudzone */
@@ -1380,4 +1381,8 @@ footer.site .fine i{font-style:normal;color:#FF7A3C;margin:0 .45em;font-weight:4
   footer.site .cols>div.c-oddzialy a,
   footer.site .cols>div.c-kontakt a{white-space:nowrap!important;font-size:.52rem!important;letter-spacing:.02em!important}
 }
+
+/* Suwak przed/po na dwóch osobnych, prawdziwych zdjęciach - bez filtrów */
+.ba .before{filter:none!important}
+.ba .grain{display:none!important}
 </style>
