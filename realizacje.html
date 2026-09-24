@@ -1412,4 +1412,28 @@ footer.site .fine i{font-style:normal;color:#FF7A3C;margin:0 .45em;font-weight:4
   footer.site .cols>div.c-oddzialy a,
   footer.site .cols>div.c-kontakt a{white-space:nowrap!important;font-size:.56rem!important;letter-spacing:.06em!important}
 }
+
+/* STOPKA - jeden kroj, jeden odstep miedzy literami, ROŻNIĆ MA SIĘ TYLKO ROZMIAR.
+   Wszystko liczone od tej samej rodziny (--f-druk), tracking .10em wszedzie. */
+footer.site .cols>div>.brand{font-family:var(--f-druk)!important;font-weight:700!important;
+  letter-spacing:.10em!important;text-transform:uppercase}
+footer.site .cols>div>h4{font-family:var(--f-druk)!important;font-weight:700!important;
+  letter-spacing:.10em!important;text-transform:uppercase}
+footer.site .cols>div a:not(.brand){font-family:var(--f-druk)!important;font-weight:400!important;
+  letter-spacing:.10em!important;text-transform:uppercase}
+footer.site .fine,footer.site .fine .autor{font-family:var(--f-druk)!important;font-weight:400!important;
+  letter-spacing:.10em!important;text-transform:uppercase}
+/* rozmiary - jedyna rzecz, ktora sie rozni */
+footer.site .cols>div>.brand{font-size:1.05rem!important}
+footer.site .cols>div>h4{font-size:.9rem!important}
+footer.site .cols>div a:not(.brand){font-size:.62rem!important}
+footer.site .fine{font-size:.58rem!important}
+@media(max-width:800px){
+  footer.site .cols>div>.brand{font-size:1rem!important}
+  footer.site .cols>div>h4{font-size:.86rem!important}
+  footer.site .cols>div a:not(.brand){font-size:.58rem!important}
+  footer.site .cols>div.c-oddzialy a,
+  footer.site .cols>div.c-kontakt a{font-size:.58rem!important;letter-spacing:.10em!important}
+  footer.site .fine{font-size:.54rem!important}
+}
 </style>
