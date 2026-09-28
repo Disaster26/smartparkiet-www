@@ -1,6 +1,6 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cztery oddziały w Warszawie - mapa dzielnic | SMARTPARKIET</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ekspertyza i kosztorys po zalaniu podłogi | SMARTPARKIET</title>
 <link rel="icon" href="img/favicon.png" type="image/png">
-<meta name="description" content="Rembertów, Ochota, Targówek, Mokotów. Proszę kliknąć swoją dzielnicę i sprawdzić, która ekipa dojedzie najszybciej.">
+<meta name="description" content="Formularz oględzin i kosztorys naprawy podłogi po zalaniu. Liczy pozycje, dobiera program, eksportuje do Excela i drukuje dla ubezpieczyciela.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&family=Marcellus&display=swap">
 <style>
@@ -918,66 +918,456 @@ figure{margin:0}
       <a href="programy.html">Programy</a>
       <a href="realizacje.html">Realizacje</a>
       <a href="wycena.html">Wycena ze zdjęć</a>
-      <a href="ekspertyza.html">Ekspertyza</a>
-      <a href="oddzialy.html" class="akt">Oddziały</a>
+      <a href="ekspertyza.html" class="akt">Ekspertyza</a>
+      <a href="oddzialy.html">Oddziały</a>
       <a href="kontakt.html">Kontakt</a>
     </nav>
     <button class="burger" type="button" aria-label="Menu" aria-expanded="false">☰</button>
     <a class="btn btn-amber tel" href="tel:+48602242815">602 242 815</a>
   </div>
-</header><section class="dark" id="oddzialy" style="padding-top:0">
+</header>
+<section id="ekspertyza">
   <div class="wrap">
-    <h2>Cztery oddziały. Proszę kliknąć swoją dzielnicę.</h2>
-    <p class="lead" style="margin-top:14px">Każdy oddział ma własną ekipę, magazyn i kalendarz. Wycena, umowa i numer telefonu są wspólne. Różni się tylko czas dojazdu.</p>
-    <div class="mapgrid">
-      <div class="map">
-        <svg viewBox="0 0 520 560" role="img" aria-label="Mapa Warszawy z czterema oddziałami" id="wawa">
-          <rect width="520" height="560" fill="#15171B"/>
-          <g id="dz">
-          <g class="d" data-b="2"><path d="M71.6,198.4L114.9,214.1L117.7,215.5L118.8,218.2L129.5,223.1L123.6,233.3L124.6,235.4L120.2,242.2L98.6,260.4L93.0,287.0L96.8,301.1L96.6,304.2L92.8,308.6L86.4,310.5L85.3,314.3L84.5,316.6L52.2,323.0L44.2,326.6L32.9,327.0L32.1,325.0L33.0,324.0L34.1,314.5L35.1,314.6L35.5,311.8L37.3,311.8L38.1,296.0L34.9,294.3L35.1,288.1L43.4,281.9L55.1,282.0L59.4,266.9L60.5,259.2L57.4,256.7L56.8,252.8L24.5,246.5L42.2,217.4L45.1,189.5L48.8,190.3L50.7,187.7L54.6,187.6L59.8,194.0L71.6,198.4Z"/><text x="72.4" y="258.8" text-anchor="middle">Bemowo</text></g>
-          <g class="d" data-b="3"><path d="M45.1,189.5L38.7,187.6L40.3,160.2L38.7,152.2L44.3,131.8L38.3,122.2L38.6,120.7L53.8,123.8L55.4,123.1L57.4,115.3L61.9,107.9L75.5,104.2L76.8,106.4L80.2,102.7L83.2,107.1L93.9,103.4L94.5,97.5L97.5,92.3L99.3,104.7L104.6,114.2L124.2,128.9L129.1,134.5L137.6,148.5L147.6,155.8L168.3,163.2L179.3,170.9L181.7,173.5L174.9,178.5L170.8,176.1L169.5,177.5L169.1,182.0L151.3,197.3L145.0,200.0L142.6,205.4L129.5,223.1L118.8,218.2L117.7,215.5L114.9,214.1L59.8,194.0L54.6,187.6L50.7,187.7L48.8,190.3L45.1,189.5Z"/><text x="98.8" y="166.4" text-anchor="middle">Bielany</text></g>
-          <g class="d" data-b="2"><path d="M98.0,325.2L113.1,320.2L120.7,315.9L132.0,316.0L137.8,308.9L149.4,306.1L163.4,298.8L188.7,289.8L184.6,279.6L181.3,267.0L166.1,238.0L164.2,228.6L145.8,238.5L139.1,235.6L132.8,236.7L125.2,234.3L120.2,242.2L101.4,257.1L97.2,264.1L93.0,287.0L96.8,301.1L96.6,304.2L92.8,308.6L86.4,310.5L85.1,315.8L96.4,317.2L94.4,321.9L98.0,325.2Z"/><text x="135.7" y="281.1" text-anchor="middle">Wola</text></g>
-          <g class="d" data-b="3"><path d="M129.5,223.1L123.6,233.3L124.6,235.4L125.2,234.3L132.8,236.7L139.1,235.6L145.6,238.5L164.9,228.2L186.9,229.3L198.3,225.0L193.6,213.0L191.5,194.5L189.5,186.6L181.7,173.5L174.9,178.5L170.8,176.1L169.5,177.5L169.1,182.0L151.3,197.3L145.0,200.0L142.6,205.4L129.5,223.1Z"/><text x="165.1" y="214.6" text-anchor="middle">Żoliborz</text></g>
-          <g class="d" data-b="2"><path d="M165.2,358.3L123.4,342.1L119.6,338.8L111.9,327.0L111.1,323.0L112.1,320.6L110.4,320.6L120.7,315.9L132.0,316.0L138.0,309.6L188.7,289.8L192.4,299.2L192.7,310.7L195.1,323.5L184.7,326.4L172.4,324.2L165.2,358.3Z"/><text x="155.5" y="327.5" text-anchor="middle">Ochota</text></g>
-          <g class="d" data-b="2"><path d="M44.1,378.3L64.9,378.2L66.7,375.1L72.2,375.4L78.4,374.3L78.6,371.7L85.2,371.8L90.5,356.4L85.9,358.4L80.2,352.1L68.4,345.2L67.8,340.9L45.0,326.7L41.8,326.2L16.8,330.8L11.8,335.6L10.0,342.3L12.9,354.1L16.1,360.1L15.2,368.3L28.4,362.2L28.5,378.3L44.1,378.3Z"/><text x="46.5" y="358.1" text-anchor="middle">Ursus</text></g>
-          <g class="d" data-b="2"><path d="M173.4,448.1L174.2,457.4L168.4,456.7L167.1,460.1L159.6,453.7L150.5,450.2L138.2,442.3L131.7,435.7L131.7,429.6L123.6,427.6L112.4,421.8L103.1,415.5L103.9,414.2L96.1,409.9L97.9,407.7L97.2,405.7L92.5,400.7L90.4,400.5L89.9,388.1L81.0,384.0L90.5,356.4L85.9,358.4L80.2,352.1L68.4,345.2L67.8,340.9L44.2,326.6L52.2,323.0L82.7,317.1L89.6,315.7L96.4,317.2L94.4,321.9L98.0,325.2L112.1,320.6L111.1,323.0L111.9,327.0L122.1,341.3L166.3,358.7L169.2,361.3L170.8,366.1L170.7,418.1L171.8,421.2L173.4,448.1Z"/><text x="124.4" y="385.7" text-anchor="middle">Włochy</text></g>
-          <g class="d" data-b="4"><path d="M234.6,274.7L248.1,298.1L254.8,304.0L262.6,307.4L260.0,311.7L251.2,314.0L251.5,315.4L242.1,316.3L243.2,322.1L240.2,325.3L230.0,325.6L228.4,330.9L222.8,331.0L217.7,326.2L213.0,318.7L195.1,323.5L192.7,310.7L192.4,299.2L184.6,279.6L181.5,267.6L166.1,238.0L164.2,228.6L186.9,229.3L198.3,225.0L211.8,249.1L226.0,263.3L234.6,274.7Z"/><text x="209.6" y="284.4" text-anchor="middle">Śródmieście</text></g>
-          <g class="d" data-b="4"><path d="M296.9,314.6L306.9,325.4L310.1,333.4L311.6,341.2L311.8,354.9L305.3,361.4L304.9,368.9L300.1,373.0L299.0,378.1L299.7,381.3L293.7,381.9L283.6,374.2L269.1,389.5L262.0,392.3L268.6,402.2L267.8,403.3L260.4,402.2L251.3,403.6L241.6,394.1L238.4,392.9L237.6,397.5L231.4,405.0L222.5,408.9L218.1,407.1L215.9,409.4L210.1,408.4L210.6,409.9L208.8,413.7L205.7,412.7L205.7,411.1L201.4,411.3L200.6,408.5L197.2,406.8L196.6,408.4L171.3,400.5L170.7,364.9L168.4,360.3L165.2,358.3L172.4,324.2L184.7,326.4L211.5,318.3L216.0,322.0L220.9,330.2L228.4,330.9L230.0,325.6L240.0,325.4L243.2,322.1L242.1,316.3L251.5,315.4L251.2,314.0L259.8,311.8L262.6,307.4L284.0,308.8L296.9,314.6Z"/><text x="236.3" y="362.3" text-anchor="middle">Mokotów</text></g>
-          <g class="d" data-b="4"><path d="M171.3,400.5L170.7,418.1L171.8,421.2L174.2,457.4L168.4,456.7L167.1,460.1L168.9,462.8L163.1,475.3L162.8,484.2L166.5,492.6L173.7,492.8L169.0,499.1L171.6,508.2L167.4,516.1L170.9,518.3L168.3,527.9L171.7,528.8L171.1,531.2L176.8,532.8L209.1,531.6L209.0,527.1L229.1,526.8L228.7,525.7L238.9,513.6L246.9,521.0L256.0,524.8L282.1,543.0L285.3,541.4L290.1,533.4L293.3,531.2L310.2,527.6L308.2,523.6L304.0,521.8L300.1,512.1L289.9,510.7L299.1,510.2L296.1,504.5L290.5,504.7L292.5,503.6L290.0,500.4L293.0,503.4L294.2,503.4L293.3,500.4L296.1,503.0L295.2,500.2L292.6,499.5L294.6,498.9L292.2,493.9L290.8,493.9L291.0,492.0L287.1,490.4L290.1,490.3L289.4,488.2L287.3,489.6L285.2,488.5L288.8,486.8L285.9,483.1L284.4,484.7L283.8,483.3L285.1,482.3L283.5,480.1L284.4,478.7L283.0,477.6L283.9,476.9L283.2,474.9L278.1,475.5L282.6,474.2L282.2,471.7L281.1,469.9L279.7,472.0L279.8,470.0L276.9,469.9L274.9,466.1L273.0,466.4L272.7,462.4L267.7,452.7L270.1,451.1L259.7,436.6L257.3,428.1L253.3,420.4L250.9,419.2L251.8,418.3L248.3,415.1L246.3,410.9L245.9,412.5L244.7,411.3L245.7,410.1L243.1,406.4L251.3,403.6L241.6,394.1L238.4,392.9L237.2,398.2L230.5,405.6L222.5,408.9L218.1,407.1L215.9,409.4L210.1,408.4L210.6,409.9L208.8,413.7L205.7,412.7L205.7,411.1L201.4,411.3L200.6,408.5L197.2,406.8L196.6,408.4L171.3,400.5Z"/><text x="225.3" y="472.1" text-anchor="middle">Ursynów</text></g>
-          <g class="d" data-b="4"><path d="M243.3,406.2L258.1,402.2L267.8,403.3L268.6,402.2L262.0,392.3L269.1,389.5L283.4,374.3L293.7,381.9L299.7,381.3L299.0,378.1L300.1,373.0L304.9,368.9L305.3,361.4L311.8,354.9L318.2,370.0L323.5,378.2L331.2,385.9L343.6,393.9L351.2,402.0L355.7,411.5L358.4,425.2L362.1,431.8L377.1,442.8L383.4,451.8L371.2,454.0L369.3,456.1L370.2,460.7L365.7,461.5L359.7,469.8L353.8,474.7L354.3,476.6L352.1,477.9L348.9,484.6L347.4,493.2L344.7,493.6L340.8,486.2L338.4,488.2L335.8,495.4L332.1,500.5L325.3,502.1L316.4,510.4L318.0,513.2L307.1,523.0L304.0,521.8L300.1,512.1L289.9,510.7L299.1,510.2L296.1,504.5L290.5,504.7L292.5,503.6L290.0,500.4L293.0,503.4L294.2,503.4L293.3,500.4L296.1,503.0L295.2,500.2L292.6,499.5L294.6,498.9L294.3,497.7L290.7,493.5L291.0,492.0L287.1,490.4L290.1,490.3L289.2,488.1L286.0,490.2L287.8,488.8L285.2,488.6L288.8,486.8L285.9,483.1L284.4,484.7L283.8,483.3L285.1,482.3L283.5,480.1L284.4,478.7L283.0,477.6L283.9,476.9L283.2,474.9L278.1,475.5L282.6,474.2L282.2,471.7L281.1,469.9L279.7,472.0L279.8,470.0L276.9,469.9L274.9,466.1L273.0,466.4L272.7,462.4L267.7,452.7L270.1,451.1L262.7,439.9L261.9,440.5L261.9,438.1L259.7,436.6L257.3,428.1L253.9,421.5L252.1,418.6L250.9,419.2L251.8,418.3L248.3,415.1L246.3,410.9L245.5,412.6L244.6,411.0L245.7,410.1L243.3,406.2Z"/><text x="305.9" y="441.8" text-anchor="middle">Wilanów</text></g>
-          <g class="d" data-b="1"><path d="M275.2,229.4L264.5,232.3L260.9,236.0L241.3,247.6L238.7,251.7L238.8,260.6L230.7,269.1L245.7,294.8L252.4,302.3L263.8,307.7L281.6,308.4L296.9,314.6L329.1,281.1L338.6,279.4L344.9,268.2L342.1,265.1L344.5,260.2L323.6,233.7L324.1,228.5L292.6,226.4L275.2,229.4Z"/><text x="287.5" y="271.5" text-anchor="middle">Praga Płd.</text></g>
-          <g class="d" data-b="3"><path d="M183.6,172.0L181.7,173.5L187.0,181.0L190.6,190.1L192.9,209.7L196.0,220.8L211.8,249.1L230.7,269.1L238.8,260.6L238.7,251.7L240.9,247.9L268.0,231.3L275.2,229.4L232.4,211.9L218.5,204.0L212.0,189.0L202.4,159.6L200.5,162.2L190.3,166.4L187.5,162.7L185.8,162.9L184.8,164.9L185.4,168.4L183.3,170.2L183.6,172.0Z"/><text x="219.6" y="222.4" text-anchor="middle">Praga Płn.</text></g>
-          <g class="d" data-b="3"><path d="M98.0,72.4L97.6,97.8L99.3,104.7L104.6,114.2L124.2,128.9L129.1,134.5L135.2,145.9L141.6,151.9L151.1,157.5L169.8,163.9L181.7,173.5L185.4,168.4L185.5,163.2L187.5,162.7L190.3,166.4L198.4,163.3L201.8,160.9L202.3,154.5L204.2,153.6L208.2,157.6L214.3,154.1L213.9,152.4L214.9,151.9L215.8,153.1L219.0,152.0L225.2,147.7L226.0,148.9L258.8,136.1L260.0,133.4L261.0,135.3L286.2,134.5L279.5,106.9L281.1,106.5L293.5,103.4L289.3,87.4L291.4,86.8L291.1,85.7L290.1,85.9L289.3,83.4L288.3,76.8L285.1,76.9L283.2,65.7L289.2,64.9L284.2,44.2L280.5,45.2L274.8,18.7L259.8,21.5L259.1,27.9L251.1,26.9L245.5,29.5L244.8,25.8L239.9,25.1L223.4,29.7L219.7,22.9L216.9,26.5L214.6,37.9L202.8,40.5L202.7,38.9L197.3,38.6L196.6,32.5L193.5,24.9L180.4,29.3L177.2,27.4L160.7,34.8L152.5,34.8L146.4,17.0L132.2,17.5L130.2,20.3L121.1,19.8L114.4,29.4L109.4,26.5L114.3,36.0L108.1,33.3L104.5,36.9L100.4,33.9L96.3,33.7L95.0,38.6L82.4,46.5L95.2,63.6L98.0,72.4Z"/><text x="191.7" y="91.4" text-anchor="middle">Białołęka</text></g>
-          <g class="d" data-b="3"><path d="M230.8,210.8L275.0,229.4L292.6,226.4L318.8,228.1L315.3,211.3L316.8,211.1L316.4,207.2L317.6,206.7L315.4,199.5L312.0,200.2L306.3,179.2L304.7,175.9L301.0,176.4L300.3,172.7L291.2,158.3L288.6,150.6L286.4,144.1L288.7,143.3L286.2,134.5L261.0,135.3L260.7,133.3L258.8,136.1L226.0,148.9L225.2,147.7L219.0,152.0L215.8,153.1L214.9,151.9L213.9,152.4L214.3,154.1L208.2,157.6L204.2,153.6L202.3,154.5L201.8,157.9L205.1,168.9L216.3,200.6L219.1,204.6L230.8,210.8Z"/><text x="262.2" y="187.4" text-anchor="middle">Targówek</text></g>
-          <g class="d" data-b="1"><path d="M315.4,199.5L364.5,189.8L372.3,181.3L379.3,177.5L383.7,168.6L388.5,166.9L391.2,170.5L392.3,175.4L390.2,194.4L397.6,204.4L405.5,211.6L407.3,215.3L406.3,228.3L402.0,233.2L413.8,234.9L414.9,247.1L413.7,247.6L411.9,242.4L409.6,243.5L409.7,246.1L404.8,247.9L406.2,254.1L381.8,263.3L379.5,260.5L355.8,268.2L353.0,260.1L351.5,260.2L344.9,268.2L342.1,265.1L344.5,259.9L323.6,233.7L324.1,228.5L318.8,228.1L315.3,211.3L316.8,211.1L316.4,207.2L317.6,206.7L315.4,199.5Z"/><text x="365.7" y="227.7" text-anchor="middle">Rembertów</text></g>
-          <g class="d" data-b="1"><path d="M328.5,281.7L338.6,279.4L344.9,268.2L351.5,260.2L353.0,260.1L355.8,268.2L379.5,260.5L381.8,263.3L393.5,259.6L397.1,256.4L406.2,266.8L421.6,277.0L426.3,276.6L433.7,279.7L439.4,285.8L433.9,290.4L433.9,304.1L433.0,304.4L439.7,316.4L441.0,316.2L443.4,320.4L442.6,326.2L447.1,334.0L445.0,335.0L443.7,340.1L444.7,342.2L443.9,342.9L444.6,349.2L471.4,350.0L503.1,371.5L500.7,375.4L496.4,378.2L508.7,394.9L509.8,394.8L510.0,398.4L508.6,398.6L508.1,396.1L505.5,396.2L505.7,402.4L509.0,403.5L509.6,405.5L505.8,405.7L505.9,407.6L500.4,407.7L498.2,411.6L497.1,418.1L492.6,421.0L489.6,427.2L499.8,435.5L491.6,447.0L481.4,438.3L483.3,435.6L466.6,424.2L443.2,438.0L411.6,442.5L411.4,440.5L396.4,444.5L396.5,447.9L383.4,451.8L377.1,442.8L365.9,435.5L360.2,429.0L357.9,423.5L354.8,409.0L349.6,400.0L343.6,393.9L328.6,383.7L320.6,374.1L311.8,354.9L311.6,341.2L309.0,329.9L305.0,322.4L296.9,314.6L328.5,281.7Z"/><text x="399.0" y="361.9" text-anchor="middle">Wawer</text></g>
-          <g class="d" data-b="1"><path d="M414.0,235.9L414.9,247.1L413.7,247.6L411.9,242.4L409.6,243.5L409.7,246.1L404.8,247.9L406.2,254.1L397.4,256.6L406.2,266.8L421.6,277.0L426.3,276.6L433.7,279.7L439.4,285.8L433.9,290.4L433.9,304.1L433.0,304.4L439.7,316.4L441.0,316.2L443.4,320.4L442.6,326.2L447.1,334.0L445.0,335.0L443.7,340.1L444.7,342.2L443.9,342.9L444.6,349.2L471.4,350.0L473.1,352.2L476.5,345.5L485.9,339.4L483.1,336.0L482.7,332.6L483.7,330.7L489.7,325.9L492.9,325.6L498.8,324.6L485.4,300.3L484.1,300.3L485.3,282.1L490.0,275.6L490.5,268.8L480.6,273.7L472.2,273.7L470.4,256.6L489.2,255.2L490.3,240.8L487.7,240.6L485.3,222.2L414.0,235.9Z"/><text x="447.4" y="285.3" text-anchor="middle">Wesoła</text></g>
-          </g>
-          <path d="M383.4,451.8L380.5,447.9L378.6,444.7L375.7,441.5L371.0,438.6L365.9,435.5L362.1,431.8L359.2,427.1L357.9,423.5L357.3,419.8L356.5,414.2L354.8,409.0L352.4,404.0L350.5,401.1L346.5,396.5L341.8,392.6L337.7,390.2L331.2,385.9L328.6,383.7L323.5,378.2L318.2,370.0L314.5,361.6L313.1,358.0L311.7,350.8L311.6,341.2L310.1,333.4L306.9,325.4L300.3,317.4L296.9,314.6L295.4,313.6L294.3,312.9L293.0,312.2L291.4,311.3L290.0,310.7L288.2,310.0L286.4,309.4L285.5,309.2L284.0,308.8L282.1,308.4L280.7,308.2L278.8,308.1L277.8,308.0L276.3,308.0L274.4,308.1L273.4,308.1L271.6,308.3L270.3,308.3L268.5,308.3L267.2,308.2L265.5,308.0L263.8,307.7L262.6,307.4L261.6,307.1L260.2,306.6L259.1,306.2L258.0,305.7L256.9,305.2L255.9,304.6L254.8,304.0L253.9,303.4L252.9,302.7L251.9,301.9L251.0,301.1L250.1,300.3L249.3,299.5L248.5,298.6L247.7,297.7L247.0,296.8L246.3,295.8L245.1,294.0L242.2,288.8L239.7,283.6L237.2,279.0L232.7,271.8L229.3,267.2L226.0,263.3L221.7,258.9L216.9,254.5L214.4,252.1L211.8,249.1L210.2,246.7L207.6,242.3L205.5,238.6L199.7,227.4L198.3,225.0L196.0,220.8L195.0,217.9L193.6,213.0L192.9,209.7L192.4,206.4L192.1,202.4L191.9,197.3L191.6,195.3L191.4,193.8L191.1,192.5L190.6,190.1L189.5,186.6L188.7,184.6L188.0,182.9L187.0,181.0L185.7,178.8L184.0,176.3L182.7,174.6L181.2,172.9L179.7,171.3L178.9,170.5L177.2,169.0L175.5,167.6L174.1,166.6L172.2,165.3L170.8,164.5L169.3,163.7L168.3,163.2L166.8,162.5L164.9,161.7L163.6,161.3L162.3,160.8L160.9,160.4L159.6,160.1L157.3,159.6L155.7,159.1L153.6,158.5L151.6,157.7L150.1,157.0L148.1,156.1L146.6,155.3L145.2,154.4L143.8,153.5L142.0,152.3L140.9,151.4L139.9,150.6L138.3,149.1L137.6,148.5L136.4,147.3L135.7,146.5L135.2,145.9L134.4,144.8L133.6,143.5L133.0,142.3L132.5,141.3L131.9,139.6L131.1,137.9L130.3,136.3L129.7,135.4L127.9,133.0L124.2,128.9L120.6,125.9L117.8,124.0L112.1,120.9L109.0,118.5L104.6,114.2L100.7,108.0L98.3,101.4L97.4,95.1" fill="none" stroke="#4A5C66" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
-          <g font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="13" text-anchor="middle">
-          <g class="pin" data-b="1"><circle class="ring" cx="371.4" cy="235.7" r="24" fill="#F8580E" opacity=".16"/><circle cx="371.4" cy="235.7" r="12" fill="#F8580E" stroke="#0E0E0E" stroke-width="2"/><text x="371.4" y="240.2" fill="#0E0E0E">1</text></g>
-          <g class="pin" data-b="2"><circle class="ring" cx="145.9" cy="345.0" r="24" fill="#F8580E" opacity=".16"/><circle cx="145.9" cy="345.0" r="12" fill="#F8580E" stroke="#0E0E0E" stroke-width="2"/><text x="145.9" y="349.5" fill="#0E0E0E">2</text></g>
-          <g class="pin" data-b="3"><circle class="ring" cx="233.6" cy="150.6" r="24" fill="#F8580E" opacity=".16"/><circle cx="233.6" cy="150.6" r="12" fill="#F8580E" stroke="#0E0E0E" stroke-width="2"/><text x="233.6" y="155.1" fill="#0E0E0E">3</text></g>
-          <g class="pin" data-b="4"><circle class="ring" cx="221.7" cy="329.5" r="24" fill="#F8580E" opacity=".16"/><circle cx="221.7" cy="329.5" r="12" fill="#F8580E" stroke="#0E0E0E" stroke-width="2"/><text x="221.7" y="334.0" fill="#0E0E0E">4</text></g>
-          </g>
-          <text x="14" y="546" fill="#707176" font-family="Manrope,sans-serif" font-size="10">Granice dzielnic: OpenStreetMap (ODbL). Kolor = oddział, który do Państwa przyjedzie.</text>
-          </svg>
-      </div>
-      <div class="branches" id="branches">
-        <div class="branch" data-b="1"><div class="k">1</div><div><b>Rembertów · ul. Suflerska 4</b><span>Oddział główny, magazyn, biuro. 210 opinii Google.</span><div class="eta">Do Państwa: <i>ok. 15–25 min</i> · najbliższy wolny termin: <i>22 września</i></div><a class="opinie-link" href="https://maps.google.com/?cid=4565719495930749944" target="_blank" rel="noopener" onclick="event.stopPropagation()">Wizytówka i opinie Google →</a></div></div>
-        <div class="branch" data-b="2"><div class="k">2</div><div><b>Ochota · ul. Grójecka 208, lok. 229</b><span>Ekipa zachodnia: Wola, Włochy, Bemowo, Ursus.</span><div class="eta">Do Państwa: <i>ok. 10–20 min</i> · najbliższy wolny termin: <i>25 września</i></div><a class="opinie-link" href="https://maps.google.com/?cid=4435256749743705982" target="_blank" rel="noopener" onclick="event.stopPropagation()">Wizytówka i opinie Google →</a></div></div>
-        <div class="branch" data-b="3"><div class="k">3</div><div><b>Targówek · ul. Turmoncka 17A, lok. 21</b><span>Ekipa północna: Bródno, Białołęka, Praga Płn., Żoliborz, Bielany.</span><div class="eta">Do Państwa: <i>ok. 10–25 min</i> · najbliższy wolny termin: <i>23 września</i></div><a class="opinie-link" href="https://maps.google.com/?cid=3093966538504001070" target="_blank" rel="noopener" onclick="event.stopPropagation()">Wizytówka i opinie Google →</a></div></div>
-        <div class="branch" data-b="4"><div class="k">4</div><div><b>Mokotów · ul. Belwederska 23</b><span>SMARTPARKIET | BLVD 23. Mokotów, Śródmieście, Ursynów, Wilanów.</span><div class="eta">Do Państwa: <i>ok. 10–20 min</i> · najbliższy wolny termin: <i>29 września</i></div><a class="opinie-link" href="https://maps.google.com/?cid=8329908770735610659" target="_blank" rel="noopener" onclick="event.stopPropagation()">Wizytówka i opinie Google →</a></div></div>
+    <span class="tag">Narzędzie</span>
+    <h2 style="margin-top:14px">Ekspertyza i kosztorys po zalaniu</h2>
+    <p class="lead" style="margin-top:14px">Formularz do wypełnienia na miejscu oględzin. Liczy się sam, dobiera program i wypuszcza zestawienie do Excela albo gotowy wydruk na papier firmowy dla ubezpieczyciela. Dane zostają w tej przeglądarce, nic nie jest nigdzie wysyłane.</p>
+
+    <div class="ek-akcje ek-noprint">
+      <button class="btn btn-amber" type="button" id="ek-druk">Drukuj / PDF</button>
+      <button class="btn btn-ghost" type="button" id="ek-csv">Pobierz do Excela</button>
+      <button class="btn btn-ghost" type="button" id="ek-kopiuj">Kopiuj zestawienie</button>
+      <button class="btn btn-ghost" type="button" id="ek-czysc">Wyczyść</button>
+      <span class="ek-info" id="ek-info"></span>
+    </div>
+
+    <div class="ek-druk-head">
+      <div class="ek-druk-marka">SMARTPARKIET</div>
+      <div class="ek-druk-tyt">Ekspertyza i kosztorys naprawy podłogi po zalaniu</div>
+    </div>
+
+    <!-- ZLECENIE -->
+    <div class="ek-blok">
+      <h3 class="ek-h">Dane zlecenia</h3>
+      <div class="ek-siatka">
+        <label>Data oględzin<input type="date" data-p="data"></label>
+        <label>Numer szkody<input type="text" data-p="szkoda" placeholder="np. 2026/09/1234"></label>
+        <label>Ubezpieczyciel<input type="text" data-p="ubezp" placeholder="np. PZU"></label>
+        <label class="ek-szer2">Adres<input type="text" data-p="adres" placeholder="ulica, numer, kod, miasto"></label>
+        <label>Zgłaszający<input type="text" data-p="kto"></label>
+        <label>Telefon<input type="tel" data-p="tel"></label>
+        <label>Kondygnacja<input type="text" data-p="pietro" placeholder="np. parter"></label>
+        <label>Rok budowy<input type="number" data-p="rok" placeholder="np. 1936"></label>
       </div>
     </div>
-    <div class="cal">
-      <div class="cal-head"><h3>Wolne dni czterech ekip, najbliższe dwa tygodnie</h3><span id="calPick">Proszę kliknąć wolny dzień.</span></div>
-      <div class="cal-grid" id="cal"></div>
-      <div class="cal-legend"><i class="f"></i> wolne <i class="b"></i> zajęte <i class="h"></i> pół dnia</div>
+
+    <!-- PODLOGA -->
+    <div class="ek-blok">
+      <h3 class="ek-h">Podłoga i zakres szkody</h3>
+      <div class="ek-siatka">
+        <label>Rodzaj podłogi
+          <select data-p="rodzaj"><option>parkiet klepka</option><option>deska lita</option><option>mozaika</option><option>deska warstwowa</option><option>panele</option></select></label>
+        <label>Gatunek drewna
+          <select data-p="gatunek"><option>dąb</option><option>jesion</option><option>buk</option><option>sosna</option><option>merbau</option><option>teak</option><option>iroko</option><option>doussie</option><option>jatoba</option><option>inny</option></select></label>
+        <label>Ułożenie
+          <select data-p="podloze"><option>na kleju do jastrychu</option><option>na legarach</option><option>na gwoździe</option><option>pływająco</option></select></label>
+        <label>Powierzchnia pomieszczenia<span class="ek-jed">m²</span><input type="number" step="0.1" min="0" data-p="m2" data-licz></label>
+        <label>Powierzchnia zalana<span class="ek-jed">m²</span><input type="number" step="0.1" min="0" data-p="m2zal" data-licz></label>
+        <label>Wilgotność drewna<span class="ek-jed">%</span><input type="number" step="0.1" min="0" data-p="wilg" placeholder="norma 7-11"></label>
+        <label>Data zdarzenia<input type="date" data-p="datazal"></label>
+        <label>Źródło zalania<input type="text" data-p="zrodlo" placeholder="np. pęknięta rura, pralka"></label>
+        <label>Rodzaj obiektu
+          <select data-p="obiekt" data-licz><option>mieszkanie</option><option>dom</option><option>biuro</option><option>lokal usługowy</option><option>obiekt publiczny</option></select></label>
+        <label>Termin
+          <select data-p="termin" data-licz><option>zwykły</option><option>pilny, do 48 h</option></select></label>
+      </div>
+      <div class="ek-znam">
+        <span class="ek-znam-t">Stwierdzone uszkodzenia</span>
+        <label class="ek-chk"><input type="checkbox" data-p="u_spec" data-licz> spęcznienie klepek</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_odsp" data-licz> odspojenie od podłoża</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_szcz" data-licz> rozejście się szczelin</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_prze" data-licz> przebarwienia i zacieki</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_plesn" data-licz> pleśń lub zapach zawilgocenia</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_lakier" data-licz> zmatowienie lub łuszczenie lakieru</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_listwy" data-licz> uszkodzone listwy</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_schody" data-licz> uszkodzone schody lub progi</label>
+      </div>
+      <label class="ek-uwagi">Opis stanu i uwagi
+        <textarea rows="3" data-p="opis" placeholder="Co widać na miejscu, co wymaga wymiany, czego nie da się uratować."></textarea></label>
     </div>
-    <p class="demo-note">Kalendarz przykładowy. Docelowo: grafik każdej ekipy na żywo, rezerwacja wstępna po wycenie.</p>
+
+    <!-- KOSZTORYS -->
+    <div class="ek-blok">
+      <h3 class="ek-h">Kosztorys</h3>
+      <p class="ek-pod ek-noprint">Ilości uzupełniają się z metrażu powyżej, ale każdą można nadpisać. Stawki są netto i też można je zmienić. Kolumna „Podstawa” jest pusta na wpisanie numeru KNR, jeśli ubezpieczyciel go wymaga.</p>
+      <div class="ek-tab-owijka">
+        <table class="ek-tab">
+          <thead><tr>
+            <th class="ek-c-poz">Pozycja</th><th class="ek-c-knr">Podstawa</th>
+            <th class="ek-c-ile">Ilość</th><th class="ek-c-j">j.m.</th>
+            <th class="ek-c-st">Stawka</th><th class="ek-c-w">Wartość</th>
+          </tr></thead>
+          <tbody id="ek-poz"></tbody>
+        </table>
+      </div>
+      <button class="btn btn-ghost ek-noprint" type="button" id="ek-dodaj" style="margin-top:14px">Dodaj własną pozycję</button>
+    </div>
+
+    <!-- PODSUMOWANIE -->
+    <div class="ek-podsum">
+      <div class="ek-pakiet">
+        <span class="ek-podsum-t">Dobrany program</span>
+        <div id="ek-pakiety" class="ek-chipy"></div>
+        <p class="ek-pakiet-op" id="ek-pakiet-op"></p>
+      </div>
+      <div class="ek-sumy">
+        <div class="ek-s"><span>Razem netto</span><b id="ek-netto">0,00 zł</b></div>
+        <div class="ek-s ek-noprint-inline">
+          <span>Stawka VAT</span>
+          <select id="ek-vat"><option value="8">8 % (lokal mieszkalny)</option><option value="23">23 % (pozostałe)</option></select>
+        </div>
+        <div class="ek-s"><span>VAT <i id="ek-vat-et">8 %</i></span><b id="ek-vat-kw">0,00 zł</b></div>
+        <div class="ek-s ek-s-duza"><span>Razem brutto</span><b id="ek-brutto">0,00 zł</b></div>
+      </div>
+    </div>
+
+    <p class="ek-stopka-druk">Kosztorys sporządzony na podstawie oględzin i pomiaru wilgotności. Stawki netto. Dokument wymaga podpisu wykonawcy.</p>
+    <div class="ek-podpisy">
+      <div><span></span>podpis wykonawcy</div>
+      <div><span></span>podpis zgłaszającego</div>
+    </div>
   </div>
 </section>
+
+<style>
+.ek-akcje{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:26px 0 8px}
+.ek-info{font-size:.85rem;color:var(--amber-ink);font-weight:700}
+.ek-druk-head{display:none}
+.ek-blok{border:1px solid var(--line);border-radius:6px;padding:22px 22px 24px;margin-top:22px;background:var(--white)}
+.ek-h{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber-ink);margin-bottom:16px}
+.ek-pod{font-size:.9rem;color:var(--mute);margin:-6px 0 16px;max-width:76ch}
+.ek-siatka{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:980px){.ek-siatka{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.ek-siatka{grid-template-columns:1fr}}
+.ek-szer2{grid-column:span 2}
+@media(max-width:560px){.ek-szer2{grid-column:span 1}}
+.ek-siatka label,.ek-uwagi{display:flex;flex-direction:column;gap:5px;font-size:.78rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--mute);position:relative}
+.ek-siatka input,.ek-siatka select,.ek-uwagi textarea{font-family:inherit;font-size:.95rem;font-weight:500;
+  color:var(--ink);padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:var(--white);
+  text-transform:none;letter-spacing:0;width:100%}
+.ek-siatka input:focus,.ek-siatka select:focus,.ek-uwagi textarea:focus{border-color:var(--amber);outline:none}
+.ek-jed{position:absolute;right:12px;top:31px;font-size:.75rem;color:var(--mute);pointer-events:none}
+.ek-uwagi{margin-top:16px}
+.ek-uwagi textarea{resize:vertical}
+.ek-znam{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.ek-znam-t{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);width:100%}
+.ek-chk{display:inline-flex;align-items:center;gap:8px;font-size:.92rem;cursor:pointer}
+.ek-chk input{width:17px;height:17px;accent-color:var(--amber)}
+.ek-tab-owijka{overflow-x:auto}
+.ek-tab{width:100%;border-collapse:collapse;font-size:.92rem;min-width:680px}
+.ek-tab th{text-align:left;font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+  font-weight:700;padding:0 8px 10px;border-bottom:1px solid var(--line)}
+.ek-tab td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.ek-tab tr.ek-pusta td{opacity:.45}
+.ek-c-ile,.ek-c-st,.ek-c-w{text-align:right}
+.ek-tab td.ek-c-w{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ek-tab td.ek-c-j{color:var(--mute);font-size:.85rem}
+.ek-tab input{font-family:inherit;font-size:.92rem;padding:7px 8px;border:1px solid var(--line);
+  border-radius:4px;width:100%;background:var(--white);color:var(--ink)}
+.ek-tab input[type=number]{text-align:right;font-variant-numeric:tabular-nums}
+.ek-tab input:focus{border-color:var(--amber);outline:none}
+.ek-c-ile{width:96px}.ek-c-st{width:104px}.ek-c-j{width:74px}.ek-c-w{width:116px}.ek-c-knr{width:132px}
+.ek-usun{border:0;background:transparent;color:var(--mute);cursor:pointer;font-size:1.05rem;line-height:1;padding:4px 6px}
+.ek-usun:hover{color:#B83C06}
+.ek-podsum{display:grid;grid-template-columns:1.25fr .75fr;gap:22px;margin-top:22px}
+@media(max-width:860px){.ek-podsum{grid-template-columns:1fr}}
+.ek-pakiet,.ek-sumy{border:1px solid var(--line);border-radius:6px;padding:20px 22px;background:var(--white)}
+.ek-sumy{background:var(--bg2)}
+.ek-podsum-t{font-size:.78rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mute)}
+.ek-chipy{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.ek-chip{display:inline-block;padding:7px 12px;border-radius:3px;font-size:.78rem;font-weight:800;
+  letter-spacing:.04em;border:1px solid var(--line);color:var(--ink2);background:var(--white)}
+.ek-chip.ek-glow{background:var(--amber);border-color:var(--amber);color:#0E0E0E}
+.ek-pakiet-op{margin-top:14px;font-size:.92rem;color:var(--ink2)}
+.ek-s{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 0;
+  border-bottom:1px solid var(--line);font-size:.95rem}
+.ek-s:last-child{border-bottom:0}
+.ek-s b{font-variant-numeric:tabular-nums;font-size:1.05rem}
+.ek-s select{font-family:inherit;font-size:.85rem;padding:5px 8px;border:1px solid var(--line);border-radius:4px}
+.ek-s-duza{padding-top:14px}
+.ek-s-duza b{font-size:1.55rem;color:var(--amber-ink)}
+.ek-stopka-druk,.ek-podpisy{display:none}
+
+@media print{
+  @page{margin:14mm}
+  .nav,.site,.cta-bar,.ek-noprint,footer{display:none!important}
+  .ek-noprint-inline{display:none!important}
+  section{padding:0!important}
+  .wrap{max-width:none;padding:0}
+  body{font-size:11px}
+  .tag,h2,.lead{display:none}
+  .ek-druk-head{display:block;border-bottom:2px solid #0E0E0E;padding-bottom:8px;margin-bottom:14px}
+  .ek-druk-marka{font-family:Inter,sans-serif;font-weight:900;letter-spacing:.1em;font-size:15px}
+  .ek-druk-tyt{font-size:12px;margin-top:3px}
+  .ek-blok{border:0;padding:0;margin:0 0 14px;break-inside:avoid}
+  .ek-h{font-size:10px;color:#0E0E0E;border-bottom:1px solid #999;padding-bottom:3px;margin-bottom:8px}
+  .ek-siatka{gap:5px 14px}
+  .ek-siatka label{font-size:7.5px}
+  .ek-siatka input,.ek-siatka select,.ek-uwagi textarea{border:0;border-bottom:1px solid #CCC;border-radius:0;
+    padding:1px 0;font-size:10.5px}
+  .ek-jed{display:none}
+  .ek-chk{font-size:9.5px}
+  .ek-tab{font-size:9.5px;min-width:0}
+  .ek-tab td{padding:3px 5px}
+  .ek-tab input{border:0;padding:0;font-size:9.5px;background:transparent}
+  .ek-podsum{grid-template-columns:1fr 1fr;gap:14px;break-inside:avoid}
+  .ek-pakiet,.ek-sumy{border:1px solid #CCC;padding:9px 11px}
+  .ek-s-duza b{font-size:14px;color:#0E0E0E}
+  .ek-stopka-druk{display:block;font-size:9px;margin-top:12px;color:#444}
+  .ek-podpisy{display:flex;gap:40px;margin-top:34px;font-size:9px;color:#444}
+  .ek-podpisy div{flex:1}
+  .ek-podpisy span{display:block;border-top:1px solid #0E0E0E;margin-bottom:4px}
+  tr.ek-pusta{display:none}
+}
+</style>
+
+<script>
+(function(){
+  var POZ=[
+    {n:'Oględziny, pomiar wilgotności, protokół', j:'ryczałt', s:250, il:function(d){return 1}},
+    {n:'Demontaż uszkodzonej podłogi',            j:'m²',      s:35,  il:function(d){return d.m2zal}},
+    {n:'Osuszanie, najem osuszacza',              j:'doba',    s:90,  il:function(d){return d.u_plesn?7:4}},
+    {n:'Wywóz i utylizacja',                      j:'ryczałt', s:200, il:function(d){return d.m2zal>0?1:0}},
+    {n:'Stabilizacja i naprawy',                  j:'m²',      s:65,  il:function(d){return d.u_odsp?d.m2zal:0}},
+    {n:'Uzupełnienie klepki z odzysku',           j:'m²',      s:120, il:function(d){return d.u_spec?d.m2zal:0}},
+    {n:'Cyklinowanie bezpyłowe',                  j:'m²',      s:130, il:function(d){return d.m2}},
+    {n:'Lakierowanie lub olejowanie',             j:'m²',      s:0,   il:function(d){return d.m2}},
+    {n:'Koloryzacja',                             j:'m²',      s:55,  il:function(d){return 0}},
+    {n:'Listwy przypodłogowe',                    j:'mb',      s:52,  il:function(d){return d.u_listwy?Math.round(Math.sqrt(d.m2||0)*4):0}},
+    {n:'Schody: stopień z podstopnicą',           j:'komplet', s:250, il:function(d){return d.u_schody?1:0}},
+    {n:'Zabezpieczenie pomieszczeń i mebli',      j:'ryczałt', s:150, il:function(d){return d.m2>0?1:0}},
+    {n:'Dojazd poza Warszawę',                    j:'km',      s:2,   il:function(d){return 0}}
+  ];
+  var KLUCZ='smartparkiet_ekspertyza_v1';
+  var tb=document.getElementById('ek-poz');
+  if(!tb)return;
+  var reczne=[], nadpisane={};
+
+  function zl(x){return (Math.round(x*100)/100).toFixed(2).replace('.',',')+' zł';}
+  function lp(v){v=parseFloat(String(v).replace(',','.'));return isFinite(v)?v:0;}
+
+  function dane(){
+    var d={};
+    document.querySelectorAll('[data-p]').forEach(function(e){
+      d[e.getAttribute('data-p')] = e.type==='checkbox' ? e.checked : e.value;
+    });
+    d.m2=lp(d.m2); d.m2zal=lp(d.m2zal); d.rok=lp(d.rok); d.wilg=lp(d.wilg);
+    if(d.m2zal>d.m2 && d.m2>0) d.m2zal=d.m2;
+    return d;
+  }
+
+  function rysuj(){
+    var d=dane(), html='';
+    POZ.forEach(function(p,i){
+      var il = (i in nadpisane) ? nadpisane[i] : p.il(d);
+      il = Math.round(lp(il)*100)/100;
+      var st = p._s!==undefined ? p._s : p.s;
+      html+='<tr'+(il<=0?' class="ek-pusta"':'')+'>'
+        +'<td>'+p.n+'</td>'
+        +'<td><input type="text" data-knr="'+i+'" placeholder="&mdash;"></td>'
+        +'<td class="ek-c-ile"><input type="number" step="0.1" min="0" data-il="'+i+'" value="'+il+'"></td>'
+        +'<td class="ek-c-j">'+p.j+'</td>'
+        +'<td class="ek-c-st"><input type="number" step="1" min="0" data-st="'+i+'" value="'+st+'"></td>'
+        +'<td class="ek-c-w">'+zl(il*st)+'</td></tr>';
+    });
+    reczne.forEach(function(r,k){
+      html+='<tr><td><input type="text" data-rn="'+k+'" value="'+(r.n||'').replace(/"/g,'&quot;')+'" placeholder="nazwa pozycji"></td>'
+        +'<td><input type="text" data-rk="'+k+'" value="'+(r.k||'')+'" placeholder="&mdash;"></td>'
+        +'<td class="ek-c-ile"><input type="number" step="0.1" min="0" data-ri="'+k+'" value="'+(r.il||0)+'"></td>'
+        +'<td class="ek-c-j"><input type="text" data-rj="'+k+'" value="'+(r.j||'szt.')+'"></td>'
+        +'<td class="ek-c-st"><input type="number" step="1" min="0" data-rs="'+k+'" value="'+(r.s||0)+'"></td>'
+        +'<td class="ek-c-w">'+zl(lp(r.il)*lp(r.s))+' <button class="ek-usun ek-noprint" type="button" data-rx="'+k+'" aria-label="Usuń">&times;</button></td></tr>';
+    });
+    tb.innerHTML=html;
+    sumuj(); pakiety(d); zapisz();
+  }
+
+  function pozycje(){
+    var d=dane(), out=[];
+    POZ.forEach(function(p,i){
+      var il=(i in nadpisane)?lp(nadpisane[i]):lp(p.il(d));
+      var st=p._s!==undefined?p._s:p.s;
+      var knr=tb.querySelector('[data-knr="'+i+'"]');
+      if(il>0) out.push({n:p.n,k:knr?knr.value:'',il:il,j:p.j,s:st,w:il*st});
+    });
+    reczne.forEach(function(r){ if(lp(r.il)>0&&r.n) out.push({n:r.n,k:r.k||'',il:lp(r.il),j:r.j||'szt.',s:lp(r.s),w:lp(r.il)*lp(r.s)}); });
+    return out;
+  }
+
+  function sumuj(){
+    var netto=0; pozycje().forEach(function(p){netto+=p.w;});
+    var vat=lp(document.getElementById('ek-vat').value);
+    document.getElementById('ek-netto').textContent=zl(netto);
+    document.getElementById('ek-vat-et').textContent=vat+' %';
+    document.getElementById('ek-vat-kw').textContent=zl(netto*vat/100);
+    document.getElementById('ek-brutto').textContent=zl(netto*(1+vat/100));
+  }
+
+  var EXOT=['merbau','teak','iroko','doussie','jatoba'];
+  function pakiety(d){
+    var w=[], op='';
+    if(d.m2zal>0||d.u_prze||d.u_spec||d.u_plesn){w.push(['SMART EMERGENCY™',1]);op='Szkoda wodna, więc prowadzimy to jako zgłoszenie awaryjne: oględziny do 24 h i kosztorys w formie dla ubezpieczyciela.';}
+    if((d.rok>0&&d.rok<1945)||d.podloze==='na legarach'||d.podloze==='na gwoździe'){w.push(['SMART KAMIENICA RESTORE™',0]);op+=' Podłoga w starym układzie, ubytki uzupełniamy klepką z odzysku.';}
+    if(EXOT.indexOf(d.gatunek)>-1){w.push(['SMART EXOTIC FLOOR™',0]);op+=' Drewno egzotyczne wymaga wykończenia dobranego do gatunku.';}
+    if(d.obiekt==='biuro'||d.obiekt==='lokal usługowy'||d.obiekt==='obiekt publiczny'){w.push(['SMART PUBLIC RESTORE™',0]);op+=' Obiekt czynny, pracujemy etapami poza godzinami działalności.';}
+    if(d.termin!=='zwykły'&&d.m2>0&&d.m2<=40){w.push(['SMART EXPRESS 48H™',0]);op+=' Metraż i termin mieszczą się w trybie 48-godzinnym.';}
+    if(!w.length&&d.m2>0){w.push(['SMART PREMIUM FLOOR™',1]);op='Zakres bez znamion szkody wodnej, więc standardowa renowacja pełna.';}
+    w.push(['SMART ZERO DUST™',0]);
+    if(w.length===1){op='Proszę uzupełnić metraż i zakres szkody, program dobierze się sam.';}
+    document.getElementById('ek-pakiety').innerHTML=w.map(function(x){
+      return '<span class="ek-chip'+(x[1]?' ek-glow':'')+'">'+x[0]+'</span>';}).join('');
+    document.getElementById('ek-pakiet-op').textContent=op.trim()+(w.length>1?' Bezpyłowo pracujemy zawsze.':'');
+  }
+
+  function zapisz(){
+    try{
+      var s={pola:{},knr:{},nad:nadpisane,rec:reczne,vat:document.getElementById('ek-vat').value};
+      document.querySelectorAll('[data-p]').forEach(function(e){
+        s.pola[e.getAttribute('data-p')]= e.type==='checkbox'?e.checked:e.value;});
+      tb.querySelectorAll('[data-knr]').forEach(function(e){ if(e.value) s.knr[e.getAttribute('data-knr')]=e.value;});
+      POZ.forEach(function(p,i){ if(p._s!==undefined) s['st'+i]=p._s;});
+      localStorage.setItem(KLUCZ,JSON.stringify(s));
+    }catch(e){}
+  }
+  function wczytaj(){
+    try{
+      var s=JSON.parse(localStorage.getItem(KLUCZ)||'null'); if(!s)return;
+      document.querySelectorAll('[data-p]').forEach(function(e){
+        var k=e.getAttribute('data-p'); if(!(k in s.pola))return;
+        if(e.type==='checkbox') e.checked=!!s.pola[k]; else e.value=s.pola[k];});
+      nadpisane=s.nad||{}; reczne=s.rec||[];
+      if(s.vat) document.getElementById('ek-vat').value=s.vat;
+      POZ.forEach(function(p,i){ if(('st'+i) in s) p._s=s['st'+i];});
+      rysuj();
+      Object.keys(s.knr||{}).forEach(function(i){
+        var e=tb.querySelector('[data-knr="'+i+'"]'); if(e)e.value=s.knr[i];});
+    }catch(e){}
+  }
+
+  document.addEventListener('input',function(e){
+    var t=e.target;
+    if(t.hasAttribute&&t.hasAttribute('data-p')){ rysuj(); return; }
+    if(t.hasAttribute&&t.hasAttribute('data-il')){ nadpisane[t.getAttribute('data-il')]=t.value; odswiezWiersz(); return; }
+    if(t.hasAttribute&&t.hasAttribute('data-st')){ POZ[t.getAttribute('data-st')]._s=lp(t.value); odswiezWiersz(); return; }
+    if(t.hasAttribute&&t.hasAttribute('data-knr')){ zapisz(); return; }
+    var m;
+    if((m=t.getAttribute&&t.getAttribute('data-rn'))!==null&&m!==undefined){reczne[m].n=t.value;odswiezWiersz();return;}
+    if((m=t.getAttribute&&t.getAttribute('data-rk'))!==null&&m!==undefined){reczne[m].k=t.value;zapisz();return;}
+    if((m=t.getAttribute&&t.getAttribute('data-ri'))!==null&&m!==undefined){reczne[m].il=t.value;odswiezWiersz();return;}
+    if((m=t.getAttribute&&t.getAttribute('data-rj'))!==null&&m!==undefined){reczne[m].j=t.value;zapisz();return;}
+    if((m=t.getAttribute&&t.getAttribute('data-rs'))!==null&&m!==undefined){reczne[m].s=t.value;odswiezWiersz();return;}
+  });
+
+  // przeliczenie bez przerysowania tabeli, zeby nie uciekal kursor
+  function odswiezWiersz(){
+    var d=dane();
+    POZ.forEach(function(p,i){
+      var ie=tb.querySelector('[data-il="'+i+'"]'), se=tb.querySelector('[data-st="'+i+'"]');
+      if(!ie||!se)return;
+      var w=lp(ie.value)*lp(se.value);
+      ie.closest('tr').querySelector('.ek-c-w').childNodes[0].nodeValue=zl(w);
+    });
+    reczne.forEach(function(r,k){
+      var ie=tb.querySelector('[data-ri="'+k+'"]'), se=tb.querySelector('[data-rs="'+k+'"]');
+      if(!ie||!se)return;
+      ie.closest('tr').querySelector('.ek-c-w').childNodes[0].nodeValue=zl(lp(ie.value)*lp(se.value))+' ';
+    });
+    sumuj(); zapisz();
+  }
+
+  document.getElementById('ek-vat').addEventListener('change',function(){sumuj();zapisz();});
+  document.getElementById('ek-dodaj').addEventListener('click',function(){reczne.push({n:'',k:'',il:0,j:'szt.',s:0});rysuj();});
+  tb.addEventListener('click',function(e){
+    var k=e.target.getAttribute&&e.target.getAttribute('data-rx');
+    if(k!==null&&k!==undefined){reczne.splice(+k,1);rysuj();}
+  });
+
+  function komunikat(t){var i=document.getElementById('ek-info');i.textContent=t;setTimeout(function(){i.textContent='';},2600);}
+
+  function tekst(){
+    var d=dane(), p=pozycje(), netto=0; p.forEach(function(x){netto+=x.w;});
+    var vat=lp(document.getElementById('ek-vat').value);
+    var L=['SMARTPARKIET - kosztorys naprawy podłogi po zalaniu',''];
+    L.push('Adres: '+(d.adres||'-'));
+    L.push('Numer szkody: '+(d.szkoda||'-')+'   Ubezpieczyciel: '+(d.ubezp||'-'));
+    L.push('Data oględzin: '+(d.data||'-')+'   Data zdarzenia: '+(d.datazal||'-'));
+    L.push('Podłoga: '+d.rodzaj+', '+d.gatunek+', '+d.podloze);
+    L.push('Powierzchnia: '+d.m2+' m², zalana: '+d.m2zal+' m², wilgotność: '+(d.wilg||'-')+' %');
+    if(d.opis) L.push('Uwagi: '+d.opis);
+    L.push('');
+    p.forEach(function(x){L.push(x.n+(x.k?' ['+x.k+']':'')+' - '+x.il+' '+x.j+' x '+x.s+' zł = '+zl(x.w));});
+    L.push('');
+    L.push('Razem netto: '+zl(netto));
+    L.push('VAT '+vat+' %: '+zl(netto*vat/100));
+    L.push('Razem brutto: '+zl(netto*(1+vat/100)));
+    return L.join('\n');
+  }
+
+  document.getElementById('ek-kopiuj').addEventListener('click',function(){
+    var t=tekst();
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(function(){komunikat('Skopiowane do schowka');},function(){komunikat('Nie udało się skopiować');});
+    }else{
+      var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();
+      try{document.execCommand('copy');komunikat('Skopiowane do schowka');}catch(e){komunikat('Nie udało się skopiować');}
+      document.body.removeChild(a);
+    }
+  });
+
+  document.getElementById('ek-csv').addEventListener('click',function(){
+    var d=dane(), p=pozycje(), netto=0; p.forEach(function(x){netto+=x.w;});
+    var vat=lp(document.getElementById('ek-vat').value);
+    function c(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';}
+    var w=[];
+    w.push(['SMARTPARKIET','kosztorys po zalaniu'].map(c).join(';'));
+    w.push(['Adres',d.adres].map(c).join(';'));
+    w.push(['Numer szkody',d.szkoda].map(c).join(';'));
+    w.push(['Ubezpieczyciel',d.ubezp].map(c).join(';'));
+    w.push(['Data oględzin',d.data].map(c).join(';'));
+    w.push(['Data zdarzenia',d.datazal].map(c).join(';'));
+    w.push(['Podłoga',d.rodzaj+', '+d.gatunek+', '+d.podloze].map(c).join(';'));
+    w.push(['Powierzchnia m2',d.m2].map(c).join(';'));
+    w.push(['Powierzchnia zalana m2',d.m2zal].map(c).join(';'));
+    w.push(['Wilgotnosc %',d.wilg].map(c).join(';'));
+    w.push(['Uwagi',d.opis].map(c).join(';'));
+    w.push('');
+    w.push(['Lp.','Pozycja','Podstawa','Ilosc','j.m.','Stawka netto','Wartosc netto'].map(c).join(';'));
+    p.forEach(function(x,i){w.push([i+1,x.n,x.k,x.il,x.j,x.s,x.w].map(c).join(';'));});
+    w.push('');
+    w.push(['','','','','','Razem netto',netto].map(c).join(';'));
+    w.push(['','','','','','VAT '+vat+' %',netto*vat/100].map(c).join(';'));
+    w.push(['','','','','','Razem brutto',netto*(1+vat/100)].map(c).join(';'));
+    var blob=new Blob(['﻿'+w.join('\r\n')],{type:'text/csv;charset=utf-8;'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='kosztorys_'+((d.szkoda||d.adres||'zalanie').replace(/[^\w\-]+/g,'_').slice(0,40))+'.csv';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    komunikat('Plik pobrany, otwiera się w Excelu');
+  });
+
+  document.getElementById('ek-druk').addEventListener('click',function(){window.print();});
+  document.getElementById('ek-czysc').addEventListener('click',function(){
+    if(!confirm('Wyczyścić cały formularz?'))return;
+    try{localStorage.removeItem(KLUCZ);}catch(e){}
+    document.querySelectorAll('[data-p]').forEach(function(e){
+      if(e.type==='checkbox')e.checked=false; else if(e.tagName==='SELECT')e.selectedIndex=0; else e.value='';});
+    nadpisane={};reczne=[];POZ.forEach(function(p){delete p._s;});
+    rysuj();komunikat('Wyczyszczone');
+  });
+
+  rysuj(); wczytaj();
+})();
+</script>
 
 <footer class="site">
   <div class="wrap">
@@ -1353,10 +1743,6 @@ footer.site .fine i{font-style:normal;color:#FF7A3C;margin:0 .45em;font-weight:4
 .rv-head .g .gtop{display:flex;align-items:center;gap:.3em;font-size:2.8rem;line-height:1}
 .rv-head .g .gtop b{font-size:1em;font-weight:500;letter-spacing:-.02em;margin:0;line-height:1}
 .rv-head .g .glogo{position:static;width:.72em;height:.72em;display:block;flex:0 0 auto}
-
-/* link do wizytowki przy kazdym oddziale */
-.branch .opinie-link{display:inline-block;margin-top:8px;font-size:.82rem;color:var(--pom-tekst,#C2410C);text-decoration:underline;text-underline-offset:3px}
-.branch .opinie-link:hover{color:var(--pom,#FF7A3C)}
 
 /* TELEFON - blok WIECEJ przestaje odstawac: naglowek i obie kolumny
    jako jedna wysrodkowana calosc, mniejszy odstep od gornego rzedu,
