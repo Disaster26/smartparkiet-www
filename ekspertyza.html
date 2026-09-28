@@ -1477,12 +1477,13 @@ figure{margin:0}
     r([T('Numer szkody',6),T(d.szkoda),null,null,null,null,T('Ubezpieczyciel',6),T(d.ubezp)]);
     r([T('Zgłaszający',6),T(d.kto),null,null,null,null,T('Telefon',6),T(d.tel)]);
     r([T('Data oględzin',6),T(d.data),null,null,null,null,T('Data zdarzenia',6),T(d.datazal)]);
-    r([T('Kondygnacja',6),T(d.pietro),null,null,null,null,T('Rok budowy',6),T(d.rok||'')]);
+    r([T('Kondygnacja',6),T(d.pietro),null,null,null,null,T('Rok budowy',6),(d.rok?{v:d.rok,t:'n',s:0}:T(''))]);
     pusty();
     r([T('PODŁOGA I SZKODA',10)]);
     r([T('Rodzaj',6),T(d.rodzaj),null,null,null,null,T('Gatunek',6),T(d.gatunek)]);
     r([T('Ułożenie',6),T(d.podloze),null,null,null,null,T('Źródło',6),T(d.zrodlo)]);
     r([T('Powierzchnia',6),N(d.m2,7),T('m²',6),null,null,null,T('Zalana',6),N(d.m2zal,7)]);
+    var wPow=W.length;
     r([T('Wilgotność',6),N(d.wilg,7),T('%  (norma 7-11)',6)]);
     var usz=[];
     [['u_spec','spęcznienie'],['u_odsp','odspojenie'],['u_szcz','szczeliny'],['u_prze','przebarwienia'],
@@ -1496,7 +1497,7 @@ figure{margin:0}
     r([T('Lp.',3),T('Pozycja',3),T('Podstawa',3),T('Ilość',3),T('j.m.',3),T('Stawka netto',3),T('Wartość netto',3)]);
     var w1=W.length+1;
     p.forEach(function(x,i){
-      r([T(i+1,12),T(x.n,12),T(x.k,12),N(x.il,7),T(x.j,12),N(x.s,4),F(kol(3)+(W.length+1)+'*'+kol(5)+(W.length+1), x.w, 4)]);
+      r([{v:i+1,t:'n',s:12},T(x.n,12),T(x.k,12),N(x.il,7),T(x.j,12),N(x.s,4),F(kol(3)+(W.length+1)+'*'+kol(5)+(W.length+1), x.w, 4)]);
     });
     var w2=W.length;
     pusty();
@@ -1521,8 +1522,8 @@ figure{margin:0}
     var dni=Math.max(2, Math.ceil((d.m2||0)/18) + (d.m2zal>0?4:0) + (d.u_spec?2:0));
     var S=[
       ['STATYSTYKI',null,13],
-      ['Koszt za m² powierzchni', {f:'G'+rN+'/'+(d.m2||1), v:netto/(d.m2||1)}, 14],
-      ['Udział powierzchni zalanej', {v:(d.m2?d.m2zal/d.m2:0), t:'n', s:8}, null],
+      ['Koszt za m² powierzchni', {f:'IF(B'+wPow+'=0,0,G'+rN+'/B'+wPow+')', v:netto/(d.m2||1), fs:14}, 14],
+      ['Udział powierzchni zalanej', {f:'IF(B'+wPow+'=0,0,H'+wPow+'/B'+wPow+')', v:(d.m2?d.m2zal/d.m2:0), fs:8}, null],
       ['Liczba pozycji', {v:p.length, t:'n', s:15}, null],
       ['Największa pozycja', {v:max.n, s:15}, null],
       ['Wartość największej', {v:max.w, t:'n', s:14}, null],
@@ -1546,7 +1547,7 @@ figure{margin:0}
       var c=W[ri].c;
       while(c.length<8)c.push(null);
       c[8]={v:x[0], s:x[2]!=null?x[2]:15};
-      c[9]=x[1]?(x[1].f?{f:x[1].f,v:x[1].v,s:14}:{v:x[1].v,t:x[1].t,s:x[1].s==null?15:x[1].s}):{v:'',s:15};
+      c[9]=x[1]?(x[1].f?{f:x[1].f,v:x[1].v,s:x[1].fs||14}:{v:x[1].v,t:x[1].t,s:x[1].s==null?15:x[1].s}):{v:'',s:15};
     });
 
     var szer=[6,40,14,9,8,13,15,3,28,16];
