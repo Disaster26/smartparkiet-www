@@ -1027,6 +1027,39 @@ figure{margin:0}
   </div>
 </section>
 
+<style>
+.prg{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:38px}
+@media(max-width:860px){.prg{grid-template-columns:1fr}}
+.prg-k{border:1px solid var(--line);border-radius:6px;padding:26px 26px 28px;background:var(--white);
+  display:flex;flex-direction:column}
+.prg-k--wide{grid-column:1/-1;background:var(--bg2)}
+.prg-h{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}
+.prg-h h3{font-size:1.12rem;font-weight:800;letter-spacing:.01em;line-height:1.15}
+.prg-n{font-family:Inter,sans-serif;font-size:.78rem;font-weight:800;color:var(--amber);
+  letter-spacing:.06em;flex:0 0 auto;padding-top:3px}
+.prg-k>p{color:var(--ink2);font-size:.98rem}
+.prg-p{list-style:none;margin:18px 0 0;padding:16px 0 0;border-top:1px solid var(--line)}
+.prg-p li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:7px 0;
+  font-size:.9rem;border-bottom:1px solid var(--line)}
+.prg-p li:last-child{border-bottom:0;padding-bottom:0}
+.prg-p b{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);
+  font-weight:700;flex:0 0 auto}
+.prg-p span{text-align:right;color:var(--ink)}
+@media(max-width:420px){
+  .prg-p li{flex-direction:column;gap:2px}
+  .prg-p span{text-align:left}
+}
+.prg-k--wide .prg-p{columns:2;column-gap:40px}
+.prg-k--wide .prg-p li{break-inside:avoid}
+@media(max-width:700px){.prg-k--wide .prg-p{columns:1}}
+.prg-cta{display:inline-block;margin-top:20px;font-weight:700;font-size:.92rem;color:var(--amber-ink);
+  text-decoration:none;border-bottom:1.5px solid currentColor;align-self:flex-start}
+.prg-cta:hover{color:var(--ink)}
+.prg-stopka{display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap;
+  margin-top:38px;padding:30px 32px;border:1px solid var(--line);border-radius:6px;background:var(--bg2)}
+.prg-btny{display:flex;gap:10px;flex-wrap:wrap}
+</style>
+
 <footer class="site">
   <div class="wrap">
     <div class="cols">
