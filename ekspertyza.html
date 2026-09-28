@@ -934,7 +934,7 @@ figure{margin:0}
 
     <div class="ek-akcje ek-noprint">
       <button class="btn btn-amber" type="button" id="ek-druk">Drukuj / PDF</button>
-      <button class="btn btn-ghost" type="button" id="ek-csv">Pobierz do Excela</button>
+      <button class="btn btn-ghost" type="button" id="ek-csv">Pobierz .xlsx</button>
       <button class="btn btn-ghost" type="button" id="ek-kopiuj">Kopiuj zestawienie</button>
       <button class="btn btn-ghost" type="button" id="ek-czysc">Wyczyść</button>
       <span class="ek-info" id="ek-info"></span>
@@ -1324,35 +1324,239 @@ figure{margin:0}
     }
   });
 
+  /* ---------- zapis .xlsx bez zadnej biblioteki ----------
+     xlsx to zwykly ZIP z plikami XML. Skladamy go recznie, metoda "store"
+     (bez kompresji), bo pliki sa male, a dzieki temu nie ma zaleznosci. */
+  var CRC=(function(){var t=[],c,n,k;for(n=0;n<256;n++){c=n;
+    for(k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+  function crc32(u8){var c=0xFFFFFFFF;for(var i=0;i<u8.length;i++)c=CRC[(c^u8[i])&0xFF]^(c>>>8);
+    return (c^0xFFFFFFFF)>>>0;}
+  function bajty(s){return new TextEncoder().encode(s);}
+  function zip(pliki){
+    var lok=[], cen=[], off=0;
+    var d=new Date(), czas=((d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()/2))&0xFFFF;
+    var data=(((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate())&0xFFFF;
+    function u8(n){return [n&255];}
+    function u16(n){return [n&255,(n>>>8)&255];}
+    function u32(n){return [n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255];}
+    pliki.forEach(function(p){
+      var nm=bajty(p.n), tr=bajty(p.t), cr=crc32(tr);
+      var h=[].concat(u32(0x04034b50),u16(20),u16(0x0800),u16(0),u16(czas),u16(data),
+              u32(cr),u32(tr.length),u32(tr.length),u16(nm.length),u16(0));
+      lok.push(new Uint8Array(h),nm,tr);
+      cen.push(new Uint8Array([].concat(u32(0x02014b50),u16(20),u16(20),u16(0x0800),u16(0),
+              u16(czas),u16(data),u32(cr),u32(tr.length),u32(tr.length),
+              u16(nm.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(off))), nm);
+      off += h.length+nm.length+tr.length;
+    });
+    var cs=0; cen.forEach(function(x){cs+=x.length;});
+    var eocd=new Uint8Array([].concat(u32(0x06054b50),u16(0),u16(0),
+              u16(pliki.length),u16(pliki.length),u32(cs),u32(off),u16(0)));
+    return new Blob(lok.concat(cen,[eocd]),{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  }
+  function xe(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function kol(i){var s='';i++;while(i>0){var m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=(i-m-1)/26;}return s;}
+
+  /* wiersze: [{c:[{v,t,s,f}]}] ; t: 's' tekst, 'n' liczba */
+  function arkusz(wiersze, szer, scal){
+    var x='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      +'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+      +'<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>'
+      +'<cols>'+szer.map(function(w,i){return '<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>';}).join('')+'</cols>'
+      +'<sheetData>';
+    wiersze.forEach(function(r,ri){
+      if(!r||!r.c||!r.c.length){x+='<row r="'+(ri+1)+'"/>';return;}
+      x+='<row r="'+(ri+1)+'"'+(r.h?' ht="'+r.h+'" customHeight="1"':'')+'>';
+      r.c.forEach(function(c,ci){
+        if(c==null)return;
+        var ref=kol(ci)+(ri+1), st=' s="'+(c.s||0)+'"';
+        if(c.f!==undefined){x+='<c r="'+ref+'"'+st+'><f>'+xe(c.f)+'</f><v>'+(c.v||0)+'</v></c>';}
+        else if(c.t==='n'){x+='<c r="'+ref+'"'+st+'><v>'+(isFinite(c.v)?c.v:0)+'</v></c>';}
+        else if(c.v===''||c.v==null){x+='<c r="'+ref+'"'+st+'/>';}
+        else{x+='<c r="'+ref+'" t="inlineStr"'+st+'><is><t xml:space="preserve">'+xe(c.v)+'</t></is></c>';}
+      });
+      x+='</row>';
+    });
+    x+='</sheetData>';
+    if(scal&&scal.length)x+='<mergeCells count="'+scal.length+'">'+scal.map(function(m){return '<mergeCell ref="'+m+'"/>';}).join('')+'</mergeCells>';
+    x+='<pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/>'
+      +'<pageSetup paperSize="9" orientation="portrait" fitToWidth="1" fitToHeight="0"/></worksheet>';
+    return x;
+  }
+
+  var STYLE='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+   +'<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+   +'<numFmts count="4">'
+   +'<numFmt numFmtId="164" formatCode="#,##0.00&quot; zł&quot;"/>'
+   +'<numFmt numFmtId="165" formatCode="#,##0.00"/>'
+   +'<numFmt numFmtId="166" formatCode="0.0%"/>'
+   +'<numFmt numFmtId="167" formatCode="#,##0.0"/></numFmts>'
+   +'<fonts count="7">'
+   +'<font><sz val="10"/><name val="Calibri"/></font>'
+   +'<font><b/><sz val="10"/><name val="Calibri"/></font>'
+   +'<font><b/><sz val="18"/><name val="Calibri"/></font>'
+   +'<font><b/><sz val="9"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>'
+   +'<font><sz val="9"/><color rgb="FF707176"/><name val="Calibri"/></font>'
+   +'<font><b/><sz val="11"/><color rgb="FFB83C06"/><name val="Calibri"/></font>'
+   +'<font><b/><sz val="14"/><color rgb="FFB83C06"/><name val="Calibri"/></font></fonts>'
+   +'<fills count="5"><fill><patternFill patternType="none"/></fill>'
+   +'<fill><patternFill patternType="gray125"/></fill>'
+   +'<fill><patternFill patternType="solid"><fgColor rgb="FF1B2A3A"/><bgColor indexed="64"/></patternFill></fill>'
+   +'<fill><patternFill patternType="solid"><fgColor rgb="FFF6F4F1"/><bgColor indexed="64"/></patternFill></fill>'
+   +'<fill><patternFill patternType="solid"><fgColor rgb="FFFDE7D8"/><bgColor indexed="64"/></patternFill></fill></fills>'
+   +'<borders count="3"><border><left/><right/><top/><bottom/><diagonal/></border>'
+   +'<border><left/><right/><top/><bottom style="thin"><color rgb="FFE7E3DD"/></bottom><diagonal/></border>'
+   +'<border><left style="thin"><color rgb="FFCCCCCC"/></left><right style="thin"><color rgb="FFCCCCCC"/></right>'
+   +'<top style="thin"><color rgb="FFCCCCCC"/></top><bottom style="thin"><color rgb="FFCCCCCC"/></bottom><diagonal/></border></borders>'
+   +'<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
+   +'<cellXfs count="16">'
+   +'<xf xfId="0" numFmtId="0" fontId="0" fillId="0" borderId="0"/>'                                        /*0 zwykly*/
+   +'<xf xfId="0" numFmtId="0" fontId="1" fillId="0" borderId="0" applyFont="1"/>'                          /*1 pogrubiony*/
+   +'<xf xfId="0" numFmtId="0" fontId="2" fillId="0" borderId="0" applyFont="1"/>'                          /*2 tytul*/
+   +'<xf xfId="0" numFmtId="0" fontId="3" fillId="2" borderId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center"/></xf>' /*3 naglowek tabeli*/
+   +'<xf xfId="0" numFmtId="164" fontId="0" fillId="0" borderId="1" applyNumberFormat="1" applyBorder="1"/>' /*4 kwota*/
+   +'<xf xfId="0" numFmtId="164" fontId="1" fillId="0" borderId="0" applyNumberFormat="1" applyFont="1"/>'   /*5 kwota pogrubiona*/
+   +'<xf xfId="0" numFmtId="0" fontId="4" fillId="0" borderId="0" applyFont="1"/>'                           /*6 etykieta*/
+   +'<xf xfId="0" numFmtId="167" fontId="0" fillId="0" borderId="1" applyNumberFormat="1" applyBorder="1"/>'  /*7 liczba 1 miejsce*/
+   +'<xf xfId="0" numFmtId="166" fontId="0" fillId="0" borderId="0" applyNumberFormat="1"/>'                 /*8 procent*/
+   +'<xf xfId="0" numFmtId="164" fontId="6" fillId="0" borderId="0" applyNumberFormat="1" applyFont="1"/>'   /*9 kwota duza*/
+   +'<xf xfId="0" numFmtId="0" fontId="5" fillId="0" borderId="0" applyFont="1"/>'                           /*10 naglowek sekcji*/
+   +'<xf xfId="0" numFmtId="0" fontId="0" fillId="0" borderId="0" applyAlignment="1"><alignment wrapText="1" vertical="top"/></xf>' /*11 zawijanie*/
+   +'<xf xfId="0" numFmtId="0" fontId="0" fillId="0" borderId="1" applyBorder="1"/>'                         /*12 komorka tabeli*/
+   +'<xf xfId="0" numFmtId="0" fontId="1" fillId="3" borderId="2" applyFont="1" applyFill="1" applyBorder="1"/>' /*13 panel naglowek*/
+   +'<xf xfId="0" numFmtId="164" fontId="0" fillId="3" borderId="2" applyNumberFormat="1" applyFill="1" applyBorder="1"/>' /*14 panel kwota*/
+   +'<xf xfId="0" numFmtId="0" fontId="0" fillId="3" borderId="2" applyFill="1" applyBorder="1"/>'           /*15 panel tekst*/
+   +'</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+
+  function xlsx(nazwaArk, wiersze, szer, scal){
+    return zip([
+      {n:'[Content_Types].xml', t:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        +'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+        +'<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+        +'<Default Extension="xml" ContentType="application/xml"/>'
+        +'<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+        +'<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
+        +'<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'},
+      {n:'_rels/.rels', t:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        +'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        +'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+      {n:'xl/workbook.xml', t:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        +'<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+        +'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+        +'<sheets><sheet name="'+xe(nazwaArk)+'" sheetId="1" r:id="rId1"/></sheets></workbook>'},
+      {n:'xl/_rels/workbook.xml.rels', t:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        +'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        +'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>'
+        +'<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'},
+      {n:'xl/styles.xml', t:STYLE},
+      {n:'xl/worksheets/sheet1.xml', t:arkusz(wiersze,szer,scal)}
+    ]);
+  }
+
+  var KAT=['Dokumentacja','Osuszanie i demontaż','Osuszanie i demontaż','Osuszanie i demontaż',
+           'Naprawa konstrukcji','Naprawa konstrukcji','Renowacja powierzchni','Renowacja powierzchni',
+           'Renowacja powierzchni','Wykończenie','Wykończenie','Pozostałe','Pozostałe'];
+
   document.getElementById('ek-csv').addEventListener('click',function(){
-    var d=dane(), p=pozycje(), netto=0; p.forEach(function(x){netto+=x.w;});
+    var d=dane(), p=pozycje();
+    if(!p.length){komunikat('Najpierw proszę uzupełnić metraż');return;}
     var vat=lp(document.getElementById('ek-vat').value);
-    function c(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';}
-    var w=[];
-    w.push(['SMARTPARKIET','kosztorys po zalaniu'].map(c).join(';'));
-    w.push(['Adres',d.adres].map(c).join(';'));
-    w.push(['Numer szkody',d.szkoda].map(c).join(';'));
-    w.push(['Ubezpieczyciel',d.ubezp].map(c).join(';'));
-    w.push(['Data oględzin',d.data].map(c).join(';'));
-    w.push(['Data zdarzenia',d.datazal].map(c).join(';'));
-    w.push(['Podłoga',d.rodzaj+', '+d.gatunek+', '+d.podloze].map(c).join(';'));
-    w.push(['Powierzchnia m2',d.m2].map(c).join(';'));
-    w.push(['Powierzchnia zalana m2',d.m2zal].map(c).join(';'));
-    w.push(['Wilgotnosc %',d.wilg].map(c).join(';'));
-    w.push(['Uwagi',d.opis].map(c).join(';'));
-    w.push('');
-    w.push(['Lp.','Pozycja','Podstawa','Ilosc','j.m.','Stawka netto','Wartosc netto'].map(c).join(';'));
-    p.forEach(function(x,i){w.push([i+1,x.n,x.k,x.il,x.j,x.s,x.w].map(c).join(';'));});
-    w.push('');
-    w.push(['','','','','','Razem netto',netto].map(c).join(';'));
-    w.push(['','','','','','VAT '+vat+' %',netto*vat/100].map(c).join(';'));
-    w.push(['','','','','','Razem brutto',netto*(1+vat/100)].map(c).join(';'));
-    var blob=new Blob(['﻿'+w.join('\r\n')],{type:'text/csv;charset=utf-8;'});
+    var T=function(v,s){return {v:v,s:s||0};};
+    var N=function(v,s){return {v:v,t:'n',s:s===undefined?4:s};};
+    var F=function(f,v,s){return {f:f,v:v,s:s===undefined?4:s};};
+    var W=[];
+    function r(c){W.push({c:c});}
+    function pusty(){W.push(null);}
+
+    r([T('SMARTPARKIET',2)]);
+    r([T('Kosztorys naprawy podłogi po zalaniu',1)]);
+    pusty();
+    r([T('DANE ZLECENIA',10)]);
+    r([T('Adres',6),T(d.adres)]);
+    r([T('Numer szkody',6),T(d.szkoda),null,null,null,null,T('Ubezpieczyciel',6),T(d.ubezp)]);
+    r([T('Zgłaszający',6),T(d.kto),null,null,null,null,T('Telefon',6),T(d.tel)]);
+    r([T('Data oględzin',6),T(d.data),null,null,null,null,T('Data zdarzenia',6),T(d.datazal)]);
+    r([T('Kondygnacja',6),T(d.pietro),null,null,null,null,T('Rok budowy',6),T(d.rok||'')]);
+    pusty();
+    r([T('PODŁOGA I SZKODA',10)]);
+    r([T('Rodzaj',6),T(d.rodzaj),null,null,null,null,T('Gatunek',6),T(d.gatunek)]);
+    r([T('Ułożenie',6),T(d.podloze),null,null,null,null,T('Źródło',6),T(d.zrodlo)]);
+    r([T('Powierzchnia',6),N(d.m2,7),T('m²',6),null,null,null,T('Zalana',6),N(d.m2zal,7)]);
+    r([T('Wilgotność',6),N(d.wilg,7),T('%  (norma 7-11)',6)]);
+    var usz=[];
+    [['u_spec','spęcznienie'],['u_odsp','odspojenie'],['u_szcz','szczeliny'],['u_prze','przebarwienia'],
+     ['u_plesn','pleśń'],['u_lakier','lakier'],['u_listwy','listwy'],['u_schody','schody']]
+      .forEach(function(x){if(d[x[0]])usz.push(x[1]);});
+    r([T('Uszkodzenia',6),T(usz.join(', ')||'brak')]);
+    if(d.opis) r([T('Uwagi',6),T(d.opis,11)]);
+    pusty();
+    r([T('KOSZTORYS',10)]);
+    var wN=W.length+1;
+    r([T('Lp.',3),T('Pozycja',3),T('Podstawa',3),T('Ilość',3),T('j.m.',3),T('Stawka netto',3),T('Wartość netto',3)]);
+    var w1=W.length+1;
+    p.forEach(function(x,i){
+      r([T(i+1,12),T(x.n,12),T(x.k,12),N(x.il,7),T(x.j,12),N(x.s,4),F(kol(3)+(W.length+1)+'*'+kol(5)+(W.length+1), x.w, 4)]);
+    });
+    var w2=W.length;
+    pusty();
+    var rN=W.length+1;
+    r([null,null,null,null,null,T('Razem netto',1),F('SUM(G'+w1+':G'+w2+')', 0, 5)]);
+    r([null,null,null,null,null,T('VAT '+vat+' %',1),F('G'+rN+'*'+(vat/100), 0, 5)]);
+    r([null,null,null,null,null,T('Razem brutto',1),F('G'+rN+'+G'+(rN+1), 0, 9)]);
+    var rB=W.length;
+    pusty();pusty();
+    r([T('.....................................',6),null,null,T('.....................................',6)]);
+    r([T('podpis wykonawcy',6),null,null,T('podpis zgłaszającego',6)]);
+
+    // ---- panel statystyk z boku (kolumny I,J) ----
+    var netto=0,max={n:'',w:0},grupy={};
+    p.forEach(function(x,i){netto+=x.w; if(x.w>max.w)max={n:x.n,w:x.w};
+      var g=(i<KAT.length&&POZ[i]&&POZ[i].n===x.n)?KAT[i]:'Pozostałe';
+      grupy[g]=(grupy[g]||0)+x.w;});
+    // przypisz kategorie po nazwie, zeby zgadzalo sie przy pominietych pozycjach
+    grupy={};
+    p.forEach(function(x){var idx=-1;POZ.forEach(function(q,qi){if(q.n===x.n)idx=qi;});
+      var g=idx>=0?KAT[idx]:'Pozostałe'; grupy[g]=(grupy[g]||0)+x.w;});
+    var dni=Math.max(2, Math.ceil((d.m2||0)/18) + (d.m2zal>0?4:0) + (d.u_spec?2:0));
+    var S=[
+      ['STATYSTYKI',null,13],
+      ['Koszt za m² powierzchni', {f:'G'+rN+'/'+(d.m2||1), v:netto/(d.m2||1)}, 14],
+      ['Udział powierzchni zalanej', {v:(d.m2?d.m2zal/d.m2:0), t:'n', s:8}, null],
+      ['Liczba pozycji', {v:p.length, t:'n', s:15}, null],
+      ['Największa pozycja', {v:max.n, s:15}, null],
+      ['Wartość największej', {v:max.w, t:'n', s:14}, null],
+      ['Udział największej', {v:(netto?max.w/netto:0), t:'n', s:8}, null],
+      ['',null,null],
+      ['STRUKTURA KOSZTÓW',null,13]
+    ];
+    ['Dokumentacja','Osuszanie i demontaż','Naprawa konstrukcji','Renowacja powierzchni','Wykończenie','Pozostałe']
+      .forEach(function(g){ if(grupy[g]) S.push([g, {v:grupy[g], t:'n', s:14}, null]); });
+    S.push(['',null,null]);
+    S.push(['WSKAŹNIKI',null,13]);
+    S.push(['Wilgotność zmierzona', {v:(d.wilg||0), t:'n', s:15}, null]);
+    S.push(['Przekroczenie normy 11 %', {v:Math.max(0,(d.wilg||0)-11), t:'n', s:15}, null]);
+    S.push(['Szacowany czas robót (dni)', {v:dni, t:'n', s:15}, null]);
+    S.push(['Dobrany program', {v:(document.querySelector('.ek-chip.ek-glow')||{textContent:'-'}).textContent, s:15}, null]);
+    S.push(['Standard wykonania', {v:'SMART ZERO DUST™', s:15}, null]);
+    S.forEach(function(x,i){
+      var ri=3+i;
+      while(W.length<=ri)W.push(null);
+      if(!W[ri])W[ri]={c:[]};
+      var c=W[ri].c;
+      while(c.length<8)c.push(null);
+      c[8]={v:x[0], s:x[2]!=null?x[2]:15};
+      c[9]=x[1]?(x[1].f?{f:x[1].f,v:x[1].v,s:14}:{v:x[1].v,t:x[1].t,s:x[1].s==null?15:x[1].s}):{v:'',s:15};
+    });
+
+    var szer=[6,40,14,9,8,13,15,3,28,16];
+    var blob=xlsx('Kosztorys', W, szer, ['A1:G1','A2:G2']);
     var a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download='kosztorys_'+((d.szkoda||d.adres||'zalanie').replace(/[^\w\-]+/g,'_').slice(0,40))+'.csv';
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    komunikat('Plik pobrany, otwiera się w Excelu');
+    a.download='kosztorys_'+((d.szkoda||d.adres||'zalanie').replace(/[^\w\-]+/g,'_').slice(0,40))+'.xlsx';
+    document.body.appendChild(a);a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href);document.body.removeChild(a);},1500);
+    komunikat('Pobrany plik .xlsx');
   });
 
   document.getElementById('ek-druk').addEventListener('click',function(){window.print();});
