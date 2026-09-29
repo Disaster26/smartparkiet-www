@@ -980,7 +980,7 @@ figure{margin:0}
         <label>Termin
           <select data-p="termin" data-licz><option>zwykły</option><option>pilny, do 48 h</option></select></label>
       </div>
-      <div class="ek-znam">
+      <div class="ek-znam ek-znam--str2">
         <span class="ek-znam-t">Stwierdzone uszkodzenia</span>
         <label class="ek-chk"><input type="checkbox" data-p="u_spec" data-licz> spęcznienie klepek</label>
         <label class="ek-chk"><input type="checkbox" data-p="u_odsp" data-licz> odspojenie od podłoża</label>
@@ -991,6 +991,10 @@ figure{margin:0}
         <label class="ek-chk"><input type="checkbox" data-p="u_listwy" data-licz> uszkodzone listwy</label>
         <label class="ek-chk"><input type="checkbox" data-p="u_schody" data-licz> uszkodzone schody lub progi</label>
       </div>
+    </div>
+
+    <div class="ek-blok ek-blok--usz">
+      <h3 class="ek-h">Opis stanu</h3>
       <label class="ek-uwagi">Opis stanu i uwagi
         <textarea rows="3" data-p="opis" placeholder="Co widać na miejscu, co wymaga wymiany, czego nie da się uratować."></textarea></label>
     </div>
@@ -1109,14 +1113,27 @@ figure{margin:0}
   .ek-druk-head{display:block;border-bottom:2px solid #0E0E0E;padding-bottom:8px;margin-bottom:14px}
   .ek-druk-marka{font-family:Inter,sans-serif;font-weight:900;letter-spacing:.1em;font-size:15px}
   .ek-druk-tyt{font-size:12px;margin-top:3px}
-  .ek-blok{border:0;padding:0;margin:0 0 14px;break-inside:avoid}
+  .ek-blok{border:0;padding:0;margin:0 0 10px;break-inside:avoid}
+  .ek-blok--usz{margin-top:8px}
   .ek-h{font-size:10px;color:#0E0E0E;border-bottom:1px solid #999;padding-bottom:3px;margin-bottom:8px}
-  .ek-siatka{gap:5px 14px}
-  .ek-siatka label{font-size:7.5px}
-  .ek-siatka input,.ek-siatka select,.ek-uwagi textarea{border:0;border-bottom:1px solid #CCC;border-radius:0;
-    padding:1px 0;font-size:10.5px}
+  /* dwie kolumny pol, etykieta z lewej, wartosc z prawej - zeby nie marnowac polowy kartki */
+  .ek-siatka{display:grid!important;grid-template-columns:1fr 1fr!important;gap:0 22px!important}
+  .ek-szer2{grid-column:span 2!important}
+  .ek-siatka label{flex-direction:row!important;justify-content:space-between;align-items:baseline;
+    gap:10px;border-bottom:1px solid #DDD;padding:2.5px 0;font-size:7.5px}
+  .ek-siatka input,.ek-siatka select{border:0!important;border-radius:0;padding:0!important;
+    font-size:10px;text-align:right;width:auto;max-width:64%;background:transparent;
+    -webkit-appearance:none;appearance:none}
+  .ek-siatka input[type=date]::-webkit-calendar-picker-indicator{display:none}
+  .ek-uwagi{margin-top:8px}
+  .ek-uwagi textarea{border:0;border-bottom:1px solid #DDD;border-radius:0;padding:1px 0;font-size:10px}
   .ek-jed{display:none}
-  .ek-chk{font-size:9.5px}
+  /* druga strona zaczyna sie od stwierdzonych uszkodzen */
+  .ek-znam--str2{page-break-before:always;break-before:page;padding-top:2mm}
+  .ek-znam{gap:3px 14px;margin-top:0}
+  .ek-znam-t{font-size:10px;color:#0E0E0E;border-bottom:1px solid #999;padding-bottom:3px;margin-bottom:5px}
+  .ek-chk{font-size:9px}
+  .ek-chk input{width:10px;height:10px}
   .ek-tab{font-size:9.5px;min-width:0}
   .ek-tab td{padding:3px 5px}
   .ek-tab input{border:0;padding:0;font-size:9.5px;background:transparent}
