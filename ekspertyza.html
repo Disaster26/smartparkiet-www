@@ -1125,7 +1125,7 @@ figure{margin:0}
     font-size:10px;text-align:right;width:auto;max-width:64%;background:transparent;
     -webkit-appearance:none;appearance:none}
   .ek-siatka input[type=date]::-webkit-calendar-picker-indicator{display:none}
-  .ek-uwagi{margin-top:8px}
+  .ek-uwagi{margin-top:6px;font-size:0}
   .ek-uwagi textarea{border:0;border-bottom:1px solid #DDD;border-radius:0;padding:1px 0;
     font-size:9.5px;height:auto;min-height:30px}
   .ek-jed{display:none}
@@ -1208,7 +1208,8 @@ figure{margin:0}
         +'<td class="ek-c-w">'+zl(il*st)+'</td></tr>';
     });
     reczne.forEach(function(r,k){
-      html+='<tr><td><input type="text" data-rn="'+k+'" value="'+(r.n||'').replace(/"/g,'&quot;')+'" placeholder="nazwa pozycji"></td>'
+      var pustaR=(!r.n||lp(r.il)<=0);
+      html+='<tr'+(pustaR?' class="ek-pusta"':'')+'><td><input type="text" data-rn="'+k+'" value="'+(r.n||'').replace(/"/g,'&quot;')+'" placeholder="nazwa pozycji"></td>'
         +'<td><input type="text" data-rk="'+k+'" value="'+(r.k||'')+'" placeholder="&mdash;"></td>'
         +'<td class="ek-c-ile"><input type="number" step="0.1" min="0" data-ri="'+k+'" value="'+(r.il||0)+'"></td>'
         +'<td class="ek-c-j"><input type="text" data-rj="'+k+'" value="'+(r.j||'szt.')+'"></td>'
