@@ -1000,7 +1000,7 @@ figure{margin:0}
     </div>
 
     <!-- KOSZTORYS -->
-    <div class="ek-blok">
+    <div class="ek-blok ek-blok--kosz">
       <h3 class="ek-h">Kosztorys</h3>
       <p class="ek-pod ek-noprint">Ilości uzupełniają się z metrażu powyżej, ale każdą można nadpisać. Stawki są netto i też można je zmienić. Kolumna „Podstawa” jest pusta na wpisanie numeru KNR, jeśli ubezpieczyciel go wymaga.</p>
       <div class="ek-tab-owijka">
@@ -1126,7 +1126,8 @@ figure{margin:0}
     -webkit-appearance:none;appearance:none}
   .ek-siatka input[type=date]::-webkit-calendar-picker-indicator{display:none}
   .ek-uwagi{margin-top:8px}
-  .ek-uwagi textarea{border:0;border-bottom:1px solid #DDD;border-radius:0;padding:1px 0;font-size:10px}
+  .ek-uwagi textarea{border:0;border-bottom:1px solid #DDD;border-radius:0;padding:1px 0;
+    font-size:9.5px;height:auto;min-height:30px}
   .ek-jed{display:none}
   /* druga strona zaczyna sie od stwierdzonych uszkodzen */
   .ek-znam--str2{page-break-before:always;break-before:page;padding-top:2mm}
@@ -1135,13 +1136,22 @@ figure{margin:0}
   .ek-chk{font-size:9px}
   .ek-chk input{width:10px;height:10px}
   .ek-tab{font-size:9.5px;min-width:0}
-  .ek-tab td{padding:3px 5px}
+  .ek-tab td{padding:2px 4px}
+  .ek-tab tr{break-inside:avoid;page-break-inside:avoid}
+  .ek-tab thead{display:table-header-group}
+  .ek-blok--kosz{break-inside:auto;page-break-inside:auto}
   .ek-tab input{border:0;padding:0;font-size:9.5px;background:transparent}
-  .ek-podsum{grid-template-columns:1fr 1fr;gap:14px;break-inside:avoid}
-  .ek-pakiet,.ek-sumy{border:1px solid #CCC;padding:9px 11px}
+  .ek-podsum{grid-template-columns:1fr 1fr;gap:12px;break-inside:avoid;margin-top:8px}
+  .ek-pakiet,.ek-sumy{border:1px solid #CCC;padding:7px 9px}
+  .ek-podsum-t{font-size:7.5px}
+  .ek-chipy{gap:4px;margin-top:6px}
+  .ek-chip{padding:3px 6px;font-size:8px}
+  .ek-pakiet-op{margin-top:7px;font-size:8.5px}
+  .ek-s{padding:4px 0;font-size:9.5px}
+  .ek-s b{font-size:10px}
   .ek-s-duza b{font-size:14px;color:#0E0E0E}
   .ek-stopka-druk{display:block;font-size:9px;margin-top:12px;color:#444}
-  .ek-podpisy{display:flex;gap:40px;margin-top:34px;font-size:9px;color:#444}
+  .ek-podpisy{display:flex;gap:40px;margin-top:26px;font-size:9px;color:#444;break-inside:avoid}
   .ek-podpisy div{flex:1}
   .ek-podpisy span{display:block;border-top:1px solid #0E0E0E;margin-bottom:4px}
   tr.ek-pusta{display:none}
