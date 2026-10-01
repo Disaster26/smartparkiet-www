@@ -949,7 +949,7 @@ figure{margin:0}
       <h3 class="ek-h">Szybkie wypełnienie</h3>
       <p class="ek-pod">Proszę wkleić tutaj wiadomość od klienta (SMS, e-mail albo krótki formularz) i kliknąć
       „Rozbij na rubryki”. Adres, telefon, e-mail, metraż, piętro i termin same trafią w odpowiednie pola.
-      Resztę można poprawić ręcznie.</p>
+      W to samo pole można wkleić gotowy kosztorys KNR, na przykład od ubezpieczyciela albo z Excela, a pozycje wejdą do tabeli poniżej razem z podstawą, ilością i ceną. Resztę można poprawić ręcznie.</p>
       <textarea id="ek-wklejka" rows="5" placeholder="np.&#10;1. ul. Przykładowa 12/3&#10;2. 500 100 200&#10;3. jan.kowalski@przyklad.pl&#10;4. pokój ok. 15 m, przedpokój ok. 6 m&#10;5. 2 piętro (winda)&#10;6. listopad&#10;7. listwy do wymiany"></textarea>
       <div class="ek-wklej-akcje">
         <button class="btn btn-amber" type="button" id="ek-rozbij">Rozbij na rubryki</button>
@@ -1617,7 +1617,107 @@ figure{margin:0}
   });
 
   rysuj(); wczytaj();
+
+  /* MOST DLA WKLEJONEGO KOSZTORYSU
+     Parser wklejki siedzi w osobnym module, wiec udostepniamy mu pozycje
+     przez window. Wiersze z cudzego kosztorysu (np. od ubezpieczyciela)
+     wchodza jako pozycje wlasne, a standardowe pozycje zerujemy, zeby
+     suma odpowiadala temu, co przyszlo. Kazda liczbe i tak mozna nadpisac. */
+  window.ekWczytajKosztorys=function(wiersze){
+    if(!wiersze||!wiersze.length)return 0;
+    reczne=wiersze.map(function(r){
+      return {n:r.n||'', k:r.k||'', il:r.il||0, j:r.j||'szt.', s:r.s||0};
+    });
+    POZ.forEach(function(p,i){nadpisane[i]=0;});
+    rysuj();
+    return reczne.length;
+  };
+
 })();
+
+/* WKLEJONY KOSZTORYS KNR
+   Obsluguje przypadek, w ktorym w pole "Szybkie wypelnienie" trafia cala
+   tabela kosztorysowa (skopiowana z Excela albo z wiadomosci), a nie dane
+   klienta. Rozpoznaje wiersze typu:
+     2.1  KNR 4-01 0819  Zerwanie zalanej klepki debowej  m2  30,00  25,00 zl  750,00 zl
+   Dziala i dla wklejki z tabulatorami (prosto z Excela), i dla tekstu,
+   w ktorym tabulatory sie pogubily (np. po przejsciu przez komunikator).
+   Podpina sie w fazie przechwytywania, zeby przy wykrytym kosztorysie
+   nie uruchamiac parsera danych kontaktowych. */
+(function(){
+  function lz(x){
+    x=String(x||'').replace(/[  ]/g,' ').replace(/[^\d,.\- ]/g,'').replace(/\s+/g,'');
+    var p=x.lastIndexOf(','), k=x.lastIndexOf('.');
+    if(p>k){x=x.replace(/\./g,'').replace(',','.');}else{x=x.replace(/,/g,'');}
+    var v=parseFloat(x);
+    return isFinite(v)?v:0;
+  }
+  var JEDN=/^(m2|m²|m3|m³|mb|m|kpl\.?|szt\.?|ryc[z]?\.?|rycza[lł]t|godz\.?|rbh|doba|dni|dzie[nń]|kg|t|l|op\.?|kurs|us[lł]\.?)$/i;
+
+  function rozdzielPodstawe(op){
+    var m=op.match(/^((?:KNR|KNNR|KSNR|KNP|NNRNKB|KNR-W)[A-Za-z\-]*\s*[\d\-]+(?:\s+\d+)?)\s+(.+)$/i);
+    if(m)return{k:m[1].replace(/\s+/g,' ').trim(), n:m[2].trim()};
+    m=op.match(/^(Wynajem|Kalkulacja|Kalk\.?|Analiza|Wycena|Indywidualna|W[lł]asna)\s+(.+)$/i);
+    if(m)return{k:m[1].trim(), n:m[2].trim()};
+    return{k:'', n:op.trim()};
+  }
+
+  function czytaj(tekst){
+    var out=[], linie=String(tekst||'').split(/\r?\n/);
+    for(var i=0;i<linie.length;i++){
+      var L=linie[i].replace(/[  ]/g,' ').replace(/\s+$/,'');
+      if(!L.trim())continue;
+      if(/^\s*lp\b/i.test(L))continue;            /* naglowek tabeli */
+      var r=null;
+      if(L.indexOf('\t')>=0){
+        var c=L.split('\t').map(function(x){return x.trim();});
+        c=c.filter(function(x){return x!=='';});
+        if(c.length>=6)      r={op:c[1]+' '+c[2], j:c[3], il:c[4], cena:c[5]};
+        else if(c.length===5)r={op:c[1],          j:c[2], il:c[3], cena:c[4]};
+      }
+      if(!r){
+        var m=L.trim().match(
+          /^(\d+(?:\.\d+)+)\s+(.+?)\s+([A-Za-z²³żźćńółęąśŻŹĆŃÓŁĘĄŚ\.]{1,9})\s+([\d ]+(?:[.,]\d+)?)\s+([\d ]+(?:[.,]\d+)?)\s*z[lł]\s+([\d ]+(?:[.,]\d+)?)\s*z[lł]\.?$/i);
+        if(m)r={op:m[2], j:m[3], il:m[4], cena:m[5]};
+      }
+      if(!r)continue;
+      var j=String(r.j||'').trim();
+      if(!JEDN.test(j))continue;                  /* to nie byl wiersz pozycji */
+      var il=lz(r.il), cena=lz(r.cena);
+      if(!(il>0)||!(cena>0))continue;
+      var p=rozdzielPodstawe(String(r.op||'').replace(/\s+/g,' ').trim());
+      if(!p.n)continue;
+      out.push({n:p.n, k:p.k, il:il, j:j.replace(/^m2$/i,'m²'), s:cena});
+    }
+    return out;
+  }
+
+  function kom(t){
+    var e=document.getElementById('ek-info-wklej');
+    if(!e)return;
+    e.textContent=t;
+    setTimeout(function(){if(e.textContent===t)e.textContent='';},6000);
+  }
+
+  document.addEventListener('click',function(ev){
+    var b=ev.target&&ev.target.closest?ev.target.closest('#ek-rozbij'):null;
+    if(!b)return;
+    var pole=document.getElementById('ek-wklejka');
+    if(!pole||!pole.value.trim())return;
+    var w=czytaj(pole.value);
+    if(w.length<2)return;                         /* zwykla wiadomosc od klienta */
+    ev.stopPropagation();
+    if(typeof window.ekWczytajKosztorys!=='function'){kom('Nie udało się wczytać kosztorysu');return;}
+    var ile=window.ekWczytajKosztorys(w);
+    var suma=w.reduce(function(a,x){return a+x.il*x.s;},0);
+    kom('Wczytano '+ile+' pozycji z kosztorysu, razem '
+        +(Math.round(suma*100)/100).toFixed(2).replace('.',',')+' zł netto');
+    var kosz=document.querySelector('.ek-blok--kosz');
+    if(kosz&&kosz.scrollIntoView)kosz.scrollIntoView({behavior:'smooth',block:'start'});
+  },true);
+})();
+
+
 
 (function(){
 
