@@ -945,6 +945,19 @@ figure{margin:0}
       <div class="ek-druk-tyt">Ekspertyza i kosztorys naprawy podłogi po zalaniu</div>
     </div>
 
+    <div class="ek-blok ek-wklej ek-noprint">
+      <h3 class="ek-h">Szybkie wypełnienie</h3>
+      <p class="ek-pod">Proszę wkleić tutaj wiadomość od klienta (SMS, e-mail albo krótki formularz) i kliknąć
+      „Rozbij na rubryki”. Adres, telefon, e-mail, metraż, piętro i termin same trafią w odpowiednie pola.
+      Resztę można poprawić ręcznie.</p>
+      <textarea id="ek-wklejka" rows="5" placeholder="np.&#10;1. ul. Przykładowa 12/3&#10;2. 500 100 200&#10;3. jan.kowalski@przyklad.pl&#10;4. pokój ok. 15 m, przedpokój ok. 6 m&#10;5. 2 piętro (winda)&#10;6. listopad&#10;7. listwy do wymiany"></textarea>
+      <div class="ek-wklej-akcje">
+        <button class="btn btn-amber" type="button" id="ek-rozbij">Rozbij na rubryki</button>
+        <button class="btn btn-ghost" type="button" id="ek-wyczysc-wklejke">Wyczyść pole</button>
+        <span class="ek-info" id="ek-info-wklej"></span>
+      </div>
+    </div>
+
     <!-- ZLECENIE -->
     <div class="ek-blok">
       <h3 class="ek-h">Dane zlecenia</h3>
@@ -955,6 +968,7 @@ figure{margin:0}
         <label class="ek-szer2">Adres<input type="text" data-p="adres" placeholder="ulica, numer, kod, miasto"></label>
         <label>Zgłaszający<input type="text" data-p="kto"></label>
         <label>Telefon<input type="tel" data-p="tel"></label>
+        <label>E-mail<input type="email" data-p="mail"></label>
         <label>Kondygnacja<input type="text" data-p="pietro" placeholder="np. parter"></label>
         <label>Rok budowy<input type="number" data-p="rok" placeholder="np. 1936"></label>
       </div>
@@ -1067,6 +1081,10 @@ figure{margin:0}
 .ek-znam-t{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);width:100%}
 .ek-chk{display:inline-flex;align-items:center;gap:8px;font-size:.92rem;cursor:pointer}
 .ek-chk input{width:17px;height:17px;accent-color:var(--amber)}
+.ek-wklej textarea{width:100%;font-family:ui-monospace,Consolas,monospace;font-size:.9rem;
+  padding:11px 12px;border:1px solid var(--line);border-radius:4px;resize:vertical;background:#fff}
+.ek-wklej textarea:focus{border-color:var(--amber);outline:none}
+.ek-wklej-akcje{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
 .ek-tab-owijka{overflow-x:auto}
 .ek-tab{width:100%;border-collapse:collapse;font-size:.92rem;min-width:680px}
 .ek-tab th{text-align:left;font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
@@ -1599,6 +1617,86 @@ figure{margin:0}
   });
 
   rysuj(); wczytaj();
+})();
+
+(function(){
+
+  var pole=document.getElementById('ek-wklejka');
+  if(!pole)return;
+  function ust(k,v){
+    var e=document.querySelector('[data-p="'+k+'"]');
+    if(!e||!v)return false;
+    e.value=String(v).trim(); e.dispatchEvent(new Event('input',{bubbles:true})); return true;
+  }
+  function bezEtykiety(s){
+    return s.replace(/^[^\p{L}\d]*/u,'')
+            .replace(/^(ul\.?|ulica)\s*/i,'')
+            .replace(/^[\d]+\s*[.)]\s*/,'')
+            .replace(/^[A-ZŁŚĆŻŹÓĘĄŃ .\-]{3,22}:\s*/,'')
+            .trim();
+  }
+  document.getElementById('ek-rozbij').addEventListener('click',function(){
+    var t=pole.value;
+    if(!t.trim()){kom('Najpierw proszę wkleić wiadomość');return;}
+    var linie=t.split(/\r?\n/).map(function(x){return x.trim();}).filter(Boolean);
+    var n=0, reszta=[];
+
+    var mail=t.match(/[\w.+-]+@[\w.-]+\.[a-z]{2,}/i);
+    if(mail&&ust('mail',mail[0]))n++;
+
+    var tel=t.match(/(?:\+?48[\s-]?)?(?:\d[\s-]?){9}/);
+    if(tel){var c=tel[0].replace(/[^\d]/g,'').replace(/^48/,'');
+      if(c.length>=9&&ust('tel',c.slice(-9).replace(/(\d{3})(\d{3})(\d{3})/,'$1 $2 $3')))n++;}
+
+    /* metraz: zsumuj wszystkie wystapienia liczba + m2 / m */
+    var m2=0, re=/(\d+[.,]?\d*)\s*(?:m\s*2|m²|m\b)/gi, mm;
+    while((mm=re.exec(t))!==null){var v=parseFloat(mm[1].replace(',','.'));if(v>0&&v<10000)m2+=v;}
+    if(m2>0&&ust('m2',Math.round(m2*10)/10))n++;
+
+    var liniaPietra=null;
+    var pie=t.match(/(\d{1,2})\s*(?:\s|-)*pi[eę]tro|pi[eę]tro\s*[-:]?\s*(\d{1,2})|PI[EĘ]TRO[^\d]{0,12}(\d{1,2})/i);
+    if(pie){var nrp=pie[1]||pie[2]||pie[3];
+      var winda=/bez\s*windy|winda\s*[-:]?\s*nie|\/\s*nie/i.test(t)?', bez windy':
+                (/winda\s*[-:]?\s*tak|\/\s*tak/i.test(t)?', winda':'');
+      if(ust('pietro',nrp+' piętro'+winda))n++;
+      linie.forEach(function(L){if(/pi[eę]tro|parter/i.test(L))liniaPietra=L;});}
+    else if(/parter/i.test(t)){if(ust('pietro','parter'))n++;}
+
+    /* adres: linia z ul. albo pierwsza sensowna linia z numerem */
+    var adr=null;
+    for(var i=0;i<linie.length;i++){
+      var L=linie[i];
+      if(/@/.test(L))continue;
+      if(/^(?:[\d]+\s*[.)]\s*)?(?:ul\.?|ulica|al\.|aleja|os\.)/i.test(L)){adr=bezEtykiety(L);break;}
+    }
+    if(!adr){for(var j=0;j<linie.length;j++){var L2=linie[j];
+      if(/@/.test(L2))continue;
+      if(/\d+\s*[\/a-zA-Z]?\d*\s*$/.test(bezEtykiety(L2))&&bezEtykiety(L2).length>4&&!/m²|m2|pi[eę]tro|tel/i.test(L2)){
+        adr=bezEtykiety(L2);break;}}}
+    if(adr&&ust('adres',adr))n++;
+
+    /* uwagi: wszystko, co nie zostalo rozpoznane */
+    linie.forEach(function(L){
+      var b=bezEtykiety(L);
+      if(!b)return;
+      if(/@/.test(L))return;
+      if(adr&&b===adr)return;
+      if(liniaPietra&&L===liniaPietra)return;
+      if(/^(?:\+?48)?[\d\s-]{9,}$/.test(b.replace(/[^\d+\s-]/g,'')))return;
+      if(/^(?:ok\.?\s*)?\d+[.,]?\d*\s*(m\s*2|m²)\.?$/i.test(b))return;
+      reszta.push(b);
+    });
+    if(reszta.length){
+      var o=document.querySelector('[data-p="opis"]');
+      if(o){o.value=(o.value?o.value+'\n':'')+reszta.join('\n');
+        o.dispatchEvent(new Event('input',{bubbles:true}));n++;}
+    }
+    kom(n?('Uzupełniono pola: '+n):'Nie rozpoznałem żadnych danych');
+  });
+  document.getElementById('ek-wyczysc-wklejke').addEventListener('click',function(){
+    pole.value='';kom('');});
+  function kom(s){var i=document.getElementById('ek-info-wklej');if(!i)return;
+    i.textContent=s;if(s)setTimeout(function(){i.textContent='';},3500);}
 })();
 </script>
 
