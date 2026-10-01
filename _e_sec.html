@@ -1,0 +1,115 @@
+<section id="ekspertyza">
+  <div class="wrap">
+    <span class="tag">Narzędzie</span>
+    <h2 style="margin-top:14px">Ekspertyza i kosztorys po zalaniu</h2>
+    <p class="lead" style="margin-top:14px">Formularz do wypełnienia na miejscu oględzin. Liczy się sam, dobiera program i wypuszcza zestawienie do Excela albo gotowy wydruk na papier firmowy dla ubezpieczyciela. Dane zostają w tej przeglądarce, nic nie jest nigdzie wysyłane.</p>
+
+    <div class="ek-akcje ek-noprint">
+      <button class="btn btn-amber" type="button" id="ek-druk">Drukuj / PDF</button>
+      <button class="btn btn-ghost" type="button" id="ek-csv">Pobierz .xlsx</button>
+      <button class="btn btn-ghost" type="button" id="ek-kopiuj">Kopiuj zestawienie</button>
+      <button class="btn btn-ghost" type="button" id="ek-czysc">Wyczyść</button>
+      <span class="ek-info" id="ek-info"></span>
+    </div>
+
+    <div class="ek-druk-head">
+      <div class="ek-druk-marka">SMARTPARKIET</div>
+      <div class="ek-druk-tyt">Ekspertyza i kosztorys naprawy podłogi po zalaniu</div>
+    </div>
+
+    <!-- ZLECENIE -->
+    <div class="ek-blok">
+      <h3 class="ek-h">Dane zlecenia</h3>
+      <div class="ek-siatka">
+        <label>Data oględzin<input type="date" data-p="data"></label>
+        <label>Numer szkody<input type="text" data-p="szkoda" placeholder="np. 2026/09/1234"></label>
+        <label>Ubezpieczyciel<input type="text" data-p="ubezp" placeholder="np. PZU"></label>
+        <label class="ek-szer2">Adres<input type="text" data-p="adres" placeholder="ulica, numer, kod, miasto"></label>
+        <label>Zgłaszający<input type="text" data-p="kto"></label>
+        <label>Telefon<input type="tel" data-p="tel"></label>
+        <label>Kondygnacja<input type="text" data-p="pietro" placeholder="np. parter"></label>
+        <label>Rok budowy<input type="number" data-p="rok" placeholder="np. 1936"></label>
+      </div>
+    </div>
+
+    <!-- PODLOGA -->
+    <div class="ek-blok">
+      <h3 class="ek-h">Podłoga i zakres szkody</h3>
+      <div class="ek-siatka">
+        <label>Rodzaj podłogi
+          <select data-p="rodzaj"><option>parkiet klepka</option><option>deska lita</option><option>mozaika</option><option>deska warstwowa</option><option>panele</option></select></label>
+        <label>Gatunek drewna
+          <select data-p="gatunek"><option>dąb</option><option>jesion</option><option>buk</option><option>sosna</option><option>merbau</option><option>teak</option><option>iroko</option><option>doussie</option><option>jatoba</option><option>inny</option></select></label>
+        <label>Ułożenie
+          <select data-p="podloze"><option>na kleju do jastrychu</option><option>na legarach</option><option>na gwoździe</option><option>pływająco</option></select></label>
+        <label>Powierzchnia pomieszczenia<span class="ek-jed">m²</span><input type="number" step="0.1" min="0" data-p="m2" data-licz></label>
+        <label>Powierzchnia zalana<span class="ek-jed">m²</span><input type="number" step="0.1" min="0" data-p="m2zal" data-licz></label>
+        <label>Wilgotność drewna<span class="ek-jed">%</span><input type="number" step="0.1" min="0" data-p="wilg" placeholder="norma 7-11"></label>
+        <label>Data zdarzenia<input type="date" data-p="datazal"></label>
+        <label>Źródło zalania<input type="text" data-p="zrodlo" placeholder="np. pęknięta rura, pralka"></label>
+        <label>Rodzaj obiektu
+          <select data-p="obiekt" data-licz><option>mieszkanie</option><option>dom</option><option>biuro</option><option>lokal usługowy</option><option>obiekt publiczny</option></select></label>
+        <label>Termin
+          <select data-p="termin" data-licz><option>zwykły</option><option>pilny, do 48 h</option></select></label>
+      </div>
+      <div class="ek-znam ek-znam--str2">
+        <span class="ek-znam-t">Stwierdzone uszkodzenia</span>
+        <label class="ek-chk"><input type="checkbox" data-p="u_spec" data-licz> spęcznienie klepek</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_odsp" data-licz> odspojenie od podłoża</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_szcz" data-licz> rozejście się szczelin</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_prze" data-licz> przebarwienia i zacieki</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_plesn" data-licz> pleśń lub zapach zawilgocenia</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_lakier" data-licz> zmatowienie lub łuszczenie lakieru</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_listwy" data-licz> uszkodzone listwy</label>
+        <label class="ek-chk"><input type="checkbox" data-p="u_schody" data-licz> uszkodzone schody lub progi</label>
+      </div>
+    </div>
+
+    <div class="ek-blok ek-blok--usz">
+      <h3 class="ek-h">Opis stanu</h3>
+      <label class="ek-uwagi">Opis stanu i uwagi
+        <textarea rows="3" data-p="opis" placeholder="Co widać na miejscu, co wymaga wymiany, czego nie da się uratować."></textarea></label>
+    </div>
+
+    <!-- KOSZTORYS -->
+    <div class="ek-blok ek-blok--kosz">
+      <h3 class="ek-h">Kosztorys</h3>
+      <p class="ek-pod ek-noprint">Ilości uzupełniają się z metrażu powyżej, ale każdą można nadpisać. Stawki są netto i też można je zmienić. Kolumna „Podstawa” jest pusta na wpisanie numeru KNR, jeśli ubezpieczyciel go wymaga.</p>
+      <div class="ek-tab-owijka">
+        <table class="ek-tab">
+          <thead><tr>
+            <th class="ek-c-poz">Pozycja</th><th class="ek-c-knr">Podstawa</th>
+            <th class="ek-c-ile">Ilość</th><th class="ek-c-j">j.m.</th>
+            <th class="ek-c-st">Stawka</th><th class="ek-c-w">Wartość</th>
+          </tr></thead>
+          <tbody id="ek-poz"></tbody>
+        </table>
+      </div>
+      <button class="btn btn-ghost ek-noprint" type="button" id="ek-dodaj" style="margin-top:14px">Dodaj własną pozycję</button>
+    </div>
+
+    <!-- PODSUMOWANIE -->
+    <div class="ek-podsum">
+      <div class="ek-pakiet">
+        <span class="ek-podsum-t">Dobrany program</span>
+        <div id="ek-pakiety" class="ek-chipy"></div>
+        <p class="ek-pakiet-op" id="ek-pakiet-op"></p>
+      </div>
+      <div class="ek-sumy">
+        <div class="ek-s"><span>Razem netto</span><b id="ek-netto">0,00 zł</b></div>
+        <div class="ek-s ek-noprint-inline">
+          <span>Stawka VAT</span>
+          <select id="ek-vat"><option value="8">8 % (lokal mieszkalny)</option><option value="23">23 % (pozostałe)</option></select>
+        </div>
+        <div class="ek-s"><span>VAT <i id="ek-vat-et">8 %</i></span><b id="ek-vat-kw">0,00 zł</b></div>
+        <div class="ek-s ek-s-duza"><span>Razem brutto</span><b id="ek-brutto">0,00 zł</b></div>
+      </div>
+    </div>
+
+    <p class="ek-stopka-druk">Kosztorys sporządzony na podstawie oględzin i pomiaru wilgotności. Stawki netto. Dokument wymaga podpisu wykonawcy.</p>
+    <div class="ek-podpisy">
+      <div><span></span>podpis wykonawcy</div>
+      <div><span></span>podpis zgłaszającego</div>
+    </div>
+  </div>
+</section>
