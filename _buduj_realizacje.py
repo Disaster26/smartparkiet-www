@@ -66,6 +66,28 @@ def karta(w, nr):
     else:
         wizual = ''
 
+    # Artur poprosil o stala kolejnosc: najpierw polaczone przed i po,
+    # potem zdjecia starej podlogi, na koncu duze zdjecia nowej.
+    dod = ''
+    stare_zdj = w.get('zdj_stare') or []
+    nowe_zdj = w.get('zdj_nowe') or []
+    if stare_zdj:
+        dod += ('<div class="r-stare"><h4>Przed renowacją</h4><div class="r-rzad">'
+                + ''.join('<figure><img src="%s" alt="%s" loading="lazy" '
+                          'decoding="async"></figure>'
+                          % (e(z.get('src')), e(z.get('alt') or w['tytul']
+                             + ', stan przed renowacj\u0105'))
+                          for z in stare_zdj)
+                + '</div></div>')
+    if nowe_zdj:
+        dod += ('<div class="r-nowe">'
+                + ''.join('<figure><img src="%s" alt="%s" loading="lazy" '
+                          'decoding="async"></figure>'
+                          % (e(z.get('src')), e(z.get('alt') or w['tytul']
+                             + ', po renowacji'))
+                          for z in nowe_zdj)
+                + '</div>')
+
     return (
         '      <article class="r-poz{odwr}" id="r-{rid}">\n'
         '        <div class="r-wiz">{wizual}</div>\n'
@@ -76,8 +98,10 @@ def karta(w, nr):
         '          <dl class="r-meta">{meta}</dl>\n'
         '          <p class="r-data"><time datetime="{iso}">{data}</time></p>\n'
         '        </div>\n'
+        '        <div class="r-dod">{dod}</div>\n'
         '      </article>'
     ).format(
+        dod=dod,
         odwr=' odwr' if nr % 2 else '',
         rid=e(w.get('id') or nr),
         wizual=wizual,
