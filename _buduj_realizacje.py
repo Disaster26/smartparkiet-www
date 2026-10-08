@@ -89,7 +89,7 @@ def karta(w, nr):
                 + '</div>')
 
     return (
-        '      <article class="r-poz{odwr}" id="r-{rid}">\n'
+        '      <article class="r-poz{odwr}{bezfot}" id="r-{rid}">\n'
         '        <div class="r-wiz">{wizual}</div>\n'
         '        <div class="r-tresc">\n'
         '          {program}'
@@ -103,6 +103,7 @@ def karta(w, nr):
     ).format(
         dod=dod,
         odwr=' odwr' if nr % 2 else '',
+        bezfot='' if (wizual or dod) else ' bezfot',
         rid=e(w.get('id') or nr),
         wizual=wizual,
         program=('<p class="r-program">%s</p>\n          ' % e(w['program'])
