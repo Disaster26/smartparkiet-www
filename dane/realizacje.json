@@ -1,0 +1,34 @@
+[
+ {
+  "id": "kuchnia-jodelka-dab",
+  "data": "2026-10-02",
+  "tytul": "Jodełka francuska w kuchni",
+  "lokalizacja": "Warszawa",
+  "metraz": "ok. 30 m²",
+  "czas": "2 dni",
+  "podloga": "Klepka dębowa, jodełka francuska",
+  "program": "Cyklinowanie SMART™",
+  "opis": "Ta sama kuchnia, ten sam kadr. Podłoga miała plamy i przetarcia w ciągach komunikacyjnych, w szczelinach zbierał się brud. Szlif bezpyłowy, uzupełnienie szczelin masą z pyłu tego samego drewna, trzy warstwy lakieru premium 2K. Zdjęcia bez obróbki, różnicę robi sam szlif i lakier.",
+  "zdj_przed": "img/floor-przed.webp",
+  "zdj_po": "img/floor-po.webp",
+  "alt_przed": "Jodełka dębowa w kuchni przed renowacją, z plamami i przetarciami",
+  "alt_po": "Ta sama jodełka dębowa po cyklinowaniu i lakierowaniu"
+ },
+ {
+  "id": "wilanow-deska-warstwowa",
+  "szkic": true,
+  "_uwaga": "Dane z wpisu na wizytowke Google z 08.10.2026. Czeka na zdjecia przed i po z tej realizacji - po ich dodaniu usunac \"szkic\": true.",
+  "data": "2026-10-08",
+  "tytul": "Renowacja deski warstwowej",
+  "lokalizacja": "Warszawa, Wilanów",
+  "metraz": "90 m²",
+  "czas": "2 dni",
+  "podloga": "Deska warstwowa dębowa",
+  "program": "SMART ZERO DUST™",
+  "opis": "Renowacja deski warstwowej z usunięciem starej warstwy kolorystycznej i przywróceniem drewnu naturalnego, dębowego koloru. Wszystko z zachowaniem oryginalnej fazy między deskami. Cyklinowanie bezpyłowe z systemem odpylania Festool, wieloetapowe szlifowanie z zachowaniem fabrycznej fazy.",
+  "zdj_przed": "",
+  "zdj_po": "",
+  "alt_przed": "",
+  "alt_po": ""
+ }
+]

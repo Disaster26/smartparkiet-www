@@ -1,0 +1,130 @@
+# -*- coding: utf-8 -*-
+"""Wstawia swieze realizacje do realizacje.html na podstawie dane/realizacje.json.
+
+Dzieki temu dodanie nowej realizacji to edycja jednego pliku JSON i wrzucenie
+dwoch zdjec, a HTML zostaje statyczny, czyli Google widzi tresc od razu, bez
+czekania na JavaScript.
+
+Uzycie:  python _buduj_realizacje.py
+"""
+import html
+import io
+import json
+import os
+import re
+
+KAT = os.path.dirname(os.path.abspath(__file__))
+P_JSON = os.path.join(KAT, 'dane', 'realizacje.json')
+P_HTML = os.path.join(KAT, 'realizacje.html')
+START = '<!-- SWIEZE:START -->'
+KONIEC = '<!-- SWIEZE:KONIEC -->'
+
+MIESIACE = ('stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca',
+            'lipca', 'sierpnia', 'września', 'października',
+            'listopada', 'grudnia')
+
+
+def po_polsku(data):
+    """2026-10-08 -> 8 pazdziernika 2026"""
+    try:
+        r, m, d = (int(x) for x in data.split('-'))
+        return '%d %s %d' % (d, MIESIACE[m - 1], r)
+    except Exception:
+        return data
+
+
+def e(t):
+    return html.escape(str(t or ''), quote=True)
+
+
+def karta(w, nr):
+    meta = []
+    for etykieta, klucz in (('Lokalizacja', 'lokalizacja'), ('Metraż', 'metraz'),
+                            ('Czas', 'czas'), ('Podłoga', 'podloga')):
+        if w.get(klucz):
+            meta.append('<div><dt>%s</dt><dd>%s</dd></div>' % (etykieta, e(w[klucz])))
+
+    ma_pare = bool(w.get('zdj_przed')) and bool(w.get('zdj_po'))
+    if ma_pare:
+        wizual = (
+            '<div class="ba r-ba" style="--x:52%">'
+            '<img src="{po}" alt="{apo}" loading="lazy" decoding="async">'
+            '<img class="before" src="{przed}" alt="{aprzed}" loading="lazy" decoding="async">'
+            '<div class="handle"></div><div class="knob">⇔</div>'
+            '<span class="lbl l">przed</span><span class="lbl r">po</span>'
+            '<input type="range" min="0" max="100" value="52" '
+            'aria-label="Porównanie przed i po: {tyt}">'
+            '</div>'
+        ).format(po=e(w['zdj_po']), przed=e(w['zdj_przed']),
+                 apo=e(w.get('alt_po') or w['tytul'] + ', po renowacji'),
+                 aprzed=e(w.get('alt_przed') or w['tytul'] + ', przed renowacją'),
+                 tyt=e(w['tytul']))
+    elif w.get('zdj_po'):
+        wizual = ('<figure class="r-jedno"><img src="%s" alt="%s" loading="lazy" '
+                  'decoding="async"></figure>'
+                  % (e(w['zdj_po']), e(w.get('alt_po') or w['tytul'])))
+    else:
+        wizual = ''
+
+    return (
+        '      <article class="r-poz{odwr}" id="r-{rid}">\n'
+        '        <div class="r-wiz">{wizual}</div>\n'
+        '        <div class="r-tresc">\n'
+        '          {program}'
+        '          <h3>{tytul}</h3>\n'
+        '          <p>{opis}</p>\n'
+        '          <dl class="r-meta">{meta}</dl>\n'
+        '          <p class="r-data"><time datetime="{iso}">{data}</time></p>\n'
+        '        </div>\n'
+        '      </article>'
+    ).format(
+        odwr=' odwr' if nr % 2 else '',
+        rid=e(w.get('id') or nr),
+        wizual=wizual,
+        program=('<p class="r-program">%s</p>\n          ' % e(w['program'])
+                 if w.get('program') else ''),
+        tytul=e(w['tytul']),
+        opis=e(w['opis']),
+        meta=''.join(meta),
+        iso=e(w.get('data')),
+        data=po_polsku(w.get('data')),
+    )
+
+
+def main():
+    dane = json.load(io.open(P_JSON, encoding='utf-8'))
+    widoczne = [w for w in dane if not w.get('szkic')]
+    widoczne.sort(key=lambda w: w.get('data', ''), reverse=True)
+
+    if widoczne:
+        srodek = '\n'.join(karta(w, i) for i, w in enumerate(widoczne))
+        blok = (
+            '    <div class="r-naglowek">\n'
+            '      <h2>Świeże realizacje</h2>\n'
+            '      <p>Ostatnie podłogi, które wyszły spod naszych maszyn. '
+            'Zdjęcia bez obróbki, ten sam kadr przed i po.</p>\n'
+            '    </div>\n'
+            '    <div class="r-lista">\n' + srodek + '\n    </div>'
+        )
+    else:
+        blok = ''
+
+    s = io.open(P_HTML, encoding='utf-8').read()
+    if START not in s or KONIEC not in s:
+        raise SystemExit('Brak znacznikow %s / %s w realizacje.html' % (START, KONIEC))
+    nowy = re.sub(
+        re.escape(START) + r'.*?' + re.escape(KONIEC),
+        START + '\n' + blok + '\n    ' + KONIEC,
+        s, flags=re.S)
+    io.open(P_HTML, 'w', encoding='utf-8').write(nowy)
+
+    print('realizacji w pliku:', len(dane))
+    print('wstawionych na strone:', len(widoczne))
+    szkice = [w for w in dane if w.get('szkic')]
+    if szkice:
+        print('czeka na zdjecia (szkic):')
+        for w in szkice:
+            print('   -', w.get('tytul'), '|', w.get('lokalizacja'))
+
+
+main()
