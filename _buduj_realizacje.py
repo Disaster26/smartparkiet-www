@@ -69,6 +69,15 @@ def karta(w, nr):
     # Artur poprosil o stala kolejnosc: najpierw polaczone przed i po,
     # potem zdjecia starej podlogi, na koncu duze zdjecia nowej.
     dod = ''
+    laczone = w.get('zdj_laczone') or []
+    if laczone:
+        dod += ('<div class="r-laczone"><h4>Przed i po</h4>'
+                + ''.join('<figure><img src="%s" alt="%s" loading="lazy" '
+                          'decoding="async"></figure>'
+                          % (e(z.get('src')), e(z.get('alt') or w['tytul']
+                             + ', zestawienie przed i po'))
+                          for z in laczone)
+                + '</div>')
     stare_zdj = w.get('zdj_stare') or []
     nowe_zdj = w.get('zdj_nowe') or []
     if stare_zdj:
@@ -103,7 +112,7 @@ def karta(w, nr):
     ).format(
         dod=dod,
         odwr=' odwr' if nr % 2 else '',
-        bezfot='' if (wizual or dod) else ' bezfot',
+        bezfot='' if wizual else ' bezfot',
         rid=e(w.get('id') or nr),
         wizual=wizual,
         program=('<p class="r-program">%s</p>\n          ' % e(w['program'])
