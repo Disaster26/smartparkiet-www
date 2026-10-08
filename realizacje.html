@@ -422,6 +422,33 @@ a{color:inherit}
 header.nav + section:not(.hero){padding-top:72px!important}
 header.nav + section:not(.hero) > .wrap > h2:first-child,
 header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
+
+/* --- swieze realizacje: suwak przed/po + opis --- */
+.r-naglowek{max-width:62ch}
+.r-naglowek p{color:var(--ink2,#5B5753);margin-top:10px}
+.r-naglowek.r-galeria{margin-top:72px;padding-top:48px;border-top:1px solid var(--line)}
+.r-lista{display:grid;gap:56px;margin-top:40px}
+.r-poz{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:32px;align-items:center}
+.r-poz.odwr .r-wiz{order:2}
+.r-program{display:inline-block;margin:0 0 10px;padding:4px 10px;border-radius:3px;
+  background:var(--amber);color:#fff;font-size:.68rem;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase}
+.r-tresc h3{font-size:1.5rem;line-height:1.2;margin:0 0 10px}
+.r-tresc p{margin:0 0 16px;color:var(--ink2,#5B5753)}
+.r-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px;margin:0 0 14px;
+  padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.r-meta dt{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink2,#5B5753);margin:0}
+.r-meta dd{margin:2px 0 0;font-weight:600}
+.r-data{font-size:.78rem;color:var(--ink2,#5B5753);margin:0}
+.r-ba{aspect-ratio:4/3}
+.r-jedno{margin:0;border-radius:6px;overflow:hidden;line-height:0;background:#0B0907}
+.r-jedno img{display:block;width:100%;height:auto}
+@media(max-width:860px){
+  .r-poz{grid-template-columns:1fr;gap:18px}
+  .r-poz.odwr .r-wiz{order:0}
+  .r-lista{gap:44px}
+}
 </style>
 <style>
 /* --- uwagi Artura, WhatsApp 23.09 --- */
@@ -943,7 +970,29 @@ figure{margin:0}
   </div>
 </header><section id="realizacje">
   <div class="wrap">
-    <h2>Realizacje</h2>
+    <!-- SWIEZE:START -->
+    <div class="r-naglowek">
+      <h2>Świeże realizacje</h2>
+      <p>Ostatnie podłogi, które wyszły spod naszych maszyn. Zdjęcia bez obróbki, ten sam kadr przed i po.</p>
+    </div>
+    <div class="r-lista">
+      <article class="r-poz" id="r-kuchnia-jodelka-dab">
+        <div class="r-wiz"><div class="ba r-ba" style="--x:52%"><img src="img/floor-po.webp" alt="Ta sama jodełka dębowa po cyklinowaniu i lakierowaniu" loading="lazy" decoding="async"><img class="before" src="img/floor-przed.webp" alt="Jodełka dębowa w kuchni przed renowacją, z plamami i przetarciami" loading="lazy" decoding="async"><div class="handle"></div><div class="knob">⇔</div><span class="lbl l">przed</span><span class="lbl r">po</span><input type="range" min="0" max="100" value="52" aria-label="Porównanie przed i po: Jodełka francuska w kuchni"></div></div>
+        <div class="r-tresc">
+          <p class="r-program">Cyklinowanie SMART™</p>
+                    <h3>Jodełka francuska w kuchni</h3>
+          <p>Ta sama kuchnia, ten sam kadr. Podłoga miała plamy i przetarcia w ciągach komunikacyjnych, w szczelinach zbierał się brud. Szlif bezpyłowy, uzupełnienie szczelin masą z pyłu tego samego drewna, trzy warstwy lakieru premium 2K. Zdjęcia bez obróbki, różnicę robi sam szlif i lakier.</p>
+          <dl class="r-meta"><div><dt>Lokalizacja</dt><dd>Warszawa</dd></div><div><dt>Metraż</dt><dd>ok. 30 m²</dd></div><div><dt>Czas</dt><dd>2 dni</dd></div><div><dt>Podłoga</dt><dd>Klepka dębowa, jodełka francuska</dd></div></dl>
+          <p class="r-data"><time datetime="2026-10-02">2 października 2026</time></p>
+        </div>
+      </article>
+    </div>
+    <!-- SWIEZE:KONIEC -->
+
+    <div class="r-naglowek r-galeria">
+      <h2>Galeria realizacji</h2>
+      <p>Przekrój podłóg, które odnawialiśmy: kamienice, jodełka francuska, deska warstwowa, drewno egzotyczne i schody.</p>
+    </div>
     <div class="gallery">
       <figure class="tall"><img src="img/d816138dd0.webp" alt="Dąb naturalny, klepka w jodełkę, po renowacji"><figcaption>Dąb naturalny<small>Klepka dąb · jodełka · lakier wodny premium<i>SMART PREMIUM FLOOR™</i></small></figcaption></figure>
       <figure class="wide"><img src="img/0e6240c18b.webp" alt="Dąb parzony po renowacji"><figcaption>Dąb parzony<small>Klepka dąb · olej twardy premium<i>SMART PREMIUM FLOOR™</i></small></figcaption></figure>
@@ -1116,6 +1165,15 @@ figure{margin:0}
   rvN.addEventListener('click',()=>strip.scrollBy({left:strip.clientWidth*.9,behavior:'smooth'}));
   })();
 })();
+
+  (function(){
+  /* suwaki przed/po na liscie realizacji, kazdy osobno */
+  document.querySelectorAll('.r-ba').forEach(function(ba){
+    var rng = ba.querySelector('input');
+    if(!rng) return;
+    rng.addEventListener('input', function(){ ba.style.setProperty('--x', rng.value+'%'); });
+  });
+  })();
 </script>
 <div class="cta-bar" aria-label="Szybki kontakt">
   <a href="tel:+48602242815"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .58 3.6 1 1 0 0 1-.25 1z"/></svg></span>Zadzwoń</a>
