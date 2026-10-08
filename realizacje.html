@@ -473,6 +473,37 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
 .r-laczone img{display:block;width:100%;height:auto}
 .r-stare{margin-bottom:22px}
 
+
+/* --- podglad zdjecia na pelnym ekranie --- */
+.r-dod img,.gallery img{cursor:zoom-in}
+.lbx{position:fixed;inset:0;z-index:9999;background:rgba(10,9,7,.94);
+  display:none;align-items:center;justify-content:center;touch-action:none}
+.lbx.on{display:flex}
+.lbx-fig{margin:0;max-width:min(94vw,1500px);max-height:86vh;line-height:0}
+.lbx-fig img{max-width:min(94vw,1500px);max-height:86vh;width:auto;height:auto;
+  display:block;border-radius:4px;opacity:0;transition:opacity .16s ease-out}
+.lbx-fig img.gotowe{opacity:1}
+.lbx-licz{position:absolute;top:18px;left:50%;transform:translateX(-50%);
+  color:#fff;font-size:.8rem;font-weight:600;letter-spacing:.06em;
+  background:rgba(0,0,0,.45);padding:6px 12px;border-radius:20px}
+.lbx-btn{position:absolute;width:52px;height:52px;border:0;border-radius:50%;
+  background:rgba(255,255,255,.12);color:#fff;font-size:1.5rem;line-height:1;
+  display:grid;place-items:center;cursor:pointer;
+  transition:background .14s ease-out,transform .14s ease-out}
+.lbx-btn:hover{background:rgba(255,255,255,.22)}
+.lbx-btn:active{transform:scale(.94)}
+.lbx-prev{left:18px;top:50%;margin-top:-26px}
+.lbx-next{right:18px;top:50%;margin-top:-26px}
+.lbx-x{right:18px;top:18px;width:44px;height:44px;font-size:1.2rem}
+@media(max-width:700px){
+  .lbx-prev{left:8px}.lbx-next{right:8px}
+  .lbx-btn{width:44px;height:44px}
+  .lbx-x{top:10px;right:10px}
+  .lbx-licz{top:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .lbx-fig img,.lbx-btn{transition:none}
+}
 </style>
 <style>
 /* --- uwagi Artura, WhatsApp 23.09 --- */
@@ -1208,6 +1239,95 @@ figure{margin:0}
     var rng = ba.querySelector('input');
     if(!rng) return;
     rng.addEventListener('input', function(){ ba.style.setProperty('--x', rng.value+'%'); });
+  });
+  })();
+
+  (function(){
+  /* Podglad zdjec na pelnym ekranie. Zdjecia jednej realizacji tworza jeden
+     zestaw, galeria na dole drugi, wiec strzalki chodza w obrebie tego,
+     co czlowiek wlasnie oglada. */
+  var zestawy = [];
+  document.querySelectorAll('.r-dod').forEach(function(k){
+    var im = [].slice.call(k.querySelectorAll('img'));
+    if(im.length) zestawy.push(im);
+  });
+  var gal = [].slice.call(document.querySelectorAll('.gallery img'));
+  if(gal.length) zestawy.push(gal);
+  if(!zestawy.length) return;
+
+  var ov = document.createElement('div');
+  ov.className = 'lbx';
+  ov.setAttribute('role','dialog');
+  ov.setAttribute('aria-modal','true');
+  ov.setAttribute('aria-label','Podglad zdjecia');
+  ov.innerHTML = '<span class="lbx-licz"></span>' +
+    '<button class="lbx-btn lbx-x" type="button" aria-label="Zamknij">✕</button>' +
+    '<button class="lbx-btn lbx-prev" type="button" aria-label="Poprzednie zdjecie">‹</button>' +
+    '<figure class="lbx-fig"><img alt=""></figure>' +
+    '<button class="lbx-btn lbx-next" type="button" aria-label="Nastepne zdjecie">›</button>';
+  document.body.appendChild(ov);
+
+  var fot = ov.querySelector('.lbx-fig img');
+  var licz = ov.querySelector('.lbx-licz');
+  var zest = null, nr = 0, wracac = null;
+
+  function pokaz(i){
+    nr = (i + zest.length) % zest.length;
+    var z = zest[nr];
+    fot.classList.remove('gotowe');
+    fot.src = z.currentSrc || z.src;
+    fot.alt = z.alt || '';
+    licz.textContent = (nr + 1) + ' / ' + zest.length;
+    var strzalki = zest.length > 1 ? '' : 'none';
+    ov.querySelector('.lbx-prev').style.display = strzalki;
+    ov.querySelector('.lbx-next').style.display = strzalki;
+  }
+  fot.addEventListener('load', function(){ fot.classList.add('gotowe'); });
+
+  function otworz(lista, i, zrodlo){
+    zest = lista; wracac = zrodlo;
+    ov.classList.add('on');
+    document.body.style.overflow = 'hidden';
+    pokaz(i);
+    ov.querySelector('.lbx-x').focus();
+  }
+  function zamknij(){
+    ov.classList.remove('on');
+    document.body.style.overflow = '';
+    fot.src = '';
+    if(wracac) wracac.focus({preventScroll:true});
+  }
+
+  zestawy.forEach(function(lista){
+    lista.forEach(function(im, i){
+      im.setAttribute('tabindex','0');
+      im.setAttribute('role','button');
+      im.addEventListener('click', function(){ otworz(lista, i, im); });
+      im.addEventListener('keydown', function(ev){
+        if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); otworz(lista, i, im); }
+      });
+    });
+  });
+
+  ov.querySelector('.lbx-x').addEventListener('click', zamknij);
+  ov.querySelector('.lbx-prev').addEventListener('click', function(){ pokaz(nr - 1); });
+  ov.querySelector('.lbx-next').addEventListener('click', function(){ pokaz(nr + 1); });
+  ov.addEventListener('click', function(ev){ if(ev.target === ov) zamknij(); });
+  document.addEventListener('keydown', function(ev){
+    if(!ov.classList.contains('on')) return;
+    if(ev.key === 'Escape') zamknij();
+    else if(ev.key === 'ArrowLeft') pokaz(nr - 1);
+    else if(ev.key === 'ArrowRight') pokaz(nr + 1);
+  });
+
+  /* przesuwanie palcem */
+  var x0 = null, t0 = 0;
+  ov.addEventListener('pointerdown', function(ev){ x0 = ev.clientX; t0 = Date.now(); });
+  ov.addEventListener('pointerup', function(ev){
+    if(x0 === null) return;
+    var dx = ev.clientX - x0, dt = Date.now() - t0;
+    x0 = null;
+    if(Math.abs(dx) > 45 || (Math.abs(dx) > 18 && dt < 220)) pokaz(nr + (dx < 0 ? 1 : -1));
   });
   })();
 </script>
