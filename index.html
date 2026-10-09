@@ -422,6 +422,64 @@ a{color:inherit}
 header.nav + section:not(.hero){padding-top:72px!important}
 header.nav + section:not(.hero) > .wrap > h2:first-child,
 header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
+
+/* --- hero wg koncepcji Artura (WhatsApp 09.10, "Koncept") --- */
+.hero h1 .mark em{font-style:normal;color:var(--amber)}
+.hero h1 .h-lin{display:block}
+.hero h1 .h-lin.akcent{color:var(--amber)}
+.hero-lead p{margin:0 0 8px}
+.hero-lead p:last-child{margin-bottom:0}
+.hero-lead .moc{font-weight:700;color:var(--on-dark)}
+/* obie ramki tej samej szerokosci, o co prosil */
+.cta-rowne{display:grid;gap:10px;justify-items:stretch;max-width:430px}
+.cta-rowne .btn{display:flex;align-items:center;justify-content:space-between;
+  gap:14px;width:100%;text-align:left}
+/* opinie w hero: przewijane w bok */
+.hero-op{margin-top:38px;max-width:560px}
+.hero-op-tor{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
+  gap:18px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.hero-op-tor::-webkit-scrollbar{display:none}
+.hero-op-tor .hero-quote{flex:0 0 100%;scroll-snap-align:start;margin-top:0}
+.hero-op-nav{display:flex;align-items:center;gap:12px;margin-top:12px}
+.hop-btn{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.28);
+  background:transparent;color:var(--on-dark);cursor:pointer;line-height:1;
+  transition:background .14s ease-out,transform .14s ease-out}
+.hop-btn:hover{background:rgba(255,255,255,.14)}
+.hop-btn:active{transform:scale(.94)}
+.hop-kropki{display:flex;gap:6px}
+.hop-kropki i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);
+  display:block;transition:background .14s ease-out}
+.hop-kropki i.akt{background:var(--amber)}
+@media(max-width:700px){
+  .cta-rowne{max-width:100%}
+  .hero-op{margin-top:26px}
+}
+@media(prefers-reduced-motion:reduce){.hop-btn{transition:none}}
+
+/* --- akronim SMART --- */
+.akr{padding:64px 0 10px}
+.akr h2{margin-top:10px;max-width:22ch}
+.akr-lista{list-style:none;margin:30px 0 0;padding:0;border-top:1px solid var(--line)}
+.akr-lista li{border-bottom:1px solid var(--line)}
+.akr-gl{display:grid;grid-template-columns:48px 1fr 24px;align-items:center;gap:14px;
+  width:100%;padding:16px 0;background:none;border:0;cursor:pointer;text-align:left;
+  font:inherit;color:inherit}
+.akr-lit{font-size:1.6rem;font-weight:800;color:var(--amber);line-height:1}
+.akr-naz{font-size:1.05rem;font-weight:600}
+.akr-zn{font-size:1.3rem;color:var(--amber);line-height:1;
+  transition:transform .18s cubic-bezier(.23,1,.32,1)}
+.akr-gl[aria-expanded="true"] .akr-zn{transform:rotate(45deg)}
+/* max-height zamiast grid 0fr: ta druga technika dawala tu wysokosc zero */
+.akr-tr{overflow:hidden;max-height:0;
+  transition:max-height .24s cubic-bezier(.23,1,.32,1)}
+.akr-tr>p{margin:0 0 16px;color:var(--ink2,#5B5753);max-width:62ch}
+@media(max-width:600px){
+  .akr{padding-top:44px}
+  .akr-gl{grid-template-columns:34px 1fr 20px;gap:10px}
+  .akr-lit{font-size:1.3rem}
+  .akr-naz{font-size:.98rem}
+}
+@media(prefers-reduced-motion:reduce){.akr-zn,.akr-tr{transition:none}}
 </style>
 <style>
 /* --- uwagi Artura, WhatsApp 23.09 --- */
@@ -948,13 +1006,78 @@ figure{margin:0}
   <div class="hero-cap">Lägler Hummel &middot; ZERO DUST</div>
   <div class="wrap">
     <span class="tag">Nowoczesne cyklinowanie · Warszawa · 4 oddziały</span>
-    <h1><span class="mark">Cyklinowanie SMART™</span>Bez kurzu, bałaganu <em style="white-space:nowrap">i stresu.</em></h1>
-    <p class="lead">Cyklinujemy bezpyłowo, a typowe mieszkanie realizujemy w dwa dni. Wycenę otrzymują Państwo na podstawie zdjęć, jeszcze zanim ktokolwiek przyjedzie na oględziny.</p>
-    <div class="cta">
-      <a class="btn btn-amber" href="wycena.html">Wyślij zdjęcia do wyceny</a>
-      <a class="btn btn-ghost" href="metoda.html">Zobacz, jak to wygląda</a>
+    <h1><span class="mark">Cyklinowanie <em>SMART™</em></span><span class="h-lin">Bez bałaganu.</span><span class="h-lin">Bez pyłu.</span><span class="h-lin akcent">Bez stresu!</span></h1>
+    <div class="lead hero-lead">
+      <p>Nowoczesna metoda renowacji podłóg drewnianych.</p>
+      <p>Precyzyjne szlifowanie, profesjonalne odpylanie Festool i lakiery premium Berger-Seidle.</p>
+      <p class="moc">Typowe mieszkanie odnawiamy w 2 dni.</p>
     </div>
-    <div class="hero-quote">„Oględziny na miejscu, wycena, ustalenie terminu na za 2 tygodnie. Po 2 dniach pracy parkiet otrzymał drugie życie.”<b><span>★★★★★</span>Mateusz Głębicki, opinia Google, 4 miesiące temu</b></div>
+    <div class="cta cta-rowne">
+      <a class="btn btn-amber" href="wycena.html">Wyślij zdjęcia do bezpłatnej wyceny <span aria-hidden="true">→</span></a>
+      <a class="btn btn-ghost" href="realizacje.html">Zobacz realizacje przed / po <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="hero-op" id="heroOp">
+      <div class="hero-op-tor">
+        <div class="hero-quote">„Oględziny na miejscu, wycena, ustalenie terminu na za 2 tygodnie. Po 2 dniach pracy parkiet otrzymał drugie życie.”<b><span>★★★★★</span>Mateusz Głębicki, opinia Google, 4 miesiące temu</b></div>
+        <div class="hero-quote">„Mogę śmiało polecić firmę smartparkiet. Doskonały, szybki, przejrzysty kontakt.”<b><span>★★★★★</span>opinia Google, wizytówka Rembertów</b></div>
+        <div class="hero-quote">„Podłoga wygląda świetnie, cyklinowanie z uzupełnieniem przestrzeni między deskami.”<b><span>★★★★★</span>opinia Google, wizytówka Ochota</b></div>
+        <div class="hero-quote">„Firma rzetelna, terminowa i profesjonalna. Potrafi doradzić przy starych parkietach.”<b><span>★★★★★</span>opinia Google, wizytówka Targówek</b></div>
+      </div>
+      <div class="hero-op-nav">
+        <button type="button" class="hop-btn" data-kier="-1" aria-label="Poprzednia opinia">←</button>
+        <span class="hop-kropki" aria-hidden="true"></span>
+        <button type="button" class="hop-btn" data-kier="1" aria-label="Następna opinia">→</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="akr">
+  <div class="wrap">
+    <p class="oczko"><span></span>Co znaczy SMART</p>
+    <h2>Pięć rzeczy, które dostaje Pan w każdym zleceniu</h2>
+    <ol class="akr-lista">
+      <li>
+        <button type="button" class="akr-gl" aria-expanded="false">
+          <span class="akr-lit">S</span>
+          <span class="akr-naz">System pracy</span>
+          <span class="akr-zn" aria-hidden="true">+</span>
+        </button>
+        <div class="akr-tr"><p>Ta sama kolejność czynności na każdej realizacji i w każdej z czterech ekip. Nie zależy od tego, kto danego dnia przyjedzie.</p></div>
+      </li>
+      <li>
+        <button type="button" class="akr-gl" aria-expanded="false">
+          <span class="akr-lit">M</span>
+          <span class="akr-naz">Metoda SMART</span>
+          <span class="akr-zn" aria-hidden="true">+</span>
+        </button>
+        <div class="akr-tr"><p>Diagnoza podłogi, dobór technologii pod konkretne drewno, szlif w trzech gradacjach i uzupełnienie szczelin masą z pyłu tej samej podłogi.</p></div>
+      </li>
+      <li>
+        <button type="button" class="akr-gl" aria-expanded="false">
+          <span class="akr-lit">A</span>
+          <span class="akr-naz">Asysta klienta</span>
+          <span class="akr-zn" aria-hidden="true">+</span>
+        </button>
+        <div class="akr-tr"><p>Wycena ze zdjęć, zanim ktokolwiek przyjedzie. Po każdym etapie zdjęcia idą na telefon klienta, więc widać postęp bez wizyty na budowie.</p></div>
+      </li>
+      <li>
+        <button type="button" class="akr-gl" aria-expanded="false">
+          <span class="akr-lit">R</span>
+          <span class="akr-naz">Rezultat premium</span>
+          <span class="akr-zn" aria-hidden="true">+</span>
+        </button>
+        <div class="akr-tr"><p>Lakiery i oleje Berger-Seidle w standardzie, bez dopłaty za „wersję lepszą”. Po podłodze można chodzić następnego dnia.</p></div>
+      </li>
+      <li>
+        <button type="button" class="akr-gl" aria-expanded="false">
+          <span class="akr-lit">T</span>
+          <span class="akr-naz">Transparentność procesu</span>
+          <span class="akr-zn" aria-hidden="true">+</span>
+        </button>
+        <div class="akr-tr"><p>Zakres i cena ustalone przed startem. Żadna warstwa nie zamyka poprzedniej, dopóki tamta nie została sprawdzona i pokazana.</p></div>
+      </li>
+    </ol>
   </div>
 </section>
 
@@ -970,7 +1093,7 @@ figure{margin:0}
 
 <section class="smart-produkt">
   <div class="wrap">
-    <p class="oczko"><span></span>Cyklinowanie SMART&trade;</p>
+    <p class="oczko"><span></span>Proces SMART&trade;</p>
     <h2>To nie jest zwykłe cyklinowanie</h2>
     <p class="lead">Nie sprzedajemy usługi „przyjedziemy i oszlifujemy". Sprzedajemy produkt
     o ustalonym przebiegu: sześć etapów, które wyglądają tak samo przy każdej realizacji
@@ -1866,4 +1989,65 @@ footer.site .fine{font-size:.58rem!important}
   io.observe(p);
 })();
 /* === animacja konsoli: KONIEC === */
+
+  (function(){
+  /* opinie w hero przewijane w bok, o co prosil Artur */
+  var k = document.getElementById('heroOp');
+  if(!k) return;
+  var tor = k.querySelector('.hero-op-tor');
+  var karty = [].slice.call(tor.children);
+  var kropki = k.querySelector('.hop-kropki');
+  if(karty.length < 2){ k.querySelector('.hero-op-nav').style.display='none'; return; }
+
+  karty.forEach(function(){ kropki.appendChild(document.createElement('i')); });
+  function odswiez(){
+    var i = Math.round(tor.scrollLeft / tor.clientWidth);
+    [].slice.call(kropki.children).forEach(function(c, n){
+      c.classList.toggle('akt', n === i);
+    });
+  }
+  function idz(kier){
+    var i = Math.round(tor.scrollLeft / tor.clientWidth) + kier;
+    i = (i + karty.length) % karty.length;
+    tor.scrollTo({left: i * tor.clientWidth,
+                  behavior: matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth'});
+  }
+  k.querySelectorAll('.hop-btn').forEach(function(b){
+    b.addEventListener('click', function(){ idz(parseInt(b.dataset.kier, 10)); });
+  });
+  tor.addEventListener('scroll', odswiez, {passive:true});
+  odswiez();
+  })();
+
+  (function(){
+  /* akronim SMART: jeden otwarty na raz, zeby lista zostala czytelna */
+  var gl = [].slice.call(document.querySelectorAll('.akr-gl'));
+  if(!gl.length) return;
+  function zwin(b){
+    b.setAttribute('aria-expanded','false');
+    b.nextElementSibling.style.maxHeight = '0px';
+  }
+  function rozwin(b){
+    b.setAttribute('aria-expanded','true');
+    var tr = b.nextElementSibling;
+    tr.style.maxHeight = tr.scrollHeight + 'px';
+  }
+  gl.forEach(function(b){
+    zwin(b);
+    b.addEventListener('click', function(){
+      var byl = b.getAttribute('aria-expanded') === 'true';
+      gl.forEach(zwin);
+      if(!byl) rozwin(b);
+    });
+  });
+  // po zmianie szerokosci okna tekst moze zajac inna liczbe linii
+  addEventListener('resize', function(){
+    gl.forEach(function(b){
+      if(b.getAttribute('aria-expanded') === 'true'){
+        var tr = b.nextElementSibling;
+        tr.style.maxHeight = tr.scrollHeight + 'px';
+      }
+    });
+  });
+  })();
 </script>
