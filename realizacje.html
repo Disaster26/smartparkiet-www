@@ -1027,11 +1027,11 @@ figure{margin:0}
   <div class="wrap">
     <!-- SWIEZE:START -->
     <div class="r-naglowek">
-      <h2>Świeże realizacje</h2>
-      <p>Ostatnie podłogi, które wyszły spod naszych maszyn. Zdjęcia bez obróbki, ten sam kadr przed i po.</p>
+      <h2>Najnowsze realizacje</h2>
+      <p>Podłogi z ostatniego miesiąca, prosto spod naszych maszyn. Zdjęcia bez obróbki, ten sam kadr przed i po.</p>
     </div>
-    <div class="r-lista">
-      <article class="r-poz bezfot" id="r-wilanow-deska-warstwowa">
+    <div class="r-lista" id="rLstNowe">
+      <article class="r-poz bezfot" id="r-wilanow-deska-warstwowa" data-data="2026-10-08">
         <div class="r-wiz"></div>
         <div class="r-tresc">
           <p class="r-program">SMART ZERO DUST™</p>
@@ -1042,7 +1042,7 @@ figure{margin:0}
         </div>
         <div class="r-dod"><div class="r-laczone"><h4>Przed i po</h4><figure><img src="img/wilanow-porownanie-1.webp" alt="Deska warstwowa debowa w Wilanowie, zestawienie przed i po renowacji" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow-porownanie-2.webp" alt="Deska warstwowa debowa w Wilanowie, zestawienie przed i po renowacji" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow-porownanie-3.webp" alt="Deska warstwowa debowa w Wilanowie, zestawienie przed i po renowacji" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow-porownanie-4.webp" alt="Deska warstwowa debowa w Wilanowie, zestawienie przed i po renowacji" loading="lazy" decoding="async"></figure></div><div class="r-stare"><h4>Przed renowacją</h4><div class="r-rzad"><figure><img src="img/wilanow-przed-1.webp" alt="Deska warstwowa przed renowacja, stara warstwa kolorystyczna i zarysowania" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow-przed-2.webp" alt="Deska warstwowa przed renowacja, stara warstwa kolorystyczna i zarysowania" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow-przed-3.webp" alt="Deska warstwowa przed renowacja, stara warstwa kolorystyczna i zarysowania" loading="lazy" decoding="async"></figure></div></div><div class="r-nowe"><figure><img src="img/wilanow-po-1.webp" alt="Deska warstwowa debowa po renowacji, naturalny kolor drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow-po-2.webp" alt="Deska warstwowa debowa po renowacji, naturalny kolor drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow-po-3.webp" alt="Deska warstwowa debowa po renowacji, naturalny kolor drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow-po-4.webp" alt="Deska warstwowa debowa po renowacji, naturalny kolor drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow-po-5.webp" alt="Deska warstwowa debowa po renowacji, naturalny kolor drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow-po-6.webp" alt="Deska warstwowa debowa po renowacji, naturalny kolor drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow-po-7.webp" alt="Deska warstwowa debowa po renowacji, naturalny kolor drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow-po-8.webp" alt="Deska warstwowa debowa po renowacji, naturalny kolor drewna" loading="lazy" decoding="async"></figure></div></div>
       </article>
-      <article class="r-poz odwr" id="r-kuchnia-jodelka-dab">
+      <article class="r-poz odwr" id="r-kuchnia-jodelka-dab" data-data="2026-10-02">
         <div class="r-wiz"><div class="ba r-ba" style="--x:52%"><img src="img/floor-po.webp" alt="Ta sama jodełka dębowa po cyklinowaniu i lakierowaniu" loading="lazy" decoding="async"><img class="before" src="img/floor-przed.webp" alt="Jodełka dębowa w kuchni przed renowacją, z plamami i przetarciami" loading="lazy" decoding="async"><div class="handle"></div><div class="knob">⇔</div><span class="lbl l">przed</span><span class="lbl r">po</span><input type="range" min="0" max="100" value="52" aria-label="Porównanie przed i po: Jodełka francuska w kuchni"></div></div>
         <div class="r-tresc">
           <p class="r-program">Cyklinowanie SMART™</p>
@@ -1053,6 +1053,13 @@ figure{margin:0}
         </div>
         <div class="r-dod"></div>
       </article>
+    </div>
+    <div class="r-naglowek r-naglowek-arch" id="rNagArch" hidden>
+      <h2>Portfolio</h2>
+      <p>Wcześniejsze realizacje. Każda zostaje tu na stałe, razem ze zdjęciami przed i po.</p>
+    </div>
+    <div class="r-lista" id="rLstArch">
+
     </div>
     <!-- SWIEZE:KONIEC -->
 
@@ -1837,3 +1844,34 @@ footer.site .fine{font-size:.58rem!important}
 .art-head .tag::before{content:"";width:26px;height:2px;background:var(--amber);flex:none}
 /* === kolor i logika SMART: KONIEC === */
 </style>
+<!-- === rotacja realizacji: START === -->
+<style>
+.r-naglowek-arch{margin-top:66px;padding-top:34px;border-top:1px solid rgba(26,21,18,.12)}
+.r-naglowek-arch[hidden]{display:none}
+</style>
+<script>
+/* Realizacja stoi miesiac w "Najnowszych", potem sama przechodzi do Portfolio.
+   Podzial jest juz w HTML (Google widzi gotowa tresc), a ten skrypt tylko
+   przelicza go przy wejsciu, zeby przeskok nie wymagal przebudowy pliku. */
+(function(){
+  var nowe=document.getElementById('rLstNowe'),
+      arch=document.getElementById('rLstArch'),
+      nag=document.getElementById('rNagArch');
+  if(!nowe||!arch)return;
+  var prog=Date.now()-30*864e5;
+  [].slice.call(nowe.children).forEach(function(a){
+    var d=Date.parse(a.getAttribute('data-data')||'');
+    if(!d||d>=prog)return;
+    if(nowe.children.length<=1)return;      /* jedna zawsze zostaje na gorze */
+    arch.appendChild(a);
+  });
+  [].slice.call(arch.children).sort(function(a,b){
+    return (b.getAttribute('data-data')||'').localeCompare(a.getAttribute('data-data')||'');
+  }).forEach(function(a){arch.appendChild(a);});
+  if(nag)nag.hidden=!arch.children.length;
+  [nowe,arch].forEach(function(l){
+    [].slice.call(l.children).forEach(function(a,i){a.classList.toggle('odwr',i%2===1);});
+  });
+})();
+</script>
+<!-- === rotacja realizacji: KONIEC === -->

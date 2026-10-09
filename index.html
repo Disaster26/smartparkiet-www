@@ -979,7 +979,8 @@ figure{margin:0}
 
 <div class="topbar">
   <div class="wrap">
-    <span><span class="gw">★★★★★</span> <b>5,0</b> z 221 opinii Google<span class="tb-x"> &middot; cztery oddziały w Warszawie</span></span>
+    <span class="tb-oc"><span class="gw">★★★★★</span> <b>5,0</b> z 221 opinii Google<span class="tb-x"> &middot; cztery oddziały w Warszawie</span></span>
+    <span class="tb-m">Cyklinowanie bezpyłowe &middot; Warszawa, cztery oddziały</span>
     <span class="tb-x">Wycena ze zdjęć w 2 godziny</span>
   </div>
 </div>
@@ -1007,7 +1008,8 @@ figure{margin:0}
   <div class="wrap">
     <p class="hero-logo"><img src="img/logo-znak.png" alt="" width="34" height="34">SMART<em>PARKIET</em></p>
     <span class="tag">Nowoczesne cyklinowanie<br>Warszawa &middot; 4 oddziały</span>
-    <h1><span class="lock">Cyklinowanie<br><em>SMART<sup>&trade;</sup></em></span><span class="h-lin">Bez bałaganu.</span><span class="h-lin">Bez pyłu.</span><span class="h-lin akcent">Bez stresu!</span></h1>
+    <h1><span class="lock">Cyklinowanie<br><em>SMART<sup>&trade;</sup></em></span><span class="h-lin">Bez bałaganu.</span><span class="h-lin">Bez pyłu.</span><span class="h-lin">Bez stresu.</span><span class="h-lin akcent">Bez reklamacji!</span></h1>
+    <p class="hero-ocena"><span class="gw" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b>5,0</b> w Google <span class="sep">&middot;</span> 221 opinii z 4 wizytówek</p>
     <div class="lead hero-lead">
       <p>Nowoczesna metoda renowacji podłóg drewnianych.</p>
       <p>Precyzyjne szlifowanie, profesjonalne odpylanie Festool i lakiery premium Berger-Seidle.</p>
@@ -1036,7 +1038,7 @@ figure{margin:0}
 <section class="akr">
   <div class="wrap">
     <p class="oczko"><span></span>Co znaczy SMART</p>
-    <h2>Pięć rzeczy, które dostaje Pan w każdym zleceniu</h2>
+    <h2>Nie sprzedajemy samego szlifowania podłogi.<br>Sprzedajemy system SMART oparty na pięciu filarach.</h2>
     <ol class="akr-lista">
       <li>
         <button type="button" class="akr-gl" aria-expanded="false">
@@ -1049,7 +1051,7 @@ figure{margin:0}
       <li>
         <button type="button" class="akr-gl" aria-expanded="false">
           <span class="akr-lit">M</span>
-          <span class="akr-naz">Metoda SMART</span>
+          <span class="akr-naz">Metoda bezpyłowa</span>
           <span class="akr-zn" aria-hidden="true">+</span>
         </button>
         <div class="akr-tr"><p>Diagnoza podłogi, dobór technologii pod konkretne drewno, szlif w trzech gradacjach i uzupełnienie szczelin masą z pyłu tej samej podłogi.</p></div>
@@ -1096,8 +1098,8 @@ figure{margin:0}
   <div class="wrap">
     <p class="oczko"><span></span>Proces SMART&trade;</p>
     <h2>To nie jest zwykłe cyklinowanie</h2>
-    <p class="lead">Nie sprzedajemy usługi „przyjedziemy i oszlifujemy". Sprzedajemy produkt
-    o ustalonym przebiegu: sześć etapów, które wyglądają tak samo przy każdej realizacji
+    <p class="lead">Każdy z pięciu filarów ma swój przebieg. Tak wygląda ten najważniejszy,
+    sama robota na podłodze: sześć etapów, które wyglądają tak samo przy każdej realizacji
     i u każdej z czterech ekip.</p>
     <ol class="proces">
       <li class="krok" style="--k:#FF6B2C;--i:0">
@@ -2231,3 +2233,24 @@ footer.site .fine{font-size:.58rem!important}
   });
   })();
 </script>
+/* === uwagi 09.10: START === */
+<style>
+.hero-ocena{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  margin:14px 0 0;font-size:.82rem;color:var(--hero-szary);letter-spacing:.01em}
+.hero-ocena .gw{color:var(--hero-pom);letter-spacing:.06em;font-size:.88rem}
+.hero-ocena b{color:var(--hero-biel);font-size:1.02rem;font-weight:800}
+.hero-ocena .sep{opacity:.45}
+.hero-ocena a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:860px){
+  .hero-ocena{margin-top:10px;font-size:.76rem;gap:6px}
+  .hero-ocena b{font-size:.95rem}
+  .hero h1 .h-lin{font-size:clamp(1.1rem,4.7vw,1.4rem);line-height:1.18}
+  .hero .hero-lead{margin-top:10px}
+  .hero .hero-lead p{font-size:.84rem;line-height:1.4;margin-bottom:5px}
+}
+.tb-m{display:none}
+@media(max-width:860px){.tb-oc{display:none}.tb-m{display:inline}}
+.hero-ocena{flex-wrap:nowrap;white-space:nowrap}
+.akr h2{max-width:24ch}
+</style>
+/* === uwagi 09.10: KONIEC === */
