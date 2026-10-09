@@ -2051,6 +2051,104 @@ footer.site .fine{font-size:.58rem!important}
     padding:14px 16px;font-size:.8rem}
 }
 </style>
+<style>
+/* ============================================================
+   Hero: spokojniejsza kolorystyka i wszystko na pierwszym ekranie.
+   Artur: "za duzy kontrast, bije po oczach" oraz "powinno sie
+   zmiescic to wszystko co jest nad zdjeciem".
+   ============================================================ */
+:root{
+  --hero-tlo:#191410;      /* zamiast prawie czerni, zeby nie bylo dziury */
+  --hero-biel:#F2EDE6;     /* cieplа biel zamiast czystej #fff */
+  --hero-szary:#C2BBB1;
+  --hero-pom:#E8671F;      /* ten sam pomarancz, lekko stonowany */
+}
+.hero{background:var(--hero-tlo)}
+/* welon lzejszy: mniej kontrastu miedzy tekstem a kadrem */
+.hero::after{background:
+  linear-gradient(90deg,
+    rgba(25,20,16,.90) 0%, rgba(25,20,16,.84) 36%,
+    rgba(25,20,16,.68) 52%, rgba(25,20,16,.44) 66%,
+    rgba(25,20,16,.24) 80%, rgba(25,20,16,.14) 100%),
+  linear-gradient(180deg,
+    rgba(25,20,16,.58) 0%, rgba(25,20,16,.22) 26%,
+    rgba(25,20,16,.26) 70%, rgba(25,20,16,.72) 100%)}
+
+/* halo wokol liter dodawalo ostrosci - zmiekczone */
+.hero h1,.hero .lead,.hero-quote,.hero h1 .lock,.hero h1 .h-lin{
+  text-shadow:0 1px 10px rgba(0,0,0,.45)}
+
+.hero h1 .lock{color:var(--hero-biel)}
+.hero h1 .lock em{color:var(--hero-pom)}
+.hero h1 .h-lin{color:var(--hero-biel)}
+.hero h1 .h-lin.akcent{color:var(--hero-pom)}
+.hero .hero-lead p{color:var(--hero-szary)}
+.hero .hero-lead .moc{color:var(--hero-biel)}
+.hero .tag{color:#ADA69C}
+.hero .tag::after{background:var(--hero-pom);opacity:.9}
+.hero-logo{color:var(--hero-biel)}
+.hero-logo em{color:var(--hero-pom)}
+.hero .cta-rowne .btn-amber{background:var(--hero-pom)}
+.hero-op-tor .hero-quote{color:#B9B2A9;border-left-color:var(--hero-pom)}
+.hero-op-tor .hero-quote b{color:var(--hero-biel)}
+
+/* --- wszystko na jeden ekran telefonu --- */
+@media(max-width:860px){
+  .hero{min-height:0;padding:18px 0 22px}
+  .hero .wrap{padding-top:0;padding-bottom:0}
+  .hero .tag{font-size:.68rem;letter-spacing:.17em;line-height:1.5}
+  .hero .tag::after{width:44px;height:2px;margin-top:10px}
+  .hero h1{margin-top:14px}
+  .hero h1 .lock{font-size:clamp(1.95rem,8.6vw,2.5rem);margin-bottom:10px}
+  .hero h1 .h-lin{font-size:clamp(1.22rem,5.2vw,1.5rem);line-height:1.2}
+  .hero .hero-lead{margin-top:14px;max-width:100%}
+  .hero .hero-lead p{font-size:.88rem;line-height:1.45;margin-bottom:6px}
+  .hero .cta-rowne{margin-top:16px;gap:8px}
+  .hero .cta-rowne .btn{padding:12px 16px;font-size:.76rem;letter-spacing:.05em}
+  .hero .cta-rowne .bi{width:20px;height:20px}
+  .hero-op{margin-top:16px}
+  .hero-op-tor .hero-quote{font-size:.8rem;line-height:1.45;padding-left:12px}
+  .hero-op-tor .hero-quote b{font-size:.74rem;margin-top:4px}
+  .hero-op-nav{margin-top:8px}
+  .hop-btn{width:30px;height:30px;font-size:.85rem}
+}
+/* na laptopie 900 px opinie wypadaly pod zgieciem - sciagniete proporcje */
+@media(min-width:861px){
+  .hero{min-height:0;padding:26px 0 32px}
+  .hero-logo{margin-bottom:10px;font-size:1.05rem}
+  .hero-logo img{width:28px;height:28px}
+  .hero .tag{font-size:.72rem;letter-spacing:.2em;line-height:1.55}
+  .hero .tag::after{margin-top:10px;width:46px}
+  .hero h1{margin-top:12px}
+  .hero h1 .lock{font-size:clamp(2.2rem,3.9vw,2.8rem);margin-bottom:8px}
+  .hero h1 .h-lin{font-size:clamp(1.2rem,2vw,1.45rem);line-height:1.2}
+  .hero .hero-lead{margin-top:14px}
+  .hero .hero-lead p{margin-bottom:4px;font-size:.9rem;line-height:1.5}
+  .hero .cta-rowne{margin-top:14px;gap:8px}
+  .hero .cta-rowne .btn{padding:12px 18px;font-size:.82rem}
+  .hero-op{margin-top:14px}
+  .hero-op-tor .hero-quote{font-size:.86rem;line-height:1.5}
+  .hero-op-nav{margin-top:8px}
+}
+/* na telefonie tekst idzie przez cala szerokosc, wiec welon tez musi byc
+   rowny - inaczej "SMART" lezy na jasnym worku i zielonym napisie Lagler */
+@media(max-width:860px){
+  .hero::after{background:
+    linear-gradient(180deg,
+      rgba(25,20,16,.88) 0%, rgba(25,20,16,.80) 38%,
+      rgba(25,20,16,.70) 62%, rgba(25,20,16,.58) 80%,
+      rgba(25,20,16,.78) 100%)}
+  .hero-img{object-position:58% 56%}
+}
+/* niskie ekrany: jeszcze ciasniej, zeby opinie zmiescily sie nad zgieciem */
+@media(max-width:860px) and (max-height:760px){
+  .hero h1 .lock{font-size:1.85rem;margin-bottom:8px}
+  .hero h1 .h-lin{font-size:1.14rem}
+  .hero .hero-lead p{font-size:.84rem;margin-bottom:4px}
+  .hero .cta-rowne .btn{padding:10px 14px}
+}
+</style>
+
 
 <script>
 /* === animacja konsoli: START === */
