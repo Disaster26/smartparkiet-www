@@ -7,6 +7,7 @@ czekania na JavaScript.
 
 Uzycie:  python _buduj_realizacje.py
 """
+import datetime
 import html
 import io
 import json
@@ -18,6 +19,7 @@ P_JSON = os.path.join(KAT, 'dane', 'realizacje.json')
 P_HTML = os.path.join(KAT, 'realizacje.html')
 START = '<!-- SWIEZE:START -->'
 KONIEC = '<!-- SWIEZE:KONIEC -->'
+DNI = 30   # tyle dni realizacja stoi w Najnowszych
 
 MIESIACE = ('stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca',
             'lipca', 'sierpnia', 'września', 'października',
@@ -98,7 +100,7 @@ def karta(w, nr):
                 + '</div>')
 
     return (
-        '      <article class="r-poz{odwr}{bezfot}" id="r-{rid}">\n'
+        '      <article class="r-poz{odwr}{bezfot}" id="r-{rid}" data-data="{iso}">\n'
         '        <div class="r-wiz">{wizual}</div>\n'
         '        <div class="r-tresc">\n'
         '          {program}'
@@ -130,15 +132,31 @@ def main():
     widoczne = [w for w in dane if not w.get('szkic')]
     widoczne.sort(key=lambda w: w.get('data', ''), reverse=True)
 
+    granica = (datetime.date.today() - datetime.timedelta(days=DNI)).isoformat()
+    swieze = [w for w in widoczne if (w.get('data') or '') >= granica]
+    if not swieze and widoczne:          # zawsze cos stoi w Najnowszych
+        swieze = widoczne[:1]
+    archiwum = [w for w in widoczne if w not in swieze]
+
     if widoczne:
-        srodek = '\n'.join(karta(w, i) for i, w in enumerate(widoczne))
         blok = (
             '    <div class="r-naglowek">\n'
-            '      <h2>Świeże realizacje</h2>\n'
-            '      <p>Ostatnie podłogi, które wyszły spod naszych maszyn. '
+            '      <h2>Najnowsze realizacje</h2>\n'
+            '      <p>Podłogi z ostatniego miesiąca, prosto spod naszych maszyn. '
             'Zdjęcia bez obróbki, ten sam kadr przed i po.</p>\n'
             '    </div>\n'
-            '    <div class="r-lista">\n' + srodek + '\n    </div>'
+            '    <div class="r-lista" id="rLstNowe">\n'
+            + '\n'.join(karta(w, i) for i, w in enumerate(swieze))
+            + '\n    </div>\n'
+            '    <div class="r-naglowek r-naglowek-arch" id="rNagArch"'
+            + ('' if archiwum else ' hidden') + '>\n'
+            '      <h2>Portfolio</h2>\n'
+            '      <p>Wcześniejsze realizacje. Każda zostaje tu na stałe, '
+            'razem ze zdjęciami przed i po.</p>\n'
+            '    </div>\n'
+            '    <div class="r-lista" id="rLstArch">\n'
+            + '\n'.join(karta(w, i) for i, w in enumerate(archiwum))
+            + '\n    </div>'
         )
     else:
         blok = ''
