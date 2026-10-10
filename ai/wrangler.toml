@@ -8,7 +8,7 @@ binding = "LIMITY"
 id = "e74f5a4b05dd4c04860e2dd659e8990f"
 
 [vars]
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-flash-latest"
 
 # Sekrety (NIE wpisywac ich w tym pliku):
 #   wrangler secret put GEMINI_KEY
