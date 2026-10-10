@@ -104,7 +104,8 @@ export default {
       if (mail && !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(mail)) {
         return odp({ blad: 'nieprawidlowy adres e-mail' }, 400);
       }
-      if (!(await wolne(env, `w:${ip}:${dzis()}`, 10))) {
+      const ip2 = request.headers.get('CF-Connecting-IP') || '0.0.0.0';
+      if (!(await wolne(env, `w:${ip2}:${dzis()}`, 10))) {
         return odp({ blad: 'za duzo zgloszen z tego urzadzenia, prosze napisac mailem' }, 429);
       }
       const r2 = await fetch('https://formsubmit.co/ajax/' + BIURO, {
@@ -117,7 +118,7 @@ export default {
         }),
       });
       const tekst2 = await r2.text();
-      await dolicz(env, `w:${ip}:${dzis()}`);
+      await dolicz(env, `w:${ip2}:${dzis()}`);
       return odp({ ok: r2.ok, odpowiedz: tekst2.slice(0, 200) }, r2.ok ? 200 : 502);
     }
 
