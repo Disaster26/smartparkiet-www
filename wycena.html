@@ -1110,7 +1110,10 @@ figure{margin:0}
       if(em) w.push('E-mail klienta: '+em);
       return w.join('\n');
     }
-    const BIURO='smartparkiet.kontakt@gmail.com';
+    // NA CZAS TESTOW: kalkulacja idzie na nasza skrzynke, zeby bylo widac,
+    // czy mechanizm dowozi maila. Po potwierdzeniu wracamy na
+    // smartparkiet.kontakt@gmail.com (tam tez trzeba aktywowac FormSubmit).
+    const BIURO='stasiu2626@gmail.com';
     async function doBiura(t,mail){
       /* Artur 10.10 22:04: "wyslij do siebie i naszego biura".
          FormSubmit wysyla na skrzynke biura, a kopie na adres klienta. */
@@ -1762,4 +1765,18 @@ footer.site .fine{font-size:.58rem!important}
 .ai-form .szer{grid-column:1/-1}
 .ai-form .szer input{width:100%}
 .wyslano .stan-wys{font-size:.9rem;margin:8px 0 0;font-weight:600}
+</style>
+<style>
+/* uklad formularza po tescie na telefonie (Artur, 10.10 22:26) */
+.ai-form{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.ai-form>*{min-width:0}
+.ai-form label,.ai-form .pyt>span{overflow-wrap:anywhere}
+.ai-form select,.ai-form input{width:100%;max-width:100%}
+.ai-form .pyt{grid-column:1/-1}
+.ai-form .tn{gap:18px}
+@media(max-width:700px){
+  .ai-form{grid-template-columns:1fr;gap:14px}
+  .ai-form button{width:100%}
+  .ai-form .tn{gap:14px}
+}
 </style>
