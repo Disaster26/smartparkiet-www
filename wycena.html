@@ -967,7 +967,7 @@ figure{margin:0}
         <div><label for="m2">Metraż</label><input id="m2" type="number" value="58" min="5" max="600"></div>
         <div><label for="typ">Podłoga</label><select id="typ"><option value="1">Klepka</option><option value="1.25">Mozaika</option><option value="1.08">Warstwowa</option><option value="1.12">Egzotyk</option></select></div>
         <div><label for="wyk">Wykończenie</label><select id="wyk"><option value="0">Lakier</option><option value="8">Olej</option><option value="12">Twardy wosk</option><option value="55">Kolor</option></select></div>
-        <button class="btn btn-amber" type="button" id="wyslij">Wyślij do parkieciarza</button>
+        <button class="btn btn-ghost" type="button" id="analizuj" hidden>Oceń zdjęcie teraz</button><button class="btn btn-amber" type="button" id="wyslij">Wyślij do parkieciarza</button>
         <div class="wyslano" id="wyslano" hidden><b>Gdzie to trafia</b><p>Zgłoszenie idzie prosto na telefon dyżurnego parkieciarza - WhatsApp <b>602 242 815</b> i kopia na <b>smartparkiet@gmail.com</b>. Odpowiedź w ciągu dwóch godzin roboczych.</p><div class="podsum" id="podsum"></div><div class="drogi"><a class="btn btn-amber" id="waLink" href="#" target="_blank" rel="noopener">Wyślij przez WhatsApp</a><a class="btn btn-ghost" id="mailLink" href="#">Wyślij mailem</a></div></div>
       </form>
     </div>
@@ -1118,6 +1118,37 @@ figure{margin:0}
   ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
   drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')){plik=f;pokaz(URL.createObjectURL(f),f.name.slice(0,28));}});
   pokaz(SAMPLES.dab,'przykładowe zdjęcie');
+
+  /* ---- rozpoznawanie zdjecia przez wlasny serwer (worker) ----
+     Dopoki ANALIZA_URL jest puste, przycisk sie nie pokazuje i strona
+     dziala jak dotad: zdjecie oglada parkieciarz. Klucz do modelu nigdy
+     nie trafia do przegladarki, limity pilnuje worker. */
+  const ANALIZA_URL='';
+  const przyciskAnalizy=document.getElementById('analizuj');
+  if(ANALIZA_URL&&przyciskAnalizy){
+    przyciskAnalizy.hidden=false;
+    przyciskAnalizy.addEventListener('click',async()=>{
+      if(!plik){toast('Najpierw proszę wrzucić zdjęcie podłogi.');return}
+      if(plik.size>4*1024*1024){toast('Zdjęcie większe niż 4 MB. Proszę wysłać mniejsze.');return}
+      przyciskAnalizy.disabled=true; przyciskAnalizy.textContent='Oglądam zdjęcie...';
+      photo.classList.add('scanning');
+      try{
+        const dane=await new Promise((ok,zle)=>{const fr=new FileReader();fr.onload=()=>ok(fr.result);fr.onerror=zle;fr.readAsDataURL(plik)});
+        const r=await fetch(ANALIZA_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({obraz:dane,turnstile:(window.turnstile&&window.__ts)||''})});
+        const j=await r.json();
+        if(!j.ok){toast(j.blad||'Nie udało się przeanalizować zdjęcia.');return}
+        const w=j.wynik||{};
+        const pisz=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v||'nie wiem'};
+        pisz('oG',w.gatunek); pisz('oU',w.uklad); pisz('oS',w.stan); pisz('oZ',w.zalecenie);
+        const n=document.querySelector('.ai-out .est small');
+        if(n)n.textContent=(w.pewnosc?('Pewność oceny: '+w.pewnosc+'. '):'')+
+          (w.uwaga? w.uwaga+' ' : '')+'To wstępna ocena ze zdjęcia, potwierdza ją parkieciarz.';
+      }catch(e){toast('Serwer analizy nie odpowiada. Zdjęcie i tak obejrzy parkieciarz.');}
+      finally{photo.classList.remove('scanning');przyciskAnalizy.disabled=false;przyciskAnalizy.textContent='Oceń zdjęcie teraz';}
+    });
+  }
+  function toast(t){const n=document.getElementById('oT'); if(n)n.textContent=t;}
   })();
   (function(){
   /* map */

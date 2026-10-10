@@ -5,7 +5,7 @@ compatibility_date = "2026-10-01"
 # Licznik limitow. Utworzyc: wrangler kv namespace create LIMITY
 [[kv_namespaces]]
 binding = "LIMITY"
-id = "WKLEIC_ID_PRZESTRZENI_KV"
+id = "e74f5a4b05dd4c04860e2dd659e8990f"
 
 [vars]
 MODEL = "gemini-2.5-flash"
