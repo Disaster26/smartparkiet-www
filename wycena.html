@@ -1117,11 +1117,26 @@ figure{margin:0}
       const stan=document.getElementById('stanWys');
       if(stan)stan.textContent='Wysyłam...';
       try{
-        const r=await fetch(ANALIZA_URL+'/wyslij',{method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({tresc:t,mail:mail})});
-        const j=await r.json();
-        const ok=r.ok&&j&&j.ok;
+        let ok=false;
+        try{
+          // 1. prosto z przegladarki klienta - jego IP, bez limitow
+          const r1=await fetch('https://formsubmit.co/ajax/'+BIURO,{method:'POST',
+            headers:{'Content-Type':'application/json',Accept:'application/json'},
+            body:JSON.stringify({_subject:'SMARTEXPERT ONLINE - kalkulacja '+(+m2.value||0)+' m2',
+              _cc:mail||'', _template:'table', Zgloszenie:t, Email_klienta:mail||'nie podano'})});
+          const j1=await r1.json();
+          ok=!!(j1&&(j1.success===true||j1.success==='true'));
+        }catch(e){}
+        if(!ok){
+          // 2. zapasowo przez naszego workera, gdy siec klienta blokuje formsubmit
+          try{
+            const r2=await fetch(ANALIZA_URL+'/wyslij',{method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({tresc:t,mail:mail})});
+            const j2=await r2.json();
+            ok=!!(r2.ok&&j2&&j2.ok);
+          }catch(e){}
+        }
         if(stan)stan.textContent=ok?(mail?('Wysłane do nas, kopia poszła na '+mail):'Wysłane do naszego biura.')
           :'Nie udało się wysłać automatycznie. Proszę skorzystać z przycisków niżej.';
       }catch(e){ if(stan)stan.textContent='Brak połączenia. Proszę skorzystać z przycisków niżej.'; }
