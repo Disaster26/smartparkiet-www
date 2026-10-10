@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="pl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SMARTEXPERT ONLINE™: wycena ze zdjęć w 2 godziny | SMARTPARKIET</title>
+<html lang="pl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=tsStart" async defer></script>
+<script>window.tsStart=function(){try{turnstile.render("#ts",{sitekey:"0x4AAAAAAFTVRaURC39E8jHq",callback:function(t){window.__ts=t},"error-callback":function(){window.__ts=""}})}catch(e){}};</script><title>SMARTEXPERT ONLINE™: wycena ze zdjęć w 2 godziny | SMARTPARKIET</title>
 <link rel="icon" href="img/favicon.png" type="image/png">
 <meta name="description" content="Proszę wysłać 3-5 zdjęć podłogi i metraż. W ciągu dwóch godzin roboczych odsyłamy widełki cenowe i wolne terminy czterech ekip.">
 <!-- podglad linku: START -->
@@ -967,7 +969,7 @@ figure{margin:0}
         <div><label for="m2">Metraż</label><input id="m2" type="number" value="58" min="5" max="600"></div>
         <div><label for="typ">Podłoga</label><select id="typ"><option value="1">Klepka</option><option value="1.25">Mozaika</option><option value="1.08">Warstwowa</option><option value="1.12">Egzotyk</option></select></div>
         <div><label for="wyk">Wykończenie</label><select id="wyk"><option value="0">Lakier</option><option value="8">Olej</option><option value="12">Twardy wosk</option><option value="55">Kolor</option></select></div>
-        <button class="btn btn-ghost" type="button" id="analizuj" hidden>Oceń zdjęcie teraz</button><button class="btn btn-amber" type="button" id="wyslij">Wyślij do parkieciarza</button>
+        <div id="ts" style="margin:4px 0"></div><button class="btn btn-ghost" type="button" id="analizuj" hidden>Oceń zdjęcie teraz</button><button class="btn btn-amber" type="button" id="wyslij">Wyślij do parkieciarza</button>
         <div class="wyslano" id="wyslano" hidden><b>Gdzie to trafia</b><p>Zgłoszenie idzie prosto na telefon dyżurnego parkieciarza - WhatsApp <b>602 242 815</b> i kopia na <b>smartparkiet@gmail.com</b>. Odpowiedź w ciągu dwóch godzin roboczych.</p><div class="podsum" id="podsum"></div><div class="drogi"><a class="btn btn-amber" id="waLink" href="#" target="_blank" rel="noopener">Wyślij przez WhatsApp</a><a class="btn btn-ghost" id="mailLink" href="#">Wyślij mailem</a></div></div>
       </form>
     </div>
@@ -1123,7 +1125,7 @@ figure{margin:0}
      Dopoki ANALIZA_URL jest puste, przycisk sie nie pokazuje i strona
      dziala jak dotad: zdjecie oglada parkieciarz. Klucz do modelu nigdy
      nie trafia do przegladarki, limity pilnuje worker. */
-  const ANALIZA_URL='';
+  const ANALIZA_URL='https://smartexpert-analiza.smartparkiet.workers.dev';
   const przyciskAnalizy=document.getElementById('analizuj');
   if(ANALIZA_URL&&przyciskAnalizy){
     przyciskAnalizy.hidden=false;
@@ -1135,7 +1137,7 @@ figure{margin:0}
       try{
         const dane=await new Promise((ok,zle)=>{const fr=new FileReader();fr.onload=()=>ok(fr.result);fr.onerror=zle;fr.readAsDataURL(plik)});
         const r=await fetch(ANALIZA_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({obraz:dane,turnstile:(window.turnstile&&window.__ts)||''})});
+          body:JSON.stringify({obraz:dane,turnstile:window.__ts||''})});
         const j=await r.json();
         if(!j.ok){toast(j.blad||'Nie udało się przeanalizować zdjęcia.');return}
         const w=j.wynik||{};

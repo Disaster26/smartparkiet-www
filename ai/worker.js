@@ -56,12 +56,15 @@ function odp(dane, status = 200) {
   });
 }
 
-async function licznik(env, klucz, limit) {
+async function wolne(env, klucz, limit) {
   const teraz = parseInt((await env.LIMITY.get(klucz)) || '0', 10);
-  if (teraz >= limit) return false;
-  // doba z sekundowym zapasem, zeby klucz sam znikal
+  return teraz < limit;
+}
+
+async function dolicz(env, klucz) {
+  // liczymy dopiero UDANE analizy: gdy model padnie, klient nie traci proby
+  const teraz = parseInt((await env.LIMITY.get(klucz)) || '0', 10);
   await env.LIMITY.put(klucz, String(teraz + 1), { expirationTtl: 60 * 60 * 26 });
-  return true;
 }
 
 async function czlowiek(env, token, ip) {
@@ -98,10 +101,12 @@ export default {
     if (!(await czlowiek(env, ciało.turnstile, ip))) {
       return odp({ blad: 'weryfikacja nie przeszla, prosze odswiezyc strone' }, 403);
     }
-    if (!(await licznik(env, `g:${dzis()}`, LIMIT_DOBA))) {
+    const kluczG = `g:${dzis()}`;
+    const kluczIP = `ip:${ip}:${dzis()}`;
+    if (!(await wolne(env, kluczG, LIMIT_DOBA))) {
       return odp({ blad: 'dzienny limit analiz wyczerpany, prosze wyslac zdjecia mailem' }, 429);
     }
-    if (!(await licznik(env, `ip:${ip}:${dzis()}`, LIMIT_IP))) {
+    if (!(await wolne(env, kluczIP, LIMIT_IP))) {
       return odp({ blad: `na dzis limit ${LIMIT_IP} analiz z tego urzadzenia` }, 429);
     }
 
@@ -111,13 +116,15 @@ export default {
     const bajtow = Math.floor((m[2].length * 3) / 4);
     if (bajtow > MAX_BAJTOW) return odp({ blad: 'zdjecie wieksze niz 4 MB' }, 413);
 
+    // Klucz idzie naglowkiem x-goog-api-key, a nie w adresie: nowe klucze
+    // Google AI Studio (zaczynajace sie od "AQ.") nie dzialaja jako ?key=
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${
-      env.MODEL || 'gemini-2.5-flash'
-    }:generateContent?key=${env.GEMINI_KEY}`;
+      env.MODEL || 'gemini-flash-latest'
+    }:generateContent`;
 
-    const r = await fetch(url, {
+    const zapytaj = (adres) => fetch(adres, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': env.GEMINI_KEY },
       body: JSON.stringify({
         contents: [
           {
@@ -131,8 +138,18 @@ export default {
       }),
     });
 
+    let r = await zapytaj(url);
+    if (r.status === 503 || r.status === 429) {
+      // glowny model bywa chwilowo przeciazony; lzejszy zwykle odpowiada
+      r = await zapytaj(url.replace(env.MODEL || 'gemini-flash-latest', 'gemini-flash-lite-latest'));
+    }
+
     if (!r.ok) {
-      return odp({ blad: 'model chwilowo nie odpowiada, parkieciarz obejrzy zdjecia recznie' }, 502);
+      const tresc = (await r.text()).slice(0, 300);
+      console.log('model odmowil', r.status, tresc);
+      return odp({ blad: 'model chwilowo nie odpowiada, parkieciarz obejrzy zdjecia recznie',
+                   kod: r.status, szczegol: env.DEBUG ? tresc : undefined,
+                   adres: env.DEBUG ? url : undefined }, 502);
     }
     const j = await r.json();
     const tekst = j?.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
@@ -142,6 +159,8 @@ export default {
     } catch (e) {
       return odp({ blad: 'nie udalo sie odczytac odpowiedzi modelu' }, 502);
     }
+    await dolicz(env, kluczG);
+    await dolicz(env, kluczIP);
     if (wynik.czy_podloga === false) {
       return odp({ blad: 'na zdjeciu nie widac podlogi drewnianej, prosze o inne ujecie' }, 422);
     }
