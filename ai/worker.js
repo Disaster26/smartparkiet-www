@@ -91,6 +91,36 @@ export default {
     }
     if (request.method !== 'POST') return odp({ blad: 'tylko POST' }, 405);
 
+    // --- /wyslij: kalkulacja do biura i kopia do klienta ---------------------
+    // Przegladarka rozmawia tylko z nami, a my z FormSubmit. Dzieki temu
+    // wysylka dziala takze tam, gdzie siec blokuje formsubmit.co.
+    if (new URL(request.url).pathname === '/wyslij') {
+      const BIURO = 'smartparkiet.kontakt@gmail.com';
+      let p2;
+      try { p2 = await request.json(); } catch (e) { return odp({ blad: 'zly format' }, 400); }
+      const tresc = String(p2.tresc || '').slice(0, 6000);
+      const mail = String(p2.mail || '').slice(0, 120);
+      if (tresc.length < 20) return odp({ blad: 'pusta kalkulacja' }, 400);
+      if (mail && !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(mail)) {
+        return odp({ blad: 'nieprawidlowy adres e-mail' }, 400);
+      }
+      if (!(await wolne(env, `w:${ip}:${dzis()}`, 10))) {
+        return odp({ blad: 'za duzo zgloszen z tego urzadzenia, prosze napisac mailem' }, 429);
+      }
+      const r2 = await fetch('https://formsubmit.co/ajax/' + BIURO, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          _subject: 'SMARTEXPERT ONLINE - kalkulacja ze strony',
+          _cc: mail || '', _template: 'table',
+          Zgloszenie: tresc, Email_klienta: mail || 'nie podano',
+        }),
+      });
+      const tekst2 = await r2.text();
+      await dolicz(env, `w:${ip}:${dzis()}`);
+      return odp({ ok: r2.ok, odpowiedz: tekst2.slice(0, 200) }, r2.ok ? 200 : 502);
+    }
+
     const ip = request.headers.get('CF-Connecting-IP') || '0.0.0.0';
     let ciało;
     try {

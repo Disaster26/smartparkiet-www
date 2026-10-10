@@ -978,9 +978,9 @@ figure{margin:0}
       <form class="ai-form" onsubmit="return false">
         <div><label for="m2">Metraż</label><input id="m2" type="number" value="58" min="5" max="600"></div>
         <div><label for="typ">Podłoga</label><select id="typ"><option value="1">Klepka</option><option value="1.25">Mozaika</option><option value="1.08">Warstwowa</option><option value="1.12">Egzotyk</option></select></div>
-        <div><label for="wyk">Wykończenie</label><select id="wyk"><option value="0">Lakier</option><option value="8">Olej</option><option value="12">Twardy wosk</option><option value="55">Kolor</option></select></div>
-        <div id="ts" style="margin:4px 0"></div><button class="btn btn-ghost" type="button" id="analizuj" hidden>Oceń zdjęcie teraz</button><button class="btn btn-amber" type="button" id="wyslij">Wyślij do parkieciarza</button>
-        <div class="wyslano" id="wyslano" hidden><b>Gdzie to trafia</b><p>Zgłoszenie idzie prosto na telefon dyżurnego parkieciarza - WhatsApp <b>602 242 815</b> i kopia na <b>smartparkiet@gmail.com</b>. Odpowiedź w ciągu dwóch godzin roboczych.</p><div class="podsum" id="podsum"></div><div class="drogi"><a class="btn btn-amber" id="waLink" href="#" target="_blank" rel="noopener">Wyślij przez WhatsApp</a><a class="btn btn-ghost" id="mailLink" href="#">Wyślij mailem</a></div></div>
+        <div><label for="wyk">Wykończenie</label><select id="wyk"><option value="0">Lakier</option><option value="8">Olej</option><option value="12">Twardy wosk</option><option value="55">Kolor</option></select></div><div><label for="gat">Gatunek drewna</label><select id="gat"><option>nie wiem</option><option>dąb</option><option>jesion</option><option>buk</option><option>sosna</option><option>drewno egzotyczne</option><option>deska warstwowa</option></select></div><div><label for="wiek">Wiek podłogi</label><select id="wiek"><option>nie wiem</option><option>do 10 lat</option><option>10-30 lat</option><option>ponad 30 lat</option><option>nowa, nieużywana</option></select></div><div class="pyt"><span>Listwy przypodłogowe</span><div class="tn"><label><input type="radio" name="listwy" value="tak"> tak</label><label><input type="radio" name="listwy" value="nie" checked> nie</label></div></div><div class="pyt"><span>Naprawy, uzupełnienia klepek</span><div class="tn"><label><input type="radio" name="naprawy" value="tak"> tak</label><label><input type="radio" name="naprawy" value="nie" checked> nie</label><label><input type="radio" name="naprawy" value="nie wiem"> nie wiem</label></div></div><div class="pyt"><span>Skrzypienie, luźne klepki (stabilizacja iniekcyjna)</span><div class="tn"><label><input type="radio" name="iniekcja" value="tak"> tak</label><label><input type="radio" name="iniekcja" value="nie" checked> nie</label><label><input type="radio" name="iniekcja" value="nie wiem"> nie wiem</label></div></div><div class="szer"><label for="mailKl">Państwa e-mail, żeby dostać kalkulację do siebie</label><input id="mailKl" type="email" inputmode="email" placeholder="jan.kowalski@poczta.pl"></div>
+        <div id="ts" style="margin:4px 0"></div><button class="btn btn-ghost" type="button" id="analizuj" hidden>Oceń zdjęcie teraz</button><button class="btn btn-amber" type="button" id="wyslij">Wyślij do siebie i do nas</button>
+        <div class="wyslano" id="wyslano" hidden><b>Gdzie to trafia</b><p>Kalkulacja idzie do naszego biura na <b>smartparkiet.kontakt@gmail.com</b>, a kopia na Państwa adres, jeśli został podany. Telefony dyżurne: <b>602 242 815</b> i <b>606 949 222</b>. Odpowiedź w ciągu dwóch godzin roboczych.</p><p class="stan-wys" id="stanWys"></p><div class="podsum" id="podsum"></div><div class="drogi"><a class="btn btn-amber" id="waLink" href="#" target="_blank" rel="noopener">Wyślij przez WhatsApp</a><a class="btn btn-ghost" id="mailLink" href="#">Wyślij mailem</a></div></div>
       </form>
     </div>
   </div>
@@ -1085,7 +1085,9 @@ figure{margin:0}
     function tresc(){
       const a=Math.max(5,+m2.value||0);
       const g=document.getElementById('oG'), u=document.getElementById('oU'), st=document.getElementById('oS'), z=document.getElementById('oZ');
-      const ma=t=>t&&t!=='-'&&t!=='\u2014'&&t!=='\u2026';
+      // tylko gdy model naprawde ocenil zdjecie; inaczej w tych polach
+      // stoja zwykle komunikaty i nie maja czego szukac w zgloszeniu
+      const ma=t=>window.__analiza&&t&&t!=='-'&&t!=='\u2014'&&t!=='\u2026';
       const w=[];
       w.push('Zgłoszenie ze strony SMARTPARKIET - wycena ze zdjęć');
       w.push('Metraż: '+a+' m\u00b2');
@@ -1095,14 +1097,41 @@ figure{margin:0}
       if(ma(u&&u.textContent)) w.push('Układ: '+u.textContent);
       if(ma(st&&st.textContent)) w.push('Stan: '+st.textContent);
       if(ma(z&&z.textContent)) w.push('Zalecenie: '+z.textContent);
+      const zn=n=>{const e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:'nie podano'};
+      w.push('Gatunek wg klienta: '+document.getElementById('gat').value);
+      w.push('Wiek podłogi: '+document.getElementById('wiek').value);
+      w.push('Listwy przypodłogowe: '+zn('listwy'));
+      w.push('Naprawy, uzupełnienia klepek: '+zn('naprawy'));
+      w.push('Stabilizacja iniekcyjna: '+zn('iniekcja'));
       w.push('Widełki z kalkulatora: '+oN.textContent);
+      if(zn('listwy')==='tak'||zn('naprawy')==='tak'||zn('iniekcja')==='tak')
+        w.push('Pozycje dodatkowe wyceniamy po obejrzeniu zdjęć, nie wchodzą w widełki powyżej.');
+      const em=(document.getElementById('mailKl')||{}).value;
+      if(em) w.push('E-mail klienta: '+em);
       return w.join('\n');
+    }
+    const BIURO='smartparkiet.kontakt@gmail.com';
+    async function doBiura(t,mail){
+      /* Artur 10.10 22:04: "wyslij do siebie i naszego biura".
+         FormSubmit wysyla na skrzynke biura, a kopie na adres klienta. */
+      const stan=document.getElementById('stanWys');
+      if(stan)stan.textContent='Wysyłam...';
+      try{
+        const r=await fetch(ANALIZA_URL+'/wyslij',{method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({tresc:t,mail:mail})});
+        const j=await r.json();
+        const ok=r.ok&&j&&j.ok;
+        if(stan)stan.textContent=ok?(mail?('Wysłane do nas, kopia poszła na '+mail):'Wysłane do naszego biura.')
+          :'Nie udało się wysłać automatycznie. Proszę skorzystać z przycisków niżej.';
+      }catch(e){ if(stan)stan.textContent='Brak połączenia. Proszę skorzystać z przycisków niżej.'; }
     }
     bWys.addEventListener('click',()=>{
       const t=tresc();
       podsum.textContent=t;
+      doBiura(t,(document.getElementById('mailKl')||{}).value||'');
       waL.href='https://wa.me/48602242815?text='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi doślę w odpowiedzi.');
-      mailL.href='mailto:smartparkiet@gmail.com?subject='+encodeURIComponent('Wycena ze zdjęć - '+(+m2.value||0)+' m2')+'&body='+encodeURIComponent(t+'\n\nProszę o kontakt. W załączniku zdjęcia podłogi.\n\nImię i nazwisko:\nTelefon:\nDzielnica:');
+      mailL.href='mailto:smartparkiet.kontakt@gmail.com?subject='+encodeURIComponent('Wycena ze zdjęć - '+(+m2.value||0)+' m2')+'&body='+encodeURIComponent(t+'\n\nProszę o kontakt. W załączniku zdjęcia podłogi.\n\nImię i nazwisko:\nTelefon:\nDzielnica:');
       boxWys.hidden=false;
       boxWys.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});
     });
@@ -1152,6 +1181,7 @@ figure{margin:0}
         if(!j.ok){toast(j.blad||'Nie udało się przeanalizować zdjęcia.');return}
         const w=j.wynik||{};
         const pisz=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v||'nie wiem'};
+        window.__analiza=true;
         pisz('oG',w.gatunek); pisz('oU',w.uklad); pisz('oS',w.stan); pisz('oZ',w.zalecenie);
         const n=document.querySelector('.ai-out .est small');
         if(n)n.textContent=(w.pewnosc?('Pewność oceny: '+w.pewnosc+'. '):'')+
@@ -1706,4 +1736,15 @@ footer.site .fine{font-size:.58rem!important}
 <style>
 /* SMARTEXPERT ONLINE: zdanie wiodace wg tekstu Artura z 10.10 21:03 */
 .se-lead{margin-top:10px;font-weight:600;font-size:1.06rem;max-width:46ch}
+</style>
+<style>
+/* kwestionariusz SMARTEXPERT ONLINE wg listy Artura (10.10.2026 21:47) */
+.ai-form .pyt{display:flex;flex-direction:column;gap:6px}
+.ai-form .pyt>span{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.ai-form .tn{display:flex;gap:14px;flex-wrap:wrap}
+.ai-form .tn label{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;cursor:pointer}
+.ai-form .tn input{accent-color:var(--pom);width:16px;height:16px}
+.ai-form .szer{grid-column:1/-1}
+.ai-form .szer input{width:100%}
+.wyslano .stan-wys{font-size:.9rem;margin:8px 0 0;font-weight:600}
 </style>
