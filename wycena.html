@@ -1,8 +1,17 @@
 <!doctype html>
 <html lang="pl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 
-<script>window.tsStart=function(){var start=function(){try{turnstile.render("#ts",{sitekey:"0x4AAAAAAFTVRaURC39E8jHq",callback:function(t){window.__ts=t},"error-callback":function(){window.__ts=""}})}catch(e){}};if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start)}else{start()}};</script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=tsStart" async defer></script><title>SMARTEXPERT ONLINE™: wycena ze zdjęć w 2 godziny | SMARTPARKIET</title>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script>
+/* Turnstile bez polegania na onload: czekamy az i strona, i skrypt beda gotowe.
+   Wczesniejsza wersja z ?onload=tsStart nie renderowala sie, bo callback
+   potrafil wystartowac, zanim istnial kontener #ts. */
+(function(){var pr=0;function go(){var el=document.getElementById("ts");
+ if(!el||!window.turnstile){if(pr++<40)return setTimeout(go,250);return}
+ try{turnstile.render(el,{sitekey:"0x4AAAAAAFTVRaURC39E8jHq",
+  callback:function(t){window.__ts=t},"error-callback":function(){window.__ts=""}})}catch(e){}}
+ if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",go)}else{go()}})();
+</script><title>SMARTEXPERT ONLINE™: wycena ze zdjęć w 2 godziny | SMARTPARKIET</title>
 <link rel="icon" href="img/favicon.png" type="image/png">
 <meta name="description" content="Proszę wysłać 3-5 zdjęć podłogi i metraż. W ciągu dwóch godzin roboczych odsyłamy widełki cenowe i wolne terminy czterech ekip.">
 <!-- podglad linku: START -->
