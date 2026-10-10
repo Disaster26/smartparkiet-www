@@ -1,0 +1,15 @@
+name = "smartexpert-analiza"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+# Licznik limitow. Utworzyc: wrangler kv namespace create LIMITY
+[[kv_namespaces]]
+binding = "LIMITY"
+id = "WKLEIC_ID_PRZESTRZENI_KV"
+
+[vars]
+MODEL = "gemini-2.5-flash"
+
+# Sekrety (NIE wpisywac ich w tym pliku):
+#   wrangler secret put GEMINI_KEY
+#   wrangler secret put TURNSTILE_SECRET
