@@ -1038,8 +1038,8 @@ figure{margin:0}
 <section class="akr">
   <div class="wrap">
     <p class="oczko"><span></span>Co znaczy SMART</p>
-    <h2>Nie sprzedajemy samego szlifowania podłogi.<br>Sprzedajemy system SMART oparty na pięciu filarach.</h2>
-    <p class="lead akr-def"><b>Metoda Cyklinowanie SMART&trade;</b> to: diagnoza podłogi online, sprawna organizacja, pomoc przy meblach, profesjonalne maszyny, precyzyjne szlifowanie, dodatkowe pochłaniacze pyłu SMART ZERO DUST&trade;, szybkoschnące lakiery premium i krótki czas realizacji. Pięć liter niżej to pięć filarów, na których ta metoda stoi.</p>
+    <h2>Nie sprzedajemy samego szlifowania podłogi.<br>Sprzedajemy nowoczesny system renowacji oparty na pięciu filarach: S&nbsp;&middot;&nbsp;M&nbsp;&middot;&nbsp;A&nbsp;&middot;&nbsp;R&nbsp;&middot;&nbsp;T.</h2>
+    <p class="lead akr-def">Metoda <b>Cyklinowanie SMART&trade;</b> to błyskawiczna diagnoza podłogi online, sprawna organizacja prac, pomoc przy meblach, profesjonalne maszyny, dodatkowe pochłaniacze pyłu oraz szybkoschnące lakiery premium.</p>
     <ol class="akr-lista">
       <li>
         <button type="button" class="akr-gl" aria-expanded="false">
@@ -1082,8 +1082,12 @@ figure{margin:0}
         <div class="akr-tr"><p>Zakres i cena ustalone przed startem. Żadna warstwa nie zamyka poprzedniej, dopóki tamta nie została sprawdzona i pokazana.</p></div>
       </li>
     </ol>
+    <p class="akr-efekt"><b>Efekt: wygoda klienta.</b> Piękna, trwała podłoga, gwarancje jakości i szybki powrót do codziennego życia.</p>
+    <p class="akr-haslo">Cyklinowanie SMART&trade; &middot; renowacja nowej generacji</p>>
   </div>
 </section>
+
+
 
 <!-- oddzialy: START -->
 <section class="oddzialy-home"><div class="wrap"><p class="oczko"><span></span>Nasze oddziały w Warszawie</p><h2>Cztery ekipy, jeden numer telefonu</h2><p class="lead">Każdy oddział ma swoją stronę z adresem, obszarem dojazdu i opiniami z własnej wizytówki Google. Proszę wybrać ten najbliżej Państwa.</p><div class="odz-siatka"><a class="odz-kafel" href="cyklinowanie-rembertow.html"><b>Rembertów</b><span>ul. Suflerska 4<br>Rembertów, Wesoła, Praga Południe, Wawer</span><i>Zobacz oddział &rarr;</i></a><a class="odz-kafel" href="cyklinowanie-ochota.html"><b>Ochota</b><span>ul. Grójecka 208, lok. 229<br>Ochota, Wola, Włochy, Bemowo</span><i>Zobacz oddział &rarr;</i></a><a class="odz-kafel" href="cyklinowanie-targowek.html"><b>Targówek</b><span>ul. Turmoncka 17A, lok. 21<br>Targówek, Bródno, Białołęka, Praga Północ</span><i>Zobacz oddział &rarr;</i></a><a class="odz-kafel" href="cyklinowanie-mokotow.html"><b>Mokotów</b><span>ul. Belwederska 23<br>Mokotów, Śródmieście, Ursynów, Wilanów</span><i>Zobacz oddział &rarr;</i></a></div></div></section>
@@ -2140,12 +2144,20 @@ footer.site .fine{font-size:.58rem!important}
 /* na telefonie tekst idzie przez cala szerokosc, wiec welon tez musi byc
    rowny - inaczej "SMART" lezy na jasnym worku i zielonym napisie Lagler */
 @media(max-width:860px){
+  /* Artur 10.10 18:36: welon ma byc lzejszy, zeby bylo widac sylwetke z maszyna,
+     a sama maszyna ma stac blizej osi kadru */
   .hero::after{background:
     linear-gradient(180deg,
-      rgba(25,20,16,.88) 0%, rgba(25,20,16,.80) 38%,
-      rgba(25,20,16,.70) 62%, rgba(25,20,16,.58) 80%,
-      rgba(25,20,16,.78) 100%)}
-  .hero-img{object-position:58% 56%}
+      rgba(25,20,16,.74) 0%, rgba(25,20,16,.62) 38%,
+      rgba(25,20,16,.50) 62%, rgba(25,20,16,.42) 80%,
+      rgba(25,20,16,.68) 100%)}
+  .hero-img{object-position:68% 56%}
+  /* welon jest lzejszy, wiec czytelnosc trzyma teraz cien pod samym tekstem,
+     a nie przyciemnienie calego zdjecia */
+  .hero h1,.hero .hero-lead p,.hero-ocena,.hero-op-tor .hero-quote,.hero .tag{
+    text-shadow:0 1px 3px rgba(0,0,0,.85),0 2px 14px rgba(0,0,0,.6)}
+  .hero .hero-lead p{color:#E8E3DC}
+  .hero-ocena{color:#E8E3DC}
 }
 /* niskie ekrany: jeszcze ciasniej, zeby opinie zmiescily sie nad zgieciem */
 @media(max-width:860px) and (max-height:760px){
@@ -2258,6 +2270,8 @@ footer.site .fine{font-size:.58rem!important}
 .hero-ocena{flex-wrap:nowrap;white-space:nowrap}
 .akr h2{max-width:24ch}
 .akr .akr-def{max-width:58ch;margin-top:12px}
+.akr-efekt{margin:22px 0 0;max-width:56ch;font-size:1rem;line-height:1.6}
+.akr-haslo{margin:10px 0 0;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--pom-tekst);font-weight:700}
 </style>
 /* === uwagi 09.10: KONIEC === */
 
