@@ -183,13 +183,13 @@ def tresc(o, inne):
     <div class="odz-usl">
       <article><h3>Cyklinowanie SMART&trade;</h3><p>Diagnoza podłogi, dobór technologii pod
         konkretne drewno, szlif w trzech gradacjach i uzupełnienie szczelin masą z pyłu tej
-        samej podłogi. Trzy warstwy lakieru wodnego albo olej twardy.</p></article>
-      <article><h3>SMART ZERO DUST&trade;</h3><p>Szlifowanie z systemem odpylania Festool
-        SYS-AIR. Pył idzie do worka, nie na meble i nie na Państwa rzeczy. Po pracy zostaje
+        samej podłogi. Ewentualnie próby koloru. Trzy warstwy lakieru wodnego albo olej,
+        twardy wosk.</p></article>
+      <article><h3>Bezpyłowo, SMART ZERO DUST&trade;</h3><p>Szlifowanie z systemem odpylania
+        Festool SYS-AIR. Pył idzie do worka, nie na mieszkanie i meble. Po pracy zostaje
         podłoga, a nie sprzątanie przez tydzień.</p></article>
-      <article><h3>Renowacja desek warstwowych</h3><p>Cienka warstwa użytkowa wymaga innego
-        podejścia niż lita klepka. Mierzymy ją przed startem i mówimy wprost, ile jeszcze
-        cykli wytrzyma podłoga.</p></article>
+      <article><h3>Logistyka</h3><p>Na życzenie zapewniamy wsparcie w przygotowaniu
+        pomieszczeń, relokacji mebli oraz dodatkowym zabezpieczeniu wyposażenia.</p></article>
     </div>
 
     <h2 style="margin-top:30px">Opinia z wizytówki %(dz)s</h2>
