@@ -18,7 +18,8 @@
  * Wdrozenie: patrz README.md w tym katalogu.
  */
 
-const LIMIT_IP = 5;
+const LIMIT_IP = 5;          // z potwierdzonym Turnstile
+const LIMIT_IP_BEZ = 2;      // gdy Turnstile nie przeszedl (np. blokady w przegladarce)
 const LIMIT_DOBA = 200;
 const MAX_BAJTOW = 4 * 1024 * 1024;
 const TYPY = ['image/jpeg', 'image/png', 'image/webp'];
@@ -98,16 +99,17 @@ export default {
       return odp({ blad: 'zly format zgloszenia' }, 400);
     }
 
-    if (!(await czlowiek(env, ciało.turnstile, ip))) {
-      return odp({ blad: 'weryfikacja nie przeszla, prosze odswiezyc strone' }, 403);
-    }
+    // Turnstile bywa blokowany przez rozszerzenia i tryby prywatne. Zamiast
+    // odrzucac takiego klienta, dajemy mu mniejszy limit dzienny.
+    const potwierdzony = await czlowiek(env, ciało.turnstile, ip);
+    const limitIP = potwierdzony ? LIMIT_IP : LIMIT_IP_BEZ;
     const kluczG = `g:${dzis()}`;
     const kluczIP = `ip:${ip}:${dzis()}`;
     if (!(await wolne(env, kluczG, LIMIT_DOBA))) {
       return odp({ blad: 'dzienny limit analiz wyczerpany, prosze wyslac zdjecia mailem' }, 429);
     }
-    if (!(await wolne(env, kluczIP, LIMIT_IP))) {
-      return odp({ blad: `na dzis limit ${LIMIT_IP} analiz z tego urzadzenia` }, 429);
+    if (!(await wolne(env, kluczIP, limitIP))) {
+      return odp({ blad: `na dzis limit ${limitIP} analiz z tego urzadzenia` }, 429);
     }
 
     const obraz = String(ciało.obraz || '');
