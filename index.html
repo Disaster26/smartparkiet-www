@@ -1039,6 +1039,7 @@ figure{margin:0}
   <div class="wrap">
     <p class="oczko"><span></span>Co znaczy SMART</p>
     <h2>Nie sprzedajemy samego szlifowania podłogi.<br>Sprzedajemy system SMART oparty na pięciu filarach.</h2>
+    <p class="lead akr-def">Cyklinowanie SMART&trade; to nasza nazwa na ten system: ta sama procedura od diagnozy podłogi po odbiór, bezpyłowe maszyny z odpylaniem Festool, materiały premium w standardzie i cena ustalona przed startem. Pięć liter niżej to pięć rzeczy, które się za tym kryją.</p>
     <ol class="akr-lista">
       <li>
         <button type="button" class="akr-gl" aria-expanded="false">
@@ -1046,7 +1047,7 @@ figure{margin:0}
           <span class="akr-naz">System pracy</span>
           <span class="akr-zn" aria-hidden="true">+</span>
         </button>
-        <div class="akr-tr"><p>Ta sama kolejność czynności na każdej realizacji i w każdej z czterech ekip. Nie zależy od tego, kto danego dnia przyjedzie.</p></div>
+        <div class="akr-tr"><p>Ta sama kolejność czynności, te same sprawdzone procedury dla każdej ekipy, na każdej realizacji. Nie zależy od tego, kto danego dnia przyjedzie.</p></div>
       </li>
       <li>
         <button type="button" class="akr-gl" aria-expanded="false">
@@ -1083,6 +1084,10 @@ figure{margin:0}
     </ol>
   </div>
 </section>
+
+<!-- oddzialy: START -->
+<section class="oddzialy-home"><div class="wrap"><p class="oczko"><span></span>Nasze oddziały w Warszawie</p><h2>Cztery ekipy, jeden numer telefonu</h2><p class="lead">Każdy oddział ma swoją stronę z adresem, obszarem dojazdu i opiniami z własnej wizytówki Google. Proszę wybrać ten najbliżej Państwa.</p><div class="odz-siatka"><a class="odz-kafel" href="cyklinowanie-rembertow.html"><b>Rembertów</b><span>ul. Suflerska 4<br>Rembertów, Wesoła, Praga Południe, Wawer</span><i>Zobacz oddział &rarr;</i></a><a class="odz-kafel" href="cyklinowanie-ochota.html"><b>Ochota</b><span>ul. Grójecka 208, lok. 229<br>Ochota, Wola, Włochy, Bemowo</span><i>Zobacz oddział &rarr;</i></a><a class="odz-kafel" href="cyklinowanie-targowek.html"><b>Targówek</b><span>ul. Turmoncka 17A, lok. 21<br>Targówek, Bródno, Białołęka, Praga Północ</span><i>Zobacz oddział &rarr;</i></a><a class="odz-kafel" href="cyklinowanie-mokotow.html"><b>Mokotów</b><span>ul. Belwederska 23<br>Mokotów, Śródmieście, Ursynów, Wilanów</span><i>Zobacz oddział &rarr;</i></a></div></div></section>
+<!-- oddzialy: KONIEC -->
 
 <div class="facts">
   <div class="wrap">
@@ -1248,7 +1253,7 @@ figure{margin:0}
         <a class="brand" href="index.html" style="color:var(--on-dark)"><img src="img/logo-znak.png" alt=""> SMARTPARKIET</a>
       </div>
       <div class="c-kontakt"><h4>Kontakt</h4><a href="tel:+48602242815">602 242 815</a><a href="mailto:smartparkiet@gmail.com">smartparkiet@gmail.com</a><a href="https://wa.me/48602242815">WhatsApp</a></div>
-      <div class="c-oddzialy"><h4>Oddziały</h4><a href="oddzialy.html">Suflerska 4, Rembertów</a><a href="oddzialy.html">Grójecka 208, Ochota</a><a href="oddzialy.html">Turmoncka 17A, Targówek</a><a href="oddzialy.html">Belwederska 23, Mokotów</a></div>
+      <div class="c-oddzialy"><h4>Oddziały</h4><a href="cyklinowanie-rembertow.html">Suflerska 4, Rembertów</a><a href="cyklinowanie-ochota.html">Grójecka 208, lok. 229, Ochota</a><a href="cyklinowanie-targowek.html">Turmoncka 17A, lok. 21, Targówek</a><a href="cyklinowanie-mokotow.html">Belwederska 23, Mokotów</a></div>
       <div class="c-wiecej"><h4>Więcej</h4><div class="ww"><div><a href="cennik.html">Pakiety</a><a href="programy.html">Programy</a><a href="realizacje.html">Realizacje</a><a href="schody.html">Schody</a></div><div><a href="ekspertyza.html">Ekspertyza</a><a href="blog.html">Poradniki</a><a href="parkiet-w-kamienicy.html">Kamienice</a><a href="dla-pracowni.html">Dla pracowni</a></div></div></div>
     </div>
     <div class="fine"><span>© 2026 SMARTPARKIET<sup>™</sup><span class="autor">Artur Trembiński</span></span><span>Cyklinowanie SMART<sup>™</sup> <i>|</i> nazwy są znakami SMARTPARKIET</span></div>
@@ -2252,5 +2257,45 @@ footer.site .fine{font-size:.58rem!important}
 @media(max-width:860px){.tb-oc{display:none}.tb-m{display:inline}}
 .hero-ocena{flex-wrap:nowrap;white-space:nowrap}
 .akr h2{max-width:24ch}
+.akr .akr-def{max-width:58ch;margin-top:12px}
 </style>
 /* === uwagi 09.10: KONIEC === */
+
+<style>
+/* === podstrony oddzialow === */
+.odz-hero{padding:34px 0 10px}
+.odz-hero .oczko{margin-bottom:10px}
+.odz-hero h1{font-size:clamp(1.7rem,5vw,2.5rem);line-height:1.12;margin:0 0 10px;letter-spacing:-.02em}
+.odz-hero h1 em{font-style:normal;color:var(--pom)}
+.odz-hero .lead{max-width:62ch}
+.odz-dane{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:22px 0 6px}
+.odz-dane div{background:var(--bg2);border:1px solid rgba(26,21,18,.08);border-radius:12px;padding:13px 15px}
+.odz-dane dt{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:5px}
+.odz-dane dd{margin:0;font-weight:600;line-height:1.4}
+.odz-dane a{color:inherit}
+.odz-obszar{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 0}
+.odz-obszar span{background:var(--bg2);border:1px solid rgba(26,21,18,.08);border-radius:999px;padding:5px 12px;font-size:.84rem}
+.odz-usl{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:16px}
+.odz-usl article{border-top:2px solid var(--pom);padding-top:12px}
+.odz-usl h3{margin:0 0 6px;font-size:1.02rem}
+.odz-usl p{margin:0;color:var(--mut);font-size:.93rem;line-height:1.55}
+.odz-mapa{border:0;width:100%;height:330px;border-radius:14px;margin-top:16px;filter:saturate(.9)}
+.odz-op{background:var(--bg2);border-radius:14px;padding:18px 20px;margin-top:18px;border-left:3px solid var(--pom)}
+.odz-op p{margin:0 0 6px;font-size:1.02rem;line-height:1.55}
+.odz-op b{font-weight:600;font-size:.86rem;color:var(--mut);display:flex;align-items:center;gap:8px}
+.odz-op b span{color:var(--pom);letter-spacing:.1em}
+.odz-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.odz-inne{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.odz-inne a{background:var(--bg2);border:1px solid rgba(26,21,18,.08);border-radius:10px;padding:8px 13px;
+  text-decoration:none;color:inherit;font-size:.9rem}
+.odz-inne a:hover{border-color:var(--pom);color:var(--pom-tekst)}
+/* kafle oddzialow na stronie glownej */
+.odz-siatka{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:14px;margin-top:18px}
+.odz-kafel{display:block;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid rgba(26,21,18,.08);
+  border-radius:14px;padding:16px 17px;transition:border-color .18s cubic-bezier(.23,1,.32,1),transform .18s cubic-bezier(.23,1,.32,1)}
+.odz-kafel:hover{border-color:var(--pom);transform:translateY(-2px)}
+.odz-kafel b{display:block;font-size:1.06rem;margin-bottom:3px}
+.odz-kafel span{display:block;color:var(--mut);font-size:.88rem;line-height:1.5}
+.odz-kafel i{display:block;font-style:normal;color:var(--pom-tekst);font-size:.84rem;margin-top:9px;font-weight:600}
+@media(max-width:600px){.odz-mapa{height:250px}}
+</style>
