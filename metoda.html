@@ -959,9 +959,9 @@ figure{margin:0}
       <div class="vs">
         <div class="row head"><div></div><div>Tradycyjnie</div><div>Cyklinowanie SMART</div></div>
         <div class="row"><div>Pył</div><div class="old">na wszystkim, mimo folii</div><div class="new"><b>0</b>odciąg klasy M na każdej maszynie</div></div>
-        <div class="row"><div>Czas w mieszkaniu</div><div class="old">5–7 dni, schnięcie każdej warstwy</div><div class="new"><b>2 dni</b>przy 50–70 m²</div></div>
+        <div class="row"><div>Czas w mieszkaniu</div><div class="old">5-7 dni, schnięcie każdej warstwy</div><div class="new"><b>2 dni</b>przy 50-70 m²</div></div>
         <div class="row"><div>Kiedy można wejść</div><div class="old">po kilku dniach, lakier standard</div><div class="new"><b>następnego dnia</b>bez skarpet, lakier premium 2K</div></div>
-        <div class="row"><div>Kiedy wracają meble</div><div class="old">po tygodniu, bez zabezpieczenia</div><div class="new"><b>po 3–4 dniach</b>na filcowych podkładkach</div></div>
+        <div class="row"><div>Kiedy wracają meble</div><div class="old">po tygodniu, bez zabezpieczenia</div><div class="new"><b>po 3-4 dniach</b>na filcowych podkładkach</div></div>
         <div class="row"><div>Wycena</div><div class="old">oględziny w godzinach pracy</div><div class="new"><b>2 h</b>ze zdjęć z telefonu</div></div>
         <div class="row"><div>Termin</div><div class="old">„jak się zwolni majster”</div><div class="new"><b>do 24 h!</b>gdy pali się termin, organizujemy majstra</div></div>
       </div>
@@ -982,8 +982,8 @@ figure{margin:0}
       <div class="sub">Ekipa Belwederska · brygadzista Jarek · 602 242 815</div>
       <ul class="tl">
         <li class="done"><div><b>Zdjęcia odebrane, wycena wysłana</b><span>pon. 7 września, 11:40</span></div></li>
-        <li class="done"><div><b>Termin potwierdzony: 14–15 września</b><span>umowa i zaliczka, wt. 8 września</span></div></li>
-        <li class="done"><div><b>Dzień 1: szlif i szczeliny</b><span>pon. 14 września, 8:00–17:30</span><div class="ph"><img src="img/726399dfe0.webp" alt=""><img src="img/37f8581719.webp" alt=""><img src="img/d816138dd0.webp" alt=""></div></div></li>
+        <li class="done"><div><b>Termin potwierdzony: 14-15 września</b><span>umowa i zaliczka, wt. 8 września</span></div></li>
+        <li class="done"><div><b>Dzień 1: szlif i szczeliny</b><span>pon. 14 września, 8:00-17:30</span><div class="ph"><img src="img/726399dfe0.webp" alt=""><img src="img/37f8581719.webp" alt=""><img src="img/d816138dd0.webp" alt=""></div></div></li>
         <li class="now"><div><b>Dzień 2: lakier, warstwa 3 z 3</b><span>dziś, koniec około 16:00 · można wejść po 18:00</span></div></li>
         <li><div><b>Odbiór i protokół</b><span>dziś, 18:00 · proszę o 20 minut</span></div></li>
         <li><div><b>Przegląd po roku</b><span>wrzesień 2027, przypomnimy SMS-em</span></div></li>
@@ -1066,7 +1066,7 @@ figure{margin:0}
     crews.forEach((c,i)=>{ html+='<div class="lab">'+c[0]+'</div>'; for(let d=0;d<14;d++){const dt=new Date(start); dt.setDate(start.getDate()+d); const we=dt.getDay()===0||dt.getDay()===6; const v=we?0:plan[i][d]; html+='<div class="c '+(we?'we':'')+' '+(v===1?'f':v===2?'h':'')+'" data-c="'+i+'" data-d="'+d+'"></div>';} });
     grid.innerHTML=html;
     const mies=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
-    grid.addEventListener('click',e=>{const c=e.target.closest('.c.f,.c.h'); if(!c)return; grid.querySelectorAll('.c.on').forEach(x=>x.classList.remove('on')); c.classList.add('on'); const dt=new Date(start); dt.setDate(start.getDate()+ +c.dataset.d); const cr=crews[+c.dataset.c]; pick.textContent='Ekipa '+cr[0]+' ('+cr[1]+'), '+dt.getDate()+' '+mies[dt.getMonth()]+', start 8:00'+(c.classList.contains('h')?' – dostępne pół dnia':'')+'. Rezerwacja wstępna po wycenie.';});
+    grid.addEventListener('click',e=>{const c=e.target.closest('.c.f,.c.h'); if(!c)return; grid.querySelectorAll('.c.on').forEach(x=>x.classList.remove('on')); c.classList.add('on'); const dt=new Date(start); dt.setDate(start.getDate()+ +c.dataset.d); const cr=crews[+c.dataset.c]; pick.textContent='Ekipa '+cr[0]+' ('+cr[1]+'), '+dt.getDate()+' '+mies[dt.getMonth()]+', start 8:00'+(c.classList.contains('h')?' - dostępne pół dnia':'')+'. Rezerwacja wstępna po wycenie.';});
   })();
   })();
   (function(){
@@ -1078,8 +1078,8 @@ figure{margin:0}
   function est(){
     const a=Math.max(5,+m2.value||0),k=+typ.value,w=+wyk.value;
     const lo=(120*k+w)*a,hi=(140*k+w)*a;
-    const days=a<=40?'1–2 dni':a<=90?'2 dni':a<=160?'3 dni':'4–5 dni';
-    oN.textContent=pln(lo)+' – '+pln(hi)+' zł';
+    const days=a<=40?'1-2 dni':a<=90?'2 dni':a<=160?'3 dni':'4-5 dni';
+    oN.textContent=pln(lo)+' - '+pln(hi)+' zł';
     oT.textContent=a+' m² · '+typ.options[typ.selectedIndex].text.toLowerCase()+' · '+wyk.options[wyk.selectedIndex].text.toLowerCase()+' · ok. '+days+' · netto, orientacyjnie';
   }
   [m2,typ,wyk].forEach(e=>e.addEventListener('input',est)); est();

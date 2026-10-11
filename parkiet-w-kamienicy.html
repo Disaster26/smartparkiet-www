@@ -1108,7 +1108,7 @@ figure{margin:0}
     crews.forEach((c,i)=>{ html+='<div class="lab">'+c[0]+'</div>'; for(let d=0;d<14;d++){const dt=new Date(start); dt.setDate(start.getDate()+d); const we=dt.getDay()===0||dt.getDay()===6; const v=we?0:plan[i][d]; html+='<div class="c '+(we?'we':'')+' '+(v===1?'f':v===2?'h':'')+'" data-c="'+i+'" data-d="'+d+'"></div>';} });
     grid.innerHTML=html;
     const mies=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
-    grid.addEventListener('click',e=>{const c=e.target.closest('.c.f,.c.h'); if(!c)return; grid.querySelectorAll('.c.on').forEach(x=>x.classList.remove('on')); c.classList.add('on'); const dt=new Date(start); dt.setDate(start.getDate()+ +c.dataset.d); const cr=crews[+c.dataset.c]; pick.textContent='Ekipa '+cr[0]+' ('+cr[1]+'), '+dt.getDate()+' '+mies[dt.getMonth()]+', start 8:00'+(c.classList.contains('h')?' – dostępne pół dnia':'')+'. Rezerwacja wstępna po wycenie.';});
+    grid.addEventListener('click',e=>{const c=e.target.closest('.c.f,.c.h'); if(!c)return; grid.querySelectorAll('.c.on').forEach(x=>x.classList.remove('on')); c.classList.add('on'); const dt=new Date(start); dt.setDate(start.getDate()+ +c.dataset.d); const cr=crews[+c.dataset.c]; pick.textContent='Ekipa '+cr[0]+' ('+cr[1]+'), '+dt.getDate()+' '+mies[dt.getMonth()]+', start 8:00'+(c.classList.contains('h')?' - dostępne pół dnia':'')+'. Rezerwacja wstępna po wycenie.';});
   })();
   })();
   (function(){
@@ -1120,8 +1120,8 @@ figure{margin:0}
   function est(){
     const a=Math.max(5,+m2.value||0),k=+typ.value,w=+wyk.value;
     const lo=(120*k+w)*a,hi=(140*k+w)*a;
-    const days=a<=40?'1–2 dni':a<=90?'2 dni':a<=160?'3 dni':'4–5 dni';
-    oN.textContent=pln(lo)+' – '+pln(hi)+' zł';
+    const days=a<=40?'1-2 dni':a<=90?'2 dni':a<=160?'3 dni':'4-5 dni';
+    oN.textContent=pln(lo)+' - '+pln(hi)+' zł';
     oT.textContent=a+' m² · '+typ.options[typ.selectedIndex].text.toLowerCase()+' · '+wyk.options[wyk.selectedIndex].text.toLowerCase()+' · ok. '+days+' · netto, orientacyjnie';
   }
   [m2,typ,wyk].forEach(e=>e.addEventListener('input',est)); est();

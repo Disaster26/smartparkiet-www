@@ -95,8 +95,7 @@ export default {
     // Przegladarka rozmawia tylko z nami, a my z FormSubmit. Dzieki temu
     // wysylka dziala takze tam, gdzie siec blokuje formsubmit.co.
     if (new URL(request.url).pathname === '/wyslij') {
-      // na czas testow nasza skrzynka, potem smartparkiet.kontakt@gmail.com
-      const BIURO = 'stasiu2626@gmail.com';
+      const BIURO = 'smartparkiet.kontakt@gmail.com';
       let p2;
       try { p2 = await request.json(); } catch (e) { return odp({ blad: 'zly format' }, 400); }
       const tresc = String(p2.tresc || '').slice(0, 6000);

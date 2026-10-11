@@ -960,10 +960,10 @@ figure{margin:0}
       <h2>Ekspercka diagnoza podłogi bez wychodzenia z domu</h2>
       <p class="lead se-lead">Prześlij zdjęcia. Otrzymaj profesjonalną ocenę stanu podłogi i rekomendację dalszych działań.</p>
       <p class="lead" style="margin-top:16px">Proszę wrzucić zdjęcie podłogi i podać metraż. Widełki liczymy z cennika, a zdjęcia ogląda parkieciarz. Parkieciarz sprawdza wynik i odzywa się w ciągu dwóch godzin roboczych. Oględziny dopiero wtedy, gdy obie strony wiedzą, o jakich pieniądzach mowa.</p>
-      <p class="demo-note">Gatunek drewna i stan podłogi ocenia parkieciarz na podstawie Państwa zdjęć. Żaden automat tego nie zgaduje, bo przy zdjęciach z telefonu pomyłka jest zbyt łatwa, a Państwo dostaliby wycenę z sufitu.</p>
+      <p class="demo-note">Zdjęcie ocenia najpierw nasz system rozpoznawania: podpowiada gatunek, układ i stan podłogi, a gdy czegoś nie da się stwierdzić ze zdjęcia, mówi wprost "nie wiem" zamiast zgadywać. Ostatnie słowo ma parkieciarz, który ogląda te same zdjęcia i potwierdza wycenę.</p>
     </div>
     <div class="ai">
-      <label class="drop" id="drop" for="file"><span><b>Upuść zdjęcie podłogi albo kliknij</b><span>JPG lub HEIC z telefonu. Zdjęcie nie opuszcza tej strony w wersji demo.</span></span><span class="btn btn-ghost" style="pointer-events:none">Wybierz plik</span><input id="file" type="file" accept="image/*" hidden></label>
+      <label class="drop" id="drop" for="file"><span><b>Upuść zdjęcie podłogi albo kliknij</b><span>JPG lub HEIC z telefonu. Zdjęcie trafia do naszego biura razem z kalkulacją.</span></span><span class="btn btn-ghost" style="pointer-events:none">Wybierz plik</span><input id="file" type="file" accept="image/*" hidden></label>
       <div class="samples">albo przykład: <button type="button" data-s="dab">dąb, jodełka</button><button type="button" data-s="merbau">merbau</button><button type="button" data-s="brodno">parkiet w sali gimnastycznej</button><button type="button" data-s="sukupira">sukupira, ciemna</button></div>
       <div class="ai-body">
         <div class="ai-photo" id="aiPhoto"><div class="empty">Tu pojawi się Państwa zdjęcie</div><div class="scan"></div></div>
@@ -972,13 +972,13 @@ figure{margin:0}
           <div class="line on" data-l="2"><span class="k">ocena podłogi</span><b id="oU">parkieciarz, po obejrzeniu zdjęć</b></div>
           <div class="line on" data-l="3"><span class="k">odpowiedź</span><b id="oS">w 2 godziny robocze</b></div>
           <div class="line on" data-l="4"><span class="k">koszt wyceny</span><b id="oZ">0 zł, bez zobowiązań</b></div>
-          <div class="est"><div class="n" id="oN">—</div><small id="oT">Proszę podać metraż i rodzaj podłogi, żeby zobaczyć widełki.</small></div>
+          <div class="est"><div class="n" id="oN">-</div><small id="oT">Proszę podać metraż i rodzaj podłogi, żeby zobaczyć widełki.</small></div>
         </div>
       </div>
       <form class="ai-form" onsubmit="return false">
         <div><label for="m2">Metraż</label><input id="m2" type="number" value="58" min="5" max="600"></div>
         <div><label for="typ">Podłoga</label><select id="typ"><option value="1">Klepka</option><option value="1.25">Mozaika</option><option value="1.08">Warstwowa</option><option value="1.12">Egzotyk</option></select></div>
-        <div><label for="wyk">Wykończenie</label><select id="wyk"><option value="0">Lakier</option><option value="8">Olej</option><option value="12">Twardy wosk</option><option value="55">Kolor</option></select></div><div><label for="gat">Gatunek drewna</label><select id="gat"><option>nie wiem</option><option>dąb</option><option>jesion</option><option>buk</option><option>sosna</option><option>drewno egzotyczne</option><option>deska warstwowa</option></select></div><div><label for="wiek">Wiek podłogi</label><select id="wiek"><option>nie wiem</option><option>do 10 lat</option><option>10-30 lat</option><option>ponad 30 lat</option><option>nowa, nieużywana</option></select></div><div class="pyt"><span>Listwy przypodłogowe</span><div class="tn"><label><input type="radio" name="listwy" value="tak"> tak</label><label><input type="radio" name="listwy" value="nie" checked> nie</label></div></div><div class="pyt"><span>Naprawy, uzupełnienia klepek</span><div class="tn"><label><input type="radio" name="naprawy" value="tak"> tak</label><label><input type="radio" name="naprawy" value="nie" checked> nie</label><label><input type="radio" name="naprawy" value="nie wiem"> nie wiem</label></div></div><div class="pyt"><span>Skrzypienie, luźne klepki (stabilizacja iniekcyjna)</span><div class="tn"><label><input type="radio" name="iniekcja" value="tak"> tak</label><label><input type="radio" name="iniekcja" value="nie" checked> nie</label><label><input type="radio" name="iniekcja" value="nie wiem"> nie wiem</label></div></div><div class="szer"><label for="mailKl">Państwa e-mail, żeby dostać kalkulację do siebie</label><input id="mailKl" type="email" inputmode="email" placeholder="jan.kowalski@poczta.pl"></div>
+        <div><label for="wyk">Wykończenie</label><select id="wyk"><option value="0">Lakier</option><option value="8">Olej</option><option value="12">Twardy wosk</option><option value="55">Kolor</option></select></div><div><label for="gat">Gatunek drewna</label><select id="gat"><option>nie wiem</option><option>dąb</option><option>jesion</option><option>buk</option><option>sosna</option><option>drewno egzotyczne</option><option>deska warstwowa</option></select></div><div><label for="wiek">Wiek podłogi</label><select id="wiek"><option>nie wiem</option><option>do 10 lat</option><option>10-30 lat</option><option>ponad 30 lat</option><option>nowa, nieużywana</option></select></div><div class="pyt"><span>Listwy przypodłogowe</span><div class="tn"><label><input type="radio" name="listwy" value="klasyczna drewniana"> klasyczna drewniana</label><label><input type="radio" name="listwy" value="MDF"> MDF</label><label><input type="radio" name="listwy" value="bez listwy" checked> bez listwy</label></div></div><div class="pyt"><span>Naprawy, uzupełnienia klepek</span><div class="tn"><label><input type="radio" name="naprawy" value="tak"> tak</label><label><input type="radio" name="naprawy" value="nie" checked> nie</label><label><input type="radio" name="naprawy" value="nie wiem"> nie wiem</label></div></div><div class="pyt"><span>Skrzypienie, luźne klepki (stabilizacja iniekcyjna)</span><div class="tn"><label><input type="radio" name="iniekcja" value="tak"> tak</label><label><input type="radio" name="iniekcja" value="nie" checked> nie</label><label><input type="radio" name="iniekcja" value="nie wiem"> nie wiem</label></div></div><div><label for="imieKl">Imię i nazwisko</label><input id="imieKl" type="text" autocomplete="name" placeholder="Jan Kowalski"></div><div><label for="telKl">Telefon</label><input id="telKl" type="tel" inputmode="tel" autocomplete="tel" placeholder="600 000 000"></div><div><label for="dzielKl">Dzielnica</label><select id="dzielKl"><option value="">proszę wybrać</option><option>Bemowo</option><option>Białołęka</option><option>Bielany</option><option>Mokotów</option><option>Ochota</option><option>Praga-Południe</option><option>Praga-Północ</option><option>Rembertów</option><option>Śródmieście</option><option>Targówek</option><option>Ursus</option><option>Ursynów</option><option>Wawer</option><option>Wesoła</option><option>Wilanów</option><option>Włochy</option><option>Wola</option><option>Żoliborz</option><option>poza Warszawą</option></select></div><div class="szer"><label for="mailKl">Państwa e-mail, żeby dostać kalkulację do siebie</label><input id="mailKl" type="email" inputmode="email" placeholder="jan.kowalski@poczta.pl"></div>
         <div id="ts" style="margin:4px 0"></div><button class="btn btn-ghost" type="button" id="analizuj" hidden>Oceń zdjęcie teraz</button><button class="btn btn-amber" type="button" id="wyslij">Wyślij do siebie i do nas</button>
         <div class="wyslano" id="wyslano" hidden><b>Gdzie to trafia</b><p>Kalkulacja idzie do naszego biura na <b>smartparkiet.kontakt@gmail.com</b>, a kopia na Państwa adres, jeśli został podany. Telefony dyżurne: <b>602 242 815</b> i <b>606 949 222</b>. Odpowiedź w ciągu dwóch godzin roboczych.</p><p class="stan-wys" id="stanWys"></p><div class="podsum" id="podsum"></div><div class="drogi"><a class="btn btn-amber" id="waLink" href="#" target="_blank" rel="noopener">Wyślij przez WhatsApp</a><a class="btn btn-ghost" id="mailLink" href="#">Wyślij mailem</a></div></div>
       </form>
@@ -1059,7 +1059,7 @@ figure{margin:0}
     crews.forEach((c,i)=>{ html+='<div class="lab">'+c[0]+'</div>'; for(let d=0;d<14;d++){const dt=new Date(start); dt.setDate(start.getDate()+d); const we=dt.getDay()===0||dt.getDay()===6; const v=we?0:plan[i][d]; html+='<div class="c '+(we?'we':'')+' '+(v===1?'f':v===2?'h':'')+'" data-c="'+i+'" data-d="'+d+'"></div>';} });
     grid.innerHTML=html;
     const mies=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
-    grid.addEventListener('click',e=>{const c=e.target.closest('.c.f,.c.h'); if(!c)return; grid.querySelectorAll('.c.on').forEach(x=>x.classList.remove('on')); c.classList.add('on'); const dt=new Date(start); dt.setDate(start.getDate()+ +c.dataset.d); const cr=crews[+c.dataset.c]; pick.textContent='Ekipa '+cr[0]+' ('+cr[1]+'), '+dt.getDate()+' '+mies[dt.getMonth()]+', start 8:00'+(c.classList.contains('h')?' – dostępne pół dnia':'')+'. Rezerwacja wstępna po wycenie.';});
+    grid.addEventListener('click',e=>{const c=e.target.closest('.c.f,.c.h'); if(!c)return; grid.querySelectorAll('.c.on').forEach(x=>x.classList.remove('on')); c.classList.add('on'); const dt=new Date(start); dt.setDate(start.getDate()+ +c.dataset.d); const cr=crews[+c.dataset.c]; pick.textContent='Ekipa '+cr[0]+' ('+cr[1]+'), '+dt.getDate()+' '+mies[dt.getMonth()]+', start 8:00'+(c.classList.contains('h')?' - dostępne pół dnia':'')+'. Rezerwacja wstępna po wycenie.';});
   })();
   })();
   (function(){
@@ -1071,8 +1071,8 @@ figure{margin:0}
   function est(){
     const a=Math.max(5,+m2.value||0),k=+typ.value,w=+wyk.value;
     const lo=(120*k+w)*a,hi=(140*k+w)*a;
-    const days=a<=40?'1–2 dni':a<=90?'2 dni':a<=160?'3 dni':'4–5 dni';
-    oN.textContent=pln(lo)+' – '+pln(hi)+' zł';
+    const days=a<=40?'1-2 dni':a<=90?'2 dni':a<=160?'3 dni':'4-5 dni';
+    oN.textContent=pln(lo)+' - '+pln(hi)+' zł';
     oT.textContent=a+' m² · '+typ.options[typ.selectedIndex].text.toLowerCase()+' · '+wyk.options[wyk.selectedIndex].text.toLowerCase()+' · ok. '+days+' · netto, orientacyjnie';
   }
   [m2,typ,wyk].forEach(e=>e.addEventListener('input',est)); est();
@@ -1082,6 +1082,7 @@ figure{margin:0}
   const bWys=document.getElementById('wyslij'), boxWys=document.getElementById('wyslano'),
         podsum=document.getElementById('podsum'), waL=document.getElementById('waLink'), mailL=document.getElementById('mailLink');
   if(bWys&&boxWys&&podsum&&waL&&mailL){
+    const plikDoWyslania=()=>(window.__plik?window.__plik():null);
     function tresc(){
       const a=Math.max(5,+m2.value||0);
       const g=document.getElementById('oG'), u=document.getElementById('oU'), st=document.getElementById('oS'), z=document.getElementById('oZ');
@@ -1104,52 +1105,87 @@ figure{margin:0}
       w.push('Naprawy, uzupełnienia klepek: '+zn('naprawy'));
       w.push('Stabilizacja iniekcyjna: '+zn('iniekcja'));
       w.push('Widełki z kalkulatora: '+oN.textContent);
-      if(zn('listwy')==='tak'||zn('naprawy')==='tak'||zn('iniekcja')==='tak')
+      if(zn('listwy')!=='bez listwy'||zn('naprawy')==='tak'||zn('iniekcja')==='tak')
         w.push('Pozycje dodatkowe wyceniamy po obejrzeniu zdjęć, nie wchodzą w widełki powyżej.');
-      const em=(document.getElementById('mailKl')||{}).value;
-      if(em) w.push('E-mail klienta: '+em);
+      const pole=id=>((document.getElementById(id)||{}).value||'').trim();
+      if(pole('imieKl')) w.push('Imię i nazwisko: '+pole('imieKl'));
+      if(pole('telKl')) w.push('Telefon: '+pole('telKl'));
+      if(pole('dzielKl')) w.push('Dzielnica: '+pole('dzielKl'));
+      if(pole('mailKl')) w.push('E-mail klienta: '+pole('mailKl'));
       return w.join('\n');
     }
-    // NA CZAS TESTOW: kalkulacja idzie na nasza skrzynke, zeby bylo widac,
-    // czy mechanizm dowozi maila. Po potwierdzeniu wracamy na
-    // smartparkiet.kontakt@gmail.com (tam tez trzeba aktywowac FormSubmit).
-    const BIURO='stasiu2626@gmail.com';
-    async function doBiura(t,mail){
-      /* Artur 10.10 22:04: "wyslij do siebie i naszego biura".
-         FormSubmit wysyla na skrzynke biura, a kopie na adres klienta. */
+    const BIURO='smartparkiet.kontakt@gmail.com';
+    /* Artur 10.10 22:32: zdjecie ma dojsc jako ZALACZNIK do maila.
+       Koncowka /ajax w FormSubmit przyjmuje tylko tekst, pliki idą wyłącznie
+       zwyklym formularzem multipart. Dlatego skladamy ukryty formularz
+       i wysylamy go do ukrytej ramki - strona zostaje na miejscu, a zdjecie
+       dolacza sie do wiadomosci. */
+    function zbudujFormularz(){
+      let f=document.getElementById('smartForm');
+      if(f) return f;
+      const ram=document.createElement('iframe');
+      ram.name='smartRamka'; ram.id='smartRamka'; ram.title='Wysyłka zgłoszenia';
+      ram.setAttribute('aria-hidden','true');
+      ram.style.cssText='position:absolute;width:0;height:0;border:0;left:-9999px';
+      document.body.appendChild(ram);
+      f=document.createElement('form');
+      f.id='smartForm'; f.method='POST'; f.enctype='multipart/form-data';
+      f.target='smartRamka'; f.hidden=true;
+      f.action='https://formsubmit.co/'+BIURO;
+      ['_subject','_cc','_template','_captcha','_next','Zgloszenie',
+       'Imie_i_nazwisko','Telefon','Dzielnica','Email_klienta'].forEach(n=>{
+        const i=document.createElement('input'); i.type='hidden'; i.name=n; f.appendChild(i);});
+      const zal=document.createElement('input');
+      zal.type='file'; zal.name='attachment'; zal.id='smartZalacznik'; zal.hidden=true;
+      f.appendChild(zal);
+      document.body.appendChild(f);
+      return f;
+    }
+    function doBiura(t,mail){
       const stan=document.getElementById('stanWys');
       if(stan)stan.textContent='Wysyłam...';
+      const f=zbudujFormularz();
+      const ust=(n,v)=>{const e=f.querySelector('[name="'+n+'"]'); if(e)e.value=v||'';};
+      const pole=id=>((document.getElementById(id)||{}).value||'').trim();
+      ust('_subject','SMARTEXPERT ONLINE - kalkulacja '+(+m2.value||0)+' m2');
+      ust('_cc',mail||'');
+      ust('_template','table');
+      ust('_captcha','false');
+      ust('_next',location.origin+location.pathname.replace(/[^/]*$/,'')+'wyslane.html');
+      ust('Zgloszenie',t);
+      ust('Imie_i_nazwisko',pole('imieKl'));
+      ust('Telefon',pole('telKl'));
+      ust('Dzielnica',pole('dzielKl'));
+      ust('Email_klienta',mail||'nie podano');
+      let zalaczono=false;
       try{
-        let ok=false;
-        try{
-          // 1. prosto z przegladarki klienta - jego IP, bez limitow
-          const r1=await fetch('https://formsubmit.co/ajax/'+BIURO,{method:'POST',
-            headers:{'Content-Type':'application/json',Accept:'application/json'},
-            body:JSON.stringify({_subject:'SMARTEXPERT ONLINE - kalkulacja '+(+m2.value||0)+' m2',
-              _cc:mail||'', _template:'table', Zgloszenie:t, Email_klienta:mail||'nie podano'})});
-          const j1=await r1.json();
-          ok=!!(j1&&(j1.success===true||j1.success==='true'));
-        }catch(e){}
-        if(!ok){
-          // 2. zapasowo przez naszego workera, gdy siec klienta blokuje formsubmit
-          try{
-            const r2=await fetch(ANALIZA_URL+'/wyslij',{method:'POST',
-              headers:{'Content-Type':'application/json'},
-              body:JSON.stringify({tresc:t,mail:mail})});
-            const j2=await r2.json();
-            ok=!!(r2.ok&&j2&&j2.ok);
-          }catch(e){}
+        const pk=plikDoWyslania();
+        if(pk&&window.DataTransfer){
+          const dt=new DataTransfer(); dt.items.add(pk);
+          document.getElementById('smartZalacznik').files=dt.files;
+          zalaczono=true;
         }
-        if(stan)stan.textContent=ok?(mail?('Wysłane do nas, kopia poszła na '+mail):'Wysłane do naszego biura.')
-          :'Nie udało się wysłać automatycznie. Proszę skorzystać z przycisków niżej.';
-      }catch(e){ if(stan)stan.textContent='Brak połączenia. Proszę skorzystać z przycisków niżej.'; }
+      }catch(e){}
+      const ram=document.getElementById('smartRamka');
+      let gotowe=false;
+      const koniec=ok=>{
+        if(gotowe)return; gotowe=true;
+        if(!stan)return;
+        stan.textContent = ok
+          ? ((mail?('Wysłane do nas, kopia poszła na '+mail+'.'):'Wysłane do naszego biura.')
+             + (zalaczono?' Zdjęcie poszło w załączniku.':' Zdjęcie prosimy dosłać w odpowiedzi.'))
+          : 'Nie udało się wysłać automatycznie. Proszę skorzystać z przycisków niżej.';
+      };
+      ram.onload=()=>koniec(true);
+      setTimeout(()=>koniec(false),25000);
+      f.submit();
     }
     bWys.addEventListener('click',()=>{
       const t=tresc();
       podsum.textContent=t;
       doBiura(t,(document.getElementById('mailKl')||{}).value||'');
       waL.href='https://wa.me/48602242815?text='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi doślę w odpowiedzi.');
-      mailL.href='mailto:smartparkiet.kontakt@gmail.com?subject='+encodeURIComponent('Wycena ze zdjęć - '+(+m2.value||0)+' m2')+'&body='+encodeURIComponent(t+'\n\nProszę o kontakt. W załączniku zdjęcia podłogi.\n\nImię i nazwisko:\nTelefon:\nDzielnica:');
+      mailL.href='mailto:smartparkiet.kontakt@gmail.com?subject='+encodeURIComponent('Wycena ze zdjęć - '+(+m2.value||0)+' m2')+'&body='+encodeURIComponent(t+'\n\nProszę o kontakt. W załączniku zdjęcia podłogi.');
       boxWys.hidden=false;
       boxWys.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});
     });
@@ -1163,6 +1199,7 @@ figure{margin:0}
   const photo=document.getElementById('aiPhoto'), out=document.getElementById('aiOut');
   if(!photo||!out)return;
   let plik=null;
+  window.__plik=()=>plik;
   function pokaz(src,nazwa){
     photo.innerHTML='<img alt="Zdjęcie podłogi przesłane do wyceny"><div class="scan"></div>';
     photo.querySelector('img').src=src;
