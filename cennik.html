@@ -946,12 +946,12 @@ figure{margin:0}
     <h2>Cennik</h2>
     <p class="lead" style="margin-top:14px">Stawki netto z aktualnego cennika. Dokładna kwota po wycenie ze zdjęć; w umowie nie ma pozycji „dopłata za…”.</p>
     <div class="pricelist">
-      <div class="pl"><h3>Cyklinowanie bezpyłowe</h3><p>Parkiet, deska, mozaika. Szlif w trzech gradacjach, szczeliny wypełnione masą z pyłu tego samego drewna.</p><div class="price">120–140 zł<span>za m²</span></div></div>
+      <div class="pl"><h3>Cyklinowanie bezpyłowe</h3><p>Parkiet, deska, mozaika. Szlif w trzech gradacjach, szczeliny wypełnione masą z pyłu tego samego drewna.</p><div class="price">120-140 zł<span>za m²</span></div></div>
       <div class="pl"><h3>Lakierowanie i olejowanie</h3><p>Lakiery wodne, oleje twarde i woskowe. Próbki na Państwa podłodze przed decyzją.</p><div class="price">w cenie<span>koloryzacja: dopłata</span></div></div>
-      <div class="pl"><h3>Koloryzacja</h3><p>Dąb w kolorze orzecha, jesion na ciemno, egzotyk rozjaśniony. Bez wymiany podłogi.</p><div class="price">40–70 zł<span>za m²</span></div></div>
-      <div class="pl"><h3>Stabilizacja i naprawy</h3><p>Klejenie luźnych klepek, wymiana fragmentów, parkiet na legarach, podłoga po zalaniu.</p><div class="price">60–70 zł<span>za m² stabilizacji</span></div></div>
-      <div class="pl"><h3>Listwy przypodłogowe</h3><p>Drewniane i MDF, dobrane kolorem do odnowionej podłogi. Cokoły pod zabudowę kuchenną.</p><div class="price">45–60 zł<span>za mb</span></div></div>
-      <div class="pl"><h3>Schody, progi, podesty</h3><p>Stopnie z drewna, podesty w kamienicach, przejścia między pomieszczeniami.</p><div class="price">200–300 zł<span>za komplet: stopień z podstopnicą</span></div></div>
+      <div class="pl"><h3>Koloryzacja</h3><p>Dąb w kolorze orzecha, jesion na ciemno, egzotyk rozjaśniony. Bez wymiany podłogi.</p><div class="price">40-70 zł<span>za m²</span></div></div>
+      <div class="pl"><h3>Stabilizacja i naprawy</h3><p>Klejenie luźnych klepek, wymiana fragmentów, parkiet na legarach, podłoga po zalaniu.</p><div class="price">60-70 zł<span>za m² stabilizacji</span></div></div>
+      <div class="pl"><h3>Listwy przypodłogowe</h3><p>Drewniane i MDF, dobrane kolorem do odnowionej podłogi. Cokoły pod zabudowę kuchenną.</p><div class="price">45-60 zł<span>za mb</span></div></div>
+      <div class="pl"><h3>Schody, progi, podesty</h3><p>Stopnie z drewna, podesty w kamienicach, przejścia między pomieszczeniami.</p><div class="price">200-300 zł<span>za komplet: stopień z podstopnicą</span></div></div>
     </div>
 
     <div class="lab">
@@ -961,7 +961,7 @@ figure{margin:0}
           <button type="button" aria-pressed="true" data-f="polysk"><b>Lakier wodny półmat</b><span>w cenie</span></button>
           <button type="button" aria-pressed="false" data-f="mat"><b>Lakier matowy</b><span>w cenie</span></button>
           <button type="button" aria-pressed="false" data-f="olej"><b>Olej twardy</b><span>+ 8 zł/m²</span></button>
-          <button type="button" aria-pressed="false" data-f="kolor"><b>Koloryzacja „orzech”</b><span>+ 40–70 zł/m²</span></button>
+          <button type="button" aria-pressed="false" data-f="kolor"><b>Koloryzacja „orzech”</b><span>+ 40-70 zł/m²</span></button>
         </div>
       </div>
       <div class="lab-stage" id="lab" style="--x:100%;--lx:62%;--ly:38%">
@@ -1067,7 +1067,7 @@ figure{margin:0}
     crews.forEach((c,i)=>{ html+='<div class="lab">'+c[0]+'</div>'; for(let d=0;d<14;d++){const dt=new Date(start); dt.setDate(start.getDate()+d); const we=dt.getDay()===0||dt.getDay()===6; const v=we?0:plan[i][d]; html+='<div class="c '+(we?'we':'')+' '+(v===1?'f':v===2?'h':'')+'" data-c="'+i+'" data-d="'+d+'"></div>';} });
     grid.innerHTML=html;
     const mies=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
-    grid.addEventListener('click',e=>{const c=e.target.closest('.c.f,.c.h'); if(!c)return; grid.querySelectorAll('.c.on').forEach(x=>x.classList.remove('on')); c.classList.add('on'); const dt=new Date(start); dt.setDate(start.getDate()+ +c.dataset.d); const cr=crews[+c.dataset.c]; pick.textContent='Ekipa '+cr[0]+' ('+cr[1]+'), '+dt.getDate()+' '+mies[dt.getMonth()]+', start 8:00'+(c.classList.contains('h')?' – dostępne pół dnia':'')+'. Rezerwacja wstępna po wycenie.';});
+    grid.addEventListener('click',e=>{const c=e.target.closest('.c.f,.c.h'); if(!c)return; grid.querySelectorAll('.c.on').forEach(x=>x.classList.remove('on')); c.classList.add('on'); const dt=new Date(start); dt.setDate(start.getDate()+ +c.dataset.d); const cr=crews[+c.dataset.c]; pick.textContent='Ekipa '+cr[0]+' ('+cr[1]+'), '+dt.getDate()+' '+mies[dt.getMonth()]+', start 8:00'+(c.classList.contains('h')?' - dostępne pół dnia':'')+'. Rezerwacja wstępna po wycenie.';});
   })();
   })();
   (function(){
@@ -1079,8 +1079,8 @@ figure{margin:0}
   function est(){
     const a=Math.max(5,+m2.value||0),k=+typ.value,w=+wyk.value;
     const lo=(120*k+w)*a,hi=(140*k+w)*a;
-    const days=a<=40?'1–2 dni':a<=90?'2 dni':a<=160?'3 dni':'4–5 dni';
-    oN.textContent=pln(lo)+' – '+pln(hi)+' zł';
+    const days=a<=40?'1-2 dni':a<=90?'2 dni':a<=160?'3 dni':'4-5 dni';
+    oN.textContent=pln(lo)+' - '+pln(hi)+' zł';
     oT.textContent=a+' m² · '+typ.options[typ.selectedIndex].text.toLowerCase()+' · '+wyk.options[wyk.selectedIndex].text.toLowerCase()+' · ok. '+days+' · netto, orientacyjnie';
   }
   [m2,typ,wyk].forEach(e=>e.addEventListener('input',est)); est();
