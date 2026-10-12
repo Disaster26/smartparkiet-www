@@ -1829,3 +1829,30 @@ header.nav .brand .brand-t{flex:1 1 auto;text-align:center;
 header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 </style>
 <!-- naglowek 21:03: KONIEC -->
+<!-- naglowek 21:07: START -->
+<style>
+/* Artur 12.10 21:07: proporcje naglowka 1:1 z jego wzorca, liczone od
+   wysokosci pomaranczowego przycisku H (patrz komentarz w skrypcie). */
+@media(max-width:860px){
+  :root{--H:min(44px,calc((100vw - 16px) / 10.72))}
+  .nav .wrap{gap:0!important;padding-left:8px!important;padding-right:8px!important;
+    min-height:calc(var(--H) + 12px)!important;justify-content:flex-start!important}
+  header.nav .brand{flex:1 1 auto!important;gap:calc(var(--H) * .20)!important;margin-right:calc(var(--H) * .40)}
+  header.nav .brand img{width:calc(var(--H) * 1.12)!important;height:calc(var(--H) * 1.12)!important}
+  header.nav .brand .brand-t{flex:0 1 auto!important;text-align:left!important;
+    font-size:calc(var(--H) * .622)!important}
+  header.nav .burger{width:calc(var(--H) * .97)!important;height:var(--H)!important;
+    margin:0 calc(var(--H) * .22) 0 0!important}
+  header.nav .burger::before{width:calc(var(--H) * .44)!important;height:calc(var(--H) * .30)!important;
+    background:
+      linear-gradient(currentColor,currentColor) top/100% calc(var(--H) * .06) no-repeat,
+      linear-gradient(currentColor,currentColor) center/100% calc(var(--H) * .06) no-repeat,
+      linear-gradient(currentColor,currentColor) bottom/100% calc(var(--H) * .06) no-repeat!important}
+  header.nav .tel{height:var(--H)!important;min-height:0!important;width:calc(var(--H) * 2.75)!important;
+    padding:0!important;justify-content:center!important;
+    font-family:"Montserrat","Helvetica Neue",Arial,sans-serif!important;font-weight:600!important;
+    font-size:calc(var(--H) * .383)!important;border-radius:calc(var(--H) * .14)!important}
+  .nav nav{top:calc(var(--H) + 12px)!important}
+}
+</style>
+<!-- naglowek 21:07: KONIEC -->
