@@ -1080,6 +1080,64 @@ figure{margin:0}
         podsum=document.getElementById('podsum'), waL=document.getElementById('waLink'), mailL=document.getElementById('mailLink');
   if(bWys&&boxWys&&podsum&&waL&&mailL){
     const plikDoWyslania=()=>(window.__plik?window.__plik():null);
+    function dane(){
+      const a=Math.max(5,+m2.value||0);
+      const zn=n=>{const e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:'nie podano'};
+      const pole=id=>((document.getElementById(id)||{}).value||'').trim();
+      return [
+        ['Adres realizacji',[pole('ulicaKl'),[pole('kodKl'),pole('miastoKl')].filter(Boolean).join(' ')].filter(Boolean).join(', ')||'nie podano'],
+        ['Metraż',a+' m²'],
+        ['Podłoga',typ.options[typ.selectedIndex].text],
+        ['Wykończenie',wyk.options[wyk.selectedIndex].text+' Berger-Seidle®'],
+        ['Piętro',pole('pietroKl')||'nie podano'],
+        ['Winda',zn('winda')],
+        ['Wymiana listew',zn('listwy')],
+        ['Termin realizacji',pole('terminKl')||'nie podano'],
+        ['Widełki z kalkulatora',oN.textContent],
+        ['Telefon',pole('telKl')||'nie podano'],
+        ['E-mail',pole('mailKl')||'nie podano'],
+        ['Liczba zdjęć',String((window.__pliki?window.__pliki():[]).length)]
+      ];
+    }
+    /* Karta wyceny: jeden obraz A4 (1240x1754) z danymi i zdjeciami */
+    function karta(d,zdj){return new Promise(async ok=>{
+      try{
+        const W=1240,H=1754,c=document.createElement('canvas');c.width=W;c.height=H;
+        const g=c.getContext('2d');
+        g.fillStyle='#fff';g.fillRect(0,0,W,H);
+        g.fillStyle='#E8671F';g.fillRect(0,0,W,120);
+        g.fillStyle='#fff';g.font='bold 52px Arial';g.fillText('SMARTPARKIET',60,80);
+        g.font='28px Arial';g.textAlign='right';
+        const teraz=new Date();
+        g.fillText('Karta wyceny · '+teraz.toLocaleDateString('pl-PL')+' '+teraz.toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'}),W-60,78);
+        g.textAlign='left';
+        let y=170;
+        d.forEach(([k,v],i)=>{
+          if(i%2===0){g.fillStyle='#F6F1EA';g.fillRect(40,y-40,W-80,56);}
+          g.fillStyle='#6B5E52';g.font='26px Arial';g.fillText(k,60,y);
+          g.fillStyle='#14110E';g.font='bold 28px Arial';
+          let t=String(v);while(g.measureText(t).width>W-480&&t.length>4)t=t.slice(0,-2);
+          if(t!==String(v))t=t.slice(0,-1)+'…';
+          g.fillText(t,420,y);
+          y+=56;
+        });
+        y+=20;
+        const n=zdj.length;
+        if(n){
+          const kol=2,odst=20,szer=(W-80-odst)/kol,wier=Math.ceil(n/kol);
+          const wys=Math.min(szer*0.75,(H-y-40-(wier-1)*odst)/wier);
+          for(let i=0;i<n;i++){
+            const img=await new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=URL.createObjectURL(zdj[i]);});
+            const x=40+(i%kol)*(szer+odst),yy=y+Math.floor(i/kol)*(wys+odst);
+            g.fillStyle='#ECE6DC';g.fillRect(x,yy,szer,wys);
+            if(img){const k=Math.max(szer/img.width,wys/img.height),w=img.width*k,h=img.height*k;
+              g.save();g.beginPath();g.rect(x,yy,szer,wys);g.clip();g.drawImage(img,x+(szer-w)/2,yy+(wys-h)/2,w,h);g.restore();}
+            g.fillStyle='rgba(0,0,0,.6)';g.fillRect(x,yy,70,40);g.fillStyle='#fff';g.font='bold 24px Arial';g.fillText(String(i+1),x+26,yy+29);
+          }
+        }
+        c.toBlob(b=>ok(b?new File([b],'KARTA_WYCENY.jpg',{type:'image/jpeg'}):null),'image/jpeg',.85);
+      }catch(e){ok(null)}
+    });}
     function tresc(){
       const a=Math.max(5,+m2.value||0);
       const g=document.getElementById('oG'), u=document.getElementById('oU'), st=document.getElementById('oS'), z=document.getElementById('oZ');
@@ -1131,10 +1189,9 @@ figure{margin:0}
       f.id='smartForm'; f.method='POST'; f.enctype='multipart/form-data';
       f.target='smartRamka'; f.hidden=true;
       f.action='https://formsubmit.co/'+BIURO;
-      ['_subject','_cc','_template','_captcha','_next','Zgloszenie',
-       'Adres','Telefon','Email_klienta'].forEach(n=>{
+      ['_subject','_cc','_template','_captcha','_next'].forEach(n=>{
         const i=document.createElement('input'); i.type='hidden'; i.name=n; f.appendChild(i);});
-      for(let i=1;i<=6;i++){
+      for(let i=1;i<=7;i++){
         const zal=document.createElement('input');
         zal.type='file'; zal.name='zdjecie_'+i; zal.id='smartZalacznik'+i; zal.hidden=true;
         f.appendChild(zal);
@@ -1148,23 +1205,22 @@ figure{margin:0}
       const f=zbudujFormularz();
       const ust=(n,v)=>{const e=f.querySelector('[name="'+n+'"]'); if(e)e.value=v||'';};
       const pole=id=>((document.getElementById(id)||{}).value||'').trim();
-      ust('_subject','Kalkulator online - kalkulacja '+(+m2.value||0)+' m2');
+      ust('_subject','Wycena: '+(+m2.value||0)+' m2, '+(pole('ulicaKl')||'adres nie podany')+', tel. '+(pole('telKl')||'-'));
       ust('_cc',[KOPIA,mail].filter(Boolean).join(','));
       ust('_template','table');
       ust('_captcha','false');
       ust('_next',location.origin+location.pathname.replace(/[^/]*$/,'')+'wyslane.html');
-      ust('Zgloszenie',t);
-      ust('Adres',[pole('ulicaKl'),pole('kodKl'),pole('miastoKl')].filter(Boolean).join(', '));
-      ust('Telefon',pole('telKl'));
-      ust('Email_klienta',mail||'nie podano');
+      f.querySelectorAll('input[data-pole]').forEach(e=>e.remove());
+      dane().forEach(([k,v],i)=>{const e=document.createElement('input');e.type='hidden';e.dataset.pole='1';
+        e.name=(i+1<10?'0':'')+(i+1)+'. '+k;e.value=v;f.insertBefore(e,f.querySelector('input[type=file]'));});
       let zalaczono=0;
       try{
-        const pk=window.__gotowe||[];
-        for(let i=1;i<=6;i++){
+        const pk=(window.__karta?[window.__karta]:[]).concat(window.__gotowe||[]);
+        for(let i=1;i<=7;i++){
           const inp=document.getElementById('smartZalacznik'+i);
           if(!inp||!window.DataTransfer)continue;
           const dt=new DataTransfer();
-          if(pk[i-1]){dt.items.add(pk[i-1]);zalaczono++;}
+          if(pk[i-1]){dt.items.add(pk[i-1]);if(pk[i-1]!==window.__karta)zalaczono++;}
           inp.files=dt.files;
         }
       }catch(e){}
@@ -1175,7 +1231,7 @@ figure{margin:0}
         if(!stan)return;
         stan.textContent = ok
           ? ((mail?('Wysłane do nas, kopia poszła na '+mail+'.'):'Wysłane do naszego biura.')
-             + (zalaczono?(' Zdjęcia w załącznikach: '+zalaczono+'.'):' Zdjęcia prosimy dosłać w odpowiedzi.'))
+             + (zalaczono?(' Karta wyceny i zdjęcia w załącznikach: '+zalaczono+'.'):' Zdjęcia prosimy dosłać w odpowiedzi.'))
           : 'Nie udało się wysłać automatycznie. Proszę skorzystać z przycisków niżej i dołączyć zdjęcia ręcznie.';
         const dr=document.querySelector('#wyslano .drogi'); if(dr&&!ok)dr.hidden=false;
       };
@@ -1205,6 +1261,7 @@ figure{margin:0}
       bl.hidden=true;
       bWys.disabled=true;
       try{window.__gotowe=await Promise.all(pl.map(zmniejsz));}catch(e){window.__gotowe=pl;}
+      window.__karta=await karta(dane(),window.__gotowe);
       bWys.disabled=false;
       const t=tresc();
       podsum.textContent=t;
