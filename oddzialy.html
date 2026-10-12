@@ -1751,3 +1751,19 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 }
 </style>
 <!-- naglowek 21:07: KONIEC -->
+<!-- paski 23:52: START -->
+<style>
+/* 23:42/23:52 gorny i dolny pasek wezsze i tej samej wysokosci (44 px);
+   23:46 kolko logo = wysokosc pomaranczowego przycisku; napis w osi
+   miedzy kolkiem a hamburgerem */
+@media(max-width:860px){
+  :root{--pasek:44px}
+  .nav .wrap{height:var(--pasek)!important;min-height:0!important;padding-top:0!important;padding-bottom:0!important}
+  .nav nav{top:var(--pasek)!important}
+  header.nav .brand{gap:0!important;margin-right:0!important;flex:1 1 auto!important}
+  header.nav .brand img{width:var(--H)!important;height:var(--H)!important}
+  header.nav .brand .brand-t{flex:1 1 auto!important;text-align:center!important}
+  .cta-bar a{min-height:0!important;height:var(--pasek)!important}
+}
+</style>
+<!-- paski 23:52: KONIEC -->
