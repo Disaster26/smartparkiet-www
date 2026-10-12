@@ -1090,7 +1090,7 @@ figure{margin:0}
       w.push('Zgłoszenie ze strony SMARTPARKIET - wycena ze zdjęć');
       w.push('Metraż: '+a+' m\u00b2');
       w.push('Podłoga: '+typ.options[typ.selectedIndex].text);
-      w.push('Wykończenie: '+wyk.options[wyk.selectedIndex].text+' (zawsze trzy warstwy)');
+      w.push('Wykończenie: '+wyk.options[wyk.selectedIndex].text+' Berger-Seidle®');
       if(ma(g&&g.textContent)) w.push('Gatunek z analizy zdjęcia: '+g.textContent);
       if(ma(u&&u.textContent)) w.push('Układ: '+u.textContent);
       if(ma(st&&st.textContent)) w.push('Stan: '+st.textContent);
@@ -1109,7 +1109,11 @@ figure{margin:0}
       w.push('E-mail klienta: '+(pole('mailKl')||'nie podano'));
       return w.join('\n');
     }
-    const BIURO='smartparkiet.kontakt@gmail.com';
+    /* TESTY 13.10: formularz na smartparkiet.kontakt nie byl aktywowany w FormSubmit,
+       wiec glowny odbiorca to odrobimy@gmail.com (aktywuje Lukasz), biuro dostaje kopie.
+       Po potwierdzeniu, ze zdjecia dochodza, wrocic do BIURO='smartparkiet.kontakt@gmail.com'. */
+    const BIURO='odrobimy@gmail.com';
+    const KOPIA='smartparkiet.kontakt@gmail.com';
     /* Artur 10.10 22:32: zdjecie ma dojsc jako ZALACZNIK do maila.
        Koncowka /ajax w FormSubmit przyjmuje tylko tekst, pliki idą wyłącznie
        zwyklym formularzem multipart. Dlatego skladamy ukryty formularz
@@ -1145,7 +1149,7 @@ figure{margin:0}
       const ust=(n,v)=>{const e=f.querySelector('[name="'+n+'"]'); if(e)e.value=v||'';};
       const pole=id=>((document.getElementById(id)||{}).value||'').trim();
       ust('_subject','Kalkulator online - kalkulacja '+(+m2.value||0)+' m2');
-      ust('_cc',mail||'');
+      ust('_cc',[KOPIA,mail].filter(Boolean).join(','));
       ust('_template','table');
       ust('_captcha','false');
       ust('_next',location.origin+location.pathname.replace(/[^/]*$/,'')+'wyslane.html');
@@ -1172,7 +1176,8 @@ figure{margin:0}
         stan.textContent = ok
           ? ((mail?('Wysłane do nas, kopia poszła na '+mail+'.'):'Wysłane do naszego biura.')
              + (zalaczono?(' Zdjęcia w załącznikach: '+zalaczono+'.'):' Zdjęcia prosimy dosłać w odpowiedzi.'))
-          : 'Nie udało się wysłać automatycznie. Proszę skorzystać z przycisków niżej.';
+          : 'Nie udało się wysłać automatycznie. Proszę skorzystać z przycisków niżej i dołączyć zdjęcia ręcznie.';
+        const dr=document.querySelector('#wyslano .drogi'); if(dr&&!ok)dr.hidden=false;
       };
       ram.onload=()=>koniec(true);
       setTimeout(()=>koniec(false),25000);
@@ -1205,7 +1210,8 @@ figure{margin:0}
       podsum.textContent=t;
       doBiura(t,(document.getElementById('mailKl')||{}).value||'');
       waL.href='https://wa.me/48602242815?text='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi doślę w odpowiedzi.');
-      mailL.href='mailto:smartparkiet.kontakt@gmail.com?subject='+encodeURIComponent('Wycena ze zdjęć - '+(+m2.value||0)+' m2')+'&body='+encodeURIComponent(t+'\n\nProszę o kontakt. W załączniku zdjęcia podłogi.');
+      mailL.href='mailto:smartparkiet.kontakt@gmail.com?subject='+encodeURIComponent('Wycena ze zdjęć - '+(+m2.value||0)+' m2')+'&body='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi dołączam do tej wiadomości.');
+      {const dr=document.querySelector('#wyslano .drogi'); if(dr)dr.hidden=true;}
       boxWys.hidden=false;
       boxWys.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});
     });
@@ -1326,6 +1332,7 @@ figure{margin:0}
 .wyslano .podsum{white-space:pre-line;font-size:.86rem;line-height:1.55;color:var(--grafit);
   background:var(--kosc2);border:1px solid var(--kreska);border-radius:3px;padding:14px 16px;margin-bottom:14px}
 .wyslano .drogi{display:flex;gap:10px;flex-wrap:wrap}
+.wyslano .drogi[hidden]{display:none}
 @media(max-width:560px){.wyslano .drogi .btn{flex:1 1 100%;text-align:center}}
 </style>
 
