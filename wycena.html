@@ -1193,7 +1193,7 @@ figure{margin:0}
         const i=document.createElement('input'); i.type='hidden'; i.name=n; f.appendChild(i);});
       for(let i=1;i<=7;i++){
         const zal=document.createElement('input');
-        zal.type='file'; zal.name='zdjecie_'+i; zal.id='smartZalacznik'+i; zal.hidden=true;
+        zal.type='file'; zal.name=i===1?'Karta':'Zdjecie_'+(i-1); zal.id='smartZalacznik'+i; zal.hidden=true;
         f.appendChild(zal);
       }
       document.body.appendChild(f);
@@ -1212,7 +1212,7 @@ figure{margin:0}
       ust('_next',location.origin+location.pathname.replace(/[^/]*$/,'')+'wyslane.html');
       f.querySelectorAll('input[data-pole]').forEach(e=>e.remove());
       dane().forEach(([k,v],i)=>{const e=document.createElement('input');e.type='hidden';e.dataset.pole='1';
-        e.name=(i+1<10?'0':'')+(i+1)+'. '+k;e.value=v;f.insertBefore(e,f.querySelector('input[type=file]'));});
+        e.name=['Adres','Metraż','Podłoga','Wykończenie','Piętro','Winda','Listwy','Termin','Widełki','Telefon','E-mail','Zdjęcia'][i]||k;e.value=v;f.insertBefore(e,f.querySelector('input[type=file]'));});
       let zalaczono=0;
       try{
         const pk=(window.__karta?[window.__karta]:[]).concat(window.__gotowe||[]);
