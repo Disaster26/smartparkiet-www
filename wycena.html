@@ -957,14 +957,13 @@ figure{margin:0}
   <div class="wrap split">
     <div class="sticky">
       <p class="oczko"><span></span>Kalkulator online</p>
-      <h2>Ekspercka diagnoza podłogi bez wychodzenia z domu</h2>
-      <p class="lead se-lead">Prześlij zdjęcia. Otrzymaj profesjonalną ocenę stanu podłogi i rekomendację dalszych działań.</p>
-      <p class="lead" style="margin-top:16px">Proszę wrzucić zdjęcie podłogi i podać metraż. Widełki liczymy z cennika, a zdjęcia ogląda parkieciarz. Parkieciarz sprawdza wynik i odzywa się w ciągu dwóch godzin roboczych. Oględziny dopiero wtedy, gdy obie strony wiedzą, o jakich pieniądzach mowa.</p>
-      <p class="demo-note">Zdjęcie ocenia najpierw nasz system rozpoznawania: podpowiada gatunek, układ i stan podłogi, a gdy czegoś nie da się stwierdzić ze zdjęcia, mówi wprost "nie wiem" zamiast zgadywać. Ostatnie słowo ma parkieciarz, który ogląda te same zdjęcia i potwierdza wycenę.</p>
+      <h2>Kalkulator bezpłatnej wyceny</h2>
+      <p class="lead se-lead">Prosty formularz mobilny, około 2 minuty. Proszę dodać 4-6 zdjęć podłogi, najlepiej sześć, w tym zdjęcia miejsc do naprawy.</p>
+      <p class="lead" style="margin-top:16px">Widełki liczymy z cennika od razu, a zdjęcia ogląda parkieciarz i odzywa się z wyceną w ciągu dwóch godzin roboczych.</p>
     </div>
     <div class="ai">
-      <label class="drop" id="drop" for="file"><span><b>Upuść zdjęcie podłogi albo kliknij</b><span>JPG lub HEIC z telefonu. Zdjęcie trafia do naszego biura razem z kalkulacją.</span></span><span class="btn btn-ghost" style="pointer-events:none">Wybierz plik</span><input id="file" type="file" accept="image/*" hidden></label>
-      <div class="samples">albo przykład: <button type="button" data-s="dab">dąb, jodełka</button><button type="button" data-s="merbau">merbau</button><button type="button" data-s="brodno">parkiet w sali gimnastycznej</button><button type="button" data-s="sukupira">sukupira, ciemna</button></div>
+      <label class="drop" id="drop" for="file"><span><b>Zdjęcia podłogi: 4-6 sztuk</b><span>Najlepiej sześć. Prosimy też o zdjęcia miejsc do naprawy (ubytki, szczeliny, przebarwienia).</span></span><span class="btn btn-ghost" style="pointer-events:none">Dodaj zdjęcia</span><input id="file" type="file" accept="image/*" multiple hidden></label>
+      <div class="miniatury" id="miniatury"><span class="lic" id="licZdj">Dodano 0 z 6 zdjęć (minimum 4)</span></div>
       <div class="ai-body">
         <div class="ai-photo" id="aiPhoto"><div class="empty">Tu pojawi się Państwa zdjęcie</div><div class="scan"></div></div>
         <div class="ai-out" id="aiOut">
@@ -976,10 +975,8 @@ figure{margin:0}
         </div>
       </div>
       <form class="ai-form" onsubmit="return false">
-        <div><label for="m2">Metraż</label><input id="m2" type="number" value="58" min="5" max="600"></div>
-        <div><label for="typ">Podłoga</label><select id="typ"><option value="1">Klepka</option><option value="1.25">Mozaika</option><option value="1.08">Warstwowa</option><option value="1.12">Egzotyk</option></select></div>
-        <div><label for="wyk">Wykończenie</label><select id="wyk"><option value="0">Lakier</option><option value="8">Olej</option><option value="12">Twardy wosk</option><option value="55">Kolor</option></select></div><div><label for="gat">Gatunek drewna</label><select id="gat"><option>nie wiem</option><option>dąb</option><option>jesion</option><option>buk</option><option>sosna</option><option>drewno egzotyczne</option><option>deska warstwowa</option></select></div><div><label for="wiek">Wiek podłogi</label><select id="wiek"><option>nie wiem</option><option>do 10 lat</option><option>10-30 lat</option><option>ponad 30 lat</option><option>nowa, nieużywana</option></select></div><div class="pyt"><span>Listwy przypodłogowe</span><div class="tn"><label><input type="radio" name="listwy" value="klasyczna drewniana"> klasyczna drewniana</label><label><input type="radio" name="listwy" value="MDF"> MDF</label><label><input type="radio" name="listwy" value="bez listwy" checked> bez listwy</label></div></div><div class="pyt"><span>Naprawy, uzupełnienia klepek</span><div class="tn"><label><input type="radio" name="naprawy" value="tak"> tak</label><label><input type="radio" name="naprawy" value="nie" checked> nie</label><label><input type="radio" name="naprawy" value="nie wiem"> nie wiem</label></div></div><div class="pyt"><span>Skrzypienie, luźne klepki (stabilizacja iniekcyjna)</span><div class="tn"><label><input type="radio" name="iniekcja" value="tak"> tak</label><label><input type="radio" name="iniekcja" value="nie" checked> nie</label><label><input type="radio" name="iniekcja" value="nie wiem"> nie wiem</label></div></div><div><label for="imieKl">Imię i nazwisko (opcjonalnie)</label><input id="imieKl" type="text" autocomplete="name" placeholder="Jan Kowalski"></div><div><label for="telKl">Telefon (opcjonalnie)</label><input id="telKl" type="tel" inputmode="tel" autocomplete="tel" placeholder="600 000 000"></div><div><label for="dzielKl">Dzielnica</label><select id="dzielKl"><option value="">proszę wybrać</option><option>Bemowo</option><option>Białołęka</option><option>Bielany</option><option>Mokotów</option><option>Ochota</option><option>Praga-Południe</option><option>Praga-Północ</option><option>Rembertów</option><option>Śródmieście</option><option>Targówek</option><option>Ursus</option><option>Ursynów</option><option>Wawer</option><option>Wesoła</option><option>Wilanów</option><option>Włochy</option><option>Wola</option><option>Żoliborz</option><option>poza Warszawą</option></select></div><div class="szer"><label for="mailKl">Państwa e-mail, żeby dostać kalkulację do siebie</label><input id="mailKl" type="email" inputmode="email" placeholder="jan.kowalski@poczta.pl"></div>
-        <div id="ts" style="margin:4px 0"></div><button class="btn btn-ghost" type="button" id="analizuj" hidden>Oceń zdjęcie teraz</button><button class="btn btn-amber" type="button" id="wyslij">Wyślij do siebie i do nas</button>
+        <div class="szer"><label for="ulicaKl">Adres realizacji: ulica i numer</label><input id="ulicaKl" type="text" autocomplete="street-address" placeholder="ul. Grójecka 208 m. 12"></div><div><label for="kodKl">Kod pocztowy</label><input id="kodKl" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="02-390"></div><div><label for="miastoKl">Miejscowość</label><input id="miastoKl" type="text" autocomplete="address-level2" value="Warszawa"></div><div><label for="m2">Metraż podłogi (m²)</label><input id="m2" type="number" inputmode="numeric" value="58" min="5" max="600"></div><div><label for="typ">Podłoga</label><select id="typ"><option value="1">Klepka</option><option value="1.25">Mozaika</option><option value="1.08">Warstwowa</option><option value="1.12">Egzotyk</option></select></div><div><label for="wyk">Wykończenie</label><select id="wyk"><option value="0">Lakier</option><option value="8">Olej</option><option value="12">Twardy wosk</option><option value="55">Kolor</option></select></div><div><label for="pietroKl">Piętro</label><input id="pietroKl" type="number" inputmode="numeric" min="-1" max="60" placeholder="np. 3"></div><div class="pyt"><span>Winda</span><div class="tn"><label><input type="radio" name="winda" value="tak"> tak</label><label><input type="radio" name="winda" value="nie" checked> nie</label></div></div><div class="pyt"><span>Wymiana listew przypodłogowych</span><div class="tn"><label><input type="radio" name="listwy" value="tak"> tak</label><label><input type="radio" name="listwy" value="nie" checked> nie</label></div></div><div class="szer"><label for="terminKl">Termin realizacji: preferowana data lub miesiąc</label><input id="terminKl" type="text" placeholder="np. 20 listopada albo grudzień"></div><div><label for="telKl">Numer telefonu</label><input id="telKl" type="tel" inputmode="tel" autocomplete="tel" placeholder="600 000 000"></div><div><label for="mailKl">Adres e-mail, do przesłania wyceny</label><input id="mailKl" type="email" inputmode="email" autocomplete="email" placeholder="jan.kowalski@poczta.pl"></div>
+        <div id="ts" style="margin:4px 0"></div><button class="btn btn-ghost" type="button" id="analizuj" hidden>Oceń zdjęcie teraz</button><button class="btn btn-amber" type="button" id="wyslij"><svg class="bi" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>Wyślij do bezpłatnej wyceny</button><p class="pod-przyc">Prosty formularz mobilny · około 2 minuty</p><p class="blad-form" id="bladForm" hidden></p>
         <div class="wyslano" id="wyslano" hidden><b>Gdzie to trafia</b><p>Kalkulacja idzie do naszego biura na <b>smartparkiet.kontakt@gmail.com</b>, a kopia na Państwa adres, jeśli został podany. Telefony dyżurne: <b>602 242 815</b> i <b>606 949 222</b>. Odpowiedź w ciągu dwóch godzin roboczych.</p><p class="stan-wys" id="stanWys"></p><div class="podsum" id="podsum"></div><div class="drogi"><a class="btn btn-amber" id="waLink" href="#" target="_blank" rel="noopener">Wyślij przez WhatsApp</a><a class="btn btn-ghost" id="mailLink" href="#">Wyślij mailem</a></div></div>
       </form>
     </div>
@@ -1099,19 +1096,17 @@ figure{margin:0}
       if(ma(st&&st.textContent)) w.push('Stan: '+st.textContent);
       if(ma(z&&z.textContent)) w.push('Zalecenie: '+z.textContent);
       const zn=n=>{const e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:'nie podano'};
-      w.push('Gatunek wg klienta: '+document.getElementById('gat').value);
-      w.push('Wiek podłogi: '+document.getElementById('wiek').value);
-      w.push('Listwy przypodłogowe: '+zn('listwy'));
-      w.push('Naprawy, uzupełnienia klepek: '+zn('naprawy'));
-      w.push('Stabilizacja iniekcyjna: '+zn('iniekcja'));
-      w.push('Widełki z kalkulatora: '+oN.textContent);
-      if(zn('listwy')!=='bez listwy'||zn('naprawy')==='tak'||zn('iniekcja')==='tak')
-        w.push('Pozycje dodatkowe wyceniamy po obejrzeniu zdjęć, nie wchodzą w widełki powyżej.');
       const pole=id=>((document.getElementById(id)||{}).value||'').trim();
-      if(pole('imieKl')) w.push('Imię i nazwisko: '+pole('imieKl'));
-      if(pole('telKl')) w.push('Telefon: '+pole('telKl'));
-      if(pole('dzielKl')) w.push('Dzielnica: '+pole('dzielKl'));
-      if(pole('mailKl')) w.push('E-mail klienta: '+pole('mailKl'));
+      w.push('Zdjęcia: '+((window.__pliki?window.__pliki():[]).length)+' szt.');
+      w.push('Adres realizacji: '+[pole('ulicaKl'),[pole('kodKl'),pole('miastoKl')].filter(Boolean).join(' ')].filter(Boolean).join(', '));
+      w.push('Piętro: '+(pole('pietroKl')||'nie podano'));
+      w.push('Winda: '+zn('winda'));
+      w.push('Wymiana listew przypodłogowych: '+zn('listwy'));
+      w.push('Termin realizacji: '+(pole('terminKl')||'nie podano'));
+      w.push('Widełki z kalkulatora: '+oN.textContent);
+      if(zn('listwy')==='tak') w.push('Listwy wyceniamy po obejrzeniu zdjęć, nie wchodzą w widełki powyżej.');
+      w.push('Telefon: '+(pole('telKl')||'nie podano'));
+      w.push('E-mail klienta: '+(pole('mailKl')||'nie podano'));
       return w.join('\n');
     }
     const BIURO='smartparkiet.kontakt@gmail.com';
@@ -1133,11 +1128,13 @@ figure{margin:0}
       f.target='smartRamka'; f.hidden=true;
       f.action='https://formsubmit.co/'+BIURO;
       ['_subject','_cc','_template','_captcha','_next','Zgloszenie',
-       'Imie_i_nazwisko','Telefon','Dzielnica','Email_klienta'].forEach(n=>{
+       'Adres','Telefon','Email_klienta'].forEach(n=>{
         const i=document.createElement('input'); i.type='hidden'; i.name=n; f.appendChild(i);});
-      const zal=document.createElement('input');
-      zal.type='file'; zal.name='attachment'; zal.id='smartZalacznik'; zal.hidden=true;
-      f.appendChild(zal);
+      for(let i=1;i<=6;i++){
+        const zal=document.createElement('input');
+        zal.type='file'; zal.name='zdjecie_'+i; zal.id='smartZalacznik'+i; zal.hidden=true;
+        f.appendChild(zal);
+      }
       document.body.appendChild(f);
       return f;
     }
@@ -1153,17 +1150,18 @@ figure{margin:0}
       ust('_captcha','false');
       ust('_next',location.origin+location.pathname.replace(/[^/]*$/,'')+'wyslane.html');
       ust('Zgloszenie',t);
-      ust('Imie_i_nazwisko',pole('imieKl'));
+      ust('Adres',[pole('ulicaKl'),pole('kodKl'),pole('miastoKl')].filter(Boolean).join(', '));
       ust('Telefon',pole('telKl'));
-      ust('Dzielnica',pole('dzielKl'));
       ust('Email_klienta',mail||'nie podano');
-      let zalaczono=false;
+      let zalaczono=0;
       try{
-        const pk=plikDoWyslania();
-        if(pk&&window.DataTransfer){
-          const dt=new DataTransfer(); dt.items.add(pk);
-          document.getElementById('smartZalacznik').files=dt.files;
-          zalaczono=true;
+        const pk=window.__gotowe||[];
+        for(let i=1;i<=6;i++){
+          const inp=document.getElementById('smartZalacznik'+i);
+          if(!inp||!window.DataTransfer)continue;
+          const dt=new DataTransfer();
+          if(pk[i-1]){dt.items.add(pk[i-1]);zalaczono++;}
+          inp.files=dt.files;
         }
       }catch(e){}
       const ram=document.getElementById('smartRamka');
@@ -1173,14 +1171,36 @@ figure{margin:0}
         if(!stan)return;
         stan.textContent = ok
           ? ((mail?('Wysłane do nas, kopia poszła na '+mail+'.'):'Wysłane do naszego biura.')
-             + (zalaczono?' Zdjęcie poszło w załączniku.':' Zdjęcie prosimy dosłać w odpowiedzi.'))
+             + (zalaczono?(' Zdjęcia w załącznikach: '+zalaczono+'.'):' Zdjęcia prosimy dosłać w odpowiedzi.'))
           : 'Nie udało się wysłać automatycznie. Proszę skorzystać z przycisków niżej.';
       };
       ram.onload=()=>koniec(true);
       setTimeout(()=>koniec(false),25000);
       f.submit();
     }
-    bWys.addEventListener('click',()=>{
+    const bl=document.getElementById('bladForm');
+    /* zdjecia z telefonu maja po 3-5 MB, a FormSubmit przyjmuje razem ok. 5 MB,
+       wiec przed wysylka kazde zmniejszamy do 1600 px (JPEG ok. 300 kB) */
+    function zmniejsz(f){return new Promise(ok=>{
+      const img=new Image(); const u=URL.createObjectURL(f);
+      img.onload=()=>{const k=Math.min(1,1600/Math.max(img.width,img.height));
+        const c=document.createElement('canvas'); c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
+        c.getContext('2d').drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(u);
+        c.toBlob(b=>ok(b?new File([b],(f.name||'zdjecie').replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg'}):f),'image/jpeg',.8);};
+      img.onerror=()=>{URL.revokeObjectURL(u);ok(f)}; img.src=u;});}
+    bWys.addEventListener('click',async()=>{
+      const pl=window.__pliki?window.__pliki():[];
+      const pole=id=>((document.getElementById(id)||{}).value||'').trim();
+      const brak=[];
+      if(pl.length<4) brak.push('co najmniej 4 zdjęcia podłogi (teraz: '+pl.length+')');
+      if(!pole('ulicaKl')) brak.push('adres realizacji');
+      if(!pole('telKl')) brak.push('numer telefonu');
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(pole('mailKl'))) brak.push('adres e-mail');
+      if(brak.length){bl.textContent='Proszę uzupełnić: '+brak.join(', ')+'.';bl.hidden=false;bl.scrollIntoView({block:'nearest'});return;}
+      bl.hidden=true;
+      bWys.disabled=true;
+      try{window.__gotowe=await Promise.all(pl.map(zmniejsz));}catch(e){window.__gotowe=pl;}
+      bWys.disabled=false;
       const t=tresc();
       podsum.textContent=t;
       doBiura(t,(document.getElementById('mailKl')||{}).value||'');
@@ -1198,22 +1218,36 @@ figure{margin:0}
   const SAMPLES={dab:'img/d816138dd0.webp',merbau:'img/90987ef07e.webp',brodno:'img/dc0ebb0010.webp',sukupira:'img/7b5127fb56.webp'};
   const photo=document.getElementById('aiPhoto'), out=document.getElementById('aiOut');
   if(!photo||!out)return;
-  let plik=null;
+  let plik=null, pliki=[];
   window.__plik=()=>plik;
+  window.__pliki=()=>pliki;
+  const mini=document.getElementById('miniatury');
+  function rysujMini(){
+    if(!mini)return;
+    mini.innerHTML=pliki.map((f,i)=>'<span class="mz"><img alt="" src="'+URL.createObjectURL(f)+'"><button type="button" data-i="'+i+'" aria-label="Usuń zdjęcie">×</button></span>').join('')+
+      '<span class="lic" id="licZdj">Dodano '+pliki.length+' z 6 zdjęć'+(pliki.length<4?' (minimum 4)':'')+'</span>';
+  }
+  if(mini)mini.addEventListener('click',e=>{const b=e.target.closest('button[data-i]'); if(!b)return;
+    pliki.splice(+b.dataset.i,1); plik=pliki[0]||null; rysujMini();
+    if(plik)pokaz(URL.createObjectURL(plik),pliki.length+' zdj. dodane'); });
+  function dodaj(lista){
+    [...lista].filter(f=>f.type.startsWith('image/')||/\.(heic|heif)$/i.test(f.name)).forEach(f=>{if(pliki.length<6)pliki.push(f);});
+    plik=pliki[0]||null; rysujMini();
+    if(plik)pokaz(URL.createObjectURL(plik),pliki.length+' zdj. dodane');
+  }
   function pokaz(src,nazwa){
     photo.innerHTML='<img alt="Zdjęcie podłogi przesłane do wyceny"><div class="scan"></div>';
     photo.querySelector('img').src=src;
     const g=document.getElementById('oG');
     if(g)g.textContent=nazwa||'gotowe do wysłania';
   }
-  document.querySelectorAll('.samples button').forEach(b=>b.addEventListener('click',()=>pokaz(SAMPLES[b.dataset.s],'przykładowe zdjęcie')));
   const drop=document.getElementById('drop'), file=document.getElementById('file');
   if(!drop||!file)return;
-  file.addEventListener('change',()=>{const f=file.files[0]; if(f){plik=f;pokaz(URL.createObjectURL(f),f.name.slice(0,28));}});
+  file.addEventListener('change',()=>{dodaj(file.files); file.value='';});
   ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over');}));
   ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
-  drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')){plik=f;pokaz(URL.createObjectURL(f),f.name.slice(0,28));}});
-  pokaz(SAMPLES.dab,'przykładowe zdjęcie');
+  drop.addEventListener('drop',e=>dodaj(e.dataTransfer.files));
+  pokaz(SAMPLES.dab,'czeka na zdjęcia');
 
   /* ---- rozpoznawanie zdjecia przez wlasny serwer (worker) ----
      Dopoki ANALIZA_URL jest puste, przycisk sie nie pokazuje i strona
@@ -1224,7 +1258,7 @@ figure{margin:0}
   if(ANALIZA_URL&&przyciskAnalizy){
     przyciskAnalizy.hidden=false;
     przyciskAnalizy.addEventListener('click',async()=>{
-      if(!plik){toast('Najpierw proszę wrzucić zdjęcie podłogi.');return}
+      if(!plik){toast('Najpierw proszę dodać zdjęcia podłogi.');return}
       if(plik.size>4*1024*1024){toast('Zdjęcie większe niż 4 MB. Proszę wysłać mniejsze.');return}
       przyciskAnalizy.disabled=true; przyciskAnalizy.textContent='Oglądam zdjęcie...';
       photo.classList.add('scanning');
@@ -1928,3 +1962,19 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 }
 </style>
 <!-- paski 23:52: KONIEC -->
+<!-- kalkulator 20:41: START -->
+<style>
+.miniatury{display:flex;flex-wrap:wrap;gap:8px;padding:12px 26px;border-bottom:1px solid var(--line);align-items:center}
+.miniatury .mz{position:relative;width:64px;height:64px;border-radius:4px;overflow:hidden;background:#ECE6DC}
+.miniatury .mz img{width:100%;height:100%;object-fit:cover;display:block}
+.miniatury .mz button{position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:0;
+  background:rgba(0,0,0,.6);color:#fff;font-size:15px;line-height:22px;padding:0;cursor:pointer}
+.miniatury .lic{font-size:.82rem;color:var(--mute)}
+.ai-form #wyslij{display:inline-flex;align-items:center;justify-content:center;gap:10px;grid-column:1/-1}
+.ai-form #wyslij .bi{width:18px;height:18px}
+.ai-form .pod-przyc{grid-column:1/-1;margin:-4px 0 0;text-align:center;font-size:.82rem;color:var(--mute)}
+.ai-form .blad-form{grid-column:1/-1;margin:0;padding:10px 12px;border-left:3px solid #C0392B;background:#FDF1EF;font-size:.88rem;color:#7A1F14}
+.ai-form #analizuj{grid-column:1/-1}
+@media(max-width:560px){.miniatury{padding:12px 16px}}
+</style>
+<!-- kalkulator 20:41: KONIEC -->
