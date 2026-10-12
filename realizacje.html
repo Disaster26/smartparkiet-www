@@ -1015,8 +1015,8 @@ figure{margin:0}
       <a href="cennik.html">Cennik</a>
       <a href="programy.html">Programy</a>
       <a href="realizacje.html" class="akt">Realizacje</a>
-      <a href="wycena.html">Kalkulator</a>
-      <a href="ekspertyza.html">Ekspertyza</a>
+      <a href="wycena.html">Kalkulator online</a>
+      <a href="ekspertyza.html">Ekspertyza online</a>
       <a href="oddzialy.html">Oddziały</a>
       <a href="kontakt.html">Kontakt</a>
     </nav>
@@ -1090,7 +1090,7 @@ figure{margin:0}
       </div>
       <div class="c-kontakt"><h4>Kontakt</h4><a href="tel:+48602242815">602 242 815</a><a href="mailto:smartparkiet@gmail.com">smartparkiet@gmail.com</a><a href="https://wa.me/48602242815">WhatsApp</a></div>
       <div class="c-oddzialy"><h4>Oddziały</h4><a href="cyklinowanie-rembertow.html">Suflerska 4, Rembertów</a><a href="cyklinowanie-ochota.html">Grójecka 208, lok. 229, Ochota</a><a href="cyklinowanie-targowek.html">Turmoncka 17A, lok. 21, Targówek</a><a href="cyklinowanie-mokotow.html">Belwederska 23, Mokotów</a></div>
-      <div class="c-wiecej"><h4>Więcej</h4><div class="ww"><div><a href="cennik.html">Pakiety</a><a href="programy.html">Programy</a><a href="realizacje.html">Realizacje</a><a href="schody.html">Schody</a></div><div><a href="ekspertyza.html">Ekspertyza</a><a href="blog.html">Poradniki</a><a href="parkiet-w-kamienicy.html">Kamienice</a><a href="dla-pracowni.html">Dla pracowni</a></div></div></div>
+      <div class="c-wiecej"><h4>Więcej</h4><div class="ww"><div><a href="cennik.html">Pakiety</a><a href="programy.html">Programy</a><a href="realizacje.html">Realizacje</a><a href="schody.html">Schody</a></div><div><a href="ekspertyza.html">Ekspertyza online</a><a href="blog.html">Poradniki</a><a href="parkiet-w-kamienicy.html">Kamienice</a><a href="dla-pracowni.html">Dla pracowni</a></div></div></div>
     </div>
     <div class="fine"><span>© 2026 SMARTPARKIET<sup>™</sup><span class="autor">Artur Trembiński</span></span><span>Cyklinowanie SMART<sup>™</sup> <i>|</i> nazwy są znakami SMARTPARKIET</span></div>
   </div>
@@ -1898,3 +1898,31 @@ header.nav .brand{font-family:"Montserrat","Helvetica Neue",Arial,sans-serif!imp
 }
 </style>
 <!-- naglowek wspolny 12.10: KONIEC -->
+<!-- naglowek 20:48: START -->
+<style>
+/* Artur 12.10 20:48: napis SMARTPARKIET, hamburger i numer telefonu tej samej
+   wysokosci, wszystko w osi, numer bialy na pomaranczowym. Wielkosc liczona od
+   szerokosci ekranu, tak zeby na kazdym telefonie byla najwieksza mozliwa. */
+:root{--naglowek-f:clamp(13px,calc(6.7vw - 9.2px),20px)}
+.nav .wrap{align-items:center}
+header.nav .brand{font-family:"Montserrat","Helvetica Neue",Arial,sans-serif!important;
+  font-weight:700!important;font-size:var(--naglowek-f)!important;letter-spacing:0!important;
+  line-height:1!important;display:inline-flex!important;align-items:center!important;
+  gap:6px!important;white-space:nowrap}
+header.nav .brand img{flex:0 0 auto}
+header.nav .tel{color:#fff!important;-webkit-text-fill-color:#fff;font-weight:700!important;
+  font-size:var(--naglowek-f)!important;line-height:1!important;letter-spacing:0!important}
+header.nav .burger{font-size:0!important;color:var(--grafit,#1A1512);position:relative}
+header.nav .burger::before{content:"";position:absolute;left:50%;top:50%;
+  width:calc(var(--naglowek-f) * 1.05);height:calc(var(--naglowek-f) * .72);
+  transform:translate(-50%,-50%);
+  background:
+    linear-gradient(currentColor,currentColor) top/100% calc(var(--naglowek-f) * .14) no-repeat,
+    linear-gradient(currentColor,currentColor) center/100% calc(var(--naglowek-f) * .14) no-repeat,
+    linear-gradient(currentColor,currentColor) bottom/100% calc(var(--naglowek-f) * .14) no-repeat}
+@media(max-width:430px){
+  .nav .wrap{gap:6px!important;padding-left:8px!important;padding-right:8px!important}
+  header.nav .tel{padding:0 7px!important}
+}
+</style>
+<!-- naglowek 20:48: KONIEC -->
