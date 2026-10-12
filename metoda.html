@@ -927,7 +927,7 @@ figure{margin:0}
 </div>
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="index.html"><img src="img/logo-znak.png" alt="SMARTPARKIET"> SMARTPARKIET</a>
+    <a class="brand" href="index.html"><img src="img/logo-znak.png" alt="SMARTPARKIET"><span class="brand-t">SMARTPARKIET</span></a>
     <nav>
       <a href="metoda.html" class="akt">Metoda</a>
       <a href="cennik.html">Cennik</a>
@@ -1719,3 +1719,17 @@ header.nav .burger::before{content:"";position:absolute;left:50%;top:50%;
 }
 </style>
 <!-- naglowek 20:48: KONIEC -->
+<!-- naglowek 21:03: START -->
+<style>
+/* 21:04 czarny pasek nad naglowkiem zlikwidowany (na wszystkich stronach,
+   bo to ten sam element) */
+.topbar{display:none!important}
+/* 21:03 kolko logo mniejsze niz pomaranczowy przycisk (36 px wobec 44),
+   napis troche wiekszy i w osi miedzy kolkiem a hamburgerem, numer mniejszy */
+header.nav .brand{flex:1 1 auto!important;min-width:0}
+header.nav .brand img{width:36px!important;height:36px!important}
+header.nav .brand .brand-t{flex:1 1 auto;text-align:center;
+  font-size:calc(var(--naglowek-f) * 1.06)}
+header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
+</style>
+<!-- naglowek 21:03: KONIEC -->

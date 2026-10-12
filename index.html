@@ -986,7 +986,7 @@ figure{margin:0}
 </div>
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="index.html"><img src="img/logo-znak.png" alt="SMARTPARKIET"> SMARTPARKIET</a>
+    <a class="brand" href="index.html"><img src="img/logo-znak.png" alt="SMARTPARKIET"><span class="brand-t">SMARTPARKIET</span></a>
     <nav>
       <a href="metoda.html">Metoda</a>
       <a href="cennik.html">Cennik</a>
@@ -1007,8 +1007,8 @@ figure{margin:0}
   <div class="hero-cap">Lägler Hummel &middot; ZERO DUST</div>
   <div class="wrap">
     <p class="hero-logo"><img src="img/logo-znak.png" alt="" width="34" height="34">SMART<em>PARKIET</em></p>
-    <span class="tag">Nowoczesne cyklinowanie<br>Warszawa &middot; 4 oddziały</span>
-    <h1><span class="lock">Cyklinowanie<br><em>SMART<sup>&trade;</sup></em></span><span class="h-lin">Bez bałaganu.</span><span class="h-lin">Bez pyłu.</span><span class="h-lin">Bez stresu.</span></h1>
+    <span class="tag">Cyklinowanie bezpyłowe &middot; Warszawa &middot; cztery oddziały</span>
+    <h1><span class="lock">Cyklinowanie <em>SMART<sup>&trade;</sup></em></span><span class="h-lin">Bez bałaganu.</span><span class="h-lin">Bez pyłu.</span><span class="h-lin">Bez stresu.</span></h1>
     <p class="hero-ocena"><span class="gw" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b>5,0</b> w Google <span class="sep">&middot;</span> 221 opinii z 4 wizytówek</p>
     <div class="lead hero-lead">
       <p>Nowoczesna metoda renowacji podłóg drewnianych.</p>
@@ -1016,7 +1016,7 @@ figure{margin:0}
       <p class="moc">Typowe mieszkanie odnawiamy w 2 dni.</p>
     </div>
     <div class="cta cta-rowne">
-      <a class="btn btn-amber" href="wycena.html"><svg class="bi" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="bt">Wyślij zdjęcia<br>do bezpłatnej wyceny</span><span class="bs" aria-hidden="true">→</span></a>
+      <a class="btn btn-amber" href="wycena.html#wycena"><svg class="bi" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="bt">Wyślij zdjęcia<br>do bezpłatnej wyceny</span><span class="bs" aria-hidden="true">→</span></a>
       <a class="btn btn-ghost" href="realizacje.html"><svg class="bi" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span class="bt">Zobacz realizacje przed / po</span><span class="bs" aria-hidden="true">→</span></a>
     </div>
     <div class="hero-op" id="heroOp">
@@ -2477,3 +2477,45 @@ header.nav .burger::before{content:"";position:absolute;left:50%;top:50%;
   text-shadow:0 2px 14px rgba(0,0,0,.45),0 1px 2px rgba(0,0,0,.35)}
 </style>
 <!-- hero SMART 20:48: KONIEC -->
+<!-- naglowek 21:03: START -->
+<style>
+/* 21:04 czarny pasek nad naglowkiem zlikwidowany (na wszystkich stronach,
+   bo to ten sam element) */
+.topbar{display:none!important}
+/* 21:03 kolko logo mniejsze niz pomaranczowy przycisk (36 px wobec 44),
+   napis troche wiekszy i w osi miedzy kolkiem a hamburgerem, numer mniejszy */
+header.nav .brand{flex:1 1 auto!important;min-width:0}
+header.nav .brand img{width:36px!important;height:36px!important}
+header.nav .brand .brand-t{flex:1 1 auto;text-align:center;
+  font-size:calc(var(--naglowek-f) * 1.06)}
+header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
+</style>
+<!-- naglowek 21:03: KONIEC -->
+<!-- hero uklad 20:59: START -->
+<style>
+@media(max-width:860px){
+  /* 20:49 + 20:59: caly blok tekstu wyzej, zeby odslonic zielony napis na worku */
+  .hero{padding-top:6px!important}
+  /* 21:04: ramka drukowanymi, jasniej, w calej szerokosci */
+  .hero .tag{color:rgba(255,255,255,.92)!important;text-align:left!important;
+    width:auto!important;max-width:none!important;
+    /* dwie rowne linie zamiast samotnego ODDZIALY w drugiej */
+    text-wrap:balance}
+  /* 20:59: Cyklinowanie SMART w jednym pasku, mniejszymi literami */
+  .hero h1{margin-top:8px!important}
+  .hero h1 .lock{display:block;white-space:nowrap;font-size:calc((100vw - 48px) / 12.4)!important;
+    line-height:1.05!important}
+  /* 20:59: Bez balaganu / Bez pylu / Bez stresu w osi, na srodku zdjecia */
+  .hero h1 .h-lin{display:block!important;text-align:center!important}
+  .hero h1 .h-lin:first-of-type{margin-top:12px}
+  /* 20:59: reszta tekstu rownomiernie i jasniej, zwlaszcza opis Google i gwiazdki */
+  .hero-ocena{margin-top:12px!important;color:rgba(255,255,255,.95)!important}
+  .hero-ocena *{color:inherit}
+  .hero-ocena .gw{color:#FFB21E!important}
+  .hero-lead{margin-top:12px!important}
+  .hero-lead,.hero-lead p,.hero-lead .moc{color:rgba(255,255,255,.96)!important;
+    -webkit-text-fill-color:rgba(255,255,255,.96)}
+  .hero .cta-rowne{margin-top:14px!important}
+}
+</style>
+<!-- hero uklad 20:59: KONIEC -->
