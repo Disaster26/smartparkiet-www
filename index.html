@@ -2527,7 +2527,9 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
   :root{--H:min(44px,calc((100vw - 16px) / 10.72))}
   .nav .wrap{gap:0!important;padding-left:8px!important;padding-right:8px!important;
     min-height:calc(var(--H) + 12px)!important;justify-content:flex-start!important}
-  header.nav .brand{flex:1 1 auto!important;gap:calc(var(--H) * .20)!important;margin-right:calc(var(--H) * .40)}
+  /* 21:28 "bialy pasek nizszy": link z logo mial min-height 44 px i rozpychal pasek */
+  header.nav .brand{flex:1 1 auto!important;gap:calc(var(--H) * .20)!important;margin-right:calc(var(--H) * .40);
+    min-height:0!important;height:auto!important}
   header.nav .brand img{width:calc(var(--H) * 1.12)!important;height:calc(var(--H) * 1.12)!important}
   header.nav .brand .brand-t{flex:0 1 auto!important;text-align:left!important;
     font-size:calc(var(--H) * .622)!important}
@@ -2549,6 +2551,23 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 <!-- hero kadr 21:05: START -->
 <style>
 /* Artur 12.10 21:05: zawodnik z maszyna troche w prawo (ok. 27 px przy 390) */
-@media(max-width:860px){.hero-img{object-position:66% 56%!important}}
+@media(max-width:860px){.hero-img{object-position:60% 56%!important}}
 </style>
 <!-- hero kadr 21:05: KONIEC -->
+<!-- hero 21:30: START -->
+<style>
+@media(max-width:860px){
+  /* 21:27 "nie, lepiej do lewej strony" - Bez balaganu / pylu / stresu
+     wracaja do lewej krawedzi; Cyklinowanie SMART w jednym pasku zostaje */
+  .hero h1 .h-lin{text-align:left!important}
+  /* 21:30 "Cyklinowanie bezpylowe nizej, troche przestrzeni od gory" */
+  .hero{padding-top:20px!important}
+  /* 21:30 "scisnac na dole te Google opinie" */
+  .hero-op{margin-top:16px!important}
+  .hero-op .hero-quote{font-size:.8rem!important;line-height:1.4!important;padding-left:12px!important}
+  .hero-op .hero-quote b{font-size:.74rem!important;margin-top:3px!important}
+  .hero-op-nav{margin-top:6px!important;gap:8px!important}
+  .hero-op-nav button,.hero-op-nav .hop-btn{width:30px!important;height:30px!important}
+}
+</style>
+<!-- hero 21:30: KONIEC -->

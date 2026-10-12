@@ -2546,7 +2546,9 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
   :root{--H:min(44px,calc((100vw - 16px) / 10.72))}
   .nav .wrap{gap:0!important;padding-left:8px!important;padding-right:8px!important;
     min-height:calc(var(--H) + 12px)!important;justify-content:flex-start!important}
-  header.nav .brand{flex:1 1 auto!important;gap:calc(var(--H) * .20)!important;margin-right:calc(var(--H) * .40)}
+  /* 21:28 "bialy pasek nizszy": link z logo mial min-height 44 px i rozpychal pasek */
+  header.nav .brand{flex:1 1 auto!important;gap:calc(var(--H) * .20)!important;margin-right:calc(var(--H) * .40);
+    min-height:0!important;height:auto!important}
   header.nav .brand img{width:calc(var(--H) * 1.12)!important;height:calc(var(--H) * 1.12)!important}
   header.nav .brand .brand-t{flex:0 1 auto!important;text-align:left!important;
     font-size:calc(var(--H) * .622)!important}
