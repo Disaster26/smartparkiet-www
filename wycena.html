@@ -1080,6 +1080,32 @@ figure{margin:0}
         podsum=document.getElementById('podsum'), waL=document.getElementById('waLink'), mailL=document.getElementById('mailLink');
   if(bWys&&boxWys&&podsum&&waL&&mailL){
     const plikDoWyslania=()=>(window.__plik?window.__plik():null);
+    /* tresc maila: naturalne zdania, pogrupowane */
+    function mailPola(){
+      const a=Math.max(5,+m2.value||0);
+      const zn=n=>{const e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:''};
+      const pole=id=>((document.getElementById(id)||{}).value||'').trim();
+      const ladnie=t=>t.replace(/(\d)(?=(\d{3})+(?!\d))/g,'$1 ');
+      const podl=typ.options[typ.selectedIndex].text.toLowerCase();
+      const wyk=document.getElementById('wyk'); const wk=wyk.options[wyk.selectedIndex].text.toLowerCase();
+      const adres=[pole('ulicaKl'),[pole('kodKl'),pole('miastoKl')].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+      const p=pole('pietroKl'); const winda=zn('winda');
+      const pietro=p===''?'piętro nie podane':(p==='0'?'parter':p+'. piętro');
+      const dojazd=pietro+(p==='0'?'':(winda==='tak'?', jest winda':', bez windy'));
+      const n=(window.__pliki?window.__pliki():[]).length;
+      const tel=pole('telKl'), mail=pole('mailKl'), termin=pole('terminKl');
+      const zdj=n===1?'1 zdjęcie':(n>=2&&n<=4?n+' zdjęcia':n+' zdjęć');
+      return [
+        ['Zlecenie','Klient prosi o wycenę cyklinowania: '+a+' m² ('+podl+'), wykończenie '+wk+' Berger-Seidle®.'],
+        ['Kontakt',[tel?('tel. '+tel):'',mail].filter(Boolean).join(', ')||'brak'],
+        ['Adres',adres||'nie podano'],
+        ['Dojazd',dojazd],
+        ['Listwy',zn('listwy')==='tak'?'do wymiany (wycenić osobno po zdjęciach)':'bez wymiany'],
+        ['Termin',termin||'klient nie podał'],
+        ['Wycena',ladnie(oN.textContent.replace(/\s/g,' '))+' netto, orientacyjnie z kalkulatora'],
+        ['Zdjęcia',zdj+' i karta wyceny w załącznikach']
+      ];
+    }
     function dane(){
       const a=Math.max(5,+m2.value||0);
       const zn=n=>{const e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:'nie podano'};
@@ -1196,7 +1222,7 @@ figure{margin:0}
         const i=document.createElement('input'); i.type='hidden'; i.name=n; f.appendChild(i);});
       for(let i=1;i<=7;i++){
         const zal=document.createElement('input');
-        zal.type='file'; zal.name=i===1?'Karta':'Zdjecie_'+(i-1); zal.id='smartZalacznik'+i; zal.hidden=true;
+        zal.type='file'; zal.name=i===1?'Karta_wyceny':'Zdjecie_'+(i-1); zal.id='smartZalacznik'+i; zal.hidden=true;
         f.appendChild(zal);
       }
       document.body.appendChild(f);
@@ -1208,14 +1234,14 @@ figure{margin:0}
       const f=zbudujFormularz();
       const ust=(n,v)=>{const e=f.querySelector('[name="'+n+'"]'); if(e)e.value=v||'';};
       const pole=id=>((document.getElementById(id)||{}).value||'').trim();
-      ust('_subject','Wycena: '+(+m2.value||0)+' m2, '+(pole('ulicaKl')||'adres nie podany')+', tel. '+(pole('telKl')||'-'));
+      ust('_subject','Nowa wycena: '+(+m2.value||0)+' m², '+(pole('ulicaKl')||'adres nie podany')+(pole('telKl')?', tel. '+pole('telKl'):''));
       ust('_cc',[KOPIA,mail].filter(Boolean).join(','));
-      ust('_template','table');
+      ust('_template','box');
       ust('_captcha','false');
       ust('_next',location.origin+location.pathname.replace(/[^/]*$/,'')+'wyslane.html');
       f.querySelectorAll('input[data-pole]').forEach(e=>e.remove());
-      dane().forEach(([k,v],i)=>{const e=document.createElement('input');e.type='hidden';e.dataset.pole='1';
-        e.name=['Adres','Metraż','Podłoga','Wykończenie','Piętro','Winda','Listwy','Termin','Widełki','Telefon','E-mail','Zdjęcia'][i]||k;e.value=v;f.insertBefore(e,f.querySelector('input[type=file]'));});
+      mailPola().forEach(([k,v],i)=>{const e=document.createElement('input');e.type='hidden';e.dataset.pole='1';
+        e.name=k;e.value=v;f.insertBefore(e,f.querySelector('input[type=file]'));});
       let zalaczono=0;
       try{
         const pk=(window.__karta?[window.__karta]:[]).concat(window.__gotowe||[]);
