@@ -181,10 +181,7 @@ def tresc(o, inne):
 
     <h2 style="margin-top:30px">Co robimy na miejscu</h2>
     <div class="odz-usl">
-      <article><h3>Cyklinowanie SMART&trade;</h3><p>Diagnoza podłogi, dobór technologii pod
-        konkretne drewno, szlif w trzech gradacjach i uzupełnienie szczelin masą z pyłu tej
-        samej podłogi. Ewentualnie próby koloru. Trzy warstwy lakieru wodnego albo olej,
-        twardy wosk.</p></article>
+      <article><h3>Cyklinowanie SMART&trade;</h3><p>Diagnoza podłogi - dobór technologii do rodzaju drewna - precyzyjny szlif w trzech gradacjach - wypełnienie szczelin masą z pyłu szlifowanej podłogi - na życzenie próby koloru.<br><b>WYKOŃCZENIE:</b> Trzy warstwy lakieru lub alternatywnie olej bądź twardy wosk.</p></article>
       <article><h3>Bezpyłowo, SMART ZERO DUST&trade;</h3><p>Szlifowanie z systemem odpylania
         Festool SYS-AIR. Pył idzie do worka, nie na mieszkanie i meble. Po pracy zostaje
         podłoga, a nie sprzątanie przez tydzień.</p></article>
@@ -246,7 +243,7 @@ def main():
         % (o['plik'], o['dz'], o['ulica'], ', '.join(o['obszar'][:4])) for o in ODDZIALY)
     blok = (S + '\n<section class="oddzialy-home"><div class="wrap">'
             '<p class="oczko"><span></span>Nasze oddziały w Warszawie</p>'
-            '<h2>Cztery ekipy, jeden numer telefonu</h2>'
+            '<h2>Cztery punkty obsługi klienta, cztery ekipy, jeden numer telefonu i jeden system</h2>'
             '<p class="lead">Każdy oddział ma swoją stronę z adresem, obszarem dojazdu '
             'i opiniami z własnej wizytówki Google. Proszę wybrać ten najbliżej Państwa.</p>'
             '<div class="odz-siatka">' + kafle + '</div></div></section>\n' + K)
