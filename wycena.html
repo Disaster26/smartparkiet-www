@@ -1447,6 +1447,8 @@ figure{margin:0}
       bl.hidden=true;
       bWys.disabled=true;
       try{window.__gotowe=await Promise.all(pl.map(zmniejsz));}catch(e){window.__gotowe=pl;}
+      /* zalaczniki ukladaja sie alfabetycznie po nazwie: Oferta_... przed Zdjecie_01... */
+      window.__gotowe=window.__gotowe.map((f,i)=>new File([f],'Zdjecie_'+String(i+1).padStart(2,'0')+'.jpg',{type:f.type||'image/jpeg'}));
       try{window.__karta=await ofertaPdf(window.__gotowe);}catch(e){window.__karta=null;}
       if(!window.__karta)window.__karta=await karta(dane(),window.__gotowe);
       bWys.disabled=false;
