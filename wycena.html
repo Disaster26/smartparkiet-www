@@ -958,12 +958,12 @@ figure{margin:0}
     <div class="sticky">
       <p class="oczko"><span></span>Kalkulator online</p>
       <h2>Kalkulator bezpłatnej wyceny</h2>
-      <p class="lead se-lead">Prosty formularz mobilny, około 2 minuty. Proszę dodać 4-6 zdjęć podłogi, najlepiej sześć, w tym zdjęcia miejsc do naprawy.</p>
+      <p class="lead se-lead">Prosty formularz mobilny, około 2 minuty. Proszę dodać 4-6 zdjęć podłogi (przy naprawach można do 12), w tym zdjęcia miejsc do naprawy.</p>
       <p class="lead" style="margin-top:16px">Widełki liczymy z cennika od razu, a zdjęcia ogląda parkieciarz i odzywa się z wyceną w ciągu dwóch godzin roboczych.</p>
     </div>
     <div class="ai">
-      <label class="drop" id="drop" for="file"><span><b>Zdjęcia podłogi: 4-6 sztuk</b><span>Najlepiej sześć. Prosimy też o zdjęcia miejsc do naprawy (ubytki, szczeliny, przebarwienia).</span></span><span class="btn btn-ghost" style="pointer-events:none">Dodaj zdjęcia</span><input id="file" type="file" accept="image/*" multiple hidden></label>
-      <div class="miniatury" id="miniatury"><span class="lic" id="licZdj">Dodano 0 z 6 zdjęć (minimum 4)</span></div>
+      <label class="drop" id="drop" for="file"><span><b>Zdjęcia podłogi: od 4 do 12</b><span>Najlepiej sześć lub więcej. Prosimy też o zdjęcia miejsc do naprawy (ubytki, szczeliny, przebarwienia).</span></span><span class="btn btn-ghost" style="pointer-events:none">Dodaj zdjęcia</span><input id="file" type="file" accept="image/*" multiple hidden></label>
+      <div class="miniatury" id="miniatury"><span class="lic" id="licZdj">Dodano 0 z 12 zdjęć (minimum 4)</span></div>
       <div class="ai-body">
         <div class="ai-photo" id="aiPhoto"><div class="empty">Tu pojawi się Państwa zdjęcie</div><div class="scan"></div></div>
         <div class="ai-out" id="aiOut">
@@ -1362,7 +1362,7 @@ figure{margin:0}
       f.action='https://formsubmit.co/'+BIURO;
       ['_subject','_cc','_template','_captcha','_next'].forEach(n=>{
         const i=document.createElement('input'); i.type='hidden'; i.name=n; f.appendChild(i);});
-      for(let i=1;i<=7;i++){
+      for(let i=1;i<=13;i++){
         const zal=document.createElement('input');
         zal.type='file'; zal.name=i===1?'Oferta_PDF':'Zdjecie_'+(i-1); zal.id='smartZalacznik'+i; zal.hidden=true;
         f.appendChild(zal);
@@ -1387,7 +1387,7 @@ figure{margin:0}
       let zalaczono=0;
       try{
         const pk=(window.__karta?[window.__karta]:[]).concat(window.__gotowe||[]);
-        for(let i=1;i<=7;i++){
+        for(let i=1;i<=13;i++){
           const inp=document.getElementById('smartZalacznik'+i);
           if(!inp||!window.DataTransfer)continue;
           const dt=new DataTransfer();
@@ -1415,10 +1415,10 @@ figure{margin:0}
        wiec przed wysylka kazde zmniejszamy do 1600 px (JPEG ok. 300 kB) */
     function zmniejsz(f){return new Promise(ok=>{
       const img=new Image(); const u=URL.createObjectURL(f);
-      img.onload=()=>{const k=Math.min(1,1600/Math.max(img.width,img.height));
+      img.onload=()=>{const k=Math.min(1,(window.__pliki&&window.__pliki().length>6?1280:1600)/Math.max(img.width,img.height));
         const c=document.createElement('canvas'); c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
         c.getContext('2d').drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(u);
-        c.toBlob(b=>ok(b?new File([b],(f.name||'zdjecie').replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg'}):f),'image/jpeg',.8);};
+        c.toBlob(b=>ok(b?new File([b],(f.name||'zdjecie').replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg'}):f),'image/jpeg',(window.__pliki&&window.__pliki().length>6?.72:.8));};
       img.onerror=()=>{URL.revokeObjectURL(u);ok(f)}; img.src=u;});}
     bWys.addEventListener('click',async()=>{
       const pl=window.__pliki?window.__pliki():[];
@@ -1461,14 +1461,14 @@ figure{margin:0}
     if(!mini)return;
     window.__podpisy=podpisy;
     mini.innerHTML=pliki.map((f,i)=>'<span class="mzw"><span class="mz"><img alt="" src="'+URL.createObjectURL(f)+'"><button type="button" data-i="'+i+'" aria-label="Usuń zdjęcie">×</button></span><input class="podp" data-p="'+i+'" type="text" maxlength="40" placeholder="podpis, np. korytarz" value="'+String(podpisy[i]||'').replace(/"/g,'&quot;')+'"></span>').join('')+
-      '<span class="lic" id="licZdj">Dodano '+pliki.length+' z 6 zdjęć'+(pliki.length<4?' (minimum 4)':'')+'</span>';
+      '<span class="lic" id="licZdj">Dodano '+pliki.length+' z 12 zdjęć'+(pliki.length<4?' (minimum 4)':'')+'</span>';
   }
   if(mini)mini.addEventListener('input',e=>{const p=e.target.closest('input.podp'); if(p){podpisy[+p.dataset.p]=p.value; window.__podpisy=podpisy;}});
   if(mini)mini.addEventListener('click',e=>{const b=e.target.closest('button[data-i]'); if(!b)return;
     pliki.splice(+b.dataset.i,1); podpisy.splice(+b.dataset.i,1); plik=pliki[0]||null; rysujMini();
     if(plik)pokaz(URL.createObjectURL(plik),pliki.length+' zdj. dodane'); });
   function dodaj(lista){
-    [...lista].filter(f=>f.type.startsWith('image/')||/\.(heic|heif)$/i.test(f.name)).forEach(f=>{if(pliki.length<6)pliki.push(f);});
+    [...lista].filter(f=>f.type.startsWith('image/')||/\.(heic|heif)$/i.test(f.name)).forEach(f=>{if(pliki.length<12)pliki.push(f);});
     plik=pliki[0]||null; rysujMini();
     if(plik)pokaz(URL.createObjectURL(plik),pliki.length+' zdj. dodane');
   }
@@ -2216,5 +2216,5 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 @media(max-width:560px){.miniatury{padding:12px 16px}}
 </style>
 <style>.ai-form textarea{width:100%;max-width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:4px;font:inherit;background:var(--white);color:var(--ink);resize:vertical}</style>
-<style>.miniatury .mzw{display:flex;flex-direction:column;gap:4px;width:110px}.miniatury .mzw .mz{width:110px;height:82px}.miniatury .podp{width:110px;padding:5px 6px;font:inherit;font-size:.74rem;border:1px solid var(--line);border-radius:3px}</style>
+<style>.miniatury{display:grid!important;grid-template-columns:repeat(3,1fr);gap:8px}.miniatury .lic{grid-column:1/-1}.miniatury .mzw{display:flex;flex-direction:column;gap:4px;min-width:0}.miniatury .mzw .mz{width:100%;height:auto;aspect-ratio:4/3}.miniatury .podp{width:100%;min-width:0;padding:5px 6px;font:inherit;font-size:.74rem;border:1px solid var(--line);border-radius:3px}@media(min-width:900px){.miniatury{grid-template-columns:repeat(4,1fr)}}</style>
 <!-- kalkulator 20:41: KONIEC -->
