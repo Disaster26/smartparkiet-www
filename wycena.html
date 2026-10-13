@@ -1153,6 +1153,7 @@ figure{margin:0}
       const p=pole('pietroKl'), winda=zn('winda');
       return {pole,zn,a,wykT,kolor,mb,listwy,meble,poz,suma,
         adres:[[pole('ulicaKl'),pole('dzielKl')].filter(Boolean).join(' '),[pole('kodKl'),pole('miastoKl')].filter(Boolean).join(' ')].filter(Boolean).join(', '),
+        ulica:pole('ulicaKl'),
         obiekt:pole('obiektKl')+(p===''?'':(p==='0'?', parter':', '+p+'. piętro'+(winda==='tak'?', winda':', bez windy'))),
         rodzaj:[typ.options[typ.selectedIndex].text,pole('montazKl'),pole('gatKl')].filter(Boolean).join(' '),
         montaz:pole('montazKl'),
@@ -1162,22 +1163,22 @@ figure{margin:0}
     /* PDF w ukladzie arkusza Artura (A4, 1240x1754 px na strone) */
     async function ofertaPdf(zdj){
       if(!window.jspdf||!window.jspdf.jsPDF)return null;
-      const A=arkusz(), W=1240, H=1754, M=90, POM='#E8671F', CIEMNY='#14110E', SZARY='#6B5E52', TLO='#F6F1EA';
+      const A=arkusz(), W=1240, H=1754, M=90, POM='#E8671F', PASEK='#6B7179', NAGL='#4F555C', CIEMNY='#33383E', SZARY='#6B7076', TLO='#F2F2F1';
       const nr=new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(Math.random()*9000)+1000);
       const strony=[];
       const nowa=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,W,H);
-        g.fillStyle=POM;g.fillRect(0,0,W,110);g.fillStyle='#fff';g.font='bold 46px Arial';g.textBaseline='middle';g.fillText('SMARTPARKIET',M,56);
+        g.fillStyle=PASEK;g.fillRect(0,0,W,110);g.fillStyle='#fff';g.font='bold 46px Arial';g.textBaseline='middle';g.fillText('SMARTPARKIET',M,56);
         g.font='24px Arial';g.textAlign='right';g.fillText('Wstępna oferta renowacji parkietu · nr '+nr,W-M,56);g.textAlign='left';strony.push(c);return g;};
       const zawin=(g,t,x,y,w,lh)=>{const sl=String(t).split(' ');let l='';for(const s of sl){const n=l?l+' '+s:s;if(g.measureText(n).width>w&&l){g.fillText(l,x,y);y+=lh;l=s;}else l=n;}if(l){g.fillText(l,x,y);y+=lh;}return y;};
       /* tekst dopasowany do szerokosci: najpierw mniejsza czcionka (do 15 px), potem skrot z wielokropkiem */
       const wpisz=(g,t,x,y,w,px,styl)=>{t=String(t);let f=px;g.font=(styl||'')+' '+f+'px Arial';while(g.measureText(t).width>w&&f>15){f--;g.font=(styl||'')+' '+f+'px Arial';}if(g.measureText(t).width>w){while(t.length>3&&g.measureText(t+'…').width>w)t=t.slice(0,-1);t=t.trimEnd()+'…';}g.fillText(t,x,y);};
-      const naglowek=(g,t,x,y)=>{g.fillStyle=POM;g.font='bold 34px Arial';g.fillText(t,x,y);g.fillRect(x,y+24,60,4);};
+      const naglowek=(g,t,x,y)=>{g.fillStyle=NAGL;g.font='bold 34px Arial';g.fillText(t,x,y);g.fillStyle=POM;g.fillRect(x,y+24,60,4);};
       // strona 1
       let g=nowa(); g.textBaseline='alphabetic';
       const kol=(W-2*M-40)/2;
       naglowek(g,'DANE KLIENTA',M,190); naglowek(g,'SMARTPARKIET',M+kol+40,190);
-      const kl=[A.pole('imieKl')||'Klient (imię nie podane)',A.adres||'adres nie podany',A.pole('telKl')||'-',A.obiekt,A.pole('mailKl')||'-'];
-      const sp=['SMARTPARKIET','Artur Trembiński · +48 602 242 815','Suflerska 4, 03-471 Warszawa','NIP 527 158 81 14','smartparkiet@gmail.com'];
+      const kl=[A.pole('imieKl')||'Klient (imię nie podane)',A.ulica||'adres nie podany',A.pole('telKl')||'-',A.obiekt,A.pole('mailKl')||'-'];
+      const sp=['SMARTPARKIET','Artur Trembiński · +48 602 242 815','Suflerska 4','NIP 527 158 81 14','smartparkiet@gmail.com'];
       /* podzial na linie (najwyzej 2), slowa za dlugie lamane po znakach, nadmiar z wielokropkiem */
       const linie=(g,t,w,font,maks)=>{g.font=font;const sl=String(t).split(' ');const out=[];let l='';
         const dodaj=x=>{while(g.measureText(x).width>w){let k=x.length;while(k>1&&g.measureText(x.slice(0,k)).width>w)k--;out.push(x.slice(0,k));x=x.slice(k);}return x;};
@@ -1187,7 +1188,7 @@ figure{margin:0}
       for(let i=0;i<5;i++){
         const fk='bold 24px Arial', a1=linie(g,kl[i],kol-32,fk,2), a2=linie(g,sp[i],kol-32,fk,2), n=Math.max(a1.length,a2.length), hw=26+n*30;
         g.fillStyle=i%2?'#fff':TLO;g.fillRect(M,yk,kol,hw);g.fillRect(M+kol+40,yk,kol,hw);
-        g.fillStyle=CIEMNY;g.font=fk;a1.forEach((l,j)=>g.fillText(l,M+16,yk+36+j*30));a2.forEach((l,j)=>g.fillText(l,M+kol+56,yk+36+j*30));
+        g.fillStyle='#565B61';g.font=fk;a1.forEach((l,j)=>g.fillText(l,M+16,yk+36+j*30));a2.forEach((l,j)=>g.fillText(l,M+kol+56,yk+36+j*30));
         yk+=hw+2;}
       const yr=yk+50;
       naglowek(g,'RENOWACJA PARKIETU',M,yr);
@@ -1208,13 +1209,13 @@ figure{margin:0}
       // tabela cen (gdy sie nie zmiesci przed stopka, idzie na nastepna strone)
       if(y+52+A.poz.length*50+16+100+90>H-80){g=nowa();g.textBaseline='alphabetic';naglowek(g,'WYCENA',M,190);y=250;}
       const cx=[M,M+600,M+720,M+880], cw=W-2*M;
-      g.fillStyle='#E9E2D8';g.fillRect(M,y,cw,52);g.fillStyle=CIEMNY;g.font='bold 23px Arial';
+      g.fillStyle='#E3E4E5';g.fillRect(M,y,cw,52);g.fillStyle=CIEMNY;g.font='bold 23px Arial';
       ['Zakres prac','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
       A.poz.forEach((p,i)=>{g.fillStyle=i%2?'#fff':TLO;g.fillRect(M,y,cw,50);g.fillStyle=CIEMNY;g.font='22px Arial';
         const ile=typeof p[1]==='number'?p[1]:p[1];const laczna=typeof p[1]==='number'&&p[2]?p[1]*p[2]:null;
         g.fillText(p[0],cx[0]+12,y+33);g.fillText(ile===0?'-':String(ile).replace('do ustalenia','do ust.'),cx[1]+12,y+33);
         g.fillText(p[2]==null?'wycena':zl(p[2]),cx[2]+12,y+33);g.fillText(laczna?zl(laczna):'-',cx[3]+12,y+33);y+=50;});
-      y+=16;g.fillStyle=POM;g.fillRect(M,y,cw,70);g.fillStyle='#fff';g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);
+      y+=16;g.fillStyle=PASEK;g.fillRect(M,y,cw,70);g.fillStyle='#fff';g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);
       g.textAlign='right';g.fillText(zl(A.suma),W-M-20,y+46);g.textAlign='left';y+=100;
       g.fillStyle=SZARY;g.font='italic 20px Arial';
       y=zawin(g,'Pracownik jest upoważniony do przyjęcia płatności gotówką (kwota netto). Faktura wystawiana na życzenie klienta. Wycena wstępna, przygotowana na podstawie danych i zdjęć od klienta; ostateczną cenę potwierdza SMARTPARKIET.',M,y,W-2*M,28);
