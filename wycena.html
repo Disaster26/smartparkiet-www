@@ -979,6 +979,23 @@ figure{margin:0}
         <div id="ts" style="margin:4px 0"></div><button class="btn btn-ghost" type="button" id="analizuj" hidden>Oceń zdjęcie teraz</button><button class="btn btn-amber" type="button" id="wyslij"><svg class="bi" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>Wyślij do bezpłatnej wyceny</button><p class="pod-przyc">Prosty formularz mobilny · około 2 minuty</p><p class="blad-form" id="bladForm" hidden></p>
         <div class="wyslano" id="wyslano" hidden><b>Gdzie to trafia</b><p>Kalkulacja idzie do naszego biura, a kopia na Państwa adres, jeśli został podany. Telefony dyżurne: <b>602 242 815</b> i <b>606 949 222</b>. Odpowiedź w ciągu dwóch godzin roboczych.</p><p class="stan-wys" id="stanWys"></p><div class="podsum" id="podsum"></div><div class="drogi"><a class="btn btn-amber" id="waLink" href="#" target="_blank" rel="noopener">Wyślij przez WhatsApp</a><a class="btn btn-ghost" id="mailLink" href="#">Wyślij mailem</a></div></div>
       </form>
+<script>
+/* Artur 13.10 21:24: najpierw metraz i zakres prac do wyceny, na koncu dane klienta */
+(function(){
+  var f=document.querySelector('form.ai-form'); if(!f) return;
+  var ts=document.getElementById('ts');
+  function blok(x){ var e=document.getElementById(x)||document.querySelector('input[name="'+x+'"]'); if(!e) return null;
+    while(e.parentElement && e.parentElement!==f) e=e.parentElement; return e.parentElement===f?e:null; }
+  function nagl(t){ var d=document.createElement('div'); d.className='szer sekcja-form'; d.textContent=t; return d; }
+  var wycena=['m2','typ','wyk','polyskKl','gatKl','montazKl','listwy','listwyMb','stab','stabM2','napr','meble','terminKl','uwagiKl'];
+  var klient=['imieKl','ulicaKl','kodKl','miastoKl','dzielKl','obiektKl','pietroKl','winda','telKl','mailKl'];
+  f.insertBefore(nagl('Zakres prac do wyceny'),ts);
+  wycena.forEach(function(x){var b=blok(x); if(b) f.insertBefore(b,ts);});
+  f.insertBefore(nagl('Dane do kontaktu i dojazdu'),ts);
+  klient.forEach(function(x){var b=blok(x); if(b) f.insertBefore(b,ts);});
+})();
+</script>
+<style>.ai-form .sekcja-form{grid-column:1/-1;font-weight:700;font-size:.95rem;letter-spacing:.02em;margin:10px 0 0;padding-top:12px;border-top:1px solid var(--line)}.ai-form .sekcja-form:first-child{border-top:0;padding-top:0;margin-top:0}</style>
     </div>
   </div>
 </section>
