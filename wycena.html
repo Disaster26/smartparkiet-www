@@ -1281,6 +1281,8 @@ figure{margin:0}
       strony.forEach((c,i)=>{if(i)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.82),'JPEG',0,0,210,297);});
       const nazwa='Oferta_'+(A.pole('ulicaKl')||'SMARTPARKIET').replace(/[^\wąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+/g,'_').replace(/^_|_$/g,'').slice(0,40)+'.pdf';
       window.__sumaOferty=A.suma;
+      /* podglad 1. strony jako obrazek - Gmail pokazuje obrazki na poczatku listy zalacznikow */
+      window.__podglad=await new Promise(ok=>strony[0].toBlob(b=>ok(b?new File([b],'Oferta_podglad.jpg',{type:'image/jpeg'}):null),'image/jpeg',.8));
       return new File([pdf.output('blob')],nazwa,{type:'application/pdf'});
     }
     function karta(d,zdj){return new Promise(async ok=>{
@@ -1377,10 +1379,10 @@ figure{margin:0}
       f.action='https://formsubmit.co/'+BIURO;
       ['_subject','_cc','_template','_captcha','_next'].forEach(n=>{
         const i=document.createElement('input'); i.type='hidden'; i.name=n; f.appendChild(i);});
-      /* kolejnosc pol: zdjecia, a oferta PDF na koncu (FormSubmit ustawia ja wtedy na poczatku listy) */
-      [2,3,4,5,6,7,8,9,10,11,12,13,1].forEach(i=>{
+      /* kolejnosc pol: oferta PDF, jej podglad JPG, potem zdjecia */
+      [1,2,3,4,5,6,7,8,9,10,11,12,13,14].forEach(i=>{
         const zal=document.createElement('input');
-        zal.type='file'; zal.name=i===1?'Oferta_PDF':'Zdjecie_'+(i-1); zal.id='smartZalacznik'+i; zal.hidden=true;
+        zal.type='file'; zal.name=i===1?'Oferta_PDF':(i===2?'Oferta_podglad':'Zdjecie_'+(i-2)); zal.id='smartZalacznik'+i; zal.hidden=true;
         f.appendChild(zal);
       });
       document.body.appendChild(f);
@@ -1402,12 +1404,12 @@ figure{margin:0}
         e.name=k;e.value=v;f.insertBefore(e,f.querySelector('input[type=file]'));});
       let zalaczono=0;
       try{
-        const pk=(window.__karta?[window.__karta]:[]).concat(window.__gotowe||[]);
-        for(let i=1;i<=13;i++){
+        const pk=(window.__karta?[window.__karta]:[]).concat(window.__podglad&&window.__karta&&/\.pdf$/.test(window.__karta.name)?[window.__podglad]:[]).concat(window.__gotowe||[]);
+        for(let i=1;i<=14;i++){
           const inp=document.getElementById('smartZalacznik'+i);
           if(!inp||!window.DataTransfer)continue;
           const dt=new DataTransfer();
-          if(pk[i-1]){dt.items.add(pk[i-1]);if(pk[i-1]!==window.__karta)zalaczono++;}
+          if(pk[i-1]){dt.items.add(pk[i-1]);if(pk[i-1]!==window.__karta&&pk[i-1]!==window.__podglad)zalaczono++;}
           inp.files=dt.files;
         }
       }catch(e){}
