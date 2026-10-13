@@ -1163,7 +1163,7 @@ figure{margin:0}
     /* PDF w ukladzie arkusza Artura (A4, 1240x1754 px na strone) */
     async function ofertaPdf(zdj){
       if(!window.jspdf||!window.jspdf.jsPDF)return null;
-      const A=arkusz(), W=1240, H=1754, M=90, POM='#E8671F', PASEK='#6B7179', NAGL='#4F555C', CIEMNY='#33383E', SZARY='#6B7076', TLO='#F2F2F1';
+      const A=arkusz(), W=1240, H=1754, M=90, POM='#E8671F', PASEK='#2F74B5', NAGL='#235A8C', CIEMNY='#33383E', SZARY='#6B7076', TLO='#F2F2F1';
       const nr=new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(Math.random()*9000)+1000);
       const strony=[];
       const nowa=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,W,H);
@@ -1209,7 +1209,7 @@ figure{margin:0}
       // tabela cen (gdy sie nie zmiesci przed stopka, idzie na nastepna strone)
       if(y+52+A.poz.length*50+16+100+90>H-80){g=nowa();g.textBaseline='alphabetic';naglowek(g,'WYCENA',M,190);y=250;}
       const cx=[M,M+600,M+720,M+880], cw=W-2*M;
-      g.fillStyle='#E3E4E5';g.fillRect(M,y,cw,52);g.fillStyle=CIEMNY;g.font='bold 23px Arial';
+      g.fillStyle='#E4EEF7';g.fillRect(M,y,cw,52);g.fillStyle=CIEMNY;g.font='bold 23px Arial';
       ['Zakres prac','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
       A.poz.forEach((p,i)=>{g.fillStyle=i%2?'#fff':TLO;g.fillRect(M,y,cw,50);g.fillStyle=CIEMNY;g.font='22px Arial';
         const ile=typeof p[1]==='number'?p[1]:p[1];const laczna=typeof p[1]==='number'&&p[2]?p[1]*p[2]:null;
