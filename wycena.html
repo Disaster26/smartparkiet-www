@@ -1377,11 +1377,12 @@ figure{margin:0}
       f.action='https://formsubmit.co/'+BIURO;
       ['_subject','_cc','_template','_captcha','_next'].forEach(n=>{
         const i=document.createElement('input'); i.type='hidden'; i.name=n; f.appendChild(i);});
-      for(let i=1;i<=13;i++){
+      /* kolejnosc pol: zdjecia, a oferta PDF na koncu (FormSubmit ustawia ja wtedy na poczatku listy) */
+      [2,3,4,5,6,7,8,9,10,11,12,13,1].forEach(i=>{
         const zal=document.createElement('input');
         zal.type='file'; zal.name=i===1?'Oferta_PDF':'Zdjecie_'+(i-1); zal.id='smartZalacznik'+i; zal.hidden=true;
         f.appendChild(zal);
-      }
+      });
       document.body.appendChild(f);
       return f;
     }
