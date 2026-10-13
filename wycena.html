@@ -1402,7 +1402,7 @@ figure{margin:0}
         e.name=k;e.value=v;f.insertBefore(e,f.querySelector('input[type=file]'));});
       let zalaczono=0;
       try{
-        const pk=(window.__karta?[window.__karta]:[])..concat(window.__gotowe||[]);
+        const pk=(window.__karta?[window.__karta]:[]).concat(window.__gotowe||[]);
         for(let i=1;i<=14;i++){
           const inp=document.getElementById('smartZalacznik'+i);
           if(!inp||!window.DataTransfer)continue;
