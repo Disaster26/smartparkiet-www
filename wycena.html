@@ -1428,9 +1428,13 @@ figure{margin:0}
       const A=arkusz(), W=1240, H=1754, M=90, POM='#E8671F', PASEK='#FFFFFF', NAGL='#16191D', CIEMNY='#1F2328', SZARY='#4A5058', TLO='#FFFFFF', RAMKA='#F3B48F';
       const nr=new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(Math.random()*9000)+1000);
       const strony=[];
-      const nowa=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,W,H);
-        g.fillStyle='#fff';g.fillRect(0,0,W,110);g.fillStyle=POM;g.fillRect(0,104,W,8);g.fillStyle=CIEMNY;g.font='bold 46px Arial';g.textBaseline='middle';g.fillText('SMARTPARKIET',M,56);
-        g.font='24px Arial';g.textAlign='right';g.fillText('Wstępna oferta renowacji parkietu · nr '+nr,W-M,56);g.textAlign='left';strony.push(c);return g;};
+      const ZYWY='#F96A12';
+      const nowa=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+        /* cala strona w zywym pomaranczu, tresc na bialej karcie (jak formularz na starej stronie Artura) */
+        g.fillStyle=ZYWY;g.fillRect(0,0,W,H);g.fillStyle='#fff';
+        if(g.roundRect){g.beginPath();g.roundRect(36,124,W-72,H-124-72,22);g.fill();}else g.fillRect(36,124,W-72,H-124-72);
+        g.fillStyle='#fff';g.font='bold 46px Arial';g.textBaseline='middle';g.fillText('SMARTPARKIET',M-30,64);
+        g.font='24px Arial';g.textAlign='right';g.fillText('Wstępna oferta renowacji parkietu · nr '+nr,W-M+30,64);g.textAlign='left';strony.push(c);return g;};
       const zawin=(g,t,x,y,w,lh)=>{const sl=String(t).split(' ');let l='';for(const s of sl){const n=l?l+' '+s:s;if(g.measureText(n).width>w&&l){g.fillText(l,x,y);y+=lh;l=s;}else l=n;}if(l){g.fillText(l,x,y);y+=lh;}return y;};
       /* tekst dopasowany do szerokosci: najpierw mniejsza czcionka (do 15 px), potem skrot z wielokropkiem */
       const wpisz=(g,t,x,y,w,px,styl)=>{t=String(t);let f=px;g.font=(styl||'')+' '+f+'px Arial';while(g.measureText(t).width>w&&f>15){f--;g.font=(styl||'')+' '+f+'px Arial';}if(g.measureText(t).width>w){while(t.length>3&&g.measureText(t+'…').width>w)t=t.slice(0,-1);t=t.trimEnd()+'…';}g.fillText(t,x,y);};
@@ -1477,7 +1481,7 @@ figure{margin:0}
       let rh=Math.min(50,Math.floor(((H-80)-y-52-16-100-62)/Math.max(1,A.poz.length)));
       if(rh<36){g=nowa();g.textBaseline='alphabetic';naglowek(g,'WYCENA',M,190);y=250;rh=50;}
       const cx=[M,M+600,M+720,M+880], cw=W-2*M;
-      g.fillStyle=POM;g.fillRect(M,y,cw,52);g.fillStyle='#fff';g.font='bold 23px Arial';
+      g.fillStyle=ZYWY;g.fillRect(M,y,cw,52);g.fillStyle='#fff';g.font='bold 23px Arial';
       ['Zakres prac','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
       const yT=y;A.poz.forEach((p,i)=>{g.fillStyle='#fff';g.fillRect(M,y,cw,rh);g.fillStyle=RAMKA;g.fillRect(M,y+rh-1,cw,1.5);const ty=y+Math.round(rh/2)+8;g.fillStyle=CIEMNY;g.font='22px Arial';
         const ile=typeof p[1]==='number'?p[1]:p[1];const laczna=typeof p[1]==='number'&&p[2]?p[1]*p[2]:null;
@@ -1528,8 +1532,8 @@ figure{margin:0}
         yz+=h+10;
       }
       // stopki
-      strony.forEach((c,i)=>{const gg=c.getContext('2d');gg.textBaseline='alphabetic';gg.fillStyle=SZARY;gg.font='18px Arial';gg.textAlign='center';
-        gg.fillText('SMARTPARKIET · Cyklinowanie SMART™ · tel. 602 242 815 · strona '+(i+1)+' z '+strony.length,W/2,H-36);gg.textAlign='left';});
+      strony.forEach((c,i)=>{const gg=c.getContext('2d');gg.textBaseline='alphabetic';gg.fillStyle='#fff';gg.font='bold 19px Arial';gg.textAlign='center';
+        gg.fillText('SMARTPARKIET · Cyklinowanie SMART™ · tel. 602 242 815 · strona '+(i+1)+' z '+strony.length,W/2,H-28);gg.textAlign='left';});
       const pdf=new window.jspdf.jsPDF({unit:'mm',format:'a4',compress:true});
       strony.forEach((c,i)=>{if(i)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.82),'JPEG',0,0,210,297);});
       const nazwa='Oferta_'+(A.pole('ulicaKl')||'SMARTPARKIET').replace(/[^\wąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+/g,'_').replace(/^_|_$/g,'').slice(0,40)+'.pdf';
