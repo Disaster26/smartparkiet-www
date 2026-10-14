@@ -1,5 +1,81 @@
 [
  {
+  "id": "wilanow-deska-plywajaca",
+  "_uwaga": "Zdjecia z dysku Artura (folder \"Wilanow warstwowa plywajaca\", 14.10.2026), tekst z jego opisu.",
+  "data": "2026-10-14",
+  "tytul": "Cyklinowanie Wilanów - deska warstwowa pływająca",
+  "lokalizacja": "Warszawa, Wilanów",
+  "metraz": "50 m²",
+  "czas": "2 dni",
+  "podloga": "Deska warstwowa pływająca",
+  "program": "SMART PREMIUM FLOOR™",
+  "opis": "Bezpyłowa renowacja SMART™ - naturalny wygląd i trwała ochrona drewna. Wykończenie: naturalny odcień drewna, lakier Berger-Seidle AquaSeal® SmartStar.",
+  "zdj_przed": "",
+  "zdj_po": "",
+  "alt_przed": "",
+  "alt_po": "",
+  "zdj_laczone": [
+   {
+    "src": "img/wilanow2-porownanie-1.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu"
+   },
+   {
+    "src": "img/wilanow2-porownanie-2.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu"
+   },
+   {
+    "src": "img/wilanow2-porownanie-3.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu"
+   },
+   {
+    "src": "img/wilanow2-porownanie-4.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu"
+   },
+   {
+    "src": "img/wilanow2-porownanie-5.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu"
+   }
+  ],
+  "zdj_nowe": [
+   {
+    "src": "img/wilanow2-po-1.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna"
+   },
+   {
+    "src": "img/wilanow2-po-2.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna"
+   },
+   {
+    "src": "img/wilanow2-po-3.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna"
+   },
+   {
+    "src": "img/wilanow2-po-4.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna"
+   },
+   {
+    "src": "img/wilanow2-po-5.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna"
+   },
+   {
+    "src": "img/wilanow2-po-6.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna"
+   },
+   {
+    "src": "img/wilanow2-po-7.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna"
+   },
+   {
+    "src": "img/wilanow2-po-8.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna"
+   },
+   {
+    "src": "img/wilanow2-po-9.webp",
+    "alt": "Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna"
+   }
+  ]
+ },
+ {
   "id": "kuchnia-jodelka-dab",
   "data": "2026-10-02",
   "tytul": "Jodełka francuska w kuchni",
