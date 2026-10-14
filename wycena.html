@@ -1405,6 +1405,21 @@ figure{margin:0}
        aktywacji). Docelowo: BIURO='artur.trembinski@gmail.com' po kliknieciu przez niego 'Activate Form'. */
     const BIURO='odrobimy@gmail.com';
     const KOPIA='artur.trembinski@gmail.com';
+    /* Artur 14.10: kazda oferta PDF ma sie zapisac na jego Dysku Google (konto SMARTPARKIET).
+       Skrypt ai/wyceny_dysk.gs wdrozony na jego koncie; tu adres /exec. Pusty = funkcja wylaczona.
+       Ten sam skrypt wysyla klientowi potwierdzenie (autoodpowiedz FormSubmit nie dochodzi). */
+    const DYSK_URL='';
+    function naDysk(mail){
+      if(!DYSK_URL||!window.__karta||window.__karta.type!=='application/pdf')return;
+      const pole=id=>((document.getElementById(id)||{}).value||'').trim();
+      const r=new FileReader();
+      r.onload=()=>{
+        const opis=[(+m2.value||0)+' m2',pole('ulicaKl'),pole('dzielKl'),pole('imieKl'),pole('telKl')].filter(Boolean).join(' ');
+        fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body:JSON.stringify({opis:opis,pdf:String(r.result).split(',')[1]||'',mailKlienta:mail||''})}).catch(()=>{});
+      };
+      r.readAsDataURL(window.__karta);
+    }
     /* Artur 10.10 22:32: zdjecie ma dojsc jako ZALACZNIK do maila.
        Koncowka /ajax w FormSubmit przyjmuje tylko tekst, pliki idą wyłącznie
        zwyklym formularzem multipart. Dlatego skladamy ukryty formularz
@@ -1516,6 +1531,7 @@ figure{margin:0}
       const t=tresc();
       podsum.textContent=t;
       doBiura(t,(document.getElementById('mailKl')||{}).value||'');
+      naDysk((document.getElementById('mailKl')||{}).value||'');
       waL.href='https://wa.me/48602242815?text='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi doślę w odpowiedzi.');
       mailL.href='mailto:smartparkiet.kontakt@gmail.com?subject='+encodeURIComponent('Wycena ze zdjęć - '+(+m2.value||0)+' m2')+'&body='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi dołączam do tej wiadomości.');
       {const dr=document.querySelector('#wyslano .drogi'); if(dr)dr.hidden=true;}
