@@ -1319,7 +1319,7 @@ figure{margin:0}
     const kol=wt==='Kolor'?a*CENY.kolor:0;
     const ext=(window.spDodatkowe?window.spDodatkowe():[]),extS=ext.reduce((s,x)=>s+x.i*x.c,0);
     const dod=mb*CENY.listwy+sm*CENY.stab+kol+extS;
-    const lo=(120*k+w)*a+dod,hi=(140*k+w)*a+dod;
+    const lo=(120+w)*a+dod,hi=(140+w)*a+dod;
     const days=a<=40?'1-2 dni':a<=90?'2 dni':a<=160?'3 dni':'4-5 dni';
     oN.textContent=pln(lo)+' - '+pln(hi)+' zł';
     const czesci=[];
@@ -1401,7 +1401,7 @@ figure{margin:0}
       const dop={'Olej':8,'Twardy wosk':12}[wykT]||0;
       const listwy=!!zn('listwy')&&zn('listwy')!=='nie', mb=listwy?Math.max(0,+pole('listwyMb')||0):0;
       const meble=zn('meble')==='nie';
-      const cena=Math.round((130*k+dop)*100)/100;
+      const cena=Math.round((130+dop)*100)/100; /* Artur 14.10: 130 zl/m2 niezaleznie od rodzaju podlogi */
       const poz=[
         ['Renowacja parkietu (m²)',a,cena],
         ['Wymiana listwy przypodłogowej'+(listwy?' '+(zn('listwy')==='MDF'?'MDF':'klasycznej'):'')+' (mb)',mb,50],
