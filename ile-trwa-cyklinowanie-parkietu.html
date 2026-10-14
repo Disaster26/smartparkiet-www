@@ -942,14 +942,14 @@ figure{margin:0}
       <a href="wycena.html">Kalkulator online</a>
       <a href="ekspertyza.html">Ekspertyza online</a>
       <a href="oddzialy.html">Oddziały</a>
-      <a href="artykuly.html">Artykuły</a>
+      <a href="artykuly.html">Blog</a>
       <a href="kontakt.html">Kontakt</a>
     </nav>
     <button class="burger" type="button" aria-label="Menu" aria-expanded="false">☰</button>
     <a class="btn btn-amber tel" href="tel:+48602242815">602 242 815</a>
   </div>
 </header>
-<section id="top" class="ar-hero" style="background-image:url(img/wilanow2-po-2.webp)"><div class="wrap"><span class="ar-tag">Czas prac</span><h1>Ile trwa cyklinowanie parkietu i kiedy można wrócić do mieszkania?</h1><p class="ar-meta">Artykuły SMARTPARKIET &middot; czyta się około 3 minut</p></div></section>
+<section id="top" class="ar-hero" style="background-image:url(img/wilanow2-po-2.webp)"><div class="wrap"><span class="ar-tag">Czas prac</span><h1>Ile trwa cyklinowanie parkietu i kiedy można wrócić do mieszkania?</h1><p class="ar-meta">Blog SMARTPARKIET &middot; czyta się około 3 minut</p></div></section>
 <section class="art-body"><div class="wrap art">
 <p class="ar-lead">Najczęstsze pytanie przed zleceniem: na ile dni trzeba się wyprowadzić? Przy cyklinowaniu bezpyłowym zwykle wcale. Poniżej dokładny harmonogram.</p>
 <div class="ar-skrot"><b>Najważniejsze w skrócie</b><ul><li>Do 20 m²: 1 dzień</li><li>40-90 m²: 2 dni</li><li>W skarpetach po 3 h, spanie następnego dnia</li><li>Meble po 3-4 dniach, dywany po 14 dniach</li></ul></div>
@@ -978,7 +978,7 @@ figure{margin:0}
 </ul>
 
 <div class="ar-faq"><h2>Najczęstsze pytania</h2><h3>Ile trwa cyklinowanie mieszkania 50 m²?</h3><p>Około dwóch dni: pierwszego dnia szlif i szczeliny, drugiego trzy warstwy lakieru.</p><h3>Kiedy można chodzić po świeżym lakierze?</h3><p>Przy lakierze wodnym w skarpetach po około 3 godzinach od ostatniej warstwy.</p></div>
-<div class="pr-dalej"><h3>Czytaj dalej</h3><a href="czym-jest-cyklinowanie-smart.html">Czym jest cyklinowanie SMART i czym różni się od tradycyjnego?</a><a href="piec-filarow-metody-smart.html">Pięć filarów metody SMART: co kryje się za każdą literą</a><a href="cyklinowanie-smart-krok-po-kroku.html">Cyklinowanie SMART krok po kroku: od zdjęcia do odbioru podłogi</a><a href="cyklinowanie-bezpylowe-zero-dust.html">Cyklinowanie bezpyłowe: czy w mieszkaniu naprawdę nie zostaje pył?</a><a href="programy-renowacji-smart.html">Programy renowacji SMART: który wybrać dla swojej podłogi?</a><a href="artykuly.html">Wszystkie artykuły &rarr;</a></div>
+<div class="pr-dalej"><h3>Czytaj dalej</h3><a href="czym-jest-cyklinowanie-smart.html">Czym jest cyklinowanie SMART i czym różni się od tradycyjnego?</a><a href="piec-filarow-metody-smart.html">Pięć filarów metody SMART: co kryje się za każdą literą</a><a href="cyklinowanie-smart-krok-po-kroku.html">Cyklinowanie SMART krok po kroku: od zdjęcia do odbioru podłogi</a><a href="cyklinowanie-bezpylowe-zero-dust.html">Cyklinowanie bezpyłowe: czy w mieszkaniu naprawdę nie zostaje pył?</a><a href="programy-renowacji-smart.html">Programy renowacji SMART: który wybrać dla swojej podłogi?</a><a href="artykuly.html">Wszystkie wpisy na blogu &rarr;</a></div>
 </div></section>
 <section class="dark art-cta">
   <div class="wrap">
@@ -1861,6 +1861,5 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 @media(min-width:901px) and (max-width:1280px){.nav nav{font-size:.8rem!important;gap:12px!important}}
 @media(min-width:901px){.nav .brand{flex-shrink:0!important;width:auto!important;max-width:none!important;min-width:max-content!important;margin-right:24px!important}.nav .brand-t{white-space:nowrap}}
 @media(min-width:901px) and (max-width:1120px){.nav .brand-t{display:none!important}}</style>
-<style>/* cta-bar iOS 15.10: Artur - pasek "urywal sie i latal po ekranie" w Safari. Pasek dociagniety do dolnej krawedzi razem z obszarem paska Safari, na wlasnej warstwie */
-@media(max-width:900px){.cta-bar{bottom:0!important;padding-bottom:env(safe-area-inset-bottom,0px)!important;background:#fff!important;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);will-change:transform;-webkit-backface-visibility:hidden}
-body{padding-bottom:calc(var(--pasek,54px) + env(safe-area-inset-bottom,0px))}}</style>
+<style>/* cta-bar iOS 15.10 v2: position:fixed na iPhonie "odrywal sie i latal" przy chowaniu paska Safari. Pasek jest teraz ostatnim elementem strony z position:sticky - trzyma sie dolu ekranu, ale jest w ukladzie strony, wiec nie ma czego gubic */
+@media(max-width:900px){.cta-bar{position:-webkit-sticky!important;position:sticky!important;bottom:0!important;left:auto!important;right:auto!important;width:100%;transform:none!important;padding-bottom:env(safe-area-inset-bottom,0px)!important;background:#fff!important}body{padding-bottom:0!important}}</style>
