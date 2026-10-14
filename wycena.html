@@ -1404,7 +1404,8 @@ figure{margin:0}
        Glowny odbiorca to aktywowany w FormSubmit adres Lukasza, Artur dostaje kopie (kopia nie wymaga
        aktywacji). Docelowo: BIURO='artur.trembinski@gmail.com' po kliknieciu przez niego 'Activate Form'. */
     const BIURO='odrobimy@gmail.com';
-    const KOPIA='artur.trembinski@gmail.com';
+    /* Artur 14.10 10:02 "nie mam na poczcie": kopia takze na skrzynke firmowa smartparkiet@gmail.com */
+    const KOPIA='artur.trembinski@gmail.com,smartparkiet@gmail.com';
     /* Artur 14.10: kazda oferta PDF ma sie zapisac na jego Dysku Google (konto SMARTPARKIET).
        Skrypt ai/wyceny_dysk.gs wdrozony na jego koncie; tu adres /exec. Pusty = funkcja wylaczona.
        Ten sam skrypt wysyla klientowi potwierdzenie (autoodpowiedz FormSubmit nie dochodzi). */
@@ -1483,19 +1484,19 @@ figure{margin:0}
         if(gotowe)return; gotowe=true;
         if(!stan)return;
         stan.textContent = ok
-          ? ((mail?('Wysłane do nas, potwierdzenie poszło na '+mail+'.'):'Wysłane do naszego biura.')
+          ? ('Wysłane do naszego biura.'
              + (zalaczono?(' Oferta PDF i zdjęcia w załącznikach: '+zalaczono+'.'):' Zdjęcia prosimy dosłać w odpowiedzi.'))
           : 'Nie udało się wysłać automatycznie. Proszę skorzystać z przycisków niżej i dołączyć zdjęcia ręcznie.';
         const dr=document.querySelector('#wyslano .drogi'); if(dr&&!ok)dr.hidden=false;
         /* Artur 13.10 21:45: wyrazny komunikat WYSLANE! przy przycisku */
         if(ok){
           const bw=document.getElementById('wyslij');
-          if(bw){bw.classList.add('wyslane');bw.innerHTML='✓ WYSŁANE!';bw.disabled=true;}
-          let kom=document.getElementById('komWyslane');
-          if(!kom){kom=document.createElement('div');kom.id='komWyslane';kom.className='kom-wyslane';
-            kom.innerHTML='<b>WYSŁANE!</b><span>Dziękujemy. Odezwiemy się z wyceną w ciągu dwóch godzin roboczych.</span>';
-            bw&&bw.parentNode.insertBefore(kom,bw.nextSibling);}
-          kom.scrollIntoView({behavior:'smooth',block:'center'});
+          /* Artur 14.10 10:06: jeden klawisz z ptaszkiem i informacja, ze wycena dotrze na maila - bez drugiej ramki */
+          if(bw){bw.classList.add('wyslane');bw.disabled=true;bw.style.cssText+=';height:auto!important;padding:16px 18px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:0!important';
+            bw.innerHTML='<span style="display:block;font-size:1.1em;color:#fff">✓ WYSŁANE!</span><small style="display:block;color:#fff!important;opacity:.95;font-weight:500;font-size:.78em;text-transform:none;letter-spacing:0;margin-top:6px;line-height:1.35;white-space:normal">Wycena przyjdzie na Państwa e-mail. Odezwiemy się w ciągu dwóch godzin roboczych.</small>';}
+          {const k=document.getElementById('komWyslane'); if(k)k.remove();}
+          {const wb=document.getElementById('wyslano'); if(wb)wb.hidden=true;}
+          bw&&bw.scrollIntoView({behavior:'smooth',block:'center'});
         }
       };
       ram.onload=()=>koniec(true);
