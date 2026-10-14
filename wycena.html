@@ -1425,10 +1425,10 @@ figure{margin:0}
     /* PDF w ukladzie arkusza Artura (A4, 1240x1754 px na strone) */
     async function ofertaPdf(zdj){
       if(!window.jspdf||!window.jspdf.jsPDF)return null;
-      const A=arkusz(), W=1240, H=1754, M=90, POM='#E8671F', PASEK='#FFFFFF', NAGL='#16191D', CIEMNY='#1F2328', SZARY='#4A5058', TLO='#FFFFFF', RAMKA='#F3B48F';
+      const A=arkusz(), W=1240, H=1754, M=90, POM='#FE6500', PASEK='#FFFFFF', NAGL='#16191D', CIEMNY='#1F2328', SZARY='#4A5058', TLO='#FFFFFF', RAMKA='#F3B48F';
       const nr=new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(Math.random()*9000)+1000);
       const strony=[];
-      const ZYWY='#F96A12';
+      const ZYWY='#FE6500';
       const nowa=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
         /* cala strona w zywym pomaranczu, tresc na bialej karcie (jak formularz na starej stronie Artura) */
         g.fillStyle=ZYWY;g.fillRect(0,0,W,H);g.fillStyle='#fff';
