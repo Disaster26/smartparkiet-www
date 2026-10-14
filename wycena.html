@@ -1482,7 +1482,7 @@ figure{margin:0}
       const cx=[M,M+600,M+720,M+880], cw=W-2*M;
       g.fillStyle=ZYWY;g.fillRect(M,y,cw,52);g.fillStyle='#fff';g.font='bold 23px Arial';
       ['Zakres prac','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
-      const yT=y;A.poz.forEach((p,i)=>{g.fillStyle='#fff';g.fillRect(M,y,cw,rh);g.fillStyle=RAMKA;g.fillRect(M,y+rh-1,cw,1.5);const ty=y+Math.round(rh/2)+8;g.fillStyle=CIEMNY;g.font='22px Arial';
+      const yT=y;A.poz.forEach((p,i)=>{g.fillStyle='#fff';g.fillRect(M,y,cw,rh);g.fillStyle=RAMKA;g.fillRect(M,y+rh-1,cw,1.5);const ty=y+Math.round(rh/2)+8;g.fillStyle=CIEMNY;g.font='italic 22px Arial';
         const ile=typeof p[1]==='number'?p[1]:p[1];const laczna=typeof p[1]==='number'&&p[2]?p[1]*p[2]:null;
         {let t=String(p[0]);while(t.length>4&&g.measureText(t).width>575)t=t.slice(0,-2);if(t!==String(p[0]))t=t.replace(/\s*\S?$/,'')+'…';g.fillText(t,cx[0]+12,ty);}g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','do uzg.'),cx[1]+12,ty);
         g.fillText(p[2]==null?'do uzgodnienia':zl(p[2]),cx[2]+12,ty);g.fillText(laczna?zl(laczna):'-',cx[3]+12,ty);y+=rh;});
