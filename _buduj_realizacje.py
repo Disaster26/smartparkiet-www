@@ -44,7 +44,7 @@ def karta(w, nr):
     for etykieta, klucz in (('Lokalizacja', 'lokalizacja'), ('Metraż', 'metraz'),
                             ('Czas', 'czas'), ('Podłoga', 'podloga')):
         if w.get(klucz):
-            meta.append('<div><dt>%s</dt><dd>%s</dd></div>' % (etykieta, e(w[klucz])))
+            meta.append('<span title="%s">%s</span>' % (etykieta, e(w[klucz])))  # Artur 14.10: waski pasek zamiast siatki
 
     ma_pare = bool(w.get('zdj_przed')) and bool(w.get('zdj_po'))
     if ma_pare:
@@ -106,7 +106,7 @@ def karta(w, nr):
         '          {program}'
         '          <h3>{tytul}</h3>\n'
         '          <p>{opis}</p>\n'
-        '          <dl class="r-meta">{meta}</dl>\n'
+        '          <p class="r-pasek">{meta}</p>\n'
         '          <p class="r-data"><time datetime="{iso}">{data}</time></p>\n'
         '        </div>\n'
         '        <div class="r-dod">{dod}</div>\n'
