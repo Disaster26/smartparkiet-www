@@ -1561,10 +1561,10 @@ figure{margin:0}
       f.action='https://formsubmit.co/'+BIURO;
       ['_subject','_cc','_template','_captcha','_next','_autoresponse','email'].forEach(n=>{
         const i=document.createElement('input'); i.type='hidden'; i.name=n; f.appendChild(i);});
-      /* kolejnosc pol: oferta PDF, jej podglad JPG, potem zdjecia */
+      /* kolejnosc pol: oferta PDF, potem zdjecia (podglad JPG usuniety 13.10) */
       [1,2,3,4,5,6,7,8,9,10,11,12,13,14].forEach(i=>{
         const zal=document.createElement('input');
-        zal.type='file'; zal.name=i===1?'Oferta_PDF':(i===2?'Oferta_podglad':'Zdjecie_'+(i-2)); zal.id='smartZalacznik'+i; zal.hidden=true;
+        zal.type='file'; zal.name=i===1?'Oferta_PDF':'Zdjecie_'+(i-1); zal.id='smartZalacznik'+i; zal.hidden=true;
         f.appendChild(zal);
       });
       document.body.appendChild(f);
@@ -1576,7 +1576,7 @@ figure{margin:0}
       const f=zbudujFormularz();
       const ust=(n,v)=>{const e=f.querySelector('[name="'+n+'"]'); if(e)e.value=v||'';};
       const pole=id=>((document.getElementById(id)||{}).value||'').trim();
-      ust('_subject','Nowa wycena: '+(+m2.value||0)+' m², '+(pole('ulicaKl')||'adres nie podany')+(pole('telKl')?', tel. '+pole('telKl'):''));
+      ust('_subject','Nowa wycena: '+String(+m2.value||0).replace('.',',')+' m², '+(pole('ulicaKl')||'adres nie podany')+(pole('telKl')?', tel. '+pole('telKl'):''));
       /* Artur 14.10: oferta z cenami tylko do nas, klient dostaje samo potwierdzenie (autoodpowiedz FormSubmit) */
       ust('_cc',KOPIA);
       const mailOk=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail||'');
