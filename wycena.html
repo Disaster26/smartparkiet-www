@@ -1408,11 +1408,11 @@ figure{margin:0}
     /* PDF w ukladzie arkusza Artura (A4, 1240x1754 px na strone) */
     async function ofertaPdf(zdj){
       if(!window.jspdf||!window.jspdf.jsPDF)return null;
-      const A=arkusz(), W=1240, H=1754, M=90, POM='#E8671F', PASEK='#F4B08A', NAGL='#3A3F45', CIEMNY='#33383E', SZARY='#6B7076', TLO='#FBF3EE';
+      const A=arkusz(), W=1240, H=1754, M=90, POM='#E8671F', PASEK='#FFFFFF', NAGL='#16191D', CIEMNY='#1F2328', SZARY='#4A5058', TLO='#FFFFFF', RAMKA='#F3B48F';
       const nr=new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(Math.random()*9000)+1000);
       const strony=[];
       const nowa=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,W,H);
-        g.fillStyle=PASEK;g.fillRect(0,0,W,110);g.fillStyle=CIEMNY;g.font='bold 46px Arial';g.textBaseline='middle';g.fillText('SMARTPARKIET',M,56);
+        g.fillStyle='#fff';g.fillRect(0,0,W,110);g.fillStyle=POM;g.fillRect(0,104,W,8);g.fillStyle=CIEMNY;g.font='bold 46px Arial';g.textBaseline='middle';g.fillText('SMARTPARKIET',M,56);
         g.font='24px Arial';g.textAlign='right';g.fillText('Wstępna oferta renowacji parkietu · nr '+nr,W-M,56);g.textAlign='left';strony.push(c);return g;};
       const zawin=(g,t,x,y,w,lh)=>{const sl=String(t).split(' ');let l='';for(const s of sl){const n=l?l+' '+s:s;if(g.measureText(n).width>w&&l){g.fillText(l,x,y);y+=lh;l=s;}else l=n;}if(l){g.fillText(l,x,y);y+=lh;}return y;};
       /* tekst dopasowany do szerokosci: najpierw mniejsza czcionka (do 15 px), potem skrot z wielokropkiem */
@@ -1432,7 +1432,7 @@ figure{margin:0}
       let yk=212;
       for(let i=0;i<5;i++){
         const fk='bold 24px Arial', a1=linie(g,kl[i],kol-32,fk,2), a2=linie(g,sp[i],kol-32,fk,2), n=Math.max(a1.length,a2.length), hw=26+n*30;
-        g.fillStyle=i%2?'#fff':TLO;g.fillRect(M,yk,kol,hw);g.fillRect(M+kol+40,yk,kol,hw);
+        g.fillStyle='#fff';g.fillRect(M,yk,kol,hw);g.fillRect(M+kol+40,yk,kol,hw);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yk+1,kol-2,hw-2);g.strokeRect(M+kol+41,yk+1,kol-2,hw-2);
         g.fillStyle='#565B61';g.font=fk;a1.forEach((l,j)=>g.fillText(l,M+16,yk+36+j*30));a2.forEach((l,j)=>g.fillText(l,M+kol+56,yk+36+j*30));
         yk+=hw+2;}
       const yr=yk+50;
@@ -1442,7 +1442,7 @@ figure{margin:0}
           A.zn('stab')==='tak'?'Stabilizacja klepek':'',A.zn('napr')==='tak'?'Naprawy ubytków':'',A.kolor?'Koloryzacja':''].filter(Boolean)]];
       let yMax=0;
       tab.forEach(([h,w],i)=>{const x=M+i*k3;g.fillStyle=SZARY;wpisz(g,h,x+12,yr+60,k3-24,24,'bold');let yy=yr+80;
-        w.forEach((t,j)=>{const fl='italic 22px Arial',ll=linie(g,t,k3-36,fl,2),hc=22+ll.length*28;g.fillStyle=j%2?'#fff':TLO;g.fillRect(x+4,yy,k3-8,hc);
+        w.forEach((t,j)=>{const fl='italic 22px Arial',ll=linie(g,t,k3-36,fl,2),hc=22+ll.length*28;g.fillStyle='#fff';g.fillRect(x+4,yy,k3-8,hc);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(x+5,yy+1,k3-10,hc-2);
           g.fillStyle=CIEMNY;g.font=fl;ll.forEach((l,q)=>g.fillText(l,x+16,yy+32+q*28));yy+=hc+4;});yMax=Math.max(yMax,yy);});
       let y=yMax+36;
       g.fillStyle=SZARY;g.font='bold 24px Arial';g.fillText('Informacje dodatkowe',M,y);y+=36;
@@ -1460,13 +1460,13 @@ figure{margin:0}
       let rh=Math.min(50,Math.floor(((H-80)-y-52-16-100-62)/Math.max(1,A.poz.length)));
       if(rh<36){g=nowa();g.textBaseline='alphabetic';naglowek(g,'WYCENA',M,190);y=250;rh=50;}
       const cx=[M,M+600,M+720,M+880], cw=W-2*M;
-      g.fillStyle='#FCE6D9';g.fillRect(M,y,cw,52);g.fillStyle=CIEMNY;g.font='bold 23px Arial';
+      g.fillStyle=POM;g.fillRect(M,y,cw,52);g.fillStyle='#fff';g.font='bold 23px Arial';
       ['Zakres prac','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
-      A.poz.forEach((p,i)=>{g.fillStyle=i%2?'#fff':TLO;g.fillRect(M,y,cw,rh);const ty=y+Math.round(rh/2)+8;g.fillStyle=CIEMNY;g.font='22px Arial';
+      const yT=y;A.poz.forEach((p,i)=>{g.fillStyle='#fff';g.fillRect(M,y,cw,rh);g.fillStyle=RAMKA;g.fillRect(M,y+rh-1,cw,1.5);const ty=y+Math.round(rh/2)+8;g.fillStyle=CIEMNY;g.font='22px Arial';
         const ile=typeof p[1]==='number'?p[1]:p[1];const laczna=typeof p[1]==='number'&&p[2]?p[1]*p[2]:null;
         {let t=String(p[0]);while(t.length>4&&g.measureText(t).width>575)t=t.slice(0,-2);if(t!==String(p[0]))t=t.replace(/\s*\S?$/,'')+'…';g.fillText(t,cx[0]+12,ty);}g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','do uzg.'),cx[1]+12,ty);
         g.fillText(p[2]==null?'do uzgodnienia':zl(p[2]),cx[2]+12,ty);g.fillText(laczna?zl(laczna):'-',cx[3]+12,ty);y+=rh;});
-      y+=16;g.fillStyle=PASEK;g.fillRect(M,y,cw,70);g.fillStyle=CIEMNY;g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);
+      g.strokeStyle=POM;g.lineWidth=3;g.strokeRect(M+1.5,yT-52+1.5,cw-3,y-yT+52-3);y+=16;g.fillStyle='#fff';g.fillRect(M,y,cw,70);g.strokeStyle=POM;g.lineWidth=4;g.strokeRect(M+2,y+2,cw-4,66);g.fillStyle=CIEMNY;g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);g.fillStyle=POM;
       g.textAlign='right';g.fillText(zl(A.suma),W-M-20,y+46);g.textAlign='left';y+=100;
       g.fillStyle=SZARY;g.font='italic 20px Arial';
       y=zawin(g,'Pracownik jest upoważniony do przyjęcia płatności gotówką (kwota netto). Faktura wystawiana na życzenie klienta. Wycena wstępna, przygotowana na podstawie danych i zdjęć od klienta; ostateczną cenę potwierdza SMARTPARKIET.',M,y,W-2*M,28);
@@ -1505,7 +1505,7 @@ figure{margin:0}
         const linie=[];{const sl=Z[i].split(' ');let l='';for(const s of sl){const n=l?l+' '+s:s;if(g.measureText(n).width>W-2*M-80&&l){linie.push(l);l=s;}else l=n;}if(l)linie.push(l);}
         const h=linie.length*25+22;
         if(yz+h>H-80){g=nowa();g.textBaseline='alphabetic';naglowek(g,'ZASADY RENOWACJI (cd.)',M,190);yz=260;}
-        g.fillStyle=i%2?'#fff':TLO;g.fillRect(M,yz-24,W-2*M,h);
+        g.fillStyle='#fff';g.fillRect(M,yz-24,W-2*M,h);g.fillStyle=POM;g.fillRect(M,yz-24,4,h-6);
         g.fillStyle=POM;g.font='bold 22px Arial';g.fillText(String(i+1)+'.',M+14,yz+2);
         g.fillStyle=CIEMNY;g.font='19px Arial';linie.forEach((l,j)=>g.fillText(l,M+60,yz+2+j*25));
         yz+=h+10;
