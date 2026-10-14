@@ -1770,7 +1770,7 @@ figure{margin:0}
   ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
   drop.addEventListener('drop',e=>dodaj(e.dataTransfer.files));
   /* Artur 14.10 10:26: w podgladzie jego zdjecie parkietu (bez kiczowatej ramki) */
-  pokaz('img/podloga-smart.webp','czeka na zdjęcia');
+  pokaz('img/podloga-smart.webp?v=2','czeka na zdjęcia');
 
   /* ---- rozpoznawanie zdjecia przez wlasny serwer (worker) ----
      Dopoki ANALIZA_URL jest puste, przycisk sie nie pokazuje i strona
@@ -2506,3 +2506,5 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 <style>.ai-form #wyslij.wyslane{background:#2E8B57!important;border-color:#2E8B57!important;color:#fff!important;opacity:1}.kom-wyslane{grid-column:1/-1;background:#EAF6EF;border:2px solid #2E8B57;border-radius:6px;padding:14px 16px;text-align:center;color:#1F5E3B}.kom-wyslane b{display:block;font-size:1.5rem;letter-spacing:.04em}.kom-wyslane span{display:block;font-size:.9rem;margin-top:4px}</style>
 <style>.ai-form .obow{color:#E8671F;font-weight:700}.ai-form .pola-obow{grid-column:1/-1;font-size:.8rem;color:var(--mute);margin:-2px 0 0}</style>
 <!-- kalkulator 20:41: KONIEC -->
+<style>/* 14.10: podpis na zdjeciu podgladu jest po lewej - przy kwadratowym okienku (komputer) przycinamy od prawej */
+.ai-photo img[src*="podloga-smart"]{object-position:left center}</style>
