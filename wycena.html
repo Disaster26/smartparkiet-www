@@ -1386,18 +1386,24 @@ figure{margin:0}
       g.fillStyle=SZARY;g.font='bold 24px Arial';g.fillText('Informacje dodatkowe',M,y);y+=36;
       g.fillStyle=CIEMNY;g.font='22px Arial';
       y=zawin(g,'Termin: '+(A.pole('terminKl')||'do ustalenia')+'.',M,y,W-2*M,30);
-      if(A.pole('uwagiKl'))y=zawin(g,'Uwagi klienta: '+A.pole('uwagiKl'),M,y,W-2*M,30);
+      /* Artur 14.10 11:07: pasek informacji dodatkowych zablokowany na 3 linijki, zeby wycena nie przeskakiwala na druga strone; pelna tresc uwag idzie w mailu */
+      if(A.pole('uwagiKl')){const sl=('Uwagi klienta: '+A.pole('uwagiKl').replace(/\s+/g,' ')).split(' ');const ll=[];let l='';
+        for(const w of sl){const n=l?l+' '+w:w;if(g.measureText(n).width>W-2*M&&l){ll.push(l);l=w;}else l=n;}if(l)ll.push(l);
+        if(ll.length>3){ll.length=3;let o=ll[2];while(o.length>4&&g.measureText(o+' … (pełna treść w mailu)').width>W-2*M)o=o.slice(0,-1);ll[2]=o.replace(/\s+\S*$/,'')+' … (pełna treść w mailu)';}
+        ll.forEach(t=>{g.fillText(t,M,y);y+=30;});}
       y=zawin(g,'Przed rozpoczęciem prac prosimy o zapoznanie się z zasadami renowacji na ostatniej stronie.',M,y,W-2*M,30);
       y+=24;
       // tabela cen (gdy sie nie zmiesci przed stopka, idzie na nastepna strone)
-      if(y+52+A.poz.length*50+16+100+90>H-80){g=nowa();g.textBaseline='alphabetic';naglowek(g,'WYCENA',M,190);y=250;}
+      /* wysokosc wiersza tabeli dopasowana do miejsca na stronie (50 px, w razie potrzeby do 36 px); nowa strona dopiero, gdy i tak sie nie zmiesci */
+      let rh=Math.min(50,Math.floor(((H-80)-y-52-16-100-62)/Math.max(1,A.poz.length)));
+      if(rh<36){g=nowa();g.textBaseline='alphabetic';naglowek(g,'WYCENA',M,190);y=250;rh=50;}
       const cx=[M,M+600,M+720,M+880], cw=W-2*M;
       g.fillStyle='#FCE6D9';g.fillRect(M,y,cw,52);g.fillStyle=CIEMNY;g.font='bold 23px Arial';
       ['Zakres prac','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
-      A.poz.forEach((p,i)=>{g.fillStyle=i%2?'#fff':TLO;g.fillRect(M,y,cw,50);g.fillStyle=CIEMNY;g.font='22px Arial';
+      A.poz.forEach((p,i)=>{g.fillStyle=i%2?'#fff':TLO;g.fillRect(M,y,cw,rh);const ty=y+Math.round(rh/2)+8;g.fillStyle=CIEMNY;g.font='22px Arial';
         const ile=typeof p[1]==='number'?p[1]:p[1];const laczna=typeof p[1]==='number'&&p[2]?p[1]*p[2]:null;
-        {let t=String(p[0]);while(t.length>4&&g.measureText(t).width>575)t=t.slice(0,-2);if(t!==String(p[0]))t=t.replace(/\s*\S?$/,'')+'…';g.fillText(t,cx[0]+12,y+33);}g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','do uzg.'),cx[1]+12,y+33);
-        g.fillText(p[2]==null?'do uzgodnienia':zl(p[2]),cx[2]+12,y+33);g.fillText(laczna?zl(laczna):'-',cx[3]+12,y+33);y+=50;});
+        {let t=String(p[0]);while(t.length>4&&g.measureText(t).width>575)t=t.slice(0,-2);if(t!==String(p[0]))t=t.replace(/\s*\S?$/,'')+'…';g.fillText(t,cx[0]+12,ty);}g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','do uzg.'),cx[1]+12,ty);
+        g.fillText(p[2]==null?'do uzgodnienia':zl(p[2]),cx[2]+12,ty);g.fillText(laczna?zl(laczna):'-',cx[3]+12,ty);y+=rh;});
       y+=16;g.fillStyle=PASEK;g.fillRect(M,y,cw,70);g.fillStyle=CIEMNY;g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);
       g.textAlign='right';g.fillText(zl(A.suma),W-M-20,y+46);g.textAlign='left';y+=100;
       g.fillStyle=SZARY;g.font='italic 20px Arial';
