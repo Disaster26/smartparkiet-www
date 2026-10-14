@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>SMARTPARKIET Trembiński - cyklinowanie bezpyłowe parkietu, Warszawa</title>
+<html lang="pl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SMARTPARKIET Trembiński - cyklinowanie bezpyłowe parkietu, Warszawa</title>
 <link rel="icon" href="img/favicon.png" type="image/png">
 <meta name="description" content="Cyklinowanie SMART: bezpyłowy szlif parkietu z oczyszczaniem powietrza ZERO DUST. Typowe mieszkanie w dwa dni, wycena ze zdjęć w 2 godziny. Cztery oddziały w Warszawie. 602 242 815.">
 <!-- podglad linku: START -->
@@ -2630,8 +2630,6 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 @media(min-width:901px){.hero::after,.hero::before{background:linear-gradient(90deg,rgba(14,10,7,.6) 0%,rgba(14,10,7,.36) 34%,rgba(14,10,7,.02) 55%,rgba(14,10,7,0) 100%)!important}}
 .hero h1,.hero .hero-ocena,.hero .hero-lead p,.hero .tag{text-shadow:0 2px 10px rgba(0,0,0,.55),0 1px 2px rgba(0,0,0,.5)}
 </style>
-<style>/* cta-bar iOS 15.10 v3: na iPhonie Safari (pasek narzedzi chowa sie i wysuwa) przyklejony do krawedzi pasek odrywal sie od dolu. Teraz to celowo plywajaca pastylka z odstepem od dolu i cieniem - przesuniecie o kilka pikseli przy chowaniu paska Safari nie wyglada juz jak blad */
-@media(max-width:900px){.cta-bar{position:fixed!important;left:10px!important;right:10px!important;width:auto!important;bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;top:auto!important;transform:translateZ(0)!important;padding:0!important;border:0!important;border-radius:16px!important;overflow:hidden;gap:0!important;background:#fff!important;box-shadow:0 8px 28px rgba(16,14,11,.28),0 0 0 1px rgba(16,14,11,.08)!important}.cta-bar a+a{border-left:1px solid rgba(16,14,11,.10)}body{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))!important}}</style>
 <style>/* hero 15.10 01:07 (Artur): morelowe tlo, przyciski pod napisem HUMMEL, SMARTPARKIET / WARSZAWA ciasniej, zeby nie wchodzilo na koszulke */
 .hero .tag.tag-wawa{letter-spacing:.06em!important}
 @media(max-width:900px){
@@ -2640,7 +2638,10 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
   .hero .cta-rowne .btn-ghost{top:calc(66.5% + 45px)!important;bottom:auto!important}
   .hero-op{top:auto!important;bottom:10px!important}
 }
+/* 01:20 "zginely gwiazdki": na nizszych ekranach przyciski wyzej, opinie zostaja pod nimi */
 @media(max-width:900px) and (max-height:720px){
-  .hero-op{display:none!important}
+  .hero .cta-rowne .btn-amber{top:57%!important}
+  .hero .cta-rowne .btn-ghost{top:calc(57% + 45px)!important}
+  .hero-op{bottom:6px!important}
 }
 </style>
