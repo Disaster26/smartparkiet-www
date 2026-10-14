@@ -962,7 +962,7 @@ figure{margin:0}
       <p class="lead" style="margin-top:16px">Widełki liczymy z cennika od razu, a zdjęcia ogląda parkieciarz i odzywa się z wyceną w ciągu dwóch godzin roboczych.</p>
     </div>
     <div class="ai">
-      <label class="drop" id="drop" for="file"><span><b>Zdjęcia podłogi: od 4 do 12</b><span>Najlepiej sześć lub więcej. Prosimy też o zdjęcia miejsc do naprawy (ubytki, szczeliny, przebarwienia).</span></span><span class="btn btn-ghost" style="pointer-events:none">Dodaj zdjęcia</span><input id="file" type="file" accept="image/*" multiple hidden></label>
+      <label class="drop" id="drop" for="file"><span><b>Zdjęcia podłogi: od 4 do 12 / naprawy</b></span><span class="btn btn-ghost" style="pointer-events:none">Dodaj zdjęcia</span><input id="file" type="file" accept="image/*" multiple hidden></label>
       <div class="miniatury" id="miniatury"><span class="lic" id="licZdj">Dodano 0 z 12 zdjęć (minimum 4)</span></div>
       <div class="ai-body">
         <div class="ai-photo" id="aiPhoto"><div class="empty">Tu pojawi się Państwa zdjęcie</div><div class="scan"></div></div>
@@ -1052,7 +1052,7 @@ figure{margin:0}
   function liczba(s){return parseFloat(String(s).replace(',','.'));}
 
   function parsuj(t){
-    var txt=t.replace(/\r/g,'').replace(/ /g,' ').trim(), r={}, uwagi=[];
+    var txt=t.replace(/\r/g,'').replace(/\u00a0/g,' ').replace(/(\d)\uFE0F?\u20E3\s*/g,'\n$1. ').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]/gu,'').trim(), r={}, uwagi=[];
     // podzial na punkty "1. ...", "2) ..." (nie tnie dat typu 12.10)
     var seg=txt.split(/(?:^|\s)(?=\d{1,2}[.)]\s+\S)/).map(function(s){return s.trim();}).filter(Boolean);
     if(seg.length<2) seg=txt.split(/\n+/).map(function(s){return s.trim();}).filter(Boolean);
@@ -1064,6 +1064,23 @@ figure{margin:0}
       var tel=s.replace(/[\w.+-]+@\S+/,'').match(/(?:\+?48[\s-]?)?(\d{3})[\s-]?(\d{3})[\s-]?(\d{3})(?!\d)/);
       if(!r.tel&&tel){r.tel=tel[1]+' '+tel[2]+' '+tel[3]; if(s.replace(tel[0],'').replace(/[\s,;:.-]|tel|telefon/gi,'').length<3)uzyte[i]=1;}
       if(!r.kod&&(m=s.match(/\b\d{2}-\d{3}\b/)))r.kod=m[0];
+    });
+    var ETY=/^(adres\w*|ulica|telefon|tel\.?|nr tel\w*|e-?mail|mail|metra\S*|powierzchnia|pi[eę]tro[^:]*|winda|termin\w*|listwy[^:]*|dodatk[^:]*|uwagi[^:]*|info[^:]*|imi[eę][^:]*|nazwisko)\s*:\s*/i;
+    seg.forEach(function(s,i){
+      if(uzyte[i])return; var e=s.match(ETY); if(!e)return; var lab=bezOgonkow(e[1]), v=s.slice(e[0].length).trim(), m;
+      if(/^(adres|ulica)/.test(lab)){var cz=v.replace(/\b\d{2}-\d{3}\b/,function(k){r.kod=k;return '';}).split(',').map(function(x){return x.trim();}).filter(Boolean);
+        var ul=cz.filter(function(x){return /\d/.test(x)&&/[a-ząćęłńóśźż]{3}/i.test(x);});var mi=cz.filter(function(x){return !/\d/.test(x);});
+        r.ulica=(ul[0]||cz[0]||'').replace(/^ul\.\s*/i,'ul. ');if(mi[0])r.miasto=mi[0];uzyte[i]=1;}
+      else if(/^(tel|nr tel)/.test(lab)){if(!r.tel&&(m=v.match(/(\d{3})[\s-]?(\d{3})[\s-]?(\d{3})/)))r.tel=m[1]+' '+m[2]+' '+m[3];uzyte[i]=1;}
+      else if(/mail/.test(lab)){if(!r.mail&&(m=v.match(/[\w.+-]+@[\w-]+(\.[\w-]+)+/)))r.mail=m[0];uzyte[i]=1;}
+      else if(/^(metra|powierzch)/.test(lab)){var mm=v.match(/(\d+(?:[.,]\d+)?)(?=\s*(?:m2|m²|mkw|m\.?\s?kw|metr|m\b))/gi)||(v.match(/\d+(?:[.,]\d+)?/)||[]);r.m2=0;r.m2lista=[];[].forEach.call(mm,function(x){var q=liczba(x);if(!isNaN(q)){r.m2+=q;r.m2lista.push(String(q).replace('.',','));}});if(!r.m2){delete r.m2;delete r.m2lista;}
+        if(v.replace(/ok\.?|około|[\d.,+]|m2|m²|mkw|\s/gi,'').length>2)uwagi.push(s);uzyte[i]=1;}
+      else if(/^(pietro|winda)/.test(lab)){if(/parter/i.test(v))r.pietro=0;else if((m=v.match(/(\d+)/)))r.pietro=+m[1];
+        if(/bez\s+windy|brak|winda\s*[-:]?\s*nie|\bnie\b/i.test(v))r.winda='nie';else if(/winda|jest|tak/i.test(v))r.winda='tak';uzyte[i]=1;}
+      else if(/^termin/.test(lab)){r.termin=v;uzyte[i]=1;}
+      else if(/^listwy/.test(lab)){var lv=bezOgonkow(v);r.listwy=/^(nie|bez)/.test(lv)?'nie':(/mdf/.test(lv)?'MDF':'klasyczna');if((m=v.match(/(\d+(?:[.,]\d+)?)\s*(?:mb|m\.b|metr)/i)))r.listwyMb=liczba(m[1]);uzyte[i]=1;}
+      else if(/^(imi|nazwisko)/.test(lab)){r.imie=v;uzyte[i]=1;}
+      else {uwagi.push(v);uzyte[i]=1;}
     });
     seg.forEach(function(s,i){
       if(uzyte[i])return; var m;
