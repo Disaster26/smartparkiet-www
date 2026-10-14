@@ -948,7 +948,7 @@ figure{margin:0}
       <a href="wycena.html" class="akt">Kalkulator online</a>
       <a href="ekspertyza.html">Ekspertyza online</a>
       <a href="oddzialy.html">Oddziały</a>
-      <a href="artykuly.html">Artykuły</a>
+      <a href="artykuly.html">Blog</a>
       <a href="kontakt.html">Kontakt</a>
     </nav>
     <button class="burger" type="button" aria-label="Menu" aria-expanded="false">☰</button>
@@ -2542,6 +2542,5 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 @media(min-width:901px) and (max-width:1280px){.nav nav{font-size:.8rem!important;gap:12px!important}}
 @media(min-width:901px){.nav .brand{flex-shrink:0!important;width:auto!important;max-width:none!important;min-width:max-content!important;margin-right:24px!important}.nav .brand-t{white-space:nowrap}}
 @media(min-width:901px) and (max-width:1120px){.nav .brand-t{display:none!important}}</style>
-<style>/* cta-bar iOS 15.10: Artur - pasek "urywal sie i latal po ekranie" w Safari. Pasek dociagniety do dolnej krawedzi razem z obszarem paska Safari, na wlasnej warstwie */
-@media(max-width:900px){.cta-bar{bottom:0!important;padding-bottom:env(safe-area-inset-bottom,0px)!important;background:#fff!important;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);will-change:transform;-webkit-backface-visibility:hidden}
-body{padding-bottom:calc(var(--pasek,54px) + env(safe-area-inset-bottom,0px))}}</style>
+<style>/* cta-bar iOS 15.10 v2: position:fixed na iPhonie "odrywal sie i latal" przy chowaniu paska Safari. Pasek jest teraz ostatnim elementem strony z position:sticky - trzyma sie dolu ekranu, ale jest w ukladzie strony, wiec nie ma czego gubic */
+@media(max-width:900px){.cta-bar{position:-webkit-sticky!important;position:sticky!important;bottom:0!important;left:auto!important;right:auto!important;width:100%;transform:none!important;padding-bottom:env(safe-area-inset-bottom,0px)!important;background:#fff!important}body{padding-bottom:0!important}}</style>

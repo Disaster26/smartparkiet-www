@@ -942,14 +942,14 @@ figure{margin:0}
       <a href="wycena.html">Kalkulator online</a>
       <a href="ekspertyza.html">Ekspertyza online</a>
       <a href="oddzialy.html">Oddziały</a>
-      <a href="artykuly.html">Artykuły</a>
+      <a href="artykuly.html">Blog</a>
       <a href="kontakt.html">Kontakt</a>
     </nav>
     <button class="burger" type="button" aria-label="Menu" aria-expanded="false">☰</button>
     <a class="btn btn-amber tel" href="tel:+48602242815">602 242 815</a>
   </div>
 </header>
-<section id="top" class="ar-hero" style="background-image:url(img/festool-sysair.webp)"><div class="wrap"><span class="ar-tag">Technologia</span><h1>Cyklinowanie bezpyłowe: czy w mieszkaniu naprawdę nie zostaje pył?</h1><p class="ar-meta">Artykuły SMARTPARKIET &middot; czyta się około 3 minut</p></div></section>
+<section id="top" class="ar-hero" style="background-image:url(img/festool-sysair.webp)"><div class="wrap"><span class="ar-tag">Technologia</span><h1>Cyklinowanie bezpyłowe: czy w mieszkaniu naprawdę nie zostaje pył?</h1><p class="ar-meta">Blog SMARTPARKIET &middot; czyta się około 3 minut</p></div></section>
 <section class="art-body"><div class="wrap art">
 <p class="ar-lead">„Bezpyłowe” brzmi jak chwyt reklamowy, więc wyjaśniamy uczciwie, co to znaczy w praktyce, co dzieje się z pyłem i czego nie da się obiecać.</p>
 <div class="ar-skrot"><b>Najważniejsze w skrócie</b><ul><li>Skuteczność odpylania 95-97%</li><li>Odciąg klasy M przy każdej szlifierce, także krawędziowej</li><li>Oczyszczacze powietrza Festool SYS-AIR w pokoju</li><li>Nie trzeba foliować szaf w pozostałych pokojach</li></ul></div>
@@ -967,7 +967,7 @@ figure{margin:0}
 <p>Skuteczność odpylania przy takim zestawie wynosi 95-97%, zależnie od stanu i rodzaju podłogi. W praktyce oznacza to, że nie trzeba wynosić rzeczy ani foliować szaf w innych pokojach. Pomieszczenie, w którym szlifujemy, warto opróżnić, jak przy każdym remoncie podłogi.</p>
 
 <div class="ar-faq"><h2>Najczęstsze pytania</h2><h3>Czy cyklinowanie bezpyłowe jest bezpieczne dla alergików?</h3><p>Tak, przy filtracji klasy M w powietrzu zostaje bardzo mało drobnego pyłu. Po pracy przecieramy powierzchnie.</p><h3>Czy trzeba zabezpieczyć meble w innych pokojach?</h3><p>Nie. Wystarczy zamknąć drzwi, a w przejściach stawiamy zamki pyłowe.</p></div>
-<div class="pr-dalej"><h3>Czytaj dalej</h3><a href="czym-jest-cyklinowanie-smart.html">Czym jest cyklinowanie SMART i czym różni się od tradycyjnego?</a><a href="piec-filarow-metody-smart.html">Pięć filarów metody SMART: co kryje się za każdą literą</a><a href="cyklinowanie-smart-krok-po-kroku.html">Cyklinowanie SMART krok po kroku: od zdjęcia do odbioru podłogi</a><a href="ile-trwa-cyklinowanie-parkietu.html">Ile trwa cyklinowanie parkietu i kiedy można wrócić do mieszkania?</a><a href="programy-renowacji-smart.html">Programy renowacji SMART: który wybrać dla swojej podłogi?</a><a href="artykuly.html">Wszystkie artykuły &rarr;</a></div>
+<div class="pr-dalej"><h3>Czytaj dalej</h3><a href="czym-jest-cyklinowanie-smart.html">Czym jest cyklinowanie SMART i czym różni się od tradycyjnego?</a><a href="piec-filarow-metody-smart.html">Pięć filarów metody SMART: co kryje się za każdą literą</a><a href="cyklinowanie-smart-krok-po-kroku.html">Cyklinowanie SMART krok po kroku: od zdjęcia do odbioru podłogi</a><a href="ile-trwa-cyklinowanie-parkietu.html">Ile trwa cyklinowanie parkietu i kiedy można wrócić do mieszkania?</a><a href="programy-renowacji-smart.html">Programy renowacji SMART: który wybrać dla swojej podłogi?</a><a href="artykuly.html">Wszystkie wpisy na blogu &rarr;</a></div>
 </div></section>
 <section class="dark art-cta">
   <div class="wrap">
@@ -1850,6 +1850,5 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 @media(min-width:901px) and (max-width:1280px){.nav nav{font-size:.8rem!important;gap:12px!important}}
 @media(min-width:901px){.nav .brand{flex-shrink:0!important;width:auto!important;max-width:none!important;min-width:max-content!important;margin-right:24px!important}.nav .brand-t{white-space:nowrap}}
 @media(min-width:901px) and (max-width:1120px){.nav .brand-t{display:none!important}}</style>
-<style>/* cta-bar iOS 15.10: Artur - pasek "urywal sie i latal po ekranie" w Safari. Pasek dociagniety do dolnej krawedzi razem z obszarem paska Safari, na wlasnej warstwie */
-@media(max-width:900px){.cta-bar{bottom:0!important;padding-bottom:env(safe-area-inset-bottom,0px)!important;background:#fff!important;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);will-change:transform;-webkit-backface-visibility:hidden}
-body{padding-bottom:calc(var(--pasek,54px) + env(safe-area-inset-bottom,0px))}}</style>
+<style>/* cta-bar iOS 15.10 v2: position:fixed na iPhonie "odrywal sie i latal" przy chowaniu paska Safari. Pasek jest teraz ostatnim elementem strony z position:sticky - trzyma sie dolu ekranu, ale jest w ukladzie strony, wiec nie ma czego gubic */
+@media(max-width:900px){.cta-bar{position:-webkit-sticky!important;position:sticky!important;bottom:0!important;left:auto!important;right:auto!important;width:100%;transform:none!important;padding-bottom:env(safe-area-inset-bottom,0px)!important;background:#fff!important}body{padding-bottom:0!important}}</style>
