@@ -4,3 +4,4 @@ ai/_gemini_klucz.txt
 ai/.dev.vars
 ai/.wrangler/
 ai/node_modules/
+_src/
