@@ -142,8 +142,8 @@ def main():
         blok = (
             '    <div class="r-naglowek">\n'
             '      <h2>Najnowsze realizacje</h2>\n'
-            '      <p>Podłogi z ostatniego miesiąca, prosto spod naszych maszyn. '
-            'Zdjęcia bez obróbki, ten sam kadr przed i po.</p>\n'
+            '      <p><em>Renowacje podłóg z ostatniego miesiąca. Autentyczne zdjęcia bez retuszu - '
+            'identyczne kadry przed i po cyklinowaniu SMART™.</em></p>\n'
             '    </div>\n'
             '    <div class="r-lista" id="rLstNowe">\n'
             + '\n'.join(karta(w, i) for i, w in enumerate(swieze))
