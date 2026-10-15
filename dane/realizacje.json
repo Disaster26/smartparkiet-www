@@ -76,21 +76,6 @@
   ]
  },
  {
-  "id": "kuchnia-jodelka-dab",
-  "data": "2026-10-02",
-  "tytul": "Jodełka francuska w kuchni",
-  "lokalizacja": "Warszawa",
-  "metraz": "ok. 30 m²",
-  "czas": "2 dni",
-  "podloga": "Klepka dębowa, jodełka francuska",
-  "program": "Cyklinowanie SMART™",
-  "opis": "Ta sama kuchnia, ten sam kadr. Podłoga miała plamy i przetarcia w ciągach komunikacyjnych, w szczelinach zbierał się brud. Szlif bezpyłowy, uzupełnienie szczelin masą z pyłu tego samego drewna, trzy warstwy lakieru premium 2K. Zdjęcia bez obróbki, różnicę robi sam szlif i lakier.",
-  "zdj_przed": "img/floor-przed.webp",
-  "zdj_po": "img/floor-po.webp",
-  "alt_przed": "Jodełka dębowa w kuchni przed renowacją, z plamami i przetarciami",
-  "alt_po": "Ta sama jodełka dębowa po cyklinowaniu i lakierowaniu"
- },
- {
   "id": "wilanow-deska-warstwowa",
   "_uwaga": "Zdjecia z dysku Artura (folder \"Warstwowa bez koloru\", 08.10.2026). Kolejnosc wg jego wiadomosci: najpierw zestawienia przed i po, potem stara podloga, na koniec nowa.",
   "data": "2026-10-08",

@@ -959,7 +959,7 @@ figure{margin:0}
     <div class="sticky">
       <p class="oczko"><span></span>Kalkulator online</p>
       <h2>Kalkulator bezpłatnej wyceny</h2>
-      <p class="lead se-lead">Prosty formularz mobilny - wypełnienie zajmuje ok. 2 minuty.</p><p class="lead" style="margin-top:14px">Dodaj 4-6 zdjęć podłogi (przy naprawach do 12), uwzględniając miejsca uszkodzeń.</p><p class="lead" style="margin-top:14px"><b>System automatycznie obliczy orientacyjne widełki cenowe.</b> Specjalista oceni zdjęcia i przekaże indywidualną wycenę w ciągu 2 godzin roboczych.</p>
+      <p class="lead se-lead">Prosty formularz mobilny - wypełnienie zajmuje ok. 2 minuty.</p><p class="lead" style="margin-top:14px;font-style:italic">Dodaj 4-6 zdjęć podłogi (przy naprawach do 12), uwzględniając miejsca uszkodzeń.</p><p class="lead" style="margin-top:14px"><b>System automatycznie obliczy orientacyjne widełki cenowe.</b> Specjalista oceni zdjęcia i przekaże indywidualną wycenę w ciągu 2 godzin roboczych.</p>
     </div>
     <div class="ai">
       <label class="drop" id="drop" for="file"><span><b>Zdjęcia podłogi: od 4 do 12 / naprawy</b></span><span class="btn btn-ghost" style="pointer-events:none">Dodaj zdjęcia</span><input id="file" type="file" accept="image/*" multiple hidden></label>
@@ -2544,3 +2544,19 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 @media(min-width:901px) and (max-width:1120px){.nav .brand-t{display:none!important}}</style>
 <style>/* wstep krotszy 15.10 - na telefonie tekst zajmowal caly pierwszy ekran */
 @media(max-width:900px){#wycena{padding-top:22px!important}#wycena .sticky{position:static!important;margin-bottom:14px!important}#wycena .sticky .oczko{margin-bottom:4px!important;font-size:.7rem!important}#wycena .sticky h2{font-size:1.45rem!important;line-height:1.15!important;margin:0!important}#wycena .sticky .lead{font-size:.88rem!important;line-height:1.45!important;margin-top:6px!important;max-width:none!important}#wycena .sticky .se-lead{font-weight:600!important}}</style>
+<style>/* Artur 15.10 02:23-02:24 */
+/* podpis zdjecia: SMARTPARKIET na bialo, "Twoja podloga SMART" mniejsza */
+.ai-photo:has(img[src*="podloga-smart"])::before{color:#fff!important}
+.ai-photo:has(img[src*="podloga-smart"])::after{font-size:clamp(16px,4.3vw,22px)!important}
+/* pytania z wyborem i odpowiedzi ta sama wielkosc co pozostale etykiety */
+#wycena .ai-form .pyt>span,#wycena .ai-form .tn label{font-size:.72rem!important;font-weight:700!important;letter-spacing:.08em!important}
+</style>
+<style>/* Artur 15.10 02:25: stopka - wiekszy znak i proporcjonalnie wieksze litery */
+@media(max-width:900px){
+  footer.site .brand img{width:64px!important;height:64px!important}
+  footer.site .cols>div>.brand{font-size:1.3rem!important}
+  footer.site .cols>div>h4{font-size:1.1rem!important}
+  footer.site .cols>div a:not(.brand),footer.site .cols>div.c-kontakt a{font-size:.76rem!important;line-height:1.5!important}
+  footer.site .fine{font-size:.7rem!important}
+}
+</style>

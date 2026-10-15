@@ -2697,3 +2697,25 @@ u();window.addEventListener('load',u);window.addEventListener('resize',u);if(doc
   .hero .hero-op .hero-quote{font-size:.62rem!important;line-height:1.3!important}
   .hero .hero-op .hero-quote b{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
 }</style>
+<style>/* Artur 15.10 02:12-02:21 */
+/* plakietka SMARTPARKIET / WARSZAWA na srodku miedzy gornym paskiem a CYKLINOWANIE SMART */
+.hero .tag.tag-wawa{top:4px!important}
+@media(max-width:900px){
+  /* cztery paski tej samej grubosci: gorny pasek, dwa przyciski, dolny pasek */
+  .hero .cta-rowne .btn{height:var(--pasek,44px)!important}
+  /* drugi na blasze maszyny, pierwszy tuz nad nim (mniejszy odstep) */
+  .hero .cta-rowne .btn-ghost{top:calc(83.2% - 22px)!important}
+  .hero .cta-rowne .btn-amber{top:calc(83.2% - 22px - var(--pasek,44px) - 10px)!important;bottom:auto!important}
+  /* mocniej nasycone tlo pod trescia, takze w srodkowej czesci ekranu */
+  .hero::after{background:linear-gradient(180deg,rgba(14,10,7,.66) 0%,rgba(14,10,7,.6) 30%,rgba(14,10,7,.5) 46%,rgba(14,10,7,.26) 57%,rgba(14,10,7,.08) 66%,rgba(14,10,7,0) 74%,rgba(14,10,7,0) 84%,rgba(14,10,7,.6) 100%)!important}
+}
+</style>
+<style>/* Artur 15.10 02:25: stopka - wiekszy znak i proporcjonalnie wieksze litery */
+@media(max-width:900px){
+  footer.site .brand img{width:64px!important;height:64px!important}
+  footer.site .cols>div>.brand{font-size:1.3rem!important}
+  footer.site .cols>div>h4{font-size:1.1rem!important}
+  footer.site .cols>div a:not(.brand),footer.site .cols>div.c-kontakt a{font-size:.76rem!important;line-height:1.5!important}
+  footer.site .fine{font-size:.7rem!important}
+}
+</style>
