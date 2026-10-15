@@ -1621,15 +1621,21 @@ figure{margin:0}
        Ten sam skrypt wysyla klientowi potwierdzenie (autoodpowiedz FormSubmit nie dochodzi). */
     const DYSK_URL='';
     function naDysk(mail){
-      if(!DYSK_URL||!window.__karta||window.__karta.type!=='application/pdf')return;
+      if(!DYSK_URL)return;
       const pole=id=>((document.getElementById(id)||{}).value||'').trim();
-      const r=new FileReader();
-      r.onload=()=>{
-        const opis=[(+m2.value||0)+' m2',pole('ulicaKl'),pole('dzielKl'),pole('imieKl'),pole('telKl')].filter(Boolean).join(' ');
-        fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({opis:opis,pdf:String(r.result).split(',')[1]||'',mailKlienta:mail||''})}).catch(()=>{});
-      };
-      r.readAsDataURL(window.__karta);
+      const opis=[(+m2.value||0)+' m2',pole('ulicaKl'),pole('dzielKl'),pole('imieKl'),pole('telKl')].filter(Boolean).join(' ');
+      /* Artur 15.10 11:48: kazda wycena ma trafic takze jako osobny arkusz Google (plus wiersz w rejestrze wycen) */
+      let ark=null;
+      try{const A=arkusz();ark={imie:pole('imieKl'),tel:pole('telKl'),mail:mail||pole('mailKl'),adres:A.adres,ulica:A.ulica,
+        obiekt:A.obiekt,rodzaj:A.rodzaj,technika:A.technika,termin:pole('terminKl'),m2:A.a,uwagi:pole('uwagiKl'),
+        poz:A.poz.map(p=>[p[0],p[1],p[2]]),suma:A.suma};}catch(e){}
+      const wyslij=pdf=>fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark})}).catch(()=>{});
+      if(window.__karta&&window.__karta.type==='application/pdf'){
+        const r=new FileReader();
+        r.onload=()=>wyslij(String(r.result).split(',')[1]||'');
+        r.readAsDataURL(window.__karta);
+      }else wyslij('');
     }
     /* Artur 10.10 22:32: zdjecie ma dojsc jako ZALACZNIK do maila.
        Koncowka /ajax w FormSubmit przyjmuje tylko tekst, pliki idą wyłącznie
