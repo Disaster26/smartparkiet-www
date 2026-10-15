@@ -1458,15 +1458,26 @@ figure{margin:0}
         yk+=hw+2;}
       const yr=yk+50;
       naglowek(g,'RENOWACJA PARKIETU',M,yr);
-      const k3=(W-2*M)/3, tab=[['Gatunek / rodzaj parkietu',[A.rodzaj]],['Technologia',['#CyklinowanieSmart',A.technika]],
-        ['Zakres prac',['Cyklinowanie bezpyłowe',A.montaz?('Podłoga '+A.montaz):'',A.listwy?('Listwy '+A.zn('listwy')+(A.mb?' · '+A.mb+' mb':'')):'Listwy bez wymiany',
+      /* Artur 15.10 16:58: technologia pod gatunkiem w 1. kolumnie, zakres prac w dwoch kolumnach obok siebie
+         (pozycje ida na przemian w bok, a nie w dol), zeby lista nie wypychala tresci na nastepna strone */
+      const k3=(W-2*M)/3,
+        kol1=[['Gatunek / rodzaj parkietu',[A.rodzaj].filter(Boolean)],['Technologia',['#CyklinowanieSmart',A.technika].filter(Boolean)]],
+        zak=['Cyklinowanie bezpyłowe',A.montaz?('Podłoga '+A.montaz):'',A.listwy?('Listwy '+A.zn('listwy')+(A.mb?' · '+A.mb+' mb':'')):'Listwy bez wymiany',
           A.zn('stab')==='tak'?'Stabilizacja klepek':'',A.zn('napr')==='tak'?'Naprawy ubytków':'',A.kolor?'Koloryzacja':'',
           /* Artur 15.10 16:37: kazda wpisana praca dodatkowa sama dopisuje sie do zakresu prac */
-          ...[].slice.call(document.querySelectorAll('#dodLista .dod-o')).map(v=>(v.value||'').trim())].filter(Boolean)]];
+          ...[].slice.call(document.querySelectorAll('#dodLista .dod-o')).map(v=>(v.value||'').trim())].filter(Boolean);
+      const fl='italic 22px Arial';
+      const pole=(t,x,yy,hc)=>{const ll=linie(g,t,k3-36,fl,2);g.fillStyle='#fff';g.fillRect(x+4,yy,k3-8,hc);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(x+5,yy+1,k3-10,hc-2);
+          g.fillStyle=CIEMNY;g.font=fl;ll.forEach((l,q)=>g.fillText(l,x+16,yy+32+q*28));};
+      const wys=t=>22+linie(g,t,k3-36,fl,2).length*28;
       let yMax=0;
-      tab.forEach(([h,w],i)=>{const x=M+i*k3;g.fillStyle=SZARY;wpisz(g,h,x+12,yr+60,k3-24,24,'bold');let yy=yr+80;
-        w.forEach((t,j)=>{const fl='italic 22px Arial',ll=linie(g,t,k3-36,fl,2),hc=22+ll.length*28;g.fillStyle='#fff';g.fillRect(x+4,yy,k3-8,hc);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(x+5,yy+1,k3-10,hc-2);
-          g.fillStyle=CIEMNY;g.font=fl;ll.forEach((l,q)=>g.fillText(l,x+16,yy+32+q*28));yy+=hc+4;});yMax=Math.max(yMax,yy);});
+      /* kolumna 1: gatunek, pod nim technologia */
+      {let yy=yr+60;kol1.forEach(([hd,w],n)=>{if(n)yy+=40;g.fillStyle=SZARY;wpisz(g,hd,M+12,yy,k3-24,24,'bold');yy+=20;
+        w.forEach(t=>{const hc=wys(t);pole(t,M,yy,hc);yy+=hc+4;});});yMax=Math.max(yMax,yy);}
+      /* kolumny 2 i 3: zakres prac na przemian, wiersze rowne */
+      {const x2=M+k3,x3=M+2*k3;g.fillStyle=SZARY;wpisz(g,'Zakres prac',x2+12,yr+60,k3-24,24,'bold');g.fillStyle=SZARY;wpisz(g,'Zakres prac',x3+12,yr+60,k3-24,24,'bold');
+        let yy=yr+80;for(let j=0;j<zak.length;j+=2){const a=zak[j],b=zak[j+1],hc=Math.max(wys(a),b?wys(b):0);pole(a,x2,yy,hc);if(b)pole(b,x3,yy,hc);yy+=hc+4;}
+        yMax=Math.max(yMax,yy);}
       let y=yMax+36;
       g.fillStyle=SZARY;g.font='bold 24px Arial';g.fillText('Informacje dodatkowe',M,y);y+=36;
       g.fillStyle=CIEMNY;g.font='22px Arial';
