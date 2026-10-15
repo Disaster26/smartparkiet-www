@@ -1460,7 +1460,9 @@ figure{margin:0}
       naglowek(g,'RENOWACJA PARKIETU',M,yr);
       const k3=(W-2*M)/3, tab=[['Gatunek / rodzaj parkietu',[A.rodzaj]],['Technologia',['#CyklinowanieSmart',A.technika]],
         ['Zakres prac',['Cyklinowanie bezpyłowe',A.montaz?('Podłoga '+A.montaz):'',A.listwy?('Listwy '+A.zn('listwy')+(A.mb?' · '+A.mb+' mb':'')):'Listwy bez wymiany',
-          A.zn('stab')==='tak'?'Stabilizacja klepek':'',A.zn('napr')==='tak'?'Naprawy ubytków':'',A.kolor?'Koloryzacja':''].filter(Boolean)]];
+          A.zn('stab')==='tak'?'Stabilizacja klepek':'',A.zn('napr')==='tak'?'Naprawy ubytków':'',A.kolor?'Koloryzacja':'',
+          /* Artur 15.10 16:37: kazda wpisana praca dodatkowa sama dopisuje sie do zakresu prac */
+          ...[].slice.call(document.querySelectorAll('#dodLista .dod-o')).map(v=>(v.value||'').trim())].filter(Boolean)]];
       let yMax=0;
       tab.forEach(([h,w],i)=>{const x=M+i*k3;g.fillStyle=SZARY;wpisz(g,h,x+12,yr+60,k3-24,24,'bold');let yy=yr+80;
         w.forEach((t,j)=>{const fl='italic 22px Arial',ll=linie(g,t,k3-36,fl,2),hc=22+ll.length*28;g.fillStyle='#fff';g.fillRect(x+4,yy,k3-8,hc);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(x+5,yy+1,k3-10,hc-2);
@@ -2566,4 +2568,8 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
   footer.site .cols>div a:not(.brand),footer.site .cols>div.c-kontakt a{font-size:.76rem!important;line-height:1.5!important}
   footer.site .fine{font-size:.7rem!important}
 }
+</style><style>/* Artur 15.10 16:35: pole Uwagi / prace dodatkowe na delikatnie pomaranczowym tle */
+#uwagiKl{background:#FFF4EA!important;border-color:#F3C9A8!important}
+#uwagiKl:focus{background:#FFEFE2!important}
 </style>
+
