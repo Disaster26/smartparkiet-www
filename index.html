@@ -1002,7 +1002,7 @@ figure{margin:0}
     <a class="btn btn-amber tel" href="tel:+48602242815">602 242 815</a>
   </div>
 </header><section class="hero" id="top">
-  <img class="hero-img" src="img/hero-grafit.webp" alt="Technik SMARTPARKIET z szlifierką Lägler Hummel i workiem na pył">
+  <img class="hero-img" src="img/hero-grafit.webp?v=2" alt="Technik SMARTPARKIET z szlifierką Lägler Hummel i workiem na pył">
   
   
   <div class="hero-cap">Lägler Hummel &middot; ZERO DUST</div>
@@ -1013,8 +1013,8 @@ figure{margin:0}
     <p class="hero-ocena"><span class="gw" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b>5,0</b> w Google <span class="sep">&middot;</span> 221 opinii z 4 wizytówek</p>
     <div class="lead hero-lead">
       <p>Nowoczesna metoda renowacji podłóg drewnianych.</p>
-      <p>Precyzyjne szlifowanie, profesjonalne odpylanie Festool i lakiery premium Berger-Seidle.</p>
-      <p class="moc">Typowe mieszkanie odnawiamy w 2 dni.</p>
+      <p>Precyzyjne szlifowanie, odpylanie Festool i lakiery premium Berger-Seidle.</p>
+      <p class="moc">Typowe mieszkanie w dwa dni.</p>
     </div>
     <div class="cta cta-rowne">
       <a class="btn btn-amber" href="wycena.html#wycena"><svg class="bi" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="bt">Bezpłatna wycena ze zdjęć</span><span class="bs" aria-hidden="true">→</span></a>
@@ -2717,5 +2717,17 @@ u();window.addEventListener('load',u);window.addEventListener('resize',u);if(doc
   footer.site .cols>div>h4{font-size:1.1rem!important}
   footer.site .cols>div a:not(.brand),footer.site .cols>div.c-kontakt a{font-size:.76rem!important;line-height:1.5!important}
   footer.site .fine{font-size:.7rem!important}
+}
+</style>
+<style>/* Artur 15.10 12:37-12:43 */
+@media(max-width:900px){
+  /* gora zdjecia minimalnie jasniejsza, zeby logo na koszulce bylo widac */
+  .hero::after{background:linear-gradient(180deg,rgba(14,10,7,.5) 0%,rgba(14,10,7,.5) 30%,rgba(14,10,7,.44) 46%,rgba(14,10,7,.22) 57%,rgba(14,10,7,.06) 66%,rgba(14,10,7,0) 74%,rgba(14,10,7,0) 84%,rgba(14,10,7,.55) 100%)!important}
+  /* trzy ramki tej samej szerokosci (jak pasek z opiniami) i w rownych odstepach, pasek opinii wyzej */
+  .hero-op{left:24px!important;right:24px!important;top:auto!important;bottom:10px!important;height:66px!important;
+    box-sizing:border-box!important;overflow:hidden!important;background:rgba(72,71,76,.88)!important}
+  .hero .cta-rowne .btn{left:24px!important;right:24px!important;width:auto!important}
+  .hero .cta-rowne .btn-ghost{top:auto!important;bottom:calc(10px + 66px + 8px)!important}
+  .hero .cta-rowne .btn-amber{top:auto!important;bottom:calc(10px + 66px + 8px + var(--pasek,44px) + 8px)!important}
 }
 </style>
