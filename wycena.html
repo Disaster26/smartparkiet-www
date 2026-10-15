@@ -1013,12 +1013,19 @@ figure{margin:0}
   }
   plus.onclick=function(){wiersz().querySelector('.dod-o').focus();};
   wiersz();
+  /* Artur 15.10 17:00: stala rubryka - przy pytaniu o meble okienko na kwote za pomoc z meblami */
+  (function(){var r=document.querySelector('input[name=meble]'),py=r&&r.closest('.pyt');if(!py||document.getElementById('mebleKw'))return;
+    var d=document.createElement('div');d.innerHTML='<label for="mebleKw">Pomoc z meblami: kwota zł <small style="font-weight:400;color:var(--muted,#6B5E52)">(wpisuje parkieciarz)</small></label><input id="mebleKw" type="number" inputmode="decimal" min="0" step="any" placeholder="np. 200">';
+    py.parentNode.insertBefore(d,py.nextSibling);})();
+  /* Artur 15.10 17:01-17:03: przegladarka podstawiala jego wlasny kod pocztowy i dane klientowi - w trybie parkieciarza bez autouzupelniania */
+  [].slice.call(document.querySelectorAll('#ulicaKl,#kodKl,#miastoKl,#imieKl,#telKl,#mailKl,#terminKl')).forEach(function(i){i.setAttribute('autocomplete','off');i.setAttribute('autocorrect','off');i.setAttribute('name','sp-'+i.id+'-'+Math.random().toString(36).slice(2,7));});
   window.spDodatkowe=function(){
     return [].slice.call(li.querySelectorAll('.dod-w')).map(function(w){
       var o=w.querySelector('.dod-o').value.trim(),i=parseFloat((w.querySelector('.dod-i').value||'').replace(',','.')),
           j=w.querySelector('.dod-j').value.trim()||'szt.',c=parseFloat((w.querySelector('.dod-c').value||'').replace(',','.'));
       return {o:o,i:isFinite(i)&&i>0?i:1,j:j,c:isFinite(c)&&c>0?c:0};
-    }).filter(function(x){return x.o&&x.c;});
+    }).filter(function(x){return x.o&&x.c;}).concat((function(){var m=parseFloat(((document.getElementById('mebleKw')||{}).value||'').replace(',','.'));
+      return isFinite(m)&&m>0?[{o:'Pomoc z meblami',i:1,j:'usł.',c:m}]:[];})());
   };
 })();
 </script>
@@ -1332,7 +1339,7 @@ figure{margin:0}
     oT.textContent=a+' m² · '+typ.options[typ.selectedIndex].text.toLowerCase()+' · '+wt.toLowerCase()+(czesci.length?' · w tym: '+czesci.join(', '):'')+' · ok. '+days+' · netto, orientacyjnie';
   }
   [m2,typ,wyk].forEach(e=>e.addEventListener('input',est));
-  document.addEventListener('input',e=>{if(e.target&&(/^(listwyMb|stabM2)$/.test(e.target.id)||(e.target.closest&&e.target.closest('#dodLista'))))est();});
+  document.addEventListener('input',e=>{if(e.target&&(/^(listwyMb|stabM2|mebleKw)$/.test(e.target.id)||(e.target.closest&&e.target.closest('#dodLista'))))est();});
   document.addEventListener('change',e=>{if(e.target&&/^(listwy|stab|napr)$/.test(e.target.name))est();});
   est();
 
@@ -1465,7 +1472,7 @@ figure{margin:0}
         zak=['Cyklinowanie bezpyłowe',A.montaz?('Podłoga '+A.montaz):'',A.listwy?('Listwy '+A.zn('listwy')+(A.mb?' · '+A.mb+' mb':'')):'Listwy bez wymiany',
           A.zn('stab')==='tak'?'Stabilizacja klepek':'',A.zn('napr')==='tak'?'Naprawy ubytków':'',A.kolor?'Koloryzacja':'',
           /* Artur 15.10 16:37: kazda wpisana praca dodatkowa sama dopisuje sie do zakresu prac */
-          ...[].slice.call(document.querySelectorAll('#dodLista .dod-o')).map(v=>(v.value||'').trim())].filter(Boolean);
+          ...(window.spDodatkowe?window.spDodatkowe():[]).map(x=>x.o)].filter(Boolean);
       const fl='italic 22px Arial';
       const pole=(t,x,yy,hc)=>{const ll=linie(g,t,k3-36,fl,2);g.fillStyle='#fff';g.fillRect(x+4,yy,k3-8,hc);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(x+5,yy+1,k3-10,hc-2);
           g.fillStyle=CIEMNY;g.font=fl;ll.forEach((l,q)=>g.fillText(l,x+16,yy+32+q*28));};
