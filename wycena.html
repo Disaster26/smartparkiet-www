@@ -1740,7 +1740,7 @@ figure{margin:0}
       /* Artur 15.10 16:06-16:07: obowiazkowy tylko adres realizacji; telefon i e-mail nie blokuja wysylki
          (Artur liczy wyceny sam, klienci i tak podadza kontakt, zeby dostac wycene) */
       if(pole('ulicaKl').length<3) brak.push('adres realizacji');
-      if(brak.length){bl.textContent='Proszę podać '+brak.join(', ').replace(/, ([^,]*)$/,' i $1')+' (pola oznaczone *), żebyśmy mogli przesłać wycenę.';bl.hidden=false;bl.scrollIntoView({block:'center'});const t=document.getElementById({'numer telefonu':'telKl','adres e-mail':'mailKl','adres realizacji':'ulicaKl'}[brak[0]]);t&&t.focus();return;}
+      if(brak.length){bl.textContent='Proszę podać '+brak.join(', ').replace(/, ([^,]*)$/,' i $1')+' (pole oznaczone *), żebyśmy mogli przesłać wycenę.';bl.hidden=false;bl.scrollIntoView({block:'center'});const t=document.getElementById({'numer telefonu':'telKl','adres e-mail':'mailKl','adres realizacji':'ulicaKl'}[brak[0]]);t&&t.focus();return;}
       bl.hidden=true;
       bWys.disabled=true;
       try{window.__gotowe=await Promise.all(pl.map(zmniejsz));}catch(e){window.__gotowe=pl;}
