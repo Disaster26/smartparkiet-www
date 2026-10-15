@@ -1046,7 +1046,7 @@ figure{margin:0}
       <li>
         <button type="button" class="akr-gl" aria-expanded="false">
           <span class="akr-lit">S</span>
-          <span class="akr-naz">System pracy</span>
+          <span class="akr-naz"><b class="akr-pw">SYSTEM</b> pracy</span>
           <span class="akr-zn" aria-hidden="true">+</span>
         </button>
         <div class="akr-tr"><p>Jednolite standardy, sprawdzone procedury, ta sama kolejność działań na każdej realizacji. Jakość i efekt końcowy nie zależą od tego, która ekipa realizuje zlecenie.</p></div>
@@ -1054,7 +1054,7 @@ figure{margin:0}
       <li>
         <button type="button" class="akr-gl" aria-expanded="false">
           <span class="akr-lit">M</span>
-          <span class="akr-naz">Metoda bezpyłowa SMART&trade;</span>
+          <span class="akr-naz"><b class="akr-pw">METODA</b> bezpyłowa SMART&trade;</span>
           <span class="akr-zn" aria-hidden="true">+</span>
         </button>
         <div class="akr-tr"><p>Diagnoza podłogi online - profesjonalne doradztwo - dobór technologii - precyzyjny szlif - dodatkowe odpylanie FESTOOL - lakiery premium - szybki czas schnięcia - wieloletnia trwałość - pisemna gwarancja.</p></div>
@@ -1062,7 +1062,7 @@ figure{margin:0}
       <li>
         <button type="button" class="akr-gl" aria-expanded="false">
           <span class="akr-lit">A</span>
-          <span class="akr-naz">Asysta klienta</span>
+          <span class="akr-naz"><b class="akr-pw">ASYSTA</b> klienta</span>
           <span class="akr-zn" aria-hidden="true">+</span>
         </button>
         <div class="akr-tr"><p>Indywidualne doradztwo - pomoc w przygotowaniu pomieszczeń i relokacji mebli - sprawna organizacja prac - bieżący kontakt na każdym etapie realizacji. Mniej stresu, więcej wygody.</p></div>
@@ -1070,7 +1070,7 @@ figure{margin:0}
       <li>
         <button type="button" class="akr-gl" aria-expanded="false">
           <span class="akr-lit">R</span>
-          <span class="akr-naz">Rezultat premium</span>
+          <span class="akr-naz"><b class="akr-pw">REZULTAT</b> premium</span>
           <span class="akr-zn" aria-hidden="true">+</span>
         </button>
         <div class="akr-tr"><p>Doskonały efekt wizualny - profesjonalne wykończenie - wysoka odporność na zużycie - szybki powrót do użytkowania podłogi - lakiery premium Berger-Seidle w standardzie. Piękna podłoga, wieloletnia trwałość i jakość PREMIUM.</p></div>
@@ -1078,7 +1078,7 @@ figure{margin:0}
       <li>
         <button type="button" class="akr-gl" aria-expanded="false">
           <span class="akr-lit">T</span>
-          <span class="akr-naz">Transparentność procesu</span>
+          <span class="akr-naz"><b class="akr-pw">TRANSPARENTNOŚĆ</b> procesu</span>
           <span class="akr-zn" aria-hidden="true">+</span>
         </button>
         <div class="akr-tr"><p>Zakres prac i ceny ustalone przed rozpoczęciem realizacji - żadnych ukrytych kosztów ani niespodziewanych dopłat - jasne zasady współpracy - jakość potwierdzona opiniami klientów. Przejrzyste warunki, przewidywalny efekt i pełne zaufanie.</p></div>
@@ -2730,4 +2730,14 @@ u();window.addEventListener('load',u);window.addEventListener('resize',u);if(doc
   .hero .cta-rowne .btn-ghost{top:auto!important;bottom:calc(10px + 66px + 8px)!important}
   .hero .cta-rowne .btn-amber{top:auto!important;bottom:calc(10px + 66px + 8px + var(--pasek,44px) + 8px)!important}
 }
+</style><style>/* Artur 15.10 15:58-15:59 */
+.akr-lit{font-family:Inter,"Helvetica Neue",Arial,sans-serif!important;font-weight:900!important;-webkit-text-stroke:.6px currentColor}
+.akr-naz .akr-pw{font-family:Inter,"Helvetica Neue",Arial,sans-serif;font-weight:800;letter-spacing:.02em}
+@media(max-width:900px){
+  /* pasek opinii troche nizszy */
+  .hero-op{height:58px!important;padding-top:4px!important;padding-bottom:4px!important}
+  .hero .cta-rowne .btn-ghost{bottom:calc(10px + 58px + 8px)!important}
+  .hero .cta-rowne .btn-amber{bottom:calc(10px + 58px + 8px + var(--pasek,44px) + 8px)!important}
+}
 </style>
+
