@@ -2795,9 +2795,13 @@ u();window.addEventListener('load',u);window.addEventListener('resize',u);if(doc
 </style>
 <style>/* Artur 16.10 12:48: dwa przyciski w hero jasnografitowe jak sciany na zdjeciu */
 @media(max-width:900px){
-  .hero .cta-rowne .btn{background:rgba(118,117,123,.92)!important;color:#fff!important;border:0!important}
-  .hero .cta-rowne .btn .bi{color:#fff!important;stroke:#fff!important}
-  .hero .cta-rowne .btn .bt-pod{color:rgba(255,255,255,.85)!important;opacity:1!important}
+  html body .hero .cta-rowne a.btn, html body .hero .cta-rowne a.btn:hover, html body .hero .cta-rowne a.btn:focus,
+  html body .hero .cta-rowne a.btn.btn-amber, html body .hero .cta-rowne a.btn.btn-amber:hover, html body .hero .cta-rowne a.btn.btn-amber:focus,
+  html body .hero .cta-rowne a.btn.btn-ghost, html body .hero .cta-rowne a.btn.btn-ghost:hover, html body .hero .cta-rowne a.btn.btn-ghost:focus
+    {background:rgba(118,117,123,.92)!important;color:#fff!important;border:0!important}
+  html body .hero .cta-rowne a.btn .bt, html body .hero .cta-rowne a.btn .bs{color:#fff!important}
+  html body .hero .cta-rowne a.btn .bi{color:#fff!important;stroke:#fff!important}
+  html body .hero .cta-rowne a.btn .bt-pod{color:rgba(255,255,255,.85)!important;opacity:1!important}
 }
 .wstep-haslo{margin-top:10px!important}
 </style>
