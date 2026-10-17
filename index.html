@@ -1161,10 +1161,11 @@ figure{margin:0}
 <section style="background:var(--bg2)">
   <div class="wrap">
     <h2>Od zdjęcia z telefonu do odbioru odnowionej podłogi</h2>
+    <p class="kroki-pod">Krok po kroku…</p>
     <div class="steps">
-      <div class="step"><h3>Zdjęcia i metraż</h3><p>Prześlij 3-5 zdjęć podłogi i orientacyjny metraż przez formularz lub WhatsApp.</p><small>5 minut - po Państwa stronie</small></div>
-      <div class="step"><h3>Wycena i termin</h3><p>W ciągu 2 godzin roboczych przygotujemy wstępną wycenę, dobierzemy technologię i zaproponujemy dostępne terminy.</p><small>Do 2 godzin - po naszej stronie</small></div>
-      <div class="step"><h3>Realizacja SMART&trade;</h3><p>Lokalna ekipa, precyzyjne szlifowanie, naprawy i wykończenie premium. Dokumentacja zdjęciowa etapów prac.</p><small>1-3 dni - zależnie od metrażu i zakresu</small></div>
+      <div class="step"><h3>Zdjęcia i metraż</h3><p>Prześlij 3-5 zdjęć podłogi i orientacyjny metraż przez formularz na stronie lub WhatsApp.</p><small>5 minut - po Państwa stronie</small></div>
+      <div class="step"><h3>Wycena i termin</h3><p>W ciągu 2 godzin roboczych przygotujemy wstępną wycenę, dobierzemy technologię i zaproponujemy dostępne terminy. Ewentualnie zaproponujemy wizję lokalną na miejscu.</p><small>Do 2 godzin - po naszej stronie</small></div>
+      <div class="step"><h3>Realizacja SMART&trade;</h3><p>Lokalna ekipa, precyzyjne szlifowanie, naprawy i wykończenie premium. Na życzenie dokumentacja zdjęciowa etapów prac.</p><small>1-3 dni - zależnie od metrażu i zakresu</small></div>
       <div class="step"><h3>Odbiór i gwarancja</h3><p>Wspólny odbiór, protokół, instrukcja pielęgnacji i pisemna gwarancja. Bezpłatny przegląd po roku.</p><small>30 minut - wspólnie</small></div>
     </div>
   </div>
@@ -1191,7 +1192,7 @@ figure{margin:0}
 
 <section class="pr-strip">
   <div class="wrap">
-    <h2>Warto wiedzieć przed cyklinowaniem</h2>
+    <h2>Co warto wiedzieć przed cyklinowaniem</h2>
     <p class="lead" style="margin-top:14px">Cztery pytania, które wracają w telefonach
     najczęściej. Odpowiedzi z liczbami, cenami i informacją, kiedy czegoś nie warto robić.</p>
     <div class="pr-lista" style="margin-top:30px">
@@ -2884,6 +2885,30 @@ document.querySelectorAll('#opinie .rv').forEach(function(a){
   html body header nav{gap:2px 9px!important}
   html body header nav a{font-size:.74rem!important}
   html body header .brand-t{font-size:1rem!important}
+}
+</style>
+<style>/* Artur 18.10 00:07-00:12 */
+/* wszystkie numerki krokow na pomaranczowo */
+html body .steps .step:nth-child(n){--kk:#FE6500!important}
+.kroki-pod{margin:8px 0 0;font-style:italic;color:var(--grafit2,#555);font-size:.98rem}
+@media(max-width:900px){
+  /* tekst pod "Nasze oddzialy" troche mniejszy */
+  html body p.lead[style*="italic"]{font-size:.9rem!important;line-height:1.5!important}
+  /* opinie bardziej sciśniete */
+  html body #opinie{padding-top:34px!important;padding-bottom:30px!important}
+  html body #opinie .rv-ocena h2{font-size:1.3rem!important}
+  html body #opinie .rv-gw{font-size:1.75rem!important;margin:4px 0 2px!important}
+  html body #opinie .rv-ile{font-size:.92rem!important}
+  html body #opinie .rv-google{font-size:1.6rem!important;margin-top:6px!important}
+  html body #opinie .rv-strip{margin-top:16px!important}
+  html body #opinie .rv{padding:15px 15px 13px!important;grid-template-columns:38px 1fr!important;border-radius:14px!important}
+  html body #opinie .rv .rv-av{width:38px;height:38px;font-size:1rem}
+  html body #opinie .rv::before{top:14px;right:14px;width:20px;height:20px}
+  html body #opinie .rv .who b{font-size:.94rem}
+  html body #opinie .rv .who span{font-size:.74rem}
+  html body #opinie .rv .stars{font-size:1rem;margin-top:4px}
+  html body #opinie .rv p{font-size:.92rem;line-height:1.5}
+  html body #opinie .rv .rv-wiecej{font-size:.85rem;padding-top:4px}
 }
 </style>
 
