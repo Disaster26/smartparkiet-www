@@ -1862,7 +1862,12 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 html body .ar-karta .im.im-puzzle{background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important;background-color:#fff!important}
 </style>
 <style>/* 18.10: dolny pasek nad paskiem gestow Androida/iPhone - caly widoczny od razu po wejsciu */
-html body .cta-bar{padding-bottom:max(env(safe-area-inset-bottom),6px)!important;background:#fff!important}
+html body .cta-bar{padding-bottom:max(env(safe-area-inset-bottom),10px)!important;background:#fff!important;transition:bottom .15s ease-out}
 @media(max-width:900px){html body footer{padding-bottom:calc(var(--pasek,44px) + max(env(safe-area-inset-bottom),6px) + 8px)}}
 </style>
+<script>/* 18.10: pasek dolny przyklejony do faktycznie widocznej czesci ekranu (Chrome Android liczy dol z ukrytym paskiem adresu) */
+(function(){var b=document.querySelector('.cta-bar'),v=window.visualViewport;if(!b||!v)return;
+function f(){var o=window.innerHeight-v.height-v.offsetTop;b.style.bottom=(o>0&&o<200?o:0)+'px';}
+v.addEventListener('resize',f);v.addEventListener('scroll',f);window.addEventListener('resize',f);f();setTimeout(f,400);})();
+</script>
 
