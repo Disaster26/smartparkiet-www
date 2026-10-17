@@ -941,7 +941,9 @@ figure{margin:0}
   <div class="wrap">
     <a class="brand" href="index.html"><img src="img/logo-znak.png" alt="SMARTPARKIET"><span class="brand-t">SMARTPARKIET</span></a>
     <nav>
-      <a href="metoda.html">Metoda</a>
+      <a href="index.html">Home</a>
+      <a href="o-nas.html">O nas</a>
+      <a href="metoda.html">O naszej metodzie</a>
       <a href="cennik.html">Cennik</a>
       <a href="programy.html">Programy</a>
       <a href="realizacje.html">Realizacje</a>
@@ -1433,7 +1435,7 @@ figure{margin:0}
     /* PDF w ukladzie arkusza Artura (A4, 1240x1754 px na strone) */
     async function ofertaPdf(zdj){
       if(!window.jspdf||!window.jspdf.jsPDF)return null;
-      const A=arkusz(), W=1240, H=1754, M=90, POM='#FE6500', PASEK='#FFFFFF', NAGL='#16191D', CIEMNY='#1F2328', SZARY='#4A5058', TLO='#FFFFFF', RAMKA='#F3B48F';
+      const A=arkusz(), W=1240, H=1754, M=90, POM='#FE6500', PASEK='#FFFFFF', NAGL='#16191D', CIEMNY='#1F2328', SZARY='#4A5058', TLO='#FFFFFF', RAMKA='#FE6500'; /* Artur 17.10 21:59: paski zywym pomaranczem jak na stronie (bylo #F3B48F) */
       const nr=new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(Math.random()*9000)+1000);
       const strony=[];
       const ZYWY='#FE6500';
