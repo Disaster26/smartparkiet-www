@@ -952,7 +952,7 @@ figure{margin:0}
     <a class="btn btn-amber tel" href="tel:+48602242815">602 242 815</a>
   </div>
 </header>
-<section id="top" class="ar-hero" style="background-image:url(img/szlif-w-trakcie.webp)"><div class="wrap"><span class="ar-tag">Metoda</span><h1>Pięć filarów metody SMART: co kryje się za każdą literą</h1><p class="ar-meta">Blog SMARTPARKIET &middot; czyta się około 4 minut</p></div></section>
+<section id="top" class="ar-hero ar-puzzle"><div class="wrap"><img class="hero-puzzle" src="img/puzzle-smart.webp" alt="Puzzle SMART PARKIET - pięć filarów metody Cyklinowanie SMART" width="1206" height="1213"><span class="ar-tag">Metoda</span><h1>Pięć filarów metody SMART: co kryje się za każdą literą</h1><p class="ar-meta">Blog SMARTPARKIET &middot; czyta się około 4 minut</p></div></section>
 <section class="art-body"><div class="wrap art">
 <p class="ar-lead">SMART to nie tylko nazwa. Każda litera to zasada, którą da się sprawdzić na realizacji: od tego, jak szlifujemy, po to, jak podajemy cenę.</p>
 <div class="ar-skrot"><b>Najważniejsze w skrócie</b><ul><li>S - system pracy: ta sama procedura w każdej z czterech ekip</li><li>M - metoda bezpyłowa z dodatkowym odpylaniem Festool</li><li>A - asysta klienta: meble, przygotowanie, kontakt</li><li>R i T - efekt premium i cena bez niespodzianek</li></ul></div>
@@ -1885,4 +1885,9 @@ html body .cta-bar{padding-bottom:max(env(safe-area-inset-bottom),4px)!important
 function f(){var o=window.innerHeight-v.height-v.offsetTop;b.style.bottom=(o>0&&o<200?o:0)+'px';}
 v.addEventListener('resize',f);v.addEventListener('scroll',f);window.addEventListener('resize',f);f();setTimeout(f,400);})();
 </script>
+<style>/* Artur 18.10 01:30: puzzle SMART w naglowku artykulu o pieciu filarach */
+html body .ar-hero.ar-puzzle{background:#1F1B18!important}
+html body .ar-hero.ar-puzzle::before,html body .ar-hero.ar-puzzle::after{display:none!important}
+.ar-puzzle .hero-puzzle{display:block;width:min(240px,62vw);height:auto;border-radius:10px;margin:0 0 18px;box-shadow:0 8px 28px rgba(0,0,0,.35)}
+</style>
 
