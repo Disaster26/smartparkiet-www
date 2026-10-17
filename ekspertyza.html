@@ -2626,7 +2626,8 @@ v.addEventListener('resize',f);v.addEventListener('scroll',f);window.addEventLis
 html body footer.site .cols>div{min-width:0!important}
 @media(max-width:620px){
   html body footer.site .cols{grid-template-columns:minmax(0,1fr)!important}
-  html body footer.site .cols>div{grid-column:1/-1!important}
+  html body footer.site .cols>div{grid-column:1/-1!important;grid-row:auto!important;order:0}
+  html body footer.site .cols>.c-marka{order:-2}html body footer.site .cols>.c-oddzialy{order:-1}html body footer.site .cols>.c-kontakt{order:0}html body footer.site .cols>.c-wiecej{order:1}
   html body footer.site .cols a{white-space:normal!important}
 }
 </style>
