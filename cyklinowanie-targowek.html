@@ -982,17 +982,17 @@ figure{margin:0}
     </div>
 
     <h2 style="margin-top:30px">Realizacje</h2>
-    <p class="lead">Zdjęcia przed i po, z metrażem i czasem wykonania, zbieramy w jednym
+    <p class="lead odz-realizacje-lead">Zdjęcia przed i po, z metrażem i czasem wykonania, zbieramy w jednym
     miejscu dla wszystkich oddziałów. Najnowsze są na górze.</p>
     <div class="odz-cta">
-      <a class="btn btn-ghost" href="realizacje.html">Zobacz realizacje przed i po &rarr;</a>
+      <a class="btn btn-amber btn-realiz" href="realizacje.html">Zobacz realizacje przed i po &rarr;</a>
     </div>
 
     <h2 style="margin-top:30px">Jak do nas trafić</h2>
     <iframe class="odz-mapa" src="https://www.google.com/maps?q=SMARTPARKIET+Turmoncka+17A+lok.+21+Warszawa&output=embed" loading="lazy"
       referrerpolicy="no-referrer-when-downgrade" title="Mapa dojazdu, oddział Targówek"></iframe>
 
-    <div class="odz-cta">
+    <div class="odz-cta odz-sym">
       <a class="btn btn-amber" href="wycena.html">Bezpłatny kalkulator online &rarr;</a>
       <a class="btn btn-ghost" href="tel:+48602242815">602 242 815</a>
       <a class="btn btn-ghost" href="https://wa.me/48602242815">WhatsApp</a>
@@ -1860,5 +1860,12 @@ html body footer.site .cols>div{min-width:0!important}
   html body footer.site .cols>.c-marka{order:-2}html body footer.site .cols>.c-oddzialy{order:-1}html body footer.site .cols>.c-kontakt{order:0}html body footer.site .cols>.c-wiecej{order:1}
   html body footer.site .cols a{white-space:normal!important}
 }
+</style>
+<style>/* Artur 18.10 03:23-03:25: oddzialy - mniejszy tekst realizacji, pomaranczowy przycisk, symetryczne przyciski pod mapa */
+html body .odz-realizacje-lead{font-size:.92rem!important;line-height:1.55!important}
+html body .odz-cta .btn-realiz{background:#FE6500!important;color:#fff!important;border-color:#FE6500!important}
+html body .odz-cta.odz-sym{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;max-width:520px}
+html body .odz-cta.odz-sym .btn{width:100%!important;justify-content:center!important;text-align:center!important;margin:0!important;box-sizing:border-box}
+html body .odz-cta.odz-sym .btn:first-child{grid-column:1/-1}
 </style>
 
