@@ -1059,7 +1059,7 @@ figure{margin:0}
     return [].slice.call(li.querySelectorAll('.dod-w')).map(function(w){
       var o=w.querySelector('.dod-o').value.trim(),i=parseFloat((w.querySelector('.dod-i').value||'').replace(',','.')),
           j=w.querySelector('.dod-j').value.trim()||'szt.',c=parseFloat((w.querySelector('.dod-c').value||'').replace(',','.'));
-      return {o:o,i:isFinite(i)&&i>0?i:1,j:j,c:isFinite(c)&&c>0?c:0};
+      var u=w.querySelector('.dod-u');return {o:o,i:isFinite(i)&&i>0?i:1,j:j,c:isFinite(c)&&c>0?c:0,u:!!(u&&u.checked)};
     }).filter(function(x){return x.o&&x.c;}).concat((function(){var m=parseFloat(((document.getElementById('mebleKw')||{}).value||'').replace(',','.'));
       return isFinite(m)&&m>0?[{o:'Pomoc z meblami',i:1,j:'usł.',c:m}]:[];})());
   };
@@ -1507,7 +1507,8 @@ figure{margin:0}
         ['Naprawy parkietu (kpl.)',(zn('napr')==='tak'||zn('napr')==='nie wiem')?'do uzgodnienia':0,null], /* Artur 20.10 16:28: 'nie wiem' = do uzgodnienia */
         ['Koloryzacja parkietu (m²)',kolor?a:0,70],
         ['Przesunięcie mebli przez ekipę (usł.)',meble?1:0,300]
-      ].concat((window.spDodatkowe?window.spDodatkowe():[]).map(x=>[x.o+' ('+x.j+')',x.i,x.c]));
+      ].map((q,k)=>{const cb=document.getElementById('uzg'+k);q[3]=!!(cb&&cb.checked)||((q[1]==='do uzgodnienia'||q[2]==null)&&q[1]!==0);return q;})
+       .concat((window.spDodatkowe?window.spDodatkowe():[]).map(x=>[x.o+' ('+x.j+')',x.i,x.c,!!x.u]));
       const suma=poz.reduce((s,p)=>s+(typeof p[1]==='number'&&p[2]?p[1]*p[2]:0),0);
       const p=pole('pietroKl'), winda=zn('winda');
       return {pole,zn,a,wykT,kolor,mb,listwy,meble,poz,suma,
@@ -1593,21 +1594,22 @@ figure{margin:0}
       /* wysokosc wiersza tabeli dopasowana do miejsca na stronie (50 px, w razie potrzeby do 36 px); nowa strona dopiero, gdy i tak sie nie zmiesci */
       let rh=Math.min(50,Math.floor(((H-80)-y-52-16-100-62)/Math.max(1,A.poz.length)));
       if(rh<36){g=nowa();g.textBaseline='alphabetic';naglowek(g,'WYCENA',M,190);y=250;rh=50;}
-      const cx=[M,M+600,M+720,M+880], cw=W-2*M;
+      const cx=[M,M+500,M+620,M+740,M+890], cw=W-2*M; /* Artur 20.10 22:43: kolumna "Do uzg." */
       g.fillStyle=ZYWY;g.fillRect(M,y,cw,52);g.fillStyle='#fff';g.font='bold 23px Arial';
-      ['Zakres prac','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
+      ['Zakres prac','Do uzg.','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
       const yT=y;A.poz.forEach((p,i)=>{g.fillStyle='#fff';g.fillRect(M,y,cw,rh);g.fillStyle=RAMKA;g.fillRect(M,y+rh-1,cw,1.5);const ty=y+Math.round(rh/2)+8;g.fillStyle=CIEMNY;g.font='italic 22px Arial';
         const ile=typeof p[1]==='number'?p[1]:p[1];const laczna=typeof p[1]==='number'&&p[2]?p[1]*p[2]:null;
         {/* Artur 20.10 22:10: zakres prac drukowanymi, numerowany, "- DO UZGODNIENIA" przy pozycjach do uzgodnienia; dlugie w 2 liniach */
-         let t=(i+1)+'. '+String(p[0]).toUpperCase()+((p[1]==='do uzgodnienia'||p[2]==null)&&p[1]!==0?' - DO UZGODNIENIA':'');
+         let t=(i+1)+'. '+String(p[0]).toUpperCase();
          let f=21;g.font='bold '+f+'px Arial';
-         if(g.measureText(t).width<=575){g.fillText(t,cx[0]+12,ty);}
+         if(g.measureText(t).width<=480){g.fillText(t,cx[0]+12,ty);}
          else{f=Math.max(15,Math.min(19,Math.floor((rh-8)/2)));g.font='bold '+f+'px Arial';const sl=t.split(' ');let l1='';let k=0;
-           while(k<sl.length&&g.measureText((l1?l1+' ':'')+sl[k]).width<=575){l1=(l1?l1+' ':'')+sl[k];k++;}
-           let l2=sl.slice(k).join(' ');while(l2.length>4&&g.measureText(l2).width>575)l2=l2.slice(0,-2);if(l2!==sl.slice(k).join(' '))l2=l2.replace(/\s*\S?$/,'')+'…';
+           while(k<sl.length&&g.measureText((l1?l1+' ':'')+sl[k]).width<=480){l1=(l1?l1+' ':'')+sl[k];k++;}
+           let l2=sl.slice(k).join(' ');while(l2.length>4&&g.measureText(l2).width>480)l2=l2.slice(0,-2);if(l2!==sl.slice(k).join(' '))l2=l2.replace(/\s*\S?$/,'')+'…';
            if(!l2){g.fillText(l1,cx[0]+12,ty);}else{g.fillText(l1,cx[0]+12,ty-Math.round(f*0.55));g.fillText(l2,cx[0]+12,ty+Math.round(f*0.55));}}
-         g.font='italic 22px Arial';}g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','-'),cx[1]+12,ty);
-        g.fillText(p[2]==null?'do uzgodnienia':zl(p[2]),cx[2]+12,ty);g.fillText(laczna?zl(laczna):'-',cx[3]+12,ty);y+=rh;});
+         g.font='italic 22px Arial';}if(p[3]){g.save();g.font='bold 24px Arial';g.fillStyle=POM;g.textAlign='center';g.fillText('✔',cx[1]+60,ty);g.restore();g.font='italic 22px Arial';g.fillStyle=CIEMNY;}
+        g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','-'),cx[2]+12,ty);
+        g.fillText(p[2]==null?'do uzg.':zl(p[2]),cx[3]+12,ty);g.fillText(laczna?zl(laczna):'-',cx[4]+12,ty);y+=rh;});
       g.strokeStyle=POM;g.lineWidth=3;g.strokeRect(M+1.5,yT-52+1.5,cw-3,y-yT+52-3);y+=16;g.fillStyle='#fff';g.fillRect(M,y,cw,70);g.strokeStyle=POM;g.lineWidth=4;g.strokeRect(M+2,y+2,cw-4,66);g.fillStyle=CIEMNY;g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);g.fillStyle=POM;
       g.textAlign='right';g.fillText(zl(A.suma),W-M-20,y+46);g.textAlign='left';y+=100;
       g.fillStyle=SZARY;g.font='italic 20px Arial';
@@ -2869,5 +2871,27 @@ html body .vs td.vs-tak,html body .vs .vs-tak{box-shadow:inset 5px 0 0 #FE6500!i
   li.addEventListener('input',synchro);li.addEventListener('change',synchro);li.addEventListener('click',function(){setTimeout(synchro,0);});
   setInterval(function(){if(u.value.trim()&&!li.contains(document.activeElement)){var z=[].slice.call(li.querySelectorAll('.dod-o')).map(function(o){return o.value.trim();});
     if(z.indexOf(u.value.trim())<0&&u.value.split('\n').some(function(x){return z.indexOf(x.trim())<0;})){var stare=u.value;u.value='';window.spDoPozycji(stare);}}synchro();},700);
+})();
+</script>
+
+<script>
+/* Artur 20.10 22:43: kolumna "Do uzgodnienia" w tabeli oferty - zaznacza parkieciarz, gdy czegos na poczatku nie wiadomo */
+(function(){
+  var on=false;try{on=/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
+  var li=document.getElementById('dodLista'),db=document.getElementById('dodBlok');if(!on||!li||!db)return;
+  var st=document.createElement('style');st.textContent='.dod-w label.dod-uzg{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:600;color:#3A3F45;text-transform:none;letter-spacing:0;margin:0!important}'+
+    '.dod-w label.dod-uzg input,#uzgPanel input{width:20px!important;height:20px;accent-color:#F8580E;margin:0}'+
+    '#uzgPanel{margin:0 0 14px;padding:12px 14px;border:1.5px solid #F3C9A8;border-radius:12px;background:#FFF8F2}'+
+    '#uzgPanel b{display:block;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:#E8671F;margin-bottom:8px}'+
+    '#uzgPanel .uz{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px}'+
+    '#uzgPanel label{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;text-transform:none;letter-spacing:0;color:#3A3F45;margin:0}';
+  document.head.appendChild(st);
+  if(!document.getElementById('uzgPanel')){var pn=document.createElement('div');pn.id='uzgPanel';
+    pn.innerHTML='<b>Do uzgodnienia (kolumna w ofercie)</b><div class="uz">'+
+      ['Renowacja parkietu','Wymiana listew','Stabilizacja','Naprawy','Koloryzacja','Przesunięcie mebli'].map(function(t,k){return '<label><input type="checkbox" id="uzg'+k+'"> '+t+'</label>';}).join('')+'</div>';
+    db.parentNode.insertBefore(pn,db);}
+  function dodaj(){[].slice.call(li.querySelectorAll('.dod-w')).forEach(function(w){if(w.querySelector('.dod-u'))return;
+    var l=document.createElement('label');l.className='dod-uzg';l.innerHTML='<input type="checkbox" class="dod-u"> do uzgodnienia';w.appendChild(l);});}
+  dodaj();new MutationObserver(dodaj).observe(li,{childList:true});
 })();
 </script>
