@@ -224,9 +224,9 @@ section{padding:96px 0;scroll-margin-top:72px}
 .ai-out .line.on{opacity:1}
 .ai-out .line .k{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);font-weight:700;min-width:9ch}
 .ai-out .line b{font-weight:700}
-.ai-out .est{margin-top:8px;padding-top:14px;border-top:1px solid var(--line)}
-.ai-out .est .n{font-family:Inter,"Helvetica Neue",Helvetica,sans-serif;font-size:2rem;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--amber-ink);line-height:1.1}
-.ai-out .est small{display:block;color:var(--mute);font-size:.8rem;margin-top:6px}
+.ai-out .est,.ai-form .est{margin-top:8px;padding-top:14px;border-top:1px solid var(--line)}
+.ai-out .est .n,.ai-form .est .n{font-family:Inter,"Helvetica Neue",Helvetica,sans-serif;font-size:2rem;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--amber-ink);line-height:1.1}
+.ai-out .est small,.ai-form .est small{display:block;color:var(--mute);font-size:.8rem;margin-top:6px}
 .ai-form{padding:18px 24px 24px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;background:var(--bg)}
 .ai-form label{display:block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-bottom:6px}
 .ai-form select,.ai-form input{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:4px;font:inherit;background:var(--white);color:var(--ink)}
@@ -1055,6 +1055,14 @@ figure{margin:0}
     '<textarea id="smsWklej" placeholder="1. Niekłańska 42/19, Warszawa&#10;2. 601 484 540&#10;3. jan.kowalski@wp.pl&#10;4. pokój 10,5 m2, pokój 18 m2&#10;5. parter&#10;6. pomiędzy 12.10 - 16.10&#10;7. listwy - nie"></textarea>'+
     '<div class="sms-akcje"><button type="button" id="smsRozrzuc">Rozrzuć do pól</button><button type="button" class="sms-czysc" id="smsCzysc">Wyczyść</button></div><div class="sms-wynik" id="smsWynik"></div>';
   f.insertBefore(box,f.firstChild);
+  /* Artur 20.10 15:03 "zmienimy uklad": (1) ramka Zdjecia podlogi + Dodaj zdjecia pod zdjeciem podgladu,
+     w miejscu wiersza "zdjecie: czeka na..." (licznik zdjec go zastepuje); (2) widelki cenowe pod blokiem SMS. */
+  (function(){
+    var out=document.getElementById('aiOut'),l1=out&&out.querySelector('.line[data-l="1"]'),dr=document.getElementById('drop'),mi=document.getElementById('miniatury');
+    if(out&&l1&&dr&&mi){out.insertBefore(dr,l1);out.insertBefore(mi,l1);l1.style.display='none';dr.style.margin='0 0 8px';}
+    var est=out&&out.querySelector('.est');
+    if(est){est.style.gridColumn='1/-1';est.style.margin='0 0 10px';est.style.borderTop='0';est.style.paddingTop='4px';f.insertBefore(est,box.nextSibling);}
+  })();
 
   var DZ=['Bemowo','Białołęka','Bielany','Mokotów','Ochota','Praga-Południe','Praga-Północ','Rembertów','Śródmieście','Targówek','Ursus','Ursynów','Wawer','Wesoła','Wilanów','Włochy','Wola','Żoliborz'];
   function bezOgonkow(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ł/g,'l');}
