@@ -1101,6 +1101,8 @@ figure{margin:0}
       if(lb)lb.after(u);else db.prepend(u);if(stary&&stary!==db)stary.style.display='none';})();
     var nw=document.querySelector('input[name="stab"][value="nie wiem"]');
     if(nw&&!document.querySelector('input[name="stab"][value="do uzgodnienia"]')){var lb=document.createElement('label');lb.innerHTML='<input type="radio" name="stab" value="do uzgodnienia"> do uzgodnienia';nw.closest('label').after(lb);}
+    /* Artur 20.10 21:49: przy stabilizacji 'nie wiem' wywalamy - zostaje tak / nie / do uzgodnienia */
+    if(nw){var nwl=nw.closest('label');if(nw.checked){var du=document.querySelector('input[name="stab"][value="do uzgodnienia"]');if(du)du.checked=true;}if(nwl)nwl.remove();}
     if(est){est.style.gridColumn='1/-1';est.style.margin='0 0 10px';est.style.borderTop='0';est.style.paddingTop='4px';f.insertBefore(est,box.nextSibling);}
   })();
 
