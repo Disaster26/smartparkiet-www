@@ -1565,6 +1565,7 @@ figure{margin:0}
       strony.forEach((c,i)=>{if(i)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.82),'JPEG',0,0,210,297);});
       const nazwa='Oferta_'+(A.pole('ulicaKl')||'SMARTPARKIET').replace(/[^\wąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+/g,'_').replace(/^_|_$/g,'').slice(0,40)+'.pdf';
       window.__sumaOferty=A.suma;
+      window.__stronyOferty=strony;
       return new File([pdf.output('blob')],nazwa,{type:'application/pdf'});
     }
     function karta(d,zdj){return new Promise(async ok=>{
@@ -1790,6 +1791,37 @@ figure{margin:0}
       boxWys.hidden=false;
       boxWys.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});
     });
+
+  /* Artur 20.10 14:59: podglad calej oferty (arkusz/PDF) przed wyslaniem - bez wysylania testowo do siebie.
+     Tylko tryb parkieciarza. Pokazuje dokladnie te strony, ktore ida w PDF. */
+  (function(){
+    let on=false; try{on=/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
+    if(!on||!bWys)return;
+    const b=document.createElement('button');b.type='button';b.className='btn btn-ghost';b.id='podgladOferty';
+    b.textContent='Podgląd oferty przed wysłaniem';b.style.cssText='width:100%;margin:0 0 10px';
+    bWys.parentNode.insertBefore(b,bWys);
+    const ov=document.createElement('div');ov.id='podgladOv';
+    ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(20,22,26,.92);display:none;flex-direction:column';
+    ov.innerHTML='<div style="display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;background:#16191D;color:#fff;font:600 15px Arial"><span>Podgląd oferty (tak dostanie klient)</span><span style="display:flex;gap:8px"><button type="button" id="podgladWys" style="background:#FE6500;color:#fff;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Wyślij</button><button type="button" id="podgladZam" style="background:#fff;color:#16191D;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Popraw</button></span></div><div id="podgladStr" style="flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px"></div>';
+    document.body.appendChild(ov);
+    const zam=()=>{ov.style.display='none';document.body.style.overflow='';};
+    ov.querySelector('#podgladZam').onclick=zam;
+    ov.querySelector('#podgladWys').onclick=()=>{zam();bWys.click();};
+    b.addEventListener('click',async()=>{
+      b.disabled=true;const t0=b.textContent;b.textContent='Przygotowuję podgląd...';
+      try{
+        const pl=window.__pliki?window.__pliki():[];
+        let zd;try{zd=await Promise.all(pl.map(zmniejsz));}catch(e){zd=pl;}
+        window.__stronyOferty=null;
+        await ofertaPdf(zd);
+        const st=ov.querySelector('#podgladStr');st.innerHTML='';
+        (window.__stronyOferty||[]).forEach((c,i)=>{const im=new Image();im.src=c.toDataURL('image/jpeg',.85);im.alt='Strona '+(i+1);
+          im.style.cssText='width:100%;max-width:820px;height:auto;background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.4)';st.appendChild(im);});
+        if(!st.children.length)st.innerHTML='<p style="color:#fff;font:16px Arial">Nie udało się przygotować podglądu.</p>';
+        ov.style.display='flex';document.body.style.overflow='hidden';st.scrollTop=0;
+      }finally{b.disabled=false;b.textContent=t0;}
+    });
+  })();
   }
 
   /* Podglad zdjecia. Rozpoznawanie gatunku zostalo wylaczone 10.10.2026:
