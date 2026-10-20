@@ -1006,6 +1006,17 @@ figure{margin:0}
     var py=rt.closest('.pyt'),sp=py&&py.querySelector('span');if(sp)sp.textContent='Czy potrzebna pomoc z meblami?';
     var lt=rt.closest('label'),ln=rn.closest('label');if(!lt||!ln)return;
     lt.lastChild.textContent=' nie';ln.lastChild.textContent=' tak';ln.parentNode.insertBefore(ln,lt);})();
+/* Artur 20.10 16:28: przy naprawach zamiast 'nie wiem' napis 'do uzgodnienia' (wartosc bez zmian) */
+(function(){var r=document.querySelector('input[name=napr][value="nie wiem"]'),l=r&&r.closest('label');if(l&&l.lastChild)l.lastChild.textContent=' do uzgodnienia';})();
+/* Artur 20.10 16:32: rodzaj obiektu jako cztery kolka zamiast listy (lista zostaje ukryta, kolka ja ustawiaja) */
+(function(){var sel=document.getElementById('obiektKl');if(!sel||document.getElementById('obiektKolka'))return;
+  var w=document.createElement('div');w.className='tn';w.id='obiektKolka';w.style.flexWrap='wrap';
+  [].slice.call(sel.options).forEach(function(o){var lb=document.createElement('label');lb.innerHTML='<input type="radio" name="obiektR"> ';
+    lb.firstChild.value=o.value||o.text;lb.appendChild(document.createTextNode(o.text));w.appendChild(lb);});
+  sel.style.display='none';sel.after(w);
+  function zSel(){var v=sel.value||sel.options[sel.selectedIndex].text;w.querySelectorAll('input').forEach(function(i){i.checked=(i.value===v);});}
+  w.addEventListener('change',function(e){if(e.target.name!=='obiektR')return;sel.value=e.target.value;sel.dispatchEvent(new Event('change',{bubbles:true}));sel.dispatchEvent(new Event('input',{bubbles:true}));});
+  zSel();var ost=sel.value;setInterval(function(){if(sel.value!==ost){ost=sel.value;zSel();}},400);})();
 (function(){
   /* Artur 14.10: rubryka na prace nietypowe wpisywane recznie z kwota, wchodzi do widelek i do tabeli w PDF.
      Widoczna tylko dla parkieciarza: link wycena.html?parkieciarz (zapamietywane na tym telefonie). */
@@ -1454,7 +1465,7 @@ figure{margin:0}
         ['Renowacja parkietu (m²)',a,cena],
         ['Wymiana listwy przypodłogowej'+(listwy?' '+(zn('listwy')==='MDF'?'MDF':'klasycznej'):'')+' (mb)',mb,50],
         ['Stabilizacja parkietu metodą iniekcji (m²)',zn('stab')==='tak'?(Math.max(0,+pole('stabM2')||0)||'do ustalenia'):(zn('stab')==='do uzgodnienia'?'do uzgodnienia':0),zn('stab')==='do uzgodnienia'?null:70], /* Artur 20.10 16:15-16:26: opcja 'do uzgodnienia' */
-        ['Naprawy parkietu (kpl.)',zn('napr')==='tak'?'do uzgodnienia':0,null],
+        ['Naprawy parkietu (kpl.)',(zn('napr')==='tak'||zn('napr')==='nie wiem')?'do uzgodnienia':0,null], /* Artur 20.10 16:28: 'nie wiem' = do uzgodnienia */
         ['Koloryzacja parkietu (m²)',kolor?a:0,70],
         ['Przesunięcie mebli przez ekipę (usł.)',meble?1:0,300]
       ].concat((window.spDodatkowe?window.spDodatkowe():[]).map(x=>[x.o+' ('+x.j+')',x.i,x.c]));
