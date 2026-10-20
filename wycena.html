@@ -1059,8 +1059,21 @@ figure{margin:0}
      w miejscu wiersza "zdjecie: czeka na..." (licznik zdjec go zastepuje); (2) widelki cenowe pod blokiem SMS. */
   (function(){
     var out=document.getElementById('aiOut'),l1=out&&out.querySelector('.line[data-l="1"]'),dr=document.getElementById('drop'),mi=document.getElementById('miniatury');
-    if(out&&l1&&dr&&mi){out.insertBefore(dr,l1);out.insertBefore(mi,l1);l1.style.display='none';dr.style.margin='0 0 8px';}
+    if(out&&l1&&dr&&mi){out.insertBefore(dr,l1);out.insertBefore(mi,l1);l1.style.setProperty('display','none','important');dr.style.margin='0 0 8px';}
     var est=out&&out.querySelector('.est');
+    /* Artur 20.10 15:50-16:15: ramka zdjec mniejsza i zwarta; odpowiedzi od jednej kreski; dane DRUKOWANYMI; stabilizacja 'do oceny' */
+    var st=document.createElement('style');st.textContent=
+      '#drop{padding:10px 14px!important;min-height:0!important;gap:10px!important}#drop b{font-size:.9rem!important;line-height:1.25!important}'+
+      '#drop .btn{min-height:38px!important;padding:0 14px!important;font-size:.85rem!important}#miniatury{padding-top:4px!important;padding-bottom:4px!important}'+
+      '.ai-out .line{display:grid!important;grid-template-columns:118px minmax(0,1fr)!important;column-gap:10px!important;align-items:baseline}'+
+      '#imieKl,#ulicaKl,#miastoKl,#terminKl,#dzielKl,#obiektKl{text-transform:uppercase}';
+    document.head.appendChild(st);
+    var DUZE=['imieKl','ulicaKl','miastoKl','terminKl'];
+    function duze(){DUZE.forEach(function(id){var e=document.getElementById(id);if(e&&e.value&&e.value!==e.value.toUpperCase())e.value=e.value.toUpperCase();});}
+    DUZE.forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('input',function(){var p=e.selectionStart;e.value=e.value.toUpperCase();try{e.setSelectionRange(p,p);}catch(x){}});});
+    document.addEventListener('click',function(ev){var t=ev.target&&ev.target.closest&&ev.target.closest('#wyslij,#podgladOferty,#smsRozrzuc');if(t)setTimeout(duze,0);duze();},true);
+    var nw=document.querySelector('input[name="stab"][value="nie wiem"]');
+    if(nw&&!document.querySelector('input[name="stab"][value="do oceny"]')){var lb=document.createElement('label');lb.innerHTML='<input type="radio" name="stab" value="do oceny"> do oceny';nw.closest('label').after(lb);}
     if(est){est.style.gridColumn='1/-1';est.style.margin='0 0 10px';est.style.borderTop='0';est.style.paddingTop='4px';f.insertBefore(est,box.nextSibling);}
   })();
 
@@ -1347,7 +1360,7 @@ figure{margin:0}
     oN.textContent=pln(lo)+' - '+pln(hi)+' zł';
     const czesci=[];
     if(mb)czesci.push('listwy '+mb+' mb × 50 zł');
-    if(sm)czesci.push('stabilizacja '+sm+' m² × 70 zł');else if(zaznaczone('stab')==='tak')czesci.push('stabilizacja: podaj m²');
+    if(sm)czesci.push('stabilizacja '+sm+' m² × 70 zł');else if(zaznaczone('stab')==='tak')czesci.push('stabilizacja: podaj m²');else if(zaznaczone('stab')==='do oceny')czesci.push('stabilizacja do oceny');
     if(kol)czesci.push('koloryzacja '+a+' m² × 70 zł');
     if(zaznaczone('napr')==='tak')czesci.push('naprawy do uzgodnienia');
     ext.forEach(x=>czesci.push(x.o+' '+x.i+' '+x.j+' × '+x.c+' zł'));
@@ -1387,7 +1400,7 @@ figure{margin:0}
         ['Dojazd',dojazd],
         ['Listwy',(zn('listwy')&&zn('listwy')!=='nie')?('wymiana, listwa '+zn('listwy')+(arkusz().mb?', '+arkusz().mb+' mb':'')):'bez wymiany'],
         ['Obiekt',arkusz().obiekt],
-        ['Szczegóły',(()=>{const A=arkusz();return [A.rodzaj,A.technika,A.zn('stab')==='tak'?'stabilizacja klepek':'',A.zn('napr')==='tak'?'naprawy ubytków':'',A.meble?'meble przesuwa ekipa':'meble usuwa klient'].filter(Boolean).join(', ');})()],
+        ['Szczegóły',(()=>{const A=arkusz();return [A.rodzaj,A.technika,A.zn('stab')==='tak'?'stabilizacja klepek':(A.zn('stab')==='do oceny'?'stabilizacja klepek do oceny':''),A.zn('napr')==='tak'?'naprawy ubytków':'',A.meble?'meble przesuwa ekipa':'meble usuwa klient'].filter(Boolean).join(', ');})()],
         ['Termin',termin||'klient nie podał'],
         ['Uwagi',pole('uwagiKl')||'brak'],
         ...((window.spDodatkowe?window.spDodatkowe():[]).length?[['Prace dodatkowe',window.spDodatkowe().map(x=>x.o+': '+x.i+' '+x.j+' × '+zl(x.c)+' = '+zl(x.i*x.c)).join('; ')]]:[]),
@@ -1428,7 +1441,7 @@ figure{margin:0}
       const poz=[
         ['Renowacja parkietu (m²)',a,cena],
         ['Wymiana listwy przypodłogowej'+(listwy?' '+(zn('listwy')==='MDF'?'MDF':'klasycznej'):'')+' (mb)',mb,50],
-        ['Stabilizacja parkietu metodą iniekcji (m²)',zn('stab')==='tak'?(Math.max(0,+pole('stabM2')||0)||'do ustalenia'):0,70],
+        ['Stabilizacja parkietu metodą iniekcji (m²)',zn('stab')==='tak'?(Math.max(0,+pole('stabM2')||0)||'do ustalenia'):(zn('stab')==='do oceny'?'do oceny':0),zn('stab')==='do oceny'?null:70], /* Artur 20.10 16:15: opcja 'do oceny' */
         ['Naprawy parkietu (kpl.)',zn('napr')==='tak'?'do uzgodnienia':0,null],
         ['Koloryzacja parkietu (m²)',kolor?a:0,70],
         ['Przesunięcie mebli przez ekipę (usł.)',meble?1:0,300]
@@ -1810,18 +1823,29 @@ figure{margin:0}
     bWys.parentNode.insertBefore(b,bWys);
     const ov=document.createElement('div');ov.id='podgladOv';
     ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(20,22,26,.92);display:none;flex-direction:column';
-    ov.innerHTML='<div style="display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;background:#16191D;color:#fff;font:600 15px Arial"><span>Podgląd oferty (tak dostanie klient)</span><span style="display:flex;gap:8px"><button type="button" id="podgladWys" style="background:#FE6500;color:#fff;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Wyślij</button><button type="button" id="podgladZam" style="background:#fff;color:#16191D;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Popraw</button></span></div><div id="podgladStr" style="flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px"></div>';
+    ov.innerHTML='<div style="display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;background:#16191D;color:#fff;font:600 15px Arial"><span>Podgląd oferty (tak dostanie klient)</span><span style="display:flex;gap:8px"><button type="button" id="podgladWys" style="background:#FE6500;color:#fff;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Wyślij</button><button type="button" id="podgladZam" style="background:#fff;color:#16191D;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Popraw</button></span></div><div id="podgladStr" style="flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px"></div><div style="display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#16191D"><button type="button" id="podgladWa" style="flex:1;background:#25D366;color:#fff;border:0;border-radius:10px;padding:12px 10px;font:700 14px Arial">Wyślij PDF na WhatsApp</button><button type="button" id="podgladCzat" style="flex:1;background:#fff;color:#16191D;border:0;border-radius:10px;padding:12px 10px;font:700 14px Arial">Otwórz czat z klientem</button></div>';
     document.body.appendChild(ov);
     const zam=()=>{ov.style.display='none';document.body.style.overflow='';};
     ov.querySelector('#podgladZam').onclick=zam;
     ov.querySelector('#podgladWys').onclick=()=>{zam();bWys.click();};
+    /* Artur 20.10 16:19: oferta PDF klientowi na WhatsApp. Strona nie moze sama wyslac pliku na numer -
+       otwiera okno udostepniania telefonu (wybiera sie WhatsApp i klienta) albo czat z numerem klienta. */
+    const telWa=()=>{let d=((document.getElementById('telKl')||{}).value||'').replace(/\D/g,'');if(d.length===9)d='48'+d;return d.length>=11?d:'';};
+    ov.querySelector('#podgladWa').onclick=async()=>{
+      const f=window.__pdfPodglad; if(!f)return;
+      if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Oferta SMARTPARKIET',text:'Dzień dobry, w załączniku oferta renowacji parkietu. SMARTPARKIET, tel. 602 242 815'});}catch(e){}}
+      else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();a.remove();
+        alert('Ten telefon nie udostępnia plików bezpośrednio. PDF zapisany - dołącz go w WhatsApp z plików.');}
+    };
+    ov.querySelector('#podgladCzat').onclick=()=>{const t=telWa();if(!t){alert('Brak numeru telefonu klienta w formularzu.');return;}
+      window.open('https://wa.me/'+t+'?text='+encodeURIComponent('Dzień dobry, tu SMARTPARKIET. Przesyłam ofertę renowacji parkietu.'),'_blank');};
     b.addEventListener('click',async()=>{
       b.disabled=true;const t0=b.textContent;b.textContent='Przygotowuję podgląd...';
       try{
         const pl=window.__pliki?window.__pliki():[];
         let zd;try{zd=await Promise.all(pl.map(zmniejsz));}catch(e){zd=pl;}
         window.__stronyOferty=null;
-        await ofertaPdf(zd);
+        window.__pdfPodglad=await ofertaPdf(zd);
         const st=ov.querySelector('#podgladStr');st.innerHTML='';
         (window.__stronyOferty||[]).forEach((c,i)=>{const im=new Image();im.src=c.toDataURL('image/jpeg',.85);im.alt='Strona '+(i+1);
           im.style.cssText='width:100%;max-width:820px;height:auto;background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.4)';st.appendChild(im);});
@@ -1895,6 +1919,7 @@ figure{margin:0}
         const w=j.wynik||{};
         const pisz=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v||'nie wiem'};
         window.__analiza=true;
+        {const l1=document.querySelector('.ai-out .line[data-l="1"]');if(l1)l1.style.display='';} /* 20.10: w trybie parkieciarza wiersz ukryty do czasu analizy */
         pisz('oG',w.gatunek); pisz('oU',w.uklad); pisz('oS',w.stan); pisz('oZ',w.zalecenie);
         const n=document.querySelector('.ai-out .est small');
         if(n)n.textContent=(w.pewnosc?('Pewność oceny: '+w.pewnosc+'. '):'')+
