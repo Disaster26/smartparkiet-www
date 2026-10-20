@@ -1840,6 +1840,7 @@ figure{margin:0}
       mailL.href='mailto:smartparkiet.kontakt@gmail.com?subject='+encodeURIComponent('Wycena ze zdjęć - '+(+m2.value||0)+' m2')+'&body='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi dołączam do tej wiadomości.');
       {const dr=document.querySelector('#wyslano .drogi'); if(dr)dr.hidden=true;}
       boxWys.hidden=false;
+      try{window.__poWyslaniu&&window.__poWyslaniu();}catch(e){}
       boxWys.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});
     });
 
@@ -1869,6 +1870,29 @@ figure{margin:0}
     };
     ov.querySelector('#podgladCzat').onclick=()=>{const t=telWa();if(!t){alert('Brak numeru telefonu klienta w formularzu.');return;}
       window.open('https://wa.me/'+t+'?text='+encodeURIComponent('Dzień dobry, tu SMARTPARKIET. Przesyłam ofertę renowacji parkietu.'),'_blank');};
+    /* Artur 20.10 19:38: po wyslaniu od razu przycisk "PDF klientowi na WhatsApp" (bez wchodzenia w podglad).
+       Strona nie moze sama dostarczyc pliku na numer (to wymaga platnego WhatsApp Business API) -
+       krok 1 otwiera czat z numerem klienta, krok 2 udostepnia PDF i wybiera sie ten czat (jest na gorze listy). */
+    window.__poWyslaniu=()=>{
+      let p=document.getElementById('waKlient');
+      if(!p){p=document.createElement('div');p.id='waKlient';
+        p.style.cssText='margin:12px 0 0;padding:14px;border:2px solid #25D366;border-radius:12px;background:#F2FCF5';
+        p.innerHTML='<b style="display:block;margin-bottom:4px">Oferta PDF dla klienta na WhatsApp</b>'+
+          '<p style="margin:0 0 10px;font-size:.85rem;color:#4b5a50">1. Otwórz czat z klientem. 2. Wróć tutaj i wyślij PDF - w WhatsApp wybierz tego klienta (będzie na górze listy).</p>'+
+          '<div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" id="waK1" style="flex:1 1 200px;border:0;border-radius:10px;padding:13px 14px;font-weight:700;background:#fff;color:#1d6b3a;border:1.5px solid #25D366">1. Otwórz czat z klientem</button>'+
+          '<button type="button" id="waK2" style="flex:1 1 200px;border:0;border-radius:10px;padding:13px 14px;font-weight:700;background:#25D366;color:#fff">2. Wyślij PDF na WhatsApp</button></div>';
+        bWys.parentNode.insertBefore(p,bWys.nextSibling);
+        p.querySelector('#waK1').onclick=()=>{const t=telWa();if(!t){alert('Brak numeru telefonu klienta w formularzu.');return;}
+          window.open('https://wa.me/'+t+'?text='+encodeURIComponent('Dzień dobry, tu SMARTPARKIET. Za chwilę prześlę ofertę renowacji parkietu w PDF.'),'_blank');};
+        p.querySelector('#waK2').onclick=async()=>{
+          let f=window.__karta; if(!f){alert('Najpierw wyślij wycenę.');return;}
+          if(!(f instanceof File))f=new File([f],'Oferta_SMARTPARKIET.pdf',{type:'application/pdf'});
+          if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Oferta SMARTPARKIET',text:'Dzień dobry, w załączniku oferta renowacji parkietu. SMARTPARKIET, tel. 602 242 815'});}catch(e){}}
+          else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();a.remove();
+            alert('Ten telefon nie udostępnia plików bezpośrednio. PDF zapisany - dołącz go w WhatsApp z plików (spinacz > Dokument).');}
+        };}
+      p.hidden=false;
+    };
     b.addEventListener('click',async()=>{
       b.disabled=true;const t0=b.textContent;b.textContent='Przygotowuję podgląd...';
       try{
