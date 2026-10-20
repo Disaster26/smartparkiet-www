@@ -2824,7 +2824,7 @@ html body .vs td.vs-tak,html body .vs .vs-tak{box-shadow:inset 5px 0 0 #FE6500!i
   if(sel&&!document.getElementById('montazKolka')){
     var w=document.createElement('div');w.className='tn';w.id='montazKolka';w.style.flexWrap='wrap';
     [].slice.call(sel.options).forEach(function(o,i){var lb=document.createElement('label');lb.innerHTML='<input type="radio" name="montazR"> ';
-      lb.firstChild.value=String(i);lb.appendChild(document.createTextNode(o.text));w.appendChild(lb);});
+      lb.firstChild.value=String(i);lb.appendChild(document.createTextNode(o.text.replace(' do podłoża','')));w.appendChild(lb);});
     sel.style.display='none';sel.after(w);
     var zSel=function(){w.querySelectorAll('input').forEach(function(i){i.checked=(+i.value===sel.selectedIndex);});};
     w.addEventListener('change',function(e){if(e.target.name!=='montazR')return;sel.selectedIndex=+e.target.value;
