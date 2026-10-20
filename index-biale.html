@@ -2704,4 +2704,20 @@ html body .ar-skrot b{margin-bottom:6px!important}
 <style>/* Artur 19.10 14:33: naglowek wyceny w obrysie przyciskow */
 @media(max-width:900px){html body .art-cta h2{font-size:1.15rem!important;line-height:1.3!important}}
 </style>
-
+<style id="nav-fix-2010">
+/* 20.10: na laptopach 901-1449 px 12 pozycji menu nie miesci sie w rzedzie (naglowek wystawal w bok do 208 px),
+   wiec menu chowa sie pod przyciskiem jak na telefonie; od 1450 px menu w jednym rzedzie jak dotad */
+@media (min-width:901px) and (max-width:1449px){
+  html body header.nav .wrap{position:relative}
+  html body header.nav .burger{display:grid!important;place-items:center;width:44px;height:44px;margin-left:auto;flex:0 0 auto;
+    border:1px solid var(--kreska,#E2D8CC);border-radius:4px;background:transparent;color:var(--grafit,#1A1512);cursor:pointer}
+  html body header.nav .brand{flex:0 1 auto!important}
+  html body header.nav .tel{margin-left:12px!important}
+  html body header.nav nav{display:none!important}
+  html body header.nav.open nav{display:flex!important;position:absolute;top:100%;right:24px;left:auto;width:320px;margin:0;
+    flex-direction:column;gap:0!important;padding:8px 22px 14px;background:rgba(250,247,242,.98);
+    border:1px solid var(--kreska,#E2D8CC);border-top:0;box-shadow:0 24px 40px -20px rgba(0,0,0,.35)}
+  html body header.nav.open nav a{font-size:.98rem!important;padding:11px 0!important;border-bottom:1px solid var(--kreska,#E2D8CC)}
+  html body header.nav.open nav a:last-child{border-bottom:0}
+}
+</style>
