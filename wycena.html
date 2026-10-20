@@ -1607,10 +1607,13 @@ figure{margin:0}
            while(k<sl.length&&g.measureText((l1?l1+' ':'')+sl[k]).width<=480){l1=(l1?l1+' ':'')+sl[k];k++;}
            let l2=sl.slice(k).join(' ');while(l2.length>4&&g.measureText(l2).width>480)l2=l2.slice(0,-2);if(l2!==sl.slice(k).join(' '))l2=l2.replace(/\s*\S?$/,'')+'…';
            if(!l2){g.fillText(l1,cx[0]+12,ty);}else{g.fillText(l1,cx[0]+12,ty-Math.round(f*0.55));g.fillText(l2,cx[0]+12,ty+Math.round(f*0.55));}}
-         g.font='italic 22px Arial';}if(p[3]){g.save();g.font='bold 24px Arial';g.fillStyle=POM;g.textAlign='center';g.fillText('✔',cx[1]+60,ty);g.restore();g.font='italic 22px Arial';g.fillStyle=CIEMNY;}
+         g.font='italic 22px Arial';}/* Artur 20.10 23:24: w kolumnie "Do uzg." kratka do odhaczania w kazdym wierszu + pionowe linie kolumny */
+        {const bx=cx[1]+60-13,by=y+Math.round(rh/2)-13;g.save();g.strokeStyle=CIEMNY;g.lineWidth=2;g.fillStyle='#fff';g.fillRect(bx,by,26,26);g.strokeRect(bx,by,26,26);
+         if(p[3]){g.strokeStyle=POM;g.lineWidth=4;g.lineCap='round';g.lineJoin='round';g.beginPath();g.moveTo(bx+5,by+13);g.lineTo(bx+11,by+20);g.lineTo(bx+22,by+6);g.stroke();}
+         g.restore();g.font='italic 22px Arial';g.fillStyle=CIEMNY;}
         g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','-'),cx[2]+12,ty);
         g.fillText(p[2]==null?'do uzg.':zl(p[2]),cx[3]+12,ty);g.fillText(laczna?zl(laczna):'-',cx[4]+12,ty);y+=rh;});
-      g.strokeStyle=POM;g.lineWidth=3;g.strokeRect(M+1.5,yT-52+1.5,cw-3,y-yT+52-3);y+=16;g.fillStyle='#fff';g.fillRect(M,y,cw,70);g.strokeStyle=POM;g.lineWidth=4;g.strokeRect(M+2,y+2,cw-4,66);g.fillStyle=CIEMNY;g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);g.fillStyle=POM;
+      g.fillStyle=RAMKA;g.fillRect(cx[1],yT,1.5,y-yT);g.fillRect(cx[2],yT,1.5,y-yT);g.strokeStyle=POM;g.lineWidth=3;g.strokeRect(M+1.5,yT-52+1.5,cw-3,y-yT+52-3);y+=16;g.fillStyle='#fff';g.fillRect(M,y,cw,70);g.strokeStyle=POM;g.lineWidth=4;g.strokeRect(M+2,y+2,cw-4,66);g.fillStyle=CIEMNY;g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);g.fillStyle=POM;
       g.textAlign='right';g.fillText(zl(A.suma),W-M-20,y+46);g.textAlign='left';y+=100;
       g.fillStyle=SZARY;g.font='italic 20px Arial';
       y=zawin(g,'Pracownik jest upoważniony do przyjęcia płatności gotówką (kwota netto). Faktura wystawiana na życzenie klienta. Wycena wstępna, przygotowana na podstawie danych i zdjęć od klienta; ostateczną cenę potwierdza SMARTPARKIET.',M,y,W-2*M,28);
