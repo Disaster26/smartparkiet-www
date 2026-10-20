@@ -13,10 +13,12 @@
 
 const FOLDER = 'SMARTPARKIET - wyceny';
 const POTWIERDZENIE = true;   // false = klient nie dostaje maila z potwierdzeniem
+/* 21.10: skrypt dziala na koncie pomocniczym (panbet77) - odpowiedzi klientow ida do Artura,
+   a folder z wycenami jest mu udostepniony do edycji */
+const ARTUR = 'smartparkiet.kontakt@gmail.com';
 
 function folderMiesiaca() {
-  const it = DriveApp.getFoldersByName(FOLDER);
-  const glowny = it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);
+  const glowny = glownyFolder();
   const nazwa = Utilities.formatDate(new Date(), 'Europe/Warsaw', 'yyyy-MM');
   const pod = glowny.getFoldersByName(nazwa);
   return pod.hasNext() ? pod.next() : glowny.createFolder(nazwa);
@@ -24,7 +26,10 @@ function folderMiesiaca() {
 
 function glownyFolder() {
   const it = DriveApp.getFoldersByName(FOLDER);
-  return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);
+  if (it.hasNext()) return it.next();
+  const f = DriveApp.createFolder(FOLDER);
+  try { f.addEditor(ARTUR); } catch (e) {}
+  return f;
 }
 
 /* osobny arkusz Google na kazda wycene, w tym samym folderze miesiaca co PDF */
@@ -111,6 +116,7 @@ function doPost(e) {
     if (d.ofertaKlientowi && mailOk && d.pdf) {
       MailApp.sendEmail({
         to: mail,
+        replyTo: ARTUR,
         name: 'SMARTPARKIET',
         subject: 'Oferta renowacji parkietu - SMARTPARKIET',
         body: 'Dzień dobry,\n\nw załączniku przesyłamy ofertę renowacji parkietu przygotowaną na podstawie przesłanych informacji i zdjęć. ' +
@@ -122,6 +128,7 @@ function doPost(e) {
     } else if (POTWIERDZENIE && mailOk) {
       MailApp.sendEmail({
         to: mail,
+        replyTo: ARTUR,
         name: 'SMARTPARKIET',
         subject: 'Otrzymaliśmy Państwa zgłoszenie do wyceny - SMARTPARKIET',
         body: 'Dzień dobry,\n\ndziękujemy za przesłanie zgłoszenia do bezpłatnej wyceny SMARTPARKIET. ' +
@@ -139,4 +146,11 @@ function doPost(e) {
 
 function doGet() {
   return ContentService.createTextOutput('SMARTPARKIET wyceny - dziala');
+}
+
+/* uruchomic raz recznie w edytorze (Uruchom -> start): pyta o wszystkie uprawnienia i zaklada folder */
+function start() {
+  const f = glownyFolder();
+  try { f.addEditor(ARTUR); } catch (e) {}
+  Logger.log('Folder: ' + f.getUrl() + ' | limit maili: ' + MailApp.getRemainingDailyQuota());
 }
