@@ -1061,7 +1061,7 @@ figure{margin:0}
     var out=document.getElementById('aiOut'),l1=out&&out.querySelector('.line[data-l="1"]'),dr=document.getElementById('drop'),mi=document.getElementById('miniatury');
     if(out&&l1&&dr&&mi){out.insertBefore(dr,l1);out.insertBefore(mi,l1);l1.style.setProperty('display','none','important');dr.style.margin='0 0 8px';}
     var est=out&&out.querySelector('.est');
-    /* Artur 20.10 15:50-16:15: ramka zdjec mniejsza i zwarta; odpowiedzi od jednej kreski; dane DRUKOWANYMI; stabilizacja 'do oceny' */
+    /* Artur 20.10 15:50-16:15: ramka zdjec mniejsza i zwarta; odpowiedzi od jednej kreski; dane DRUKOWANYMI; stabilizacja 'do uzgodnienia' */
     var st=document.createElement('style');st.textContent=
       '#drop{padding:10px 14px!important;min-height:0!important;gap:10px!important}#drop b{font-size:.9rem!important;line-height:1.25!important}'+
       '#drop .btn{min-height:38px!important;padding:0 14px!important;font-size:.85rem!important}#miniatury{padding-top:4px!important;padding-bottom:4px!important}'+
@@ -1073,7 +1073,7 @@ figure{margin:0}
     DUZE.forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('input',function(){var p=e.selectionStart;e.value=e.value.toUpperCase();try{e.setSelectionRange(p,p);}catch(x){}});});
     document.addEventListener('click',function(ev){var t=ev.target&&ev.target.closest&&ev.target.closest('#wyslij,#podgladOferty,#smsRozrzuc');if(t)setTimeout(duze,0);duze();},true);
     var nw=document.querySelector('input[name="stab"][value="nie wiem"]');
-    if(nw&&!document.querySelector('input[name="stab"][value="do oceny"]')){var lb=document.createElement('label');lb.innerHTML='<input type="radio" name="stab" value="do oceny"> do oceny';nw.closest('label').after(lb);}
+    if(nw&&!document.querySelector('input[name="stab"][value="do uzgodnienia"]')){var lb=document.createElement('label');lb.innerHTML='<input type="radio" name="stab" value="do uzgodnienia"> do uzgodnienia';nw.closest('label').after(lb);}
     if(est){est.style.gridColumn='1/-1';est.style.margin='0 0 10px';est.style.borderTop='0';est.style.paddingTop='4px';f.insertBefore(est,box.nextSibling);}
   })();
 
@@ -1360,7 +1360,7 @@ figure{margin:0}
     oN.textContent=pln(lo)+' - '+pln(hi)+' zł';
     const czesci=[];
     if(mb)czesci.push('listwy '+mb+' mb × 50 zł');
-    if(sm)czesci.push('stabilizacja '+sm+' m² × 70 zł');else if(zaznaczone('stab')==='tak')czesci.push('stabilizacja: podaj m²');else if(zaznaczone('stab')==='do oceny')czesci.push('stabilizacja do oceny');
+    if(sm)czesci.push('stabilizacja '+sm+' m² × 70 zł');else if(zaznaczone('stab')==='tak')czesci.push('stabilizacja: podaj m²');else if(zaznaczone('stab')==='do uzgodnienia')czesci.push('stabilizacja do uzgodnienia');
     if(kol)czesci.push('koloryzacja '+a+' m² × 70 zł');
     if(zaznaczone('napr')==='tak')czesci.push('naprawy do uzgodnienia');
     ext.forEach(x=>czesci.push(x.o+' '+x.i+' '+x.j+' × '+x.c+' zł'));
@@ -1400,7 +1400,7 @@ figure{margin:0}
         ['Dojazd',dojazd],
         ['Listwy',(zn('listwy')&&zn('listwy')!=='nie')?('wymiana, listwa '+zn('listwy')+(arkusz().mb?', '+arkusz().mb+' mb':'')):'bez wymiany'],
         ['Obiekt',arkusz().obiekt],
-        ['Szczegóły',(()=>{const A=arkusz();return [A.rodzaj,A.technika,A.zn('stab')==='tak'?'stabilizacja klepek':(A.zn('stab')==='do oceny'?'stabilizacja klepek do oceny':''),A.zn('napr')==='tak'?'naprawy ubytków':'',A.meble?'meble przesuwa ekipa':'meble usuwa klient'].filter(Boolean).join(', ');})()],
+        ['Szczegóły',(()=>{const A=arkusz();return [A.rodzaj,A.technika,A.zn('stab')==='tak'?'stabilizacja klepek':(A.zn('stab')==='do uzgodnienia'?'stabilizacja klepek do uzgodnienia':''),A.zn('napr')==='tak'?'naprawy ubytków':'',A.meble?'meble przesuwa ekipa':'meble usuwa klient'].filter(Boolean).join(', ');})()],
         ['Termin',termin||'klient nie podał'],
         ['Uwagi',pole('uwagiKl')||'brak'],
         ...((window.spDodatkowe?window.spDodatkowe():[]).length?[['Prace dodatkowe',window.spDodatkowe().map(x=>x.o+': '+x.i+' '+x.j+' × '+zl(x.c)+' = '+zl(x.i*x.c)).join('; ')]]:[]),
@@ -1441,7 +1441,7 @@ figure{margin:0}
       const poz=[
         ['Renowacja parkietu (m²)',a,cena],
         ['Wymiana listwy przypodłogowej'+(listwy?' '+(zn('listwy')==='MDF'?'MDF':'klasycznej'):'')+' (mb)',mb,50],
-        ['Stabilizacja parkietu metodą iniekcji (m²)',zn('stab')==='tak'?(Math.max(0,+pole('stabM2')||0)||'do ustalenia'):(zn('stab')==='do oceny'?'do oceny':0),zn('stab')==='do oceny'?null:70], /* Artur 20.10 16:15: opcja 'do oceny' */
+        ['Stabilizacja parkietu metodą iniekcji (m²)',zn('stab')==='tak'?(Math.max(0,+pole('stabM2')||0)||'do ustalenia'):(zn('stab')==='do uzgodnienia'?'do uzgodnienia':0),zn('stab')==='do uzgodnienia'?null:70], /* Artur 20.10 16:15-16:26: opcja 'do uzgodnienia' */
         ['Naprawy parkietu (kpl.)',zn('napr')==='tak'?'do uzgodnienia':0,null],
         ['Koloryzacja parkietu (m²)',kolor?a:0,70],
         ['Przesunięcie mebli przez ekipę (usł.)',meble?1:0,300]
