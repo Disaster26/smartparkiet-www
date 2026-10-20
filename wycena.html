@@ -1028,6 +1028,10 @@ figure{margin:0}
   var kb=document.getElementById('kopiaBlok'); if(kb)kb.style.display='';
   /* Artur 20.10 14:44: ten adres na stale wpisany, gorne okienko (klient) wypelnia dowolnie */
   var mk=document.getElementById('mailKopia'); if(mk&&!mk.value)mk.value='smartparkiet.kontakt@gmail.com';
+  /* Artur 20.10 18:05: klient dostaje oferte PDF z Gmaila SMARTPARKIET (skrypt Dysku, DYSK_URL) */
+  var mkl=document.getElementById('mailKl');if(mkl&&!document.getElementById('ofertaKl')){var ow=document.createElement('label');ow.className='oferta-kl';
+    ow.style.cssText='display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;font-weight:600;text-transform:none;letter-spacing:0;color:#3A3F45;cursor:pointer';
+    ow.innerHTML='<input type="checkbox" id="ofertaKl" checked style="width:20px;height:20px;accent-color:#F8580E"> Wyślij klientowi ofertę PDF na ten adres';mkl.after(ow);}
   bl.style.display='';
   function wiersz(){
     var d=document.createElement('div');d.className='dod-w';
@@ -1705,7 +1709,7 @@ figure{margin:0}
         obiekt:A.obiekt,rodzaj:A.rodzaj,technika:A.technika,termin:pole('terminKl'),m2:A.a,uwagi:pole('uwagiKl'),
         poz:A.poz.map(p=>[p[0],p[1],p[2]]),suma:A.suma};}catch(e){}
       const wyslij=pdf=>fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark})}).catch(()=>{});
+          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||''})}).catch(()=>{});
       if(window.__karta&&window.__karta.type==='application/pdf'){
         const r=new FileReader();
         r.onload=()=>wyslij(String(r.result).split(',')[1]||'');

@@ -1,0 +1,159 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>SMARTPARKIET - uruchomienie wysyłki ofert</title>
+<style>body{font-family:Arial,sans-serif;max-width:760px;margin:0 auto;padding:20px 16px 60px;color:#1F2328;line-height:1.55}h1{font-size:1.4rem}ol li{margin:10px 0}code,b{color:#C2410C}.btn{display:inline-block;background:#F8580E;color:#fff;border:0;border-radius:10px;padding:14px 20px;font-size:1rem;font-weight:700;cursor:pointer}textarea{width:100%;height:260px;font:12px monospace;margin-top:12px;border:1px solid #ddd;border-radius:8px;padding:10px;box-sizing:border-box}.ok{color:#15803d;font-weight:700;margin-left:10px}.uw{background:#FFF6F0;border:1px dashed #F8580E;border-radius:10px;padding:12px 14px}</style></head><body>
+<h1>Uruchomienie wysyłki ofert PDF do klientów</h1>
+<p class="uw">Zrób to raz, <b>na komputerze</b>, zalogowany na konto Gmail, z którego mają wychodzić oferty do klientów (np. smartparkiet@gmail.com). Zajmuje ok. 5 minut.</p>
+<ol>
+<li>Kliknij <button class="btn" id="kop">Kopiuj kod</button><span class="ok" id="ok" hidden>Skopiowane</span></li>
+<li>Otwórz <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com - nowy projekt</a>.</li>
+<li>W edytorze zaznacz wszystko (Ctrl+A), usuń i wklej skopiowany kod (Ctrl+V). Zapisz (Ctrl+S). Nazwa projektu dowolna, np. <code>SMARTPARKIET wyceny</code>.</li>
+<li>Kliknij niebieski przycisk <b>Wdróż</b> (prawy górny róg) &rarr; <b>Nowe wdrożenie</b>.</li>
+<li>Przy "Wybierz typ" kliknij zębatkę &rarr; <b>Aplikacja internetowa</b>. Ustaw: <b>Wykonaj jako: Ja</b>, <b>Kto ma dostęp: Każdy</b>. Kliknij <b>Wdróż</b>.</li>
+<li>Kliknij <b>Autoryzuj dostęp</b> &rarr; wybierz to samo konto &rarr; jeśli pojawi się ostrzeżenie, kliknij <b>Zaawansowane</b> &rarr; <b>Przejdź do projektu</b> &rarr; <b>Zezwól</b>. Skrypt prosi o dostęp do Dysku, Arkuszy i wysyłania maili, bo zapisuje wyceny na Twoim Dysku i wysyła klientom ofertę z Twojego Gmaila.</li>
+<li>Skopiuj <b>URL aplikacji internetowej</b> (kończy się na <code>/exec</code>) i wyślij go Łukaszowi na WhatsApp. Resztę ustawię ja.</li>
+</ol>
+<p>Po uruchomieniu: każda wycena zapisze się na Twoim Dysku (folder <code>SMARTPARKIET - wyceny</code>, arkusz i PDF, plus zbiorczy "Rejestr wycen"), a gdy przy wycenie jest zaznaczone <b>"Wyślij klientowi ofertę PDF na ten adres"</b>, klient dostanie ofertę PDF z Twojego Gmaila.</p>
+<textarea id="kod" readonly>/* SMARTPARKIET - kazda oferta z kalkulatora zapisuje sie na Dysku Google:
+   PDF + osobny arkusz Google z wycena + wiersz w zbiorczym arkuszu &quot;Rejestr wycen&quot;
+   (Artur 15.10: &quot;zeby miec latwy przeglad&quot;). Klient dostaje krotkie potwierdzenie
+   z konta SMARTPARKIET (bez cen), a gdy wycene wysyla parkieciarz z zaznaczonym
+   &quot;Wyslij klientowi oferte PDF&quot; - mail z oferta PDF w zalaczniku (Artur 20.10 18:05).
+
+   Wdrozenie (raz, na koncie Gmail SMARTPARKIET, najlepiej na komputerze):
+   1. script.google.com -&gt; Nowy projekt -&gt; usun wszystko i wklej ten plik -&gt; zapisz.
+   2. Wdroz -&gt; Nowe wdrozenie -&gt; typ: Aplikacja internetowa,
+      Wykonaj jako: Ja, Kto ma dostep: Kazdy -&gt; Wdroz.
+   3. Zezwol na dostep (Dysk, Arkusze i wysylanie maili z tego konta).
+   4. Skopiuj adres konczacy sie na /exec i przeslij go Lukaszowi. */
+
+const FOLDER = &#x27;SMARTPARKIET - wyceny&#x27;;
+const POTWIERDZENIE = true;   // false = klient nie dostaje maila z potwierdzeniem
+
+function folderMiesiaca() {
+  const it = DriveApp.getFoldersByName(FOLDER);
+  const glowny = it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);
+  const nazwa = Utilities.formatDate(new Date(), &#x27;Europe/Warsaw&#x27;, &#x27;yyyy-MM&#x27;);
+  const pod = glowny.getFoldersByName(nazwa);
+  return pod.hasNext() ? pod.next() : glowny.createFolder(nazwa);
+}
+
+function glownyFolder() {
+  const it = DriveApp.getFoldersByName(FOLDER);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);
+}
+
+/* osobny arkusz Google na kazda wycene, w tym samym folderze miesiaca co PDF */
+function arkuszWyceny(folder, nazwa, a, kiedy) {
+  const ss = SpreadsheetApp.create(nazwa);
+  const sh = ss.getActiveSheet();
+  sh.setName(&#x27;Wycena&#x27;);
+  const dane = [
+    [&#x27;SMARTPARKIET - wstępna oferta renowacji parkietu&#x27;, &#x27;&#x27;],
+    [&#x27;Data&#x27;, kiedy],
+    [&#x27;Klient&#x27;, a.imie || &#x27;&#x27;],
+    [&#x27;Telefon&#x27;, a.tel || &#x27;&#x27;],
+    [&#x27;E-mail&#x27;, a.mail || &#x27;&#x27;],
+    [&#x27;Adres&#x27;, a.adres || &#x27;&#x27;],
+    [&#x27;Obiekt&#x27;, a.obiekt || &#x27;&#x27;],
+    [&#x27;Podłoga&#x27;, a.rodzaj || &#x27;&#x27;],
+    [&#x27;Wykończenie&#x27;, a.technika || &#x27;&#x27;],
+    [&#x27;Termin&#x27;, a.termin || &#x27;&#x27;],
+    [&#x27;Uwagi&#x27;, a.uwagi || &#x27;&#x27;]
+  ];
+  sh.getRange(1, 1, dane.length, 2).setValues(dane);
+  sh.getRange(1, 1).setFontWeight(&#x27;bold&#x27;).setFontSize(14).setFontColor(&#x27;#FE6500&#x27;);
+  sh.getRange(2, 1, dane.length - 1, 1).setFontWeight(&#x27;bold&#x27;).setFontColor(&#x27;#4A5058&#x27;);
+  const start = dane.length + 2;
+  sh.getRange(start, 1, 1, 4).setValues([[&#x27;Pozycja&#x27;, &#x27;Ilość&#x27;, &#x27;Cena jedn. (zł)&#x27;, &#x27;Wartość (zł)&#x27;]])
+    .setFontWeight(&#x27;bold&#x27;).setBackground(&#x27;#FE6500&#x27;).setFontColor(&#x27;#FFFFFF&#x27;);
+  const poz = (a.poz || []).filter(p =&gt; p[1] !== 0 &amp;&amp; p[1] !== &#x27;0&#x27;);
+  poz.forEach((p, i) =&gt; {
+    const w = start + 1 + i;
+    sh.getRange(w, 1, 1, 3).setValues([[p[0], p[1], p[2] === null ? &#x27;&#x27; : p[2]]]);
+    sh.getRange(w, 4).setFormula(&#x27;=IF(AND(ISNUMBER(B&#x27; + w + &#x27;),ISNUMBER(C&#x27; + w + &#x27;)),B&#x27; + w + &#x27;*C&#x27; + w + &#x27;,&quot;&quot;)&#x27;);
+  });
+  const wSuma = start + 1 + poz.length;
+  sh.getRange(wSuma, 3).setValue(&#x27;Razem netto&#x27;).setFontWeight(&#x27;bold&#x27;);
+  sh.getRange(wSuma, 4).setFormula(&#x27;=SUM(D&#x27; + (start + 1) + &#x27;:D&#x27; + (wSuma - 1) + &#x27;)&#x27;).setFontWeight(&#x27;bold&#x27;);
+  sh.getRange(start + 1, 3, poz.length + 1, 2).setNumberFormat(&#x27;#,##0.00&#x27;);
+  sh.setColumnWidth(1, 330); sh.setColumnWidth(2, 90); sh.setColumnWidth(3, 130); sh.setColumnWidth(4, 130);
+  SpreadsheetApp.flush();
+  DriveApp.getFileById(ss.getId()).moveTo(folder);
+  return ss.getUrl();
+}
+
+/* jeden zbiorczy arkusz: wiersz na kazda wycene, najnowsze na gorze */
+function rejestr(a, kiedy, url) {
+  const g = glownyFolder();
+  const it = g.getFilesByName(&#x27;Rejestr wycen&#x27;);
+  let ss;
+  if (it.hasNext()) ss = SpreadsheetApp.open(it.next());
+  else {
+    ss = SpreadsheetApp.create(&#x27;Rejestr wycen&#x27;);
+    ss.getActiveSheet().getRange(1, 1, 1, 8)
+      .setValues([[&#x27;Data&#x27;, &#x27;Klient&#x27;, &#x27;Telefon&#x27;, &#x27;Adres&#x27;, &#x27;m²&#x27;, &#x27;Kwota netto (zł)&#x27;, &#x27;Termin&#x27;, &#x27;Arkusz&#x27;]])
+      .setFontWeight(&#x27;bold&#x27;).setBackground(&#x27;#FE6500&#x27;).setFontColor(&#x27;#FFFFFF&#x27;);
+    ss.getActiveSheet().setFrozenRows(1);
+    DriveApp.getFileById(ss.getId()).moveTo(g);
+  }
+  const sh = ss.getSheets()[0];
+  sh.insertRowAfter(1);
+  sh.getRange(2, 1, 1, 8).setValues([[kiedy, a.imie || &#x27;&#x27;, a.tel || &#x27;&#x27;, a.adres || &#x27;&#x27;, a.m2 || &#x27;&#x27;,
+    Math.round((a.suma || 0) * 100) / 100, a.termin || &#x27;&#x27;, url]]);
+}
+
+function czysc(t) {
+  return String(t || &#x27;&#x27;).replace(/[\/:*?&quot;&lt;&gt;|\n\r]+/g, &#x27; &#x27;).replace(/\s+/g, &#x27; &#x27;).trim().slice(0, 120);
+}
+
+function doPost(e) {
+  try {
+    const d = JSON.parse(e.postData.contents);
+    const kiedy = Utilities.formatDate(new Date(), &#x27;Europe/Warsaw&#x27;, &#x27;yyyy-MM-dd HH-mm&#x27;);
+    const nazwa = czysc(kiedy + &#x27; &#x27; + (d.opis || &#x27;wycena&#x27;)) + &#x27;.pdf&#x27;;
+    const folder = folderMiesiaca();
+    if (d.pdf) {
+      folder.createFile(Utilities.newBlob(Utilities.base64Decode(d.pdf), &#x27;application/pdf&#x27;, nazwa));
+    }
+    if (d.arkusz) {
+      const a = d.arkusz;
+      const tytul = String.fromCodePoint(0x1F4CD) + &#x27; &#x27; + czysc((a.ulica || a.imie || a.tel || &#x27;wycena&#x27;) + &#x27; &#x27; + kiedy.slice(0, 10));
+      const url = arkuszWyceny(folder, tytul, a, kiedy);
+      rejestr(a, kiedy, url);
+    }
+    const mail = String(d.mailKlienta || &#x27;&#x27;).trim();
+    const mailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail);
+    if (d.ofertaKlientowi &amp;&amp; mailOk &amp;&amp; d.pdf) {
+      MailApp.sendEmail({
+        to: mail,
+        name: &#x27;SMARTPARKIET&#x27;,
+        subject: &#x27;Oferta renowacji parkietu - SMARTPARKIET&#x27;,
+        body: &#x27;Dzień dobry,\n\nw załączniku przesyłamy ofertę renowacji parkietu przygotowaną na podstawie przesłanych informacji i zdjęć. &#x27; +
+          &#x27;Na ostatniej stronie znajdą Państwo zasady renowacji.\n\n&#x27; +
+          &#x27;W razie pytań albo chęci ustalenia terminu prosimy o kontakt: 602 242 815 lub odpowiedź na tę wiadomość.\n\n&#x27; +
+          &#x27;Pozdrawiamy\nSMARTPARKIET\nCyklinowanie SMART™&#x27;,
+        attachments: [Utilities.newBlob(Utilities.base64Decode(d.pdf), &#x27;application/pdf&#x27;, d.nazwaPdf || &#x27;Oferta_SMARTPARKIET.pdf&#x27;)]
+      });
+    } else if (POTWIERDZENIE &amp;&amp; mailOk) {
+      MailApp.sendEmail({
+        to: mail,
+        name: &#x27;SMARTPARKIET&#x27;,
+        subject: &#x27;Otrzymaliśmy Państwa zgłoszenie do wyceny - SMARTPARKIET&#x27;,
+        body: &#x27;Dzień dobry,\n\ndziękujemy za przesłanie zgłoszenia do bezpłatnej wyceny SMARTPARKIET. &#x27; +
+          &#x27;Parkieciarz obejrzy zdjęcia i odezwie się z wyceną w ciągu dwóch godzin roboczych.\n\n&#x27; +
+          &#x27;W razie pytań: 602 242 815.\n\nPozdrawiamy\nSMARTPARKIET\nCyklinowanie SMART™&#x27;
+      });
+    }
+    return ContentService.createTextOutput(JSON.stringify({ ok: true, plik: nazwa }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ ok: false, blad: String(err) }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet() {
+  return ContentService.createTextOutput(&#x27;SMARTPARKIET wyceny - dziala&#x27;);
+}
+</textarea>
+<script>document.getElementById('kop').onclick=async()=>{const t=document.getElementById('kod');try{await navigator.clipboard.writeText(t.value)}catch(e){t.select();document.execCommand('copy')}document.getElementById('ok').hidden=false};</script>
+</body></html>

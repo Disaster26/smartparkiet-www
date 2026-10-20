@@ -1,7 +1,8 @@
 /* SMARTPARKIET - kazda oferta z kalkulatora zapisuje sie na Dysku Google:
    PDF + osobny arkusz Google z wycena + wiersz w zbiorczym arkuszu "Rejestr wycen"
    (Artur 15.10: "zeby miec latwy przeglad"). Klient dostaje krotkie potwierdzenie
-   z konta SMARTPARKIET (bez cen).
+   z konta SMARTPARKIET (bez cen), a gdy wycene wysyla parkieciarz z zaznaczonym
+   "Wyslij klientowi oferte PDF" - mail z oferta PDF w zalaczniku (Artur 20.10 18:05).
 
    Wdrozenie (raz, na koncie Gmail SMARTPARKIET, najlepiej na komputerze):
    1. script.google.com -> Nowy projekt -> usun wszystko i wklej ten plik -> zapisz.
@@ -106,7 +107,19 @@ function doPost(e) {
       rejestr(a, kiedy, url);
     }
     const mail = String(d.mailKlienta || '').trim();
-    if (POTWIERDZENIE && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) {
+    const mailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail);
+    if (d.ofertaKlientowi && mailOk && d.pdf) {
+      MailApp.sendEmail({
+        to: mail,
+        name: 'SMARTPARKIET',
+        subject: 'Oferta renowacji parkietu - SMARTPARKIET',
+        body: 'Dzień dobry,\n\nw załączniku przesyłamy ofertę renowacji parkietu przygotowaną na podstawie przesłanych informacji i zdjęć. ' +
+          'Na ostatniej stronie znajdą Państwo zasady renowacji.\n\n' +
+          'W razie pytań albo chęci ustalenia terminu prosimy o kontakt: 602 242 815 lub odpowiedź na tę wiadomość.\n\n' +
+          'Pozdrawiamy\nSMARTPARKIET\nCyklinowanie SMART™',
+        attachments: [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Oferta_SMARTPARKIET.pdf')]
+      });
+    } else if (POTWIERDZENIE && mailOk) {
       MailApp.sendEmail({
         to: mail,
         name: 'SMARTPARKIET',
