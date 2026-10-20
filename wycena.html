@@ -1000,6 +1000,12 @@ figure{margin:0}
 </script>
 <style>.dod-w{display:grid;grid-template-columns:1fr 1fr 1.5fr 44px;gap:6px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed #E2D8CC;align-items:end}.dod-w .dod-o{grid-column:1/-1}.dod-w label{display:block;font-size:.72rem;color:#6B5E52;margin:0 0 3px;letter-spacing:0;text-transform:none;font-weight:400}.dod-w input{width:100%;min-width:0}.dod-w .dod-x{border:0;background:#EDE6DC;border-radius:8px;height:44px;font-size:20px;cursor:pointer}.dod-plus{margin-top:2px;border:1px dashed #E8671F;background:transparent;color:#E8671F;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}</style>
 <script>
+  /* Artur 20.10 16:28: pytanie 'Czy potrzebna pomoc z meblami?'. Wartosci radia bez zmian (meble='nie' = ekipa przesuwa),
+     zmienia sie tylko tresc: 'tak' (pomoc) to dawne 'nie', 'nie' to dawne 'tak'. */
+(function(){var rt=document.querySelector('input[name=meble][value="tak"]'),rn=document.querySelector('input[name=meble][value="nie"]');if(!rt||!rn)return;
+    var py=rt.closest('.pyt'),sp=py&&py.querySelector('span');if(sp)sp.textContent='Czy potrzebna pomoc z meblami?';
+    var lt=rt.closest('label'),ln=rn.closest('label');if(!lt||!ln)return;
+    lt.lastChild.textContent=' nie';ln.lastChild.textContent=' tak';ln.parentNode.insertBefore(ln,lt);})();
 (function(){
   /* Artur 14.10: rubryka na prace nietypowe wpisywane recznie z kwota, wchodzi do widelek i do tabeli w PDF.
      Widoczna tylko dla parkieciarza: link wycena.html?parkieciarz (zapamietywane na tym telefonie). */
@@ -1072,6 +1078,12 @@ figure{margin:0}
     function duze(){DUZE.forEach(function(id){var e=document.getElementById(id);if(e&&e.value&&e.value!==e.value.toUpperCase())e.value=e.value.toUpperCase();});}
     DUZE.forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('input',function(){var p=e.selectionStart;e.value=e.value.toUpperCase();try{e.setSelectionRange(p,p);}catch(x){}});});
     document.addEventListener('click',function(ev){var t=ev.target&&ev.target.closest&&ev.target.closest('#wyslij,#podgladOferty,#smsRozrzuc');if(t)setTimeout(duze,0);duze();},true);
+    /* Artur 20.10 16:30: 'Uwagi / prace dodatkowe' i 'Prace dodatkowe / nietypowe' jako jedna ramka 'Prace dodatkowe' */
+    (function(){var u=document.getElementById('uwagiKl'),db=document.getElementById('dodBlok');if(!u||!db||db.contains(u))return;
+      var stary=u.closest('.szer')||u.parentElement;var lb=db.querySelector('label');
+      if(lb&&lb.firstChild&&lb.firstChild.nodeType===3)lb.firstChild.textContent='Prace dodatkowe ';
+      u.placeholder='opis, np. korytarz ok. 8 m² do ustalenia';u.style.marginBottom='10px';
+      if(lb)lb.after(u);else db.prepend(u);if(stary&&stary!==db)stary.style.display='none';})();
     var nw=document.querySelector('input[name="stab"][value="nie wiem"]');
     if(nw&&!document.querySelector('input[name="stab"][value="do uzgodnienia"]')){var lb=document.createElement('label');lb.innerHTML='<input type="radio" name="stab" value="do uzgodnienia"> do uzgodnienia';nw.closest('label').after(lb);}
     if(est){est.style.gridColumn='1/-1';est.style.margin='0 0 10px';est.style.borderTop='0';est.style.paddingTop='4px';f.insertBefore(est,box.nextSibling);}
@@ -1518,10 +1530,13 @@ figure{margin:0}
       g.fillStyle=CIEMNY;g.font='22px Arial';
       y=zawin(g,'Termin: '+(A.pole('terminKl')||'do ustalenia')+'.',M,y,W-2*M,30);
       /* Artur 14.10 11:07: pasek informacji dodatkowych zablokowany na 3 linijki, zeby wycena nie przeskakiwala na druga strone; pelna tresc uwag idzie w mailu */
-      if(A.pole('uwagiKl')){const sl=('Uwagi klienta: '+A.pole('uwagiKl').replace(/\s+/g,' ')).split(' ');const ll=[];let l='';
-        for(const w of sl){const n=l?l+' '+w:w;if(g.measureText(n).width>W-2*M&&l){ll.push(l);l=w;}else l=n;}if(l)ll.push(l);
-        if(ll.length>3){ll.length=3;let o=ll[2];while(o.length>4&&g.measureText(o+' … (pełna treść w mailu)').width>W-2*M)o=o.slice(0,-1);ll[2]=o.replace(/\s+\S*$/,'')+' … (pełna treść w mailu)';}
-        ll.forEach(t=>{g.fillText(t,M,y);y+=30;});}
+      /* Artur 20.10 16:30: prace dodatkowe / uwagi w osobnej ramce (jak pola arkusza), max 3 linijki - pelna tresc w mailu */
+      if(A.pole('uwagiKl')){g.font='21px Arial';const sz=W-2*M-28,sl=A.pole('uwagiKl').replace(/\s+/g,' ').split(' ');const ll=[];let l='';
+        for(const w of sl){const n=l?l+' '+w:w;if(g.measureText(n).width>sz&&l){ll.push(l);l=w;}else l=n;}if(l)ll.push(l);
+        if(ll.length>3){ll.length=3;let o=ll[2];while(o.length>4&&g.measureText(o+' … (pełna treść w mailu)').width>sz)o=o.slice(0,-1);ll[2]=o.replace(/\s+\S*$/,'')+' … (pełna treść w mailu)';}
+        y+=6;g.fillStyle=SZARY;g.font='bold 20px Arial';g.fillText('Prace dodatkowe / uwagi',M,y);y+=12;
+        const hb=ll.length*28+20;g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M,y,W-2*M,hb);
+        g.fillStyle=CIEMNY;g.font='21px Arial';ll.forEach((t,k)=>g.fillText(t,M+14,y+30+k*28));y+=hb+34;}
       y=zawin(g,'Przed rozpoczęciem prac prosimy o zapoznanie się z zasadami renowacji na ostatniej stronie.',M,y,W-2*M,30);
       y+=24;
       // tabela cen (gdy sie nie zmiesci przed stopka, idzie na nastepna strone)
