@@ -1746,7 +1746,7 @@ figure{margin:0}
     /* Artur 14.10: kazda oferta PDF ma sie zapisac na jego Dysku Google (konto SMARTPARKIET).
        Skrypt ai/wyceny_dysk.gs wdrozony na jego koncie; tu adres /exec. Pusty = funkcja wylaczona.
        Ten sam skrypt wysyla klientowi potwierdzenie (autoodpowiedz FormSubmit nie dochodzi). */
-    const DYSK_URL='';
+    const DYSK_URL='https://script.google.com/macros/s/AKfycbxC1j9MytYHxqD-ONdcd8Bar5SxnAVnmr8pxP1_pdEEIZzB1hbh9AXRDtXEg5hX0QXzDA/exec';
     function naDysk(mail){
       if(!DYSK_URL)return;
       const pole=id=>((document.getElementById(id)||{}).value||'').trim();
