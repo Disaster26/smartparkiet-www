@@ -972,10 +972,10 @@ figure{margin:0}
     <div class="sticky">
       <p class="oczko"><span></span>Kalkulator online</p>
       <h2>Kalkulator bezpłatnej wyceny</h2>
-      <p class="lead se-lead">Prosty formularz mobilny - wypełnienie zajmuje ok. 2 minuty.</p><p class="lead" style="margin-top:14px;font-style:italic">Dodaj 4-6 zdjęć podłogi (przy naprawach do 12), uwzględniając miejsca uszkodzeń.</p><p class="lead" style="margin-top:14px"><b>System automatycznie obliczy orientacyjne widełki cenowe.</b> Specjalista oceni zdjęcia i przekaże indywidualną wycenę w ciągu 2 godzin roboczych.</p>
+      <p class="lead se-lead">Prosty formularz mobilny - wypełnienie zajmuje ok. 2&nbsp;minuty.</p><p class="lead" style="margin-top:14px;font-style:italic">Dodaj 4-6 zdjęć podłogi (przy naprawach do 12), uwzględniając miejsca uszkodzeń.</p><p class="lead" style="margin-top:14px"><b>System automatycznie obliczy orientacyjne widełki cenowe.</b> Specjalista oceni zdjęcia i przekaże indywidualną wycenę w ciągu 2 godzin roboczych.</p>
     </div>
     <div class="ai">
-      <label class="drop" id="drop" for="file"><span><b>Zdjęcia podłogi 4-12 /naprawy/</b></span><span class="btn btn-ghost" style="pointer-events:none">Dodaj zdjęcia</span><input id="file" type="file" accept="image/*" multiple hidden></label>
+      <label class="drop" id="drop" for="file"><span><b>Zdjęcia podłogi: 4-6 (przy naprawach do 12)</b></span><span class="btn btn-ghost" style="pointer-events:none">Dodaj zdjęcia</span><input id="file" type="file" accept="image/*" multiple hidden></label>
       <div class="miniatury" id="miniatury"><span class="lic" id="licZdj">Dodano 0 z 12 zdjęć (minimum 4)</span></div>
       <div class="ai-body">
         <div class="ai-photo" id="aiPhoto"><div class="empty">Tu pojawi się Państwa zdjęcie</div><div class="scan"></div></div>
@@ -1342,9 +1342,9 @@ figure{margin:0}
       </div>
       <div class="c-kontakt"><h4>Kontakt</h4><a href="tel:+48602242815">602 242 815</a><a href="mailto:smartparkiet@gmail.com">smartparkiet@gmail.com</a><a href="https://wa.me/48602242815">WhatsApp</a></div>
       <div class="c-oddzialy"><h4>Oddziały</h4><a href="cyklinowanie-rembertow.html">Suflerska 4, Rembertów</a><a href="cyklinowanie-ochota.html">Grójecka 208, lok. 229, Ochota</a><a href="cyklinowanie-targowek.html">Turmoncka 17A, lok. 21, Targówek</a><a href="cyklinowanie-mokotow.html">Belwederska 23, Mokotów</a></div>
-      <div class="c-wiecej"><h4>Więcej</h4><div class="ww"><div><a href="cennik.html">Pakiety</a><a href="programy.html">Programy</a><a href="realizacje.html">Realizacje</a><a href="schody.html">Schody</a></div><div><a href="ekspertyza.html">Ekspertyza online</a><a href="blog.html">Poradniki</a><a href="parkiet-w-kamienicy.html">Kamienice</a><a href="dla-pracowni.html">Dla pracowni</a></div></div></div>
+      <div class="c-wiecej"><h4>Więcej</h4><div class="ww"><div><a href="cennik.html">Cennik</a><a href="programy.html">Programy</a><a href="realizacje.html">Realizacje</a><a href="schody.html">Schody</a></div><div><a href="ekspertyza.html">Ekspertyza online</a><a href="blog.html">Poradniki</a><a href="parkiet-w-kamienicy.html">Kamienice</a><a href="dla-pracowni.html">Dla pracowni</a></div></div></div>
     </div>
-    <div class="fine"><span>© 2026 SMARTPARKIET<sup>™</sup><span class="autor">Artur Trembiński</span></span><span>Cyklinowanie SMART<sup>™</sup> <i>|</i> nazwy są znakami SMARTPARKIET</span></div>
+    <div class="fine"><span>© 2026 SMARTPARKIET<sup>™</sup> <span class="autor">Artur Trembiński</span></span><span>Cyklinowanie SMART<sup>™</sup> <i>|</i> nazwy są znakami SMARTPARKIET</span></div>
   </div>
 </footer>
 
@@ -1429,7 +1429,7 @@ figure{margin:0}
     const dod=mb*CENY.listwy+sm*CENY.stab+kol+extS;
     const lo=(120+w)*a+dod,hi=(140+w)*a+dod;
     const days=a<=40?'1-2 dni':a<=90?'2 dni':a<=160?'3 dni':'4-5 dni';
-    oN.textContent=pln(lo)+' - '+pln(hi)+' zł';
+    oN.textContent=pln(lo)+'-'+pln(hi)+' zł';
     const czesci=[];
     if(mb)czesci.push('listwy '+mb+' mb × 50 zł');
     if(sm)czesci.push('stabilizacja '+sm+' m² × 70 zł');else if(zaznaczone('stab')==='tak')czesci.push('stabilizacja: podaj m²');else if(zaznaczone('stab')==='do uzgodnienia')czesci.push('stabilizacja do uzgodnienia');

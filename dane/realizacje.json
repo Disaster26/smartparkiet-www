@@ -79,7 +79,7 @@
   "id": "wilanow-deska-warstwowa",
   "_uwaga": "Zdjecia z dysku Artura (folder \"Warstwowa bez koloru\", 08.10.2026). Kolejnosc wg jego wiadomosci: najpierw zestawienia przed i po, potem stara podloga, na koniec nowa.",
   "data": "2026-10-08",
-  "tytul": "Deska warstwowa faza Dąb",
+  "tytul": "Deska warstwowa dębowa z fazą",
   "lokalizacja": "Warszawa, Wilanów",
   "metraz": "90 m²",
   "czas": "2 dni",
@@ -93,67 +93,67 @@
   "zdj_stare": [
    {
     "src": "img/wilanow-przed-1.webp",
-    "alt": "Deska warstwowa przed renowacja, stara warstwa kolorystyczna i zarysowania"
+    "alt": "Deska warstwowa przed renowacją, stara warstwa kolorystyczna i zarysowania"
    },
    {
     "src": "img/wilanow-przed-2.webp",
-    "alt": "Deska warstwowa przed renowacja, stara warstwa kolorystyczna i zarysowania"
+    "alt": "Deska warstwowa przed renowacją, stara warstwa kolorystyczna i zarysowania"
    },
    {
     "src": "img/wilanow-przed-3.webp",
-    "alt": "Deska warstwowa przed renowacja, stara warstwa kolorystyczna i zarysowania"
+    "alt": "Deska warstwowa przed renowacją, stara warstwa kolorystyczna i zarysowania"
    }
   ],
   "zdj_nowe": [
    {
     "src": "img/wilanow-po-1.webp",
-    "alt": "Deska warstwowa debowa po renowacji, naturalny kolor drewna"
+    "alt": "Deska warstwowa dębowa po renowacji, naturalny kolor drewna"
    },
    {
     "src": "img/wilanow-po-2.webp",
-    "alt": "Deska warstwowa debowa po renowacji, naturalny kolor drewna"
+    "alt": "Deska warstwowa dębowa po renowacji, naturalny kolor drewna"
    },
    {
     "src": "img/wilanow-po-3.webp",
-    "alt": "Deska warstwowa debowa po renowacji, naturalny kolor drewna"
+    "alt": "Deska warstwowa dębowa po renowacji, naturalny kolor drewna"
    },
    {
     "src": "img/wilanow-po-4.webp",
-    "alt": "Deska warstwowa debowa po renowacji, naturalny kolor drewna"
+    "alt": "Deska warstwowa dębowa po renowacji, naturalny kolor drewna"
    },
    {
     "src": "img/wilanow-po-5.webp",
-    "alt": "Deska warstwowa debowa po renowacji, naturalny kolor drewna"
+    "alt": "Deska warstwowa dębowa po renowacji, naturalny kolor drewna"
    },
    {
     "src": "img/wilanow-po-6.webp",
-    "alt": "Deska warstwowa debowa po renowacji, naturalny kolor drewna"
+    "alt": "Deska warstwowa dębowa po renowacji, naturalny kolor drewna"
    },
    {
     "src": "img/wilanow-po-7.webp",
-    "alt": "Deska warstwowa debowa po renowacji, naturalny kolor drewna"
+    "alt": "Deska warstwowa dębowa po renowacji, naturalny kolor drewna"
    },
    {
     "src": "img/wilanow-po-8.webp",
-    "alt": "Deska warstwowa debowa po renowacji, naturalny kolor drewna"
+    "alt": "Deska warstwowa dębowa po renowacji, naturalny kolor drewna"
    }
   ],
   "zdj_laczone": [
    {
     "src": "img/wilanow-porownanie-1.webp",
-    "alt": "Deska warstwowa debowa w Wilanowie, zestawienie przed i po renowacji"
+    "alt": "Deska warstwowa dębowa w Wilanowie, zestawienie przed i po renowacji"
    },
    {
     "src": "img/wilanow-porownanie-2.webp",
-    "alt": "Deska warstwowa debowa w Wilanowie, zestawienie przed i po renowacji"
+    "alt": "Deska warstwowa dębowa w Wilanowie, zestawienie przed i po renowacji"
    },
    {
     "src": "img/wilanow-porownanie-3.webp",
-    "alt": "Deska warstwowa debowa w Wilanowie, zestawienie przed i po renowacji"
+    "alt": "Deska warstwowa dębowa w Wilanowie, zestawienie przed i po renowacji"
    },
    {
     "src": "img/wilanow-porownanie-4.webp",
-    "alt": "Deska warstwowa debowa w Wilanowie, zestawienie przed i po renowacji"
+    "alt": "Deska warstwowa dębowa w Wilanowie, zestawienie przed i po renowacji"
    }
   ]
  }
