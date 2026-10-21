@@ -96,6 +96,27 @@ function czysc(t) {
   return String(t || '').replace(/[\/:*?"<>|\n\r]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120);
 }
 
+/* 21.10 Artur: mail w stylistyce stopki strony (czarny, pomaranczowy, bialy), numer do klikniecia */
+function mailHtml(akapity) {
+  const p = akapity.map(t => '<p style="margin:0 0 14px">' + t.replace('602 242 815',
+    '<a href="tel:+48602242815" style="color:#FE6500;font-weight:700;text-decoration:none">602 242 815</a>') + '</p>').join('');
+  return '<div style="background:#F4EFE9;padding:24px 12px;font-family:Arial,Helvetica,sans-serif">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;border-collapse:collapse">' +
+    '<tr><td style="background:#14110E;padding:18px 24px;border-bottom:3px solid #FE6500">' +
+      '<img src="https://smartparkiet.com.pl/img/logo-znak.png" width="30" height="30" alt="" style="vertical-align:middle;border:0">' +
+      '<span style="vertical-align:middle;margin-left:10px;color:#fff;font-size:18px;font-weight:800;letter-spacing:.06em">SMART<span style="color:#FE6500">PARKIET</span></span></td></tr>' +
+    '<tr><td style="background:#ffffff;padding:26px 24px 12px;color:#1F2328;font-size:15px;line-height:1.6">' +
+      '<p style="margin:0 0 14px">Dzień dobry,</p>' + p +
+      '<p style="margin:18px 0 0">Pozdrawiamy</p></td></tr>' +
+    '<tr><td style="background:#ffffff;padding:6px 24px 26px">' +
+      '<a href="tel:+48602242815" style="display:inline-block;background:#FE6500;color:#ffffff;font-weight:700;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:4px">Zadzwoń: 602 242 815</a></td></tr>' +
+    '<tr><td style="background:#14110E;padding:20px 24px;color:#DDD5CB;font-size:13px;line-height:1.6">' +
+      '<div style="color:#ffffff;font-weight:800;letter-spacing:.08em;font-size:14px">SMARTPARKIET TREMBIŃSKI</div>' +
+      '<div>Artur | <a href="tel:+48602242815" style="color:#FE6500;font-weight:700;text-decoration:none">602 242 815</a></div>' +
+      '<div><a href="https://smartparkiet.com.pl" style="color:#DDD5CB;text-decoration:none">smartparkiet.com.pl</a> &middot; Cyklinowanie SMART&trade;</div>' +
+    '</td></tr></table></div>';
+}
+
 function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
@@ -114,28 +135,28 @@ function doPost(e) {
     const mail = String(d.mailKlienta || '').trim();
     const mailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail);
     if (d.ofertaKlientowi && mailOk && d.pdf) {
+      const akapity = ['w załączniku przesyłamy ofertę renowacji parkietu przygotowaną na podstawie przesłanych informacji i zdjęć. Na ostatniej stronie znajdą Państwo zasady renowacji.',
+        'W razie pytań albo chęci ustalenia terminu prosimy o kontakt telefoniczny lub odpowiedź na tę wiadomość.'];
       MailApp.sendEmail({
         to: mail,
         replyTo: ARTUR,
         name: 'SMARTPARKIET',
         subject: 'Oferta renowacji parkietu - SMARTPARKIET',
-        body: 'Dzień dobry,\n\nw załączniku przesyłamy ofertę renowacji parkietu przygotowaną na podstawie przesłanych informacji i zdjęć. ' +
-          'Na ostatniej stronie znajdą Państwo zasady renowacji.\n\n' +
-          'W razie pytań albo chęci ustalenia terminu prosimy o kontakt: 602 242 815 lub odpowiedź na tę wiadomość.\n\n' +
-          'Pozdrawiamy\nSMARTPARKIET\nCyklinowanie SMART™',
+        body: 'Dzień dobry,\n\n' + akapity.join('\n\n') + '\n\nPozdrawiamy\nSMARTPARKIET TREMBIŃSKI\nArtur | 602 242 815',
+        htmlBody: mailHtml(akapity),
         attachments: [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Oferta_SMARTPARKIET.pdf')]
       });
     } else if (POTWIERDZENIE && mailOk) {
+      /* 21.10 Artur: jego tresc, w zalaczniku karta z kalkulacja */
+      const akapity = ['dziękujemy za zainteresowanie ofertą naszej firmy. W załączniku przesyłamy naszą wstępną wycenę - kalkulację.',
+        'Prosimy o potwierdzenie otrzymania i zapraszamy do kontaktu telefonicznego pod numerem 602 242 815.'];
       MailApp.sendEmail({
         to: mail,
         replyTo: ARTUR,
         name: 'SMARTPARKIET',
         subject: 'Wstępna wycena renowacji parkietu - SMARTPARKIET',
-        /* 21.10 Artur: jego tresc, w zalaczniku karta z kalkulacja */
-        body: 'Dzień dobry,\n\ndziękujemy za zainteresowanie ofertą naszej firmy. ' +
-          'W załączniku przesyłamy naszą wstępną wycenę - kalkulację.\n\n' +
-          'Prosimy o potwierdzenie otrzymania i zapraszamy do kontaktu telefonicznego pod numerem 602 242 815.\n\n' +
-          'Pozdrawiamy\nSMARTPARKIET Trembiński',
+        body: 'Dzień dobry,\n\n' + akapity.join('\n\n') + '\n\nPozdrawiamy\nSMARTPARKIET TREMBIŃSKI\nArtur | 602 242 815',
+        htmlBody: mailHtml(akapity),
         attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', 'Wstepna_wycena_SMARTPARKIET.pdf')] : []
       });
     }
