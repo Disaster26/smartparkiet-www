@@ -1910,3 +1910,28 @@ html body footer.site .cols>div.c-oddzialy a:hover,html body footer.site .cols>d
   html body footer.site .cols>div.c-oddzialy a,html body footer.site .cols>div.c-kontakt a{padding-top:7px!important;padding-bottom:7px!important;min-height:0!important}
 }
 </style>
+<style id="cta-bar-po-przewinieciu">
+@media(max-width:900px){
+  html.js-cta .cta-bar{transform:translateY(110%);transition:transform .25s ease;will-change:transform}
+  html.js-cta.cta-on .cta-bar{transform:none}
+}
+@media(prefers-reduced-motion:reduce){html.js-cta .cta-bar{transition:none}}
+</style>
+<script>
+(function(){
+  var bar=document.querySelector('.cta-bar'); if(!bar)return;
+  var de=document.documentElement; de.classList.add('js-cta');
+  function f(){ de.classList.toggle('cta-on', scrollY > innerHeight*0.6 || (innerHeight+scrollY) >= de.scrollHeight-4); }
+  addEventListener('scroll',f,{passive:true}); addEventListener('resize',f); f();
+})();
+</script>
+<style id="menu-1280">/* QA 21.10: menu w jednym rzedzie od 1240 px (bylo od 1450 px) */
+@media (min-width:1240px) and (max-width:1449px){
+  html body header.nav .burger{display:none!important}
+  html body header.nav nav,html body header.nav.open nav{display:flex!important;position:static!important;width:auto!important;flex-direction:row!important;
+    padding:0!important;margin:0 0 0 14px!important;background:none!important;border:0!important;box-shadow:none!important;gap:0!important;flex-wrap:nowrap!important}
+  html body header.nav nav a,html body header.nav.open nav a{font-size:12px!important;padding:6px 5px!important;border:0!important;white-space:nowrap!important;letter-spacing:0!important}
+  html body header.nav .brand-t{font-size:15px!important}
+  html body header.nav .brand img{width:26px!important;height:26px!important}
+  html body header.nav .tel{margin-left:8px!important;padding-left:10px!important;padding-right:10px!important;font-size:13px!important;white-space:nowrap}
+}</style>
