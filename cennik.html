@@ -978,15 +978,15 @@ figure{margin:0}
           <button type="button" aria-pressed="false" data-f="kolor"><b>Koloryzacja „orzech”</b><span>+ 40-70 zł/m²</span></button>
         </div>
       </div>
-      <div class="lab-stage" id="lab" style="--x:100%;--lx:62%;--ly:38%">
+      <div class="lab-stage" id="lab" style="--x:50%;--lx:62%;--ly:38%">
         <img class="raw" src="img/01d9a4dd52.webp" alt="Surowy dąb po cyklinowaniu">
         <img class="fin" src="img/01d9a4dd52.webp" alt="Dąb po wykończeniu" id="labFin">
         <div class="shine"></div>
         <div class="tint"></div>
         <div class="edge"></div>
         <div class="knob">⇔</div>
-        <span class="lbl l">surowy, po cyklinowaniu</span><span class="lbl r" id="labName">lakier wodny półmat</span>
-        <input type="range" min="0" max="100" value="100" aria-label="Granica wykończenia" id="labRange">
+        <span class="lbl l">surowy</span><span class="lbl r" id="labName">lakier wodny półmat</span>
+        <input type="range" min="0" max="100" value="50" aria-label="Granica wykończenia" id="labRange">
       </div>
       <div class="lab-foot"><span id="labDesc">Trzy warstwy lakieru wodnego premium - zawsze trzy. Po podłodze chodzi się w skarpetach po 3 godzinach, spać można następnego dnia, meble wracają po 3-4 dniach, na filcu.</span><span class="demo-note" style="margin:0">Podgląd na zdjęciu z realizacji. Przed decyzją robimy próbki na Państwa podłodze.</span></div>
     </div>
@@ -1877,3 +1877,7 @@ html body footer.site .cols>div.c-oddzialy a:hover,html body footer.site .cols>d
   html body header.nav .tel{margin-left:8px!important;padding-left:10px!important;padding-right:10px!important;font-size:13px!important;white-space:nowrap}
 }</style>
 <style id="pola-16px">@media(max-width:860px){html body input:not([type=checkbox]):not([type=radio]):not([type=range]),html body textarea,html body select{font-size:16px!important}}</style>
+<style id="qa2-cennik">/* QA 21.10: etykiety suwaka przed/po nie nachodza na siebie */
+@media(max-width:600px){html body .lab-stage .lbl{bottom:auto!important;top:10px!important;font-size:.62rem!important;max-width:45%!important;white-space:normal!important;line-height:1.25}}</style>
+<style id="qa2-stopka">/* QA 21.10: linki w stopce czytelne na komputerze, jeden odcien */
+@media(min-width:861px){html body footer.site .cols a{font-size:.78rem!important;color:#DDD5CB!important}html body footer.site .cols a:hover{color:#fff!important}}</style>
