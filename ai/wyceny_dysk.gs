@@ -130,12 +130,13 @@ function doPost(e) {
         to: mail,
         replyTo: ARTUR,
         name: 'SMARTPARKIET',
-        subject: 'Otrzymaliśmy Państwa zgłoszenie do wyceny - SMARTPARKIET',
-        body: 'Dzień dobry,\n\ndziękujemy za przesłanie zgłoszenia do bezpłatnej wyceny SMARTPARKIET. ' +
-          'Parkieciarz obejrzy zdjęcia i odezwie się z wyceną w ciągu dwóch godzin roboczych.\n\n' +
-          'W razie pytań: 602 242 815.\n\nPozdrawiamy\nSMARTPARKIET\nCyklinowanie SMART™',
-        /* 21.10 Artur: klient dostaje w zalaczniku karte swojego zgloszenia */
-        attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', 'Zgloszenie_SMARTPARKIET.pdf')] : []
+        subject: 'Wstępna wycena renowacji parkietu - SMARTPARKIET',
+        /* 21.10 Artur: jego tresc, w zalaczniku karta z kalkulacja */
+        body: 'Dzień dobry,\n\ndziękujemy za zainteresowanie ofertą naszej firmy. ' +
+          'W załączniku przesyłamy naszą wstępną wycenę - kalkulację.\n\n' +
+          'Prosimy o potwierdzenie otrzymania i zapraszamy do kontaktu telefonicznego pod numerem 602 242 815.\n\n' +
+          'Pozdrawiamy\nSMARTPARKIET Trembiński',
+        attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', 'Wstepna_wycena_SMARTPARKIET.pdf')] : []
       });
     }
     return ContentService.createTextOutput(JSON.stringify({ ok: true, plik: nazwa }))
