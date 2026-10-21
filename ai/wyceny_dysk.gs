@@ -133,7 +133,9 @@ function doPost(e) {
         subject: 'Otrzymaliśmy Państwa zgłoszenie do wyceny - SMARTPARKIET',
         body: 'Dzień dobry,\n\ndziękujemy za przesłanie zgłoszenia do bezpłatnej wyceny SMARTPARKIET. ' +
           'Parkieciarz obejrzy zdjęcia i odezwie się z wyceną w ciągu dwóch godzin roboczych.\n\n' +
-          'W razie pytań: 602 242 815.\n\nPozdrawiamy\nSMARTPARKIET\nCyklinowanie SMART™'
+          'W razie pytań: 602 242 815.\n\nPozdrawiamy\nSMARTPARKIET\nCyklinowanie SMART™',
+        /* 21.10 Artur: klient dostaje w zalaczniku karte swojego zgloszenia */
+        attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', 'Zgloszenie_SMARTPARKIET.pdf')] : []
       });
     }
     return ContentService.createTextOutput(JSON.stringify({ ok: true, plik: nazwa }))
