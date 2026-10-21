@@ -26,10 +26,10 @@ ODDZIALY = [
         'ulica': 'ul. Suflerska 4', 'kod': '04-471', 'miasto': 'Warszawa',
         'cid': '4565719495930749944',
         'rola': 'Oddział główny: biuro, magazyn maszyn i lakierów, stąd wyjeżdża ekipa wschodnia.',
-        'obszar': ['Rembertów', 'Wesoła', 'Praga Południe', 'Wawer', 'Sulejówek'],
+        'obszar': ['Rembertów', 'Wesoła', 'Praga-Południe', 'Wawer', 'Sulejówek'],
         'eta': 'ok. 15-25 min',
         'opinia': ('„Oględziny na miejscu, wycena, ustalenie terminu na za 2 tygodnie. '
-                   'Po 2 dniach pracy parkiet otrzymał drugie życie."',
+                   'Po 2 dniach pracy parkiet otrzymał drugie życie.”',
                    'Mateusz Głębicki, opinia Google'),
     },
     {
@@ -40,17 +40,17 @@ ODDZIALY = [
         'obszar': ['Ochota', 'Wola', 'Włochy', 'Bemowo', 'Ursus'],
         'eta': 'ok. 10-20 min',
         'opinia': ('„Mogę śmiało polecić firmę smartparkiet. Doskonały, szybki, '
-                   'przejrzysty kontakt."', 'opinia Google, wizytówka Ochota'),
+                   'przejrzysty kontakt.”', 'opinia Google, wizytówka Ochota'),
     },
     {
         'plik': 'cyklinowanie-targowek.html', 'dz': 'Targówek',
         'ulica': 'ul. Turmoncka 17A, lok. 21', 'kod': '03-254', 'miasto': 'Warszawa',
         'cid': '3093966538504001070',
         'rola': 'Ekipa północna. Obsługuje prawy brzeg i północ miasta.',
-        'obszar': ['Targówek', 'Bródno', 'Białołęka', 'Praga Północ', 'Żoliborz', 'Bielany'],
+        'obszar': ['Targówek', 'Bródno', 'Białołęka', 'Praga-Północ', 'Żoliborz', 'Bielany'],
         'eta': 'ok. 10-25 min',
         'opinia': ('„Firma rzetelna, terminowa i profesjonalna. Potrafi doradzić '
-                   'przy starych parkietach."', 'opinia Google, wizytówka Targówek'),
+                   'przy starych parkietach.”', 'opinia Google, wizytówka Targówek'),
     },
     {
         'plik': 'cyklinowanie-mokotow.html', 'dz': 'Mokotów',
@@ -60,7 +60,7 @@ ODDZIALY = [
         'obszar': ['Mokotów', 'Śródmieście', 'Ursynów', 'Wilanów', 'Sadyba'],
         'eta': 'ok. 10-20 min',
         'opinia': ('„Podłoga wygląda świetnie, cyklinowanie z uzupełnieniem '
-                   'przestrzeni między deskami."', 'opinia Google, wizytówka Mokotów'),
+                   'przestrzeni między deskami.”', 'opinia Google, wizytówka Mokotów'),
     },
 ]
 
