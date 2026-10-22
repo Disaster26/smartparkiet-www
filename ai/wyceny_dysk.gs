@@ -16,6 +16,8 @@ const POTWIERDZENIE = true;   // false = klient nie dostaje maila z potwierdzeni
 /* 21.10: skrypt dziala na koncie pomocniczym (panbet77) - odpowiedzi klientow ida do Artura,
    a folder z wycenami jest mu udostepniony do edycji */
 const ARTUR = 'smartparkiet.kontakt@gmail.com';
+/* 21.10 Artur oglada rejestr z konta smartparkiet@gmail.com - dostep dla obu adresow */
+const ARTUR_WSZYSTKIE = ['smartparkiet.kontakt@gmail.com', 'smartparkiet@gmail.com'];
 
 function folderMiesiaca() {
   const glowny = glownyFolder();
@@ -28,7 +30,7 @@ function glownyFolder() {
   const it = DriveApp.getFoldersByName(FOLDER);
   if (it.hasNext()) return it.next();
   const f = DriveApp.createFolder(FOLDER);
-  try { f.addEditor(ARTUR); } catch (e) {}
+  ARTUR_WSZYSTKIE.forEach(function (m) { try { f.addEditor(m); } catch (e) {} });
   return f;
 }
 
@@ -88,8 +90,29 @@ function rejestr(a, kiedy, url) {
   }
   const sh = ss.getSheets()[0];
   sh.insertRowAfter(1);
-  sh.getRange(2, 1, 1, 8).setValues([[kiedy, a.imie || '', a.tel || '', a.adres || '', a.m2 || '',
-    Math.round((a.suma || 0) * 100) / 100, a.termin || '', url]]);
+  /* 21.10 Artur: nowe wiersze dziedziczyly pomaranczowy naglowek, a gole adresy nie otwieraly sie w aplikacji Arkusze */
+  const w = sh.getRange(2, 1, 1, 8);
+  w.setBackground(null).setFontColor('#1A1A1A').setFontWeight('normal');
+  w.setValues([[kiedy, a.imie || '', a.tel || '', a.adres || '', a.m2 || '',
+    Math.round((a.suma || 0) * 100) / 100, a.termin || '', '']]);
+  sh.getRange(2, 8).setFormula('=HYPERLINK("' + url + '","Otwórz arkusz")');
+}
+
+/* jednorazowo: poprawia stare wiersze rejestru (kolor + klikalne linki). Uruchomic recznie z edytora. */
+function naprawRejestr() {
+  const it = glownyFolder().getFilesByName('Rejestr wycen');
+  if (!it.hasNext()) return;
+  const sh = SpreadsheetApp.open(it.next()).getSheets()[0];
+  const n = sh.getLastRow();
+  if (n < 2) return;
+  sh.getRange(2, 1, n - 1, 8).setBackground(null).setFontColor('#1A1A1A').setFontWeight('normal');
+  const linki = sh.getRange(2, 8, n - 1, 1).getValues();
+  linki.forEach(function (r, i) {
+    const u = String(r[0] || '');
+    if (/^https?:\/\//.test(u)) sh.getRange(i + 2, 8).setFormula('=HYPERLINK("' + u + '","Otwórz arkusz")');
+  });
+  const g = glownyFolder();
+  ARTUR_WSZYSTKIE.forEach(function (m) { try { g.addEditor(m); } catch (e) {} });
 }
 
 function czysc(t) {
