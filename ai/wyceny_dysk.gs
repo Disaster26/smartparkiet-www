@@ -222,7 +222,7 @@ function doPost(e) {
       });
     } else if (POTWIERDZENIE && mailOk) {
       /* 21.10 Artur: jego tresc, w zalaczniku karta z kalkulacja */
-      const akapity = ['dziękujemy za zainteresowanie ofertą naszej firmy. W załączniku przesyłamy naszą wstępną wycenę - kalkulację.',
+      const akapity = ['dziękujemy za zainteresowanie ofertą naszej firmy. W załączniku przesyłamy naszą wstępną kalkulację online.',
         'Prosimy o potwierdzenie otrzymania i zapraszamy do kontaktu telefonicznego pod numerem 602 242 815.'];
       MailApp.sendEmail({
         to: mail,
