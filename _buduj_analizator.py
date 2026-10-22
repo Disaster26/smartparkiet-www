@@ -33,11 +33,11 @@ s = re.sub(r'<script type="application/ld\+json".*?</script>\s*', '', s, flags=r
 s = re.sub(r'<meta name="twitter:[^>]*>\s*', '', s)
 zamien('<link rel="manifest" href="site.webmanifest">', '<link rel="manifest" href="analizator.webmanifest">')
 zamien('<link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">',
-       '<link rel="apple-touch-icon" sizes="180x180" href="img/analizator-180.png?v=2">' + NL +
+       '<link rel="apple-touch-icon" sizes="180x180" href="img/analizator-180.png?v=3">' + NL +
        '<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">' + NL +
        '<meta name="apple-mobile-web-app-title" content="Analizator">')
 zamien('<link rel="icon" type="image/png" sizes="192x192" href="img/ikona-192.png">',
-       '<link rel="icon" type="image/png" sizes="192x192" href="img/analizator-192.png?v=2">')
+       '<link rel="icon" type="image/png" sizes="192x192" href="img/analizator-192.png?v=3">')
 s = re.sub(r'<meta name="theme-color" content="[^"]*">', '<meta name="theme-color" content="#F8580E">', s, count=1)
 
 # 2. tryb parkieciarza zawsze + blokada PIN (zaraz po <meta viewport>, przed reszta skryptow)
@@ -46,7 +46,7 @@ BRAMKA = '''<script>window.SP_ANALIZATOR=1;
  if(!ok)ok=/(?:^|; )spAnalizatorPin=1/.test(document.cookie);
  if(ok)return;document.documentElement.className+=' an-zamek';
  function pokaz(){if(document.getElementById('anPin'))return;var d=document.createElement('div');d.id='anPin';
-  d.innerHTML='<form id="anPinF" autocomplete="off"><img src="img/analizator-192.png?v=2" alt="" width="64" height="64"><b>Analizator</b>'+
+  d.innerHTML='<form id="anPinF" autocomplete="off"><img src="img/analizator-192.png?v=3" alt="" width="64" height="64"><b>Analizator</b>'+
    '<label for="anPinI">Wpisz PIN</label><input id="anPinI" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off">'+
    '<button type="submit">Otwórz</button><p id="anPinE" role="alert"></p></form>';
   document.body.appendChild(d);var f=document.getElementById('anPinF'),i=document.getElementById('anPinI');
