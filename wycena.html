@@ -1292,14 +1292,15 @@ figure{margin:0}
   var POLA=['m2','typ','wyk','gatKl','montazKl','listwyMb','stabM2','terminKl','uwagiKl','imieKl','ulicaKl','kodKl','miastoKl','dzielKl','obiektKl','pietroKl','telKl','mailKl'];
   var RADIA=['listwy','stab','napr','meble','winda'];
   function zrzut(){var s={pola:{},radia:{},dod:[]};
-    POLA.forEach(function(id){var e=document.getElementById(id);if(e)s.pola[id]=e.value;});
+    /* 22.10: listy rozwijane maja powtarzajace sie wartosci (Klepka/Mozaika = 1, oba lakiery = 0) - zapamietujemy tez pozycje */
+    s.idx={};POLA.forEach(function(id){var e=document.getElementById(id);if(e){s.pola[id]=e.value;if(e.tagName==='SELECT')s.idx[id]=e.selectedIndex;}});
     RADIA.forEach(function(n){var e=document.querySelector('input[name="'+n+'"]:checked');if(e)s.radia[n]=e.value;});
     [].slice.call(document.querySelectorAll('#dodLista .dod-w')).forEach(function(w){s.dod.push([w.querySelector('.dod-o').value,w.querySelector('.dod-i').value,w.querySelector('.dod-j').value,w.querySelector('.dod-c').value]);});
     s.uzg=[].slice.call(document.querySelectorAll('input[id^="uzg"]:checked')).map(function(e){return e.id;});
     return s;}
   function wczytaj(s){
     if(s.uzg)[].slice.call(document.querySelectorAll('input[id^="uzg"]')).forEach(function(e){var c=s.uzg.indexOf(e.id)>=0;if(e.checked!==c){e.checked=c;e.dispatchEvent(new Event('change',{bubbles:true}));}});
-    Object.keys(s.pola||{}).forEach(function(id){var e=document.getElementById(id);if(e){e.value=s.pola[id];e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));}});
+    Object.keys(s.pola||{}).forEach(function(id){var e=document.getElementById(id);if(e){e.value=s.pola[id];if(s.idx&&s.idx[id]!=null&&e.tagName==='SELECT')e.selectedIndex=s.idx[id];e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));}});
     Object.keys(s.radia||{}).forEach(function(n){var e=document.querySelector('input[name="'+n+'"][value="'+s.radia[n]+'"]');if(e){e.checked=true;e.dispatchEvent(new Event('change',{bubbles:true}));}});
     var li=document.getElementById('dodLista'),plus=document.getElementById('dodPlus');
     if(li&&plus&&s.dod){[].slice.call(li.querySelectorAll('.dod-w')).forEach(function(w){w.remove();});
