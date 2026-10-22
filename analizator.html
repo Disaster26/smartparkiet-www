@@ -2976,6 +2976,25 @@ footer.site .an-link a{color:rgba(255,255,255,.28)!important;text-decoration:non
 <style id="stopka-pasek-2210">/* Artur 21.10 03:14: dolny napis stopki w jednym pasku na telefonie */
 @media(max-width:620px){html body footer.site .fine>span:last-child{white-space:nowrap!important;letter-spacing:.02em!important;font-size:min(.7rem,calc(2.55vw - 1.25px))!important}}
 </style>
+<style id="parkieciarz-2210">/* Artur 22.10 12:01-12:04 (grupa) */
+html body #smsWklej{min-height:58vh!important;min-height:58svh!important;font-size:16px;line-height:1.5}
+html body #dodBlok{padding:12px 14px;border:1.5px solid #F3C9A8;border-radius:12px;background:#FFF8F2}
+html body #dodBlok>label:first-child{color:#E8671F;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase}
+html body #uzgPanel{margin:14px 0}
+</style>
+<script>
+/* Artur 22.10 12:02-12:03: ramka "do uzgodnienia" z nowa nazwa, od razu pod analizatorem (okienkiem SMS) */
+(function(){
+  function przenies(){
+    var pn=document.getElementById('uzgPanel'),sb=document.querySelector('form.ai-form .sms-box');
+    if(!pn||!sb)return;
+    var b=pn.querySelector('b');if(b)b.textContent='Pozycje do uzgodnienia / wizja lokalna - realizacja';
+    if(sb.nextElementSibling!==pn)sb.parentNode.insertBefore(pn,sb.nextSibling);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',przenies);else przenies();
+  setTimeout(przenies,400);
+})();
+</script>
 <style>/* analizator: okienko SMS wyroznione (Artur 21.10 17:27) */
 html body .sms-box{background:#3A3D42!important;border:1.5px solid #3A3D42!important;color:#F4EFE8;box-shadow:0 6px 18px rgba(20,17,14,.18)}
 html body .sms-box::before{content:"Analizator";display:block;font-size:1.15rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#FF8A4C;margin:0 0 6px}
