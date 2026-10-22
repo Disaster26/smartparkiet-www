@@ -14,7 +14,7 @@ URUCHAMIAC PO KAZDEJ ZMIANIE wycena.html:  python _buduj_analizator.py
 import os, re
 
 TU = os.path.dirname(os.path.abspath(__file__))
-PIN = '2815'
+DYSK = re.search(r"const DYSK_URL='([^']+)'", open(os.path.join(TU, 'wycena.html'), encoding='utf-8').read()).group(1)
 
 s = open(os.path.join(TU, 'wycena.html'), encoding='utf-8', newline='').read()
 NL = '\r\n' if '\r\n' in s else '\n'
@@ -50,11 +50,15 @@ BRAMKA = '''<script>window.SP_ANALIZATOR=1;
    '<label for="anPinI">Wpisz PIN</label><input id="anPinI" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off">'+
    '<button type="submit">Otwórz</button><p id="anPinE" role="alert"></p></form>';
   document.body.appendChild(d);var f=document.getElementById('anPinF'),i=document.getElementById('anPinI');
-  f.onsubmit=function(e){e.preventDefault();if(i.value.trim()==='%s'){
-    try{localStorage.setItem('spAnalizatorPin','1');}catch(x){}
+  /* 22.10: PIN sprawdza serwer (nie ma go w kodzie strony) i oddaje klucz do folderu ofert */
+  f.onsubmit=function(e){e.preventDefault();var E=document.getElementById('anPinE');E.textContent='Sprawdzam...';
+   fetch('%s?a=klucz&pin='+encodeURIComponent(i.value.trim())).then(function(r){return r.json();}).then(function(j){
+    if(!j.ok){E.textContent=j.blad==='Zły PIN'?'Nieprawidłowy PIN':(j.blad||'Błąd');i.value='';i.focus();return;}
+    try{localStorage.setItem('spAnalizatorPin','1');localStorage.setItem('spKlucz',j.k);}catch(x){}
     document.cookie='spAnalizatorPin=1; max-age=31536000; path=/; SameSite=Lax';
-    document.documentElement.className=document.documentElement.className.replace(/\\s*an-zamek/g,'');d.remove();}
-   else{document.getElementById('anPinE').textContent='Nieprawidłowy PIN';i.value='';i.focus();}};
+    document.documentElement.className=document.documentElement.className.replace(/\\s*an-zamek/g,'');d.remove();
+    if(window.spFolderStart)window.spFolderStart();
+   }).catch(function(){E.textContent='Brak internetu - spróbuj ponownie';});};
   setTimeout(function(){i.focus();},50);}
  if(document.body)pokaz();else document.addEventListener('DOMContentLoaded',pokaz);})();</script>
 <style>html.an-zamek body>*:not(#anPin){visibility:hidden!important}
@@ -67,7 +71,7 @@ html.an-zamek,html.an-zamek body{overflow:hidden!important}
 #anPin input{width:100%%;font-size:1.4rem;text-align:center;letter-spacing:.4em;padding:10px;border:1.5px solid #3A3F45;border-radius:10px}
 #anPin button{width:100%%;border:0;border-radius:10px;padding:12px;font-weight:800;font-size:1rem;background:#F8580E;color:#fff;cursor:pointer}
 #anPin p{margin:0;min-height:1.2em;font-size:.85rem;color:#B23B1E}
-</style>''' % PIN
+</style>''' % DYSK
 m = re.search(r'<meta name="viewport"[^>]*>', s)
 s = s[:m.end()] + NL + BRAMKA.replace('\n', NL) + s[m.end():]
 
@@ -87,6 +91,64 @@ html body .sms-wynik .ok{color:#7EE2A8!important}html body .sms-wynik .brak{colo
 html body .sms-box .sms-wynik{color:#E9E4DD}
 </style>'''
 s = s.rstrip('\r\n') + NL + CSS.replace('\n', NL) + NL
+
+# 5. Artur 22.10: folder wszystkich wyslanych ofert - wczytanie dowolnej (z telefonu i laptopa),
+#    poprawka i ponowna wysylka bez wpisywania i ladowania zdjec od nowa
+FOLDER_JS = r"""<style>
+#folOf{margin:0 0 12px;padding:12px;border-radius:10px;background:#2A2C30;border:1px solid #5A5E65}
+#folOf b{display:block;color:#FF8A4C!important;font-size:.95rem;letter-spacing:.04em;margin:0 0 6px}
+#folOf select{width:100%;font:inherit;font-size:.95rem;padding:10px;border-radius:8px;background:#fff;color:#14110E;border:0}
+#folInfo{margin:6px 0 0;font-size:.85rem;color:#E9E4DD!important;min-height:1em}
+#wycHist{display:none!important}
+</style>
+<script>
+(function(){
+ var U='__DYSK__';
+ function k(){try{return localStorage.getItem('spKlucz')||'';}catch(e){return '';}}
+ function info(t){var e=document.getElementById('folInfo');if(e)e.textContent=t;}
+ async function klucz(){var x=k();if(x)return x;var pin=prompt('Wpisz PIN, aby otworzyć folder ofert');if(!pin)return '';
+  var j=await (await fetch(U+'?a=klucz&pin='+encodeURIComponent(pin.trim()))).json();
+  if(!j.ok){alert(j.blad==='Zły PIN'?'Nieprawidłowy PIN':(j.blad||'Błąd'));return '';}
+  try{localStorage.setItem('spKlucz',j.k);}catch(e){}return j.k;}
+ async function api(q){var x=await klucz();if(!x)return null;
+  var j=await (await fetch(U+'?'+q+'&k='+encodeURIComponent(x))).json();
+  if(!j.ok&&j.blad==='Brak dostępu'){try{localStorage.removeItem('spKlucz');}catch(e){}}return j;}
+ function plik(b,i){var s=atob(b),a=new Uint8Array(s.length);for(var n=0;n<s.length;n++)a[n]=s.charCodeAt(n);
+  return new File([a],'Zdjecie_'+String(i+1).padStart(2,'0')+'.jpg',{type:'image/jpeg'});}
+ async function lista(){info('Pobieram listę ofert...');var j;try{j=await api('a=lista');}catch(e){}
+  if(!j||!j.ok){info(j&&j.blad?j.blad:'Nie udało się pobrać listy.');return;}
+  var sel=document.getElementById('folSel');
+  sel.innerHTML='<option value="">Wybierz ofertę do poprawki ('+j.lista.length+')…</option>'+j.lista.map(function(o){
+   return '<option value="'+o.id+'">'+String(o.opis).replace(/</g,'')+'</option>';}).join('');
+  info(j.lista.length?'Wybierz ofertę - wczytają się wszystkie pola i zdjęcia.':'Folder jest pusty - trafiają tu oferty wysłane od 22.10.');}
+ async function wczytaj(id){info('Wczytuję ofertę...');var j;try{j=await api('a=wczytaj&id='+encodeURIComponent(id));}catch(e){}
+  if(!j||!j.ok){info('Nie udało się wczytać oferty.');return;}
+  var o=j.oferta;
+  var pop=document.getElementById('poprawBtn');if(pop)pop.click();
+  var mini=document.getElementById('miniatury'),b,n=0;
+  while(mini&&(b=mini.querySelector('button[data-i]'))&&n++<20)b.click();
+  window.spWczytaj(o.stan||{});
+  var fi=document.getElementById('file');
+  if(fi&&o.zdjecia&&o.zdjecia.length){var dt=new DataTransfer();o.zdjecia.forEach(function(z,i){dt.items.add(plik(z,i));});
+   fi.files=dt.files;fi.dispatchEvent(new Event('change',{bubbles:true}));
+   var pd=(o.stan&&o.stan.podpisy)||[];setTimeout(function(){[].slice.call(document.querySelectorAll('#miniatury input.podp')).forEach(function(p,i){
+    if(pd[i]){p.value=pd[i];p.dispatchEvent(new Event('input',{bubbles:true}));}});},300);}
+  var ok=document.getElementById('ofertaKl');if(ok&&o.mailKlienta)ok.checked=true;
+  info('Wczytana oferta z '+o.kiedy+' ('+((o.zdjecia||[]).length)+' zdj.). Popraw, co trzeba, i wyślij ponownie - klient dostanie poprawioną ofertę.');}
+ function start(){var box=document.querySelector('.sms-box');if(!box||document.getElementById('folOf'))return;
+  var w=document.createElement('div');w.id='folOf';
+  w.innerHTML='<b>Folder ofert</b><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
+  box.insertBefore(w,box.firstChild);
+  var sel=document.getElementById('folSel');
+  sel.addEventListener('pointerdown',function(){if(sel.options.length<2)lista();},{once:true});
+  sel.addEventListener('focus',function(){if(sel.options.length<2)lista();},{once:true});
+  sel.addEventListener('change',function(){if(sel.value)wczytaj(sel.value);});
+  var m=location.hash.match(/oferta=([\w-]+)/);if(m)wczytaj(m[1]);else if(k())lista();}
+ window.spFolderStart=start;
+ if(document.readyState!=='loading')start();else document.addEventListener('DOMContentLoaded',start);
+})();
+</script>""".replace('__DYSK__', DYSK)
+s = s.rstrip('\r\n') + NL + FOLDER_JS.replace('\n', NL) + NL
 
 open(os.path.join(TU, 'analizator.html'), 'w', encoding='utf-8', newline='').write(s)
 print('analizator.html gotowy,', len(s), 'znakow')

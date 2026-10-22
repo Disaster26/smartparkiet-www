@@ -9,11 +9,15 @@
    '<label for="anPinI">Wpisz PIN</label><input id="anPinI" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off">'+
    '<button type="submit">Otwórz</button><p id="anPinE" role="alert"></p></form>';
   document.body.appendChild(d);var f=document.getElementById('anPinF'),i=document.getElementById('anPinI');
-  f.onsubmit=function(e){e.preventDefault();if(i.value.trim()==='2815'){
-    try{localStorage.setItem('spAnalizatorPin','1');}catch(x){}
+  /* 22.10: PIN sprawdza serwer (nie ma go w kodzie strony) i oddaje klucz do folderu ofert */
+  f.onsubmit=function(e){e.preventDefault();var E=document.getElementById('anPinE');E.textContent='Sprawdzam...';
+   fetch('https://script.google.com/macros/s/AKfycbxC1j9MytYHxqD-ONdcd8Bar5SxnAVnmr8pxP1_pdEEIZzB1hbh9AXRDtXEg5hX0QXzDA/exec?a=klucz&pin='+encodeURIComponent(i.value.trim())).then(function(r){return r.json();}).then(function(j){
+    if(!j.ok){E.textContent=j.blad==='Zły PIN'?'Nieprawidłowy PIN':(j.blad||'Błąd');i.value='';i.focus();return;}
+    try{localStorage.setItem('spAnalizatorPin','1');localStorage.setItem('spKlucz',j.k);}catch(x){}
     document.cookie='spAnalizatorPin=1; max-age=31536000; path=/; SameSite=Lax';
-    document.documentElement.className=document.documentElement.className.replace(/\s*an-zamek/g,'');d.remove();}
-   else{document.getElementById('anPinE').textContent='Nieprawidłowy PIN';i.value='';i.focus();}};
+    document.documentElement.className=document.documentElement.className.replace(/\s*an-zamek/g,'');d.remove();
+    if(window.spFolderStart)window.spFolderStart();
+   }).catch(function(){E.textContent='Brak internetu - spróbuj ponownie';});};
   setTimeout(function(){i.focus();},50);}
  if(document.body)pokaz();else document.addEventListener('DOMContentLoaded',pokaz);})();</script>
 <style>html.an-zamek body>*:not(#anPin){visibility:hidden!important}
@@ -1304,8 +1308,10 @@ figure{margin:0}
     POLA.forEach(function(id){var e=document.getElementById(id);if(e)s.pola[id]=e.value;});
     RADIA.forEach(function(n){var e=document.querySelector('input[name="'+n+'"]:checked');if(e)s.radia[n]=e.value;});
     [].slice.call(document.querySelectorAll('#dodLista .dod-w')).forEach(function(w){s.dod.push([w.querySelector('.dod-o').value,w.querySelector('.dod-i').value,w.querySelector('.dod-j').value,w.querySelector('.dod-c').value]);});
+    s.uzg=[].slice.call(document.querySelectorAll('input[id^="uzg"]:checked')).map(function(e){return e.id;});
     return s;}
   function wczytaj(s){
+    if(s.uzg)[].slice.call(document.querySelectorAll('input[id^="uzg"]')).forEach(function(e){var c=s.uzg.indexOf(e.id)>=0;if(e.checked!==c){e.checked=c;e.dispatchEvent(new Event('change',{bubbles:true}));}});
     Object.keys(s.pola||{}).forEach(function(id){var e=document.getElementById(id);if(e){e.value=s.pola[id];e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));}});
     Object.keys(s.radia||{}).forEach(function(n){var e=document.querySelector('input[name="'+n+'"][value="'+s.radia[n]+'"]');if(e){e.checked=true;e.dispatchEvent(new Event('change',{bubbles:true}));}});
     var li=document.getElementById('dodLista'),plus=document.getElementById('dodPlus');
@@ -1314,6 +1320,7 @@ figure{margin:0}
         w.querySelector('.dod-o').value=r[0];w.querySelector('.dod-i').value=r[1];w.querySelector('.dod-j').value=r[2];w.querySelector('.dod-c').value=r[3];
         w.querySelector('.dod-c').dispatchEvent(new Event('input',{bubbles:true}));});}
     window.__korekta=true;}
+  window.spZrzut=zrzut; window.spWczytaj=wczytaj;
   function hist(){try{return JSON.parse(localStorage.getItem('spWyceny')||'[]');}catch(e){return [];}}
   window.spZapiszWycene=function(){if(!on)return;try{var h=hist(),s=zrzut();
     s.kiedy=new Date().toLocaleString('pl-PL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
@@ -1776,8 +1783,13 @@ figure{margin:0}
       try{const A=arkusz();ark={imie:pole('imieKl'),tel:pole('telKl'),mail:mail||pole('mailKl'),adres:A.adres,ulica:A.ulica,
         obiekt:A.obiekt,rodzaj:A.rodzaj,technika:A.technika,termin:pole('terminKl'),m2:A.a,uwagi:pole('uwagiKl'),
         poz:A.poz.map(p=>[p[0],p[1],p[2]]),suma:A.suma};}catch(e){}
-      const wyslij=pdf=>fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||''})}).catch(()=>{});
+      /* Artur 22.10: komplet pol i zdjec trafia do folderu "Oferty do poprawki" - mozna je potem
+         wczytac w analizatorze, zmienic kwote i wyslac klientowi poprawiona oferte */
+      let stan=null;try{stan=window.spZrzut?window.spZrzut():null;if(stan)stan.podpisy=(window.__podpisy||[]).slice();}catch(e){}
+      const b64=f=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]||'');r.onerror=()=>ok('');r.readAsDataURL(f);});
+      const wyslij=async pdf=>{let zd=[];try{zd=(await Promise.all((window.__gotowe||[]).map(b64))).filter(Boolean);}catch(e){}
+        return fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',stan:stan,zdjecia:zd})}).catch(()=>{});};
       if(window.__karta&&window.__karta.type==='application/pdf'){
         const r=new FileReader();
         r.onload=()=>wyslij(String(r.result).split(',')[1]||'');
@@ -3006,3 +3018,57 @@ html body .sms-box button.sms-czysc{background:#55595F!important;color:#fff!impo
 html body .sms-wynik .ok{color:#7EE2A8!important}html body .sms-wynik .brak{color:#FF9C85!important}
 html body .sms-box .sms-wynik{color:#E9E4DD}
 </style>
+<style>
+#folOf{margin:0 0 12px;padding:12px;border-radius:10px;background:#2A2C30;border:1px solid #5A5E65}
+#folOf b{display:block;color:#FF8A4C!important;font-size:.95rem;letter-spacing:.04em;margin:0 0 6px}
+#folOf select{width:100%;font:inherit;font-size:.95rem;padding:10px;border-radius:8px;background:#fff;color:#14110E;border:0}
+#folInfo{margin:6px 0 0;font-size:.85rem;color:#E9E4DD!important;min-height:1em}
+#wycHist{display:none!important}
+</style>
+<script>
+(function(){
+ var U='https://script.google.com/macros/s/AKfycbxC1j9MytYHxqD-ONdcd8Bar5SxnAVnmr8pxP1_pdEEIZzB1hbh9AXRDtXEg5hX0QXzDA/exec';
+ function k(){try{return localStorage.getItem('spKlucz')||'';}catch(e){return '';}}
+ function info(t){var e=document.getElementById('folInfo');if(e)e.textContent=t;}
+ async function klucz(){var x=k();if(x)return x;var pin=prompt('Wpisz PIN, aby otworzyć folder ofert');if(!pin)return '';
+  var j=await (await fetch(U+'?a=klucz&pin='+encodeURIComponent(pin.trim()))).json();
+  if(!j.ok){alert(j.blad==='Zły PIN'?'Nieprawidłowy PIN':(j.blad||'Błąd'));return '';}
+  try{localStorage.setItem('spKlucz',j.k);}catch(e){}return j.k;}
+ async function api(q){var x=await klucz();if(!x)return null;
+  var j=await (await fetch(U+'?'+q+'&k='+encodeURIComponent(x))).json();
+  if(!j.ok&&j.blad==='Brak dostępu'){try{localStorage.removeItem('spKlucz');}catch(e){}}return j;}
+ function plik(b,i){var s=atob(b),a=new Uint8Array(s.length);for(var n=0;n<s.length;n++)a[n]=s.charCodeAt(n);
+  return new File([a],'Zdjecie_'+String(i+1).padStart(2,'0')+'.jpg',{type:'image/jpeg'});}
+ async function lista(){info('Pobieram listę ofert...');var j;try{j=await api('a=lista');}catch(e){}
+  if(!j||!j.ok){info(j&&j.blad?j.blad:'Nie udało się pobrać listy.');return;}
+  var sel=document.getElementById('folSel');
+  sel.innerHTML='<option value="">Wybierz ofertę do poprawki ('+j.lista.length+')…</option>'+j.lista.map(function(o){
+   return '<option value="'+o.id+'">'+String(o.opis).replace(/</g,'')+'</option>';}).join('');
+  info(j.lista.length?'Wybierz ofertę - wczytają się wszystkie pola i zdjęcia.':'Folder jest pusty - trafiają tu oferty wysłane od 22.10.');}
+ async function wczytaj(id){info('Wczytuję ofertę...');var j;try{j=await api('a=wczytaj&id='+encodeURIComponent(id));}catch(e){}
+  if(!j||!j.ok){info('Nie udało się wczytać oferty.');return;}
+  var o=j.oferta;
+  var pop=document.getElementById('poprawBtn');if(pop)pop.click();
+  var mini=document.getElementById('miniatury'),b,n=0;
+  while(mini&&(b=mini.querySelector('button[data-i]'))&&n++<20)b.click();
+  window.spWczytaj(o.stan||{});
+  var fi=document.getElementById('file');
+  if(fi&&o.zdjecia&&o.zdjecia.length){var dt=new DataTransfer();o.zdjecia.forEach(function(z,i){dt.items.add(plik(z,i));});
+   fi.files=dt.files;fi.dispatchEvent(new Event('change',{bubbles:true}));
+   var pd=(o.stan&&o.stan.podpisy)||[];setTimeout(function(){[].slice.call(document.querySelectorAll('#miniatury input.podp')).forEach(function(p,i){
+    if(pd[i]){p.value=pd[i];p.dispatchEvent(new Event('input',{bubbles:true}));}});},300);}
+  var ok=document.getElementById('ofertaKl');if(ok&&o.mailKlienta)ok.checked=true;
+  info('Wczytana oferta z '+o.kiedy+' ('+((o.zdjecia||[]).length)+' zdj.). Popraw, co trzeba, i wyślij ponownie - klient dostanie poprawioną ofertę.');}
+ function start(){var box=document.querySelector('.sms-box');if(!box||document.getElementById('folOf'))return;
+  var w=document.createElement('div');w.id='folOf';
+  w.innerHTML='<b>Folder ofert</b><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
+  box.insertBefore(w,box.firstChild);
+  var sel=document.getElementById('folSel');
+  sel.addEventListener('pointerdown',function(){if(sel.options.length<2)lista();},{once:true});
+  sel.addEventListener('focus',function(){if(sel.options.length<2)lista();},{once:true});
+  sel.addEventListener('change',function(){if(sel.value)wczytaj(sel.value);});
+  var m=location.hash.match(/oferta=([\w-]+)/);if(m)wczytaj(m[1]);else if(k())lista();}
+ window.spFolderStart=start;
+ if(document.readyState!=='loading')start();else document.addEventListener('DOMContentLoaded',start);
+})();
+</script>
