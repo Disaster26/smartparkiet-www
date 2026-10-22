@@ -162,6 +162,7 @@ function doPost(e) {
         'W razie pytań albo chęci ustalenia terminu prosimy o kontakt telefoniczny lub odpowiedź na tę wiadomość.'];
       MailApp.sendEmail({
         to: mail,
+        bcc: ARTUR, /* Artur 22.10: kopia maila do klienta w jego skrzynce */
         replyTo: ARTUR,
         name: 'SMARTPARKIET',
         subject: 'Oferta renowacji parkietu - SMARTPARKIET',
@@ -175,6 +176,7 @@ function doPost(e) {
         'Prosimy o potwierdzenie otrzymania i zapraszamy do kontaktu telefonicznego pod numerem 602 242 815.'];
       MailApp.sendEmail({
         to: mail,
+        bcc: ARTUR, /* Artur 22.10: kopia maila do klienta w jego skrzynce */
         replyTo: ARTUR,
         name: 'SMARTPARKIET',
         subject: 'Wstępna wycena renowacji parkietu - SMARTPARKIET',
