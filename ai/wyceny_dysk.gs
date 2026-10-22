@@ -19,6 +19,31 @@ const ARTUR = 'smartparkiet.kontakt@gmail.com';
 /* 21.10 Artur oglada rejestr z konta smartparkiet@gmail.com - dostep dla obu adresow */
 const ARTUR_WSZYSTKIE = ['smartparkiet.kontakt@gmail.com', 'smartparkiet@gmail.com'];
 
+/* Artur 22.10: folder wszystkich wyslanych ofert w "otwartej formie" - kazda wycena zapisuje
+   sie tez jako komplet pol formularza + zdjecia, zeby mozna ja bylo wczytac w analizatorze
+   (z telefonu albo laptopa), zmienic jedna kwote i wyslac klientowi poprawiona. */
+const FOLDER_POPRAWKI = 'Oferty do poprawki (nie usuwac)';
+/* PIN analizatora we wlasciwosciach skryptu (Ustawienia projektu -> Wlasciwosci skryptu: PIN), nie w kodzie */
+function pinAnalizatora() { return PropertiesService.getScriptProperties().getProperty('PIN') || ''; }
+
+function folderPoprawek() {
+  const g = glownyFolder();
+  const it = g.getFoldersByName(FOLDER_POPRAWKI);
+  return it.hasNext() ? it.next() : g.createFolder(FOLDER_POPRAWKI);
+}
+
+/* klucz do listy ofert trzymany we wlasciwosciach skryptu, nie w kodzie strony */
+function kluczListy() {
+  const p = PropertiesService.getScriptProperties();
+  let k = p.getProperty('KLUCZ_LISTY');
+  if (!k) { k = Utilities.getUuid().replace(/-/g, ''); p.setProperty('KLUCZ_LISTY', k); }
+  return k;
+}
+
+function json(o) {
+  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+}
+
 function folderMiesiaca() {
   const glowny = glownyFolder();
   const nazwa = Utilities.formatDate(new Date(), 'Europe/Warsaw', 'yyyy-MM');
@@ -75,7 +100,7 @@ function arkuszWyceny(folder, nazwa, a, kiedy) {
 }
 
 /* jeden zbiorczy arkusz: wiersz na kazda wycene, najnowsze na gorze */
-function rejestr(a, kiedy, url) {
+function rejestr(a, kiedy, url, idStanu) {
   const g = glownyFolder();
   const it = g.getFilesByName('Rejestr wycen');
   let ss;
@@ -96,6 +121,11 @@ function rejestr(a, kiedy, url) {
   w.setValues([[kiedy, a.imie || '', a.tel || '', a.adres || '', a.m2 || '',
     Math.round((a.suma || 0) * 100) / 100, a.termin || '', '']]);
   sh.getRange(2, 8).setFormula('=HYPERLINK("' + url + '","Otwórz arkusz")');
+  if (idStanu) {
+    if (!sh.getRange(1, 9).getValue()) sh.getRange(1, 9).setValue('Popraw i wyślij ponownie')
+      .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
+    sh.getRange(2, 9).setFormula('=HYPERLINK("https://smartparkiet.com.pl/analizator.html#oferta=' + idStanu + '","Otwórz w analizatorze")');
+  }
 }
 
 /* jednorazowo: poprawia stare wiersze rejestru (kolor + klikalne linki). Uruchomic recznie z edytora. */
@@ -149,11 +179,20 @@ function doPost(e) {
     if (d.pdf) {
       folder.createFile(Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', nazwa));
     }
+    let idStanu = '';
+    if (d.stan) {
+      const opisStanu = czysc(kiedy + ' ' + (d.opis || 'wycena'));
+      const plikStanu = folderPoprawek().createFile(opisStanu + '.json',
+        JSON.stringify({ kiedy: kiedy, opis: d.opis || '', mailKlienta: d.mailKlienta || '', stan: d.stan, zdjecia: d.zdjecia || [] }),
+        'application/json');
+      plikStanu.setDescription(opisStanu);
+      idStanu = plikStanu.getId();
+    }
     if (d.arkusz) {
       const a = d.arkusz;
       const tytul = String.fromCodePoint(0x1F4CD) + ' ' + czysc((a.ulica || a.imie || a.tel || 'wycena') + ' ' + kiedy.slice(0, 10));
       const url = arkuszWyceny(folder, tytul, a, kiedy);
-      rejestr(a, kiedy, url);
+      rejestr(a, kiedy, url, idStanu);
     }
     const mail = String(d.mailKlienta || '').trim();
     const mailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail);
@@ -185,15 +224,41 @@ function doPost(e) {
         attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', 'Wstepna_wycena_SMARTPARKIET.pdf')] : []
       });
     }
-    return ContentService.createTextOutput(JSON.stringify({ ok: true, plik: nazwa }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return json({ ok: true, plik: nazwa, id: idStanu });
   } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({ ok: false, blad: String(err) }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
-function doGet() {
+/* analizator: ?a=klucz&pin=..  ->  klucz do listy (po 20 blednych PIN-ach blokada na godzine)
+               ?a=lista&k=..   ->  wszystkie zapisane oferty, najnowsze na gorze
+               ?a=wczytaj&id=..&k=..  ->  pola formularza i zdjecia jednej oferty */
+function doGet(e) {
+  const p = (e && e.parameter) || {};
+  if (p.a === 'klucz') {
+    const c = CacheService.getScriptCache();
+    const bledy = Number(c.get('bledyPin') || 0);
+    if (bledy >= 20) return json({ ok: false, blad: 'Za dużo prób, spróbuj za godzinę.' });
+    if (!pinAnalizatora() || String(p.pin || '') !== pinAnalizatora()) { c.put('bledyPin', String(bledy + 1), 3600); return json({ ok: false, blad: 'Zły PIN' }); }
+    return json({ ok: true, k: kluczListy() });
+  }
+  if (p.a === 'lista' || p.a === 'wczytaj') {
+    if (String(p.k || '') !== kluczListy()) return json({ ok: false, blad: 'Brak dostępu' });
+    if (p.a === 'wczytaj') {
+      const f = DriveApp.getFileById(String(p.id || ''));
+      if (f.getParents().next().getName() !== FOLDER_POPRAWKI) return json({ ok: false, blad: 'Brak dostępu' });
+      return json({ ok: true, oferta: JSON.parse(f.getBlob().getDataAsString()) });
+    }
+    const lista = [];
+    const it = folderPoprawek().getFiles();
+    while (it.hasNext()) {
+      const f = it.next();
+      lista.push({ id: f.getId(), opis: f.getDescription() || f.getName().replace(/\.json$/, ''), t: f.getDateCreated().getTime() });
+    }
+    lista.sort(function (x, y) { return y.t - x.t; });
+    return json({ ok: true, lista: lista.slice(0, 300) });
+  }
   return ContentService.createTextOutput('SMARTPARKIET wyceny - dziala');
 }
 

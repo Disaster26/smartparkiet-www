@@ -1295,8 +1295,10 @@ figure{margin:0}
     POLA.forEach(function(id){var e=document.getElementById(id);if(e)s.pola[id]=e.value;});
     RADIA.forEach(function(n){var e=document.querySelector('input[name="'+n+'"]:checked');if(e)s.radia[n]=e.value;});
     [].slice.call(document.querySelectorAll('#dodLista .dod-w')).forEach(function(w){s.dod.push([w.querySelector('.dod-o').value,w.querySelector('.dod-i').value,w.querySelector('.dod-j').value,w.querySelector('.dod-c').value]);});
+    s.uzg=[].slice.call(document.querySelectorAll('input[id^="uzg"]:checked')).map(function(e){return e.id;});
     return s;}
   function wczytaj(s){
+    if(s.uzg)[].slice.call(document.querySelectorAll('input[id^="uzg"]')).forEach(function(e){var c=s.uzg.indexOf(e.id)>=0;if(e.checked!==c){e.checked=c;e.dispatchEvent(new Event('change',{bubbles:true}));}});
     Object.keys(s.pola||{}).forEach(function(id){var e=document.getElementById(id);if(e){e.value=s.pola[id];e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));}});
     Object.keys(s.radia||{}).forEach(function(n){var e=document.querySelector('input[name="'+n+'"][value="'+s.radia[n]+'"]');if(e){e.checked=true;e.dispatchEvent(new Event('change',{bubbles:true}));}});
     var li=document.getElementById('dodLista'),plus=document.getElementById('dodPlus');
@@ -1305,6 +1307,7 @@ figure{margin:0}
         w.querySelector('.dod-o').value=r[0];w.querySelector('.dod-i').value=r[1];w.querySelector('.dod-j').value=r[2];w.querySelector('.dod-c').value=r[3];
         w.querySelector('.dod-c').dispatchEvent(new Event('input',{bubbles:true}));});}
     window.__korekta=true;}
+  window.spZrzut=zrzut; window.spWczytaj=wczytaj;
   function hist(){try{return JSON.parse(localStorage.getItem('spWyceny')||'[]');}catch(e){return [];}}
   window.spZapiszWycene=function(){if(!on)return;try{var h=hist(),s=zrzut();
     s.kiedy=new Date().toLocaleString('pl-PL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
@@ -1768,8 +1771,13 @@ figure{margin:0}
       try{const A=arkusz();ark={imie:pole('imieKl'),tel:pole('telKl'),mail:mail||pole('mailKl'),adres:A.adres,ulica:A.ulica,
         obiekt:A.obiekt,rodzaj:A.rodzaj,technika:A.technika,termin:pole('terminKl'),m2:A.a,uwagi:pole('uwagiKl'),
         poz:A.poz.map(p=>[p[0],p[1],p[2]]),suma:A.suma};}catch(e){}
-      const wyslij=pdf=>fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||''})}).catch(()=>{});
+      /* Artur 22.10: komplet pol i zdjec trafia do folderu "Oferty do poprawki" - mozna je potem
+         wczytac w analizatorze, zmienic kwote i wyslac klientowi poprawiona oferte */
+      let stan=null;try{stan=window.spZrzut?window.spZrzut():null;if(stan)stan.podpisy=(window.__podpisy||[]).slice();}catch(e){}
+      const b64=f=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]||'');r.onerror=()=>ok('');r.readAsDataURL(f);});
+      const wyslij=async pdf=>{let zd=[];try{zd=(await Promise.all((window.__gotowe||[]).map(b64))).filter(Boolean);}catch(e){}
+        return fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',stan:stan,zdjecia:zd})}).catch(()=>{});};
       if(window.__karta&&window.__karta.type==='application/pdf'){
         const r=new FileReader();
         r.onload=()=>wyslij(String(r.result).split(',')[1]||'');
