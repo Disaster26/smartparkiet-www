@@ -119,7 +119,7 @@ function rejestr(a, kiedy, url, idStanu) {
   const w = sh.getRange(2, 1, 1, 9);
   w.setBackground(null).setFontColor('#1A1A1A').setFontWeight('normal');
   w.setValues([[kiedy, a.imie || '', a.tel || '', a.adres || '', a.m2 || '',
-    Math.round((a.suma || 0) * 100) / 100, a.termin || '', '']]);
+    Math.round((a.suma || 0) * 100) / 100, a.termin || '', '', '']]);
   /* 22.10: formula HYPERLINK z przecinkiem dawala #ERROR! w arkuszu z polskimi ustawieniami - link wpisany w tekst komorki */
   sh.getRange(2, 8).setRichTextValue(link('Otwórz arkusz', url));
   if (idStanu) {
