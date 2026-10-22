@@ -2996,3 +2996,19 @@ html body #uzgPanel{margin:14px 0}
   setTimeout(przenies,400);
 })();
 </script>
+<!-- pasek analizatora: START -->
+<style>/* Artur 22.10 17:13-17:15: grafitowy pasek ANALIZATOR AI na stronie, zamkniety PIN-em - tylko dla wlasciciela */
+#anPasek{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin:0 0 10px;padding:13px 16px;border-radius:12px;background:#3A3D42;border:1.5px solid #3A3D42;color:#fff;text-decoration:none;box-shadow:0 6px 18px rgba(20,17,14,.18)}
+#anPasek .an-t{font-weight:800;font-size:1.05rem;letter-spacing:.08em;color:#FF8A4C}
+#anPasek .an-o{font-size:.78rem;color:#D9D4CD;margin-left:auto;display:flex;align-items:center;gap:6px;white-space:nowrap}
+#anPasek svg{flex:none}
+#anPasek:hover{background:#2F3236}
+</style>
+<script>(function(){if(window.SP_ANALIZATOR)return;
+ function wstaw(){var f=document.querySelector('form.ai-form');if(!f||document.getElementById('anPasek'))return;
+  var a=document.createElement('a');a.id='anPasek';a.href='analizator.html';a.rel='nofollow';
+  a.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF8A4C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'+
+   '<span class="an-t">ANALIZATOR AI</span><span class="an-o">tylko dla właściciela</span>';
+  f.insertBefore(a,f.firstChild);}
+ if(document.readyState!=='loading')wstaw();else document.addEventListener('DOMContentLoaded',wstaw);})();</script>
+<!-- pasek analizatora: KONIEC -->
