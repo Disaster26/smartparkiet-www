@@ -191,19 +191,22 @@ function doPost(e) {
       folder.createFile(Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', nazwa));
     }
     let idStanu = '';
-    if (d.stan) {
+    if (d.stan) try {
       const opisStanu = czysc(kiedy + ' ' + (d.opis || 'wycena'));
       const plikStanu = folderPoprawek().createFile(opisStanu + '.json',
         JSON.stringify({ kiedy: kiedy, opis: d.opis || '', mailKlienta: d.mailKlienta || '', stan: d.stan, zdjecia: d.zdjecia || [] }),
         'application/json');
       plikStanu.setDescription(opisStanu);
       idStanu = plikStanu.getId();
-    }
+    } catch (e) { console.error('folder poprawek: ' + e); }
+    /* 22.10: blad arkusza/rejestru nie moze zablokowac maila do klienta (tak bylo 16:01-16:20) */
     if (d.arkusz) {
-      const a = d.arkusz;
-      const tytul = String.fromCodePoint(0x1F4CD) + ' ' + czysc((a.ulica || a.imie || a.tel || 'wycena') + ' ' + kiedy.slice(0, 10));
-      const url = arkuszWyceny(folder, tytul, a, kiedy);
-      rejestr(a, kiedy, url, idStanu);
+      try {
+        const a = d.arkusz;
+        const tytul = String.fromCodePoint(0x1F4CD) + ' ' + czysc((a.ulica || a.imie || a.tel || 'wycena') + ' ' + kiedy.slice(0, 10));
+        const url = arkuszWyceny(folder, tytul, a, kiedy);
+        rejestr(a, kiedy, url, idStanu);
+      } catch (e) { console.error('arkusz/rejestr: ' + e); }
     }
     const mail = String(d.mailKlienta || '').trim();
     const mailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail);
