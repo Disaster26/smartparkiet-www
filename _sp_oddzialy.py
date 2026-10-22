@@ -216,6 +216,9 @@ def tresc(o, inne):
 
     <h2 style="margin-top:30px">Pozostałe oddziały</h2>
     <div class="odz-inne">%(linki)s</div>
+
+    <h2 style="margin-top:30px">Usługi w Warszawie</h2>
+    <div class="odz-inne"><a href="cyklinowanie-podlog-drewnianych-warszawa.html">Cyklinowanie podłóg drewnianych</a><a href="renowacja-parkietu-warszawa.html">Renowacja parkietu</a><a href="naprawa-podlog-drewnianych-warszawa.html">Naprawa podłóg drewnianych</a><a href="lakierowanie-i-olejowanie-parkietu-warszawa.html">Lakierowanie i olejowanie</a><a href="montaz-listew-przypodlogowych-warszawa.html">Montaż listew przypodłogowych</a></div>
   </div>
 </section>
 ''' % {'dz': o['dz'], 'rola': o['rola'], 'ulica': o['ulica'], 'kod': o['kod'],
