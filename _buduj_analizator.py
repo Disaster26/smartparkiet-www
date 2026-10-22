@@ -141,7 +141,7 @@ FOLDER_JS = r"""<style>
     if(pd[i]){p.value=pd[i];p.dispatchEvent(new Event('input',{bubbles:true}));}});},300);}
   var ok=document.getElementById('ofertaKl');if(ok&&o.mailKlienta)ok.checked=true;
   info('Wczytana oferta z '+o.kiedy+' ('+((o.zdjecia||[]).length)+' zdj.). Popraw, co trzeba, i wyślij ponownie - klient dostanie poprawioną ofertę.');}
- function start(){var box=document.querySelector('.sms-box');if(!box||document.getElementById('folOf'))return;
+ function start(){var box=document.querySelector('.sms-box');if(document.getElementById('folOf')){if(k())lista();return;}if(!box)return;
   var w=document.createElement('div');w.id='folOf';
   w.innerHTML='<b>Folder ofert</b><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
   box.insertBefore(w,box.firstChild);
