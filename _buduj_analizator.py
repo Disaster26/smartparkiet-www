@@ -47,13 +47,13 @@ BRAMKA = '''<script>window.SP_ANALIZATOR=1;
  if(ok)return;document.documentElement.className+=' an-zamek';
  function pokaz(){if(document.getElementById('anPin'))return;var d=document.createElement('div');d.id='anPin';
   d.innerHTML='<form id="anPinF" autocomplete="off"><img src="img/analizator-192.png?v=3" alt="" width="64" height="64"><b>Analizator</b>'+
-   '<label for="anPinI">Wpisz PIN</label><input id="anPinI" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off">'+
+   '<label for="anPinI">Wpisz hasło</label><input id="anPinI" type="password" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="30" autocomplete="off">'+
    '<button type="submit">Otwórz</button><p id="anPinE" role="alert"></p></form>';
   document.body.appendChild(d);var f=document.getElementById('anPinF'),i=document.getElementById('anPinI');
   /* 22.10: PIN sprawdza serwer (nie ma go w kodzie strony) i oddaje klucz do folderu ofert */
   f.onsubmit=function(e){e.preventDefault();var E=document.getElementById('anPinE');E.textContent='Sprawdzam...';
    fetch('%s?a=klucz&pin='+encodeURIComponent(i.value.trim())).then(function(r){return r.json();}).then(function(j){
-    if(!j.ok){E.textContent=j.blad==='Zły PIN'?'Nieprawidłowy PIN':(j.blad||'Błąd');i.value='';i.focus();return;}
+    if(!j.ok){E.textContent=j.blad==='Zły PIN'?'Nieprawidłowe hasło':(j.blad||'Błąd');i.value='';i.focus();return;}
     try{localStorage.setItem('spAnalizatorPin','1');localStorage.setItem('spKlucz',j.k);}catch(x){}
     document.cookie='spAnalizatorPin=1; max-age=31536000; path=/; SameSite=Lax';
     document.documentElement.className=document.documentElement.className.replace(/\\s*an-zamek/g,'');d.remove();
@@ -68,7 +68,7 @@ html.an-zamek,html.an-zamek body{overflow:hidden!important}
 #anPin img{border-radius:14px}
 #anPin b{font-size:1.25rem;letter-spacing:.04em;color:#14110E}
 #anPin label{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:#4A5058;font-weight:700}
-#anPin input{width:100%%;font-size:1.4rem;text-align:center;letter-spacing:.4em;padding:10px;border:1.5px solid #3A3F45;border-radius:10px}
+#anPin input{width:100%%;font-size:1.4rem;text-align:center;letter-spacing:.15em;padding:10px;border:1.5px solid #3A3F45;border-radius:10px}
 #anPin button{width:100%%;border:0;border-radius:10px;padding:12px;font-weight:800;font-size:1rem;background:#F8580E;color:#fff;cursor:pointer}
 #anPin p{margin:0;min-height:1.2em;font-size:.85rem;color:#B23B1E}
 </style>''' % DYSK
@@ -108,11 +108,11 @@ FOLDER_JS = r"""<style>
  function info(t){var e=document.getElementById('folInfo');if(e)e.textContent=t;}
  /* brak klucza na tym urzadzeniu: pole PIN w ramce folderu (bez okienek przegladarki) */
  function pokazPin(){var e=document.getElementById('folInfo');if(!e||document.getElementById('folPin'))return;
-  e.innerHTML='<span style="display:flex;gap:6px"><input id="folPin" type="password" inputmode="numeric" placeholder="PIN" aria-label="PIN do folderu ofert" style="flex:1;min-width:0;padding:10px;border-radius:8px;border:0;font-size:1rem">'+
+  e.innerHTML='<span style="display:flex;gap:6px"><input id="folPin" type="password" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="Hasło" aria-label="Hasło do folderu ofert" style="flex:1;min-width:0;padding:10px;border-radius:8px;border:0;font-size:1rem">'+
    '<button type="button" id="folPinB" style="border:0;border-radius:8px;padding:10px 14px;background:#F8580E;color:#fff;font-weight:800">Otwórz folder</button></span>';
   var go=async function(){var v=document.getElementById('folPin').value.trim();if(!v)return;
    var j;try{j=await (await fetch(U+'?a=klucz&pin='+encodeURIComponent(v))).json();}catch(x){info('Brak internetu - spróbuj ponownie');return;}
-   if(!j.ok){info(j.blad==='Zły PIN'?'Nieprawidłowy PIN':(j.blad||'Błąd'));setTimeout(pokazPin,1500);return;}
+   if(!j.ok){info(j.blad==='Zły PIN'?'Nieprawidłowe hasło':(j.blad||'Błąd'));setTimeout(pokazPin,1500);return;}
    try{localStorage.setItem('spKlucz',j.k);}catch(x){}var m=location.hash.match(/oferta=([\w-]+)/);if(m)wczytaj(m[1]);else lista();};
   document.getElementById('folPinB').onclick=go;document.getElementById('folPin').onkeydown=function(ev){if(ev.key==='Enter'){ev.preventDefault();go();}};}
  async function klucz(){var x=k();if(x)return x;pokazPin();return '';}

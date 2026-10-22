@@ -25,6 +25,11 @@ const ARTUR_WSZYSTKIE = ['smartparkiet.kontakt@gmail.com', 'smartparkiet@gmail.c
 const FOLDER_POPRAWKI = 'Oferty do poprawki (nie usuwac)';
 /* PIN analizatora we wlasciwosciach skryptu (Ustawienia projektu -> Wlasciwosci skryptu: PIN), nie w kodzie */
 function pinAnalizatora() { return PropertiesService.getScriptProperties().getProperty('PIN') || ''; }
+/* 22.10 Artur: haslo slowne (BORYS / KROL), kilka hasel po przecinku, wielkosc liter bez znaczenia */
+function hasloOk(h) {
+  const lista = pinAnalizatora().split(',').map(function (x) { return x.trim().toUpperCase(); }).filter(String);
+  return lista.length > 0 && lista.indexOf(String(h || '').trim().toUpperCase()) >= 0;
+}
 
 function folderPoprawek() {
   const g = glownyFolder();
@@ -254,7 +259,7 @@ function doGet(e) {
     const c = CacheService.getScriptCache();
     const bledy = Number(c.get('bledyPin') || 0);
     if (bledy >= 20) return json({ ok: false, blad: 'Za dużo prób, spróbuj za godzinę.' });
-    if (!pinAnalizatora() || String(p.pin || '') !== pinAnalizatora()) { c.put('bledyPin', String(bledy + 1), 3600); return json({ ok: false, blad: 'Zły PIN' }); }
+    if (!hasloOk(p.pin)) { c.put('bledyPin', String(bledy + 1), 3600); return json({ ok: false, blad: 'Zły PIN' }); }
     return json({ ok: true, k: kluczListy() });
   }
   if (p.a === 'lista' || p.a === 'wczytaj') {
