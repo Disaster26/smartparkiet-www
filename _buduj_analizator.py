@@ -106,23 +106,29 @@ FOLDER_JS = r"""<style>
  var U='__DYSK__';
  function k(){try{return localStorage.getItem('spKlucz')||'';}catch(e){return '';}}
  function info(t){var e=document.getElementById('folInfo');if(e)e.textContent=t;}
- async function klucz(){var x=k();if(x)return x;var pin=prompt('Wpisz PIN, aby otworzyć folder ofert');if(!pin)return '';
-  var j=await (await fetch(U+'?a=klucz&pin='+encodeURIComponent(pin.trim()))).json();
-  if(!j.ok){alert(j.blad==='Zły PIN'?'Nieprawidłowy PIN':(j.blad||'Błąd'));return '';}
-  try{localStorage.setItem('spKlucz',j.k);}catch(e){}return j.k;}
+ /* brak klucza na tym urzadzeniu: pole PIN w ramce folderu (bez okienek przegladarki) */
+ function pokazPin(){var e=document.getElementById('folInfo');if(!e||document.getElementById('folPin'))return;
+  e.innerHTML='<span style="display:flex;gap:6px"><input id="folPin" type="password" inputmode="numeric" placeholder="PIN" aria-label="PIN do folderu ofert" style="flex:1;min-width:0;padding:10px;border-radius:8px;border:0;font-size:1rem">'+
+   '<button type="button" id="folPinB" style="border:0;border-radius:8px;padding:10px 14px;background:#F8580E;color:#fff;font-weight:800">Otwórz folder</button></span>';
+  var go=async function(){var v=document.getElementById('folPin').value.trim();if(!v)return;
+   var j;try{j=await (await fetch(U+'?a=klucz&pin='+encodeURIComponent(v))).json();}catch(x){info('Brak internetu - spróbuj ponownie');return;}
+   if(!j.ok){info(j.blad==='Zły PIN'?'Nieprawidłowy PIN':(j.blad||'Błąd'));setTimeout(pokazPin,1500);return;}
+   try{localStorage.setItem('spKlucz',j.k);}catch(x){}var m=location.hash.match(/oferta=([\w-]+)/);if(m)wczytaj(m[1]);else lista();};
+  document.getElementById('folPinB').onclick=go;document.getElementById('folPin').onkeydown=function(ev){if(ev.key==='Enter'){ev.preventDefault();go();}};}
+ async function klucz(){var x=k();if(x)return x;pokazPin();return '';}
  async function api(q){var x=await klucz();if(!x)return null;
   var j=await (await fetch(U+'?'+q+'&k='+encodeURIComponent(x))).json();
   if(!j.ok&&j.blad==='Brak dostępu'){try{localStorage.removeItem('spKlucz');}catch(e){}}return j;}
  function plik(b,i){var s=atob(b),a=new Uint8Array(s.length);for(var n=0;n<s.length;n++)a[n]=s.charCodeAt(n);
   return new File([a],'Zdjecie_'+String(i+1).padStart(2,'0')+'.jpg',{type:'image/jpeg'});}
  async function lista(){info('Pobieram listę ofert...');var j;try{j=await api('a=lista');}catch(e){}
-  if(!j||!j.ok){info(j&&j.blad?j.blad:'Nie udało się pobrać listy.');return;}
+  if(!j)return;if(!j.ok){info(j.blad||'Nie udało się pobrać listy.');if(j.blad==='Brak dostępu')pokazPin();return;}
   var sel=document.getElementById('folSel');
   sel.innerHTML='<option value="">Wybierz ofertę do poprawki ('+j.lista.length+')…</option>'+j.lista.map(function(o){
    return '<option value="'+o.id+'">'+String(o.opis).replace(/</g,'')+'</option>';}).join('');
   info(j.lista.length?'Wybierz ofertę - wczytają się wszystkie pola i zdjęcia.':'Folder jest pusty - trafiają tu oferty wysłane od 22.10.');}
  async function wczytaj(id){info('Wczytuję ofertę...');var j;try{j=await api('a=wczytaj&id='+encodeURIComponent(id));}catch(e){}
-  if(!j||!j.ok){info('Nie udało się wczytać oferty.');return;}
+  if(!j)return;if(!j.ok){info('Nie udało się wczytać oferty.');return;}
   var o=j.oferta;
   var pop=document.getElementById('poprawBtn');if(pop)pop.click();
   var mini=document.getElementById('miniatury'),b,n=0;
@@ -143,7 +149,7 @@ FOLDER_JS = r"""<style>
   sel.addEventListener('pointerdown',function(){if(sel.options.length<2)lista();},{once:true});
   sel.addEventListener('focus',function(){if(sel.options.length<2)lista();},{once:true});
   sel.addEventListener('change',function(){if(sel.value)wczytaj(sel.value);});
-  var m=location.hash.match(/oferta=([\w-]+)/);if(m)wczytaj(m[1]);else if(k())lista();}
+  var m=location.hash.match(/oferta=([\w-]+)/);if(m)wczytaj(m[1]);else if(k())lista();else pokazPin();}
  window.spFolderStart=start;
  if(document.readyState!=='loading')start();else document.addEventListener('DOMContentLoaded',start);
 })();
