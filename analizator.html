@@ -1953,7 +1953,7 @@ figure{margin:0}
     ov.querySelector('#podgladPdf').onclick=()=>{const f=window.__pdfPodglad; if(!f)return;
       const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name||'Oferta_SMARTPARKIET.pdf';document.body.appendChild(a);a.click();a.remove();};
     ov.querySelector('#podgladCzat').onclick=()=>{const t=telWa();if(!t){alert('Brak numeru telefonu klienta w formularzu.');return;}
-      window.open('https://wa.me/'+t+'?text='+encodeURIComponent('Dzień dobry, tu SMARTPARKIET. Przesyłam ofertę renowacji parkietu.'),'_blank');};
+      window.open('https://wa.me/'+t+'?text='+encodeURIComponent('Dzień dobry, z tej strony SMARTPARKIET. Za chwilę prześlemy Państwu ofertę renowacji parkietu w formacie PDF.'),'_blank');};
     /* Artur 20.10 19:38: po wyslaniu od razu przycisk "PDF klientowi na WhatsApp" (bez wchodzenia w podglad).
        Strona nie moze sama dostarczyc pliku na numer (to wymaga platnego WhatsApp Business API) -
        krok 1 otwiera czat z numerem klienta, krok 2 udostepnia PDF i wybiera sie ten czat (jest na gorze listy). */
@@ -1967,7 +1967,7 @@ figure{margin:0}
           '<button type="button" id="waK2" style="flex:1 1 200px;border:0;border-radius:10px;padding:13px 14px;font-weight:700;background:#25D366;color:#fff">2. Wyślij PDF na WhatsApp</button></div>';
         bWys.parentNode.insertBefore(p,bWys.nextSibling);
         p.querySelector('#waK1').onclick=()=>{const t=telWa();if(!t){alert('Brak numeru telefonu klienta w formularzu.');return;}
-          window.open('https://wa.me/'+t+'?text='+encodeURIComponent('Dzień dobry, tu SMARTPARKIET. Za chwilę prześlę ofertę renowacji parkietu w PDF.'),'_blank');};
+          window.open('https://wa.me/'+t+'?text='+encodeURIComponent('Dzień dobry, z tej strony SMARTPARKIET. Za chwilę prześlemy Państwu ofertę renowacji parkietu w formacie PDF.'),'_blank');};
         p.querySelector('#waK2').onclick=async()=>{
           let f=window.__karta; if(!f){alert('Najpierw wyślij wycenę.');return;}
           if(!(f instanceof File))f=new File([f],'Oferta_SMARTPARKIET.pdf',{type:'application/pdf'});
