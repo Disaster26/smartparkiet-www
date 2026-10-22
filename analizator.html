@@ -3026,6 +3026,15 @@ html body #uzgPanel{margin:14px 0}
   f.insertBefore(a,f.firstChild);}
  if(document.readyState!=='loading')wstaw();else document.addEventListener('DOMContentLoaded',wstaw);})();</script>
 <!-- pasek analizatora: KONIEC -->
+<!-- wyrownanie opisow: START -->
+<style>/* 22.10: wartosci (czeka na zdjecia, parkieciarz..., w 2 godziny...) w jednej kolumnie - szerokosc etykiet = najdluzsza */
+.ai-out .line{grid-template-columns:var(--kw,auto) minmax(0,1fr)!important;column-gap:14px!important}</style>
+<script>(function(){function wyr(){var o=document.getElementById('aiOut');if(!o)return;var m=0;
+ [].forEach.call(o.querySelectorAll('.line .k'),function(k){var r=document.createRange();r.selectNodeContents(k);m=Math.max(m,r.getBoundingClientRect().width);});
+ if(m)o.style.setProperty('--kw',Math.ceil(m+2)+'px');}
+ if(document.readyState!=='loading')wyr();else document.addEventListener('DOMContentLoaded',wyr);
+ window.addEventListener('load',wyr);window.addEventListener('resize',wyr);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(wyr);})();</script>
+<!-- wyrownanie opisow: KONIEC -->
 <style>/* analizator: okienko SMS wyroznione (Artur 21.10 17:27) */
 html body .sms-box{background:#3A3D42!important;border:1.5px solid #3A3D42!important;color:#F4EFE8;box-shadow:0 6px 18px rgba(20,17,14,.18)}
 html body .sms-box::before{content:"Analizator";display:block;font-size:1.15rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#FF8A4C;margin:0 0 6px}
