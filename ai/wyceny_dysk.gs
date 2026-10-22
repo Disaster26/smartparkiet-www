@@ -116,7 +116,7 @@ function rejestr(a, kiedy, url, idStanu) {
   const sh = ss.getSheets()[0];
   sh.insertRowAfter(1);
   /* 21.10 Artur: nowe wiersze dziedziczyly pomaranczowy naglowek, a gole adresy nie otwieraly sie w aplikacji Arkusze */
-  const w = sh.getRange(2, 1, 1, 8);
+  const w = sh.getRange(2, 1, 1, 9);
   w.setBackground(null).setFontColor('#1A1A1A').setFontWeight('normal');
   w.setValues([[kiedy, a.imie || '', a.tel || '', a.adres || '', a.m2 || '',
     Math.round((a.suma || 0) * 100) / 100, a.termin || '', '']]);
@@ -136,7 +136,7 @@ function naprawRejestr() {
   const sh = SpreadsheetApp.open(it.next()).getSheets()[0];
   const n = sh.getLastRow();
   if (n < 2) return;
-  sh.getRange(2, 1, n - 1, 8).setBackground(null).setFontColor('#1A1A1A').setFontWeight('normal');
+  sh.getRange(2, 1, n - 1, 9).setBackground(null).setFontColor('#1A1A1A').setFontWeight('normal');
   /* stare wiersze: gole adresy albo formuly HYPERLINK (#ERROR! przy polskich ustawieniach) -> link w tekscie */
   [8, 9].forEach(function (k) {
     if (sh.getLastColumn() < k) return;
