@@ -144,7 +144,7 @@ def dane_strukturalne(o):
             '"@type":"HomeAndConstructionBusiness","name":"SMARTPARKIET %s",'
             '"description":"Cyklinowanie bezpyłowe i renowacja parkietu, oddział %s.",'
             '"url":"%s/%s","telephone":"+48602242815","email":"smartparkiet@gmail.com",'
-            '"image":"%s/img/og-smartparkiet.jpg",'
+            '"image":"%s/img/og-smartparkiet-smart.jpg",'
             '"address":{"@type":"PostalAddress","streetAddress":"%s","addressLocality":"Warszawa",'
             '"postalCode":"%s","addressCountry":"PL"},'
             '"areaServed":[%s],'
