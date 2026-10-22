@@ -120,11 +120,12 @@ function rejestr(a, kiedy, url, idStanu) {
   w.setBackground(null).setFontColor('#1A1A1A').setFontWeight('normal');
   w.setValues([[kiedy, a.imie || '', a.tel || '', a.adres || '', a.m2 || '',
     Math.round((a.suma || 0) * 100) / 100, a.termin || '', '']]);
-  sh.getRange(2, 8).setFormula('=HYPERLINK("' + url + '","Otwórz arkusz")');
+  /* 22.10: formula HYPERLINK z przecinkiem dawala #ERROR! w arkuszu z polskimi ustawieniami - link wpisany w tekst komorki */
+  sh.getRange(2, 8).setRichTextValue(link('Otwórz arkusz', url));
   if (idStanu) {
     if (!sh.getRange(1, 9).getValue()) sh.getRange(1, 9).setValue('Popraw i wyślij ponownie')
       .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
-    sh.getRange(2, 9).setFormula('=HYPERLINK("https://smartparkiet.com.pl/analizator.html#oferta=' + idStanu + '","Otwórz w analizatorze")');
+    sh.getRange(2, 9).setRichTextValue(link('Otwórz w analizatorze', 'https://smartparkiet.com.pl/analizator.html#oferta=' + idStanu));
   }
 }
 
@@ -136,13 +137,23 @@ function naprawRejestr() {
   const n = sh.getLastRow();
   if (n < 2) return;
   sh.getRange(2, 1, n - 1, 8).setBackground(null).setFontColor('#1A1A1A').setFontWeight('normal');
-  const linki = sh.getRange(2, 8, n - 1, 1).getValues();
-  linki.forEach(function (r, i) {
-    const u = String(r[0] || '');
-    if (/^https?:\/\//.test(u)) sh.getRange(i + 2, 8).setFormula('=HYPERLINK("' + u + '","Otwórz arkusz")');
+  /* stare wiersze: gole adresy albo formuly HYPERLINK (#ERROR! przy polskich ustawieniach) -> link w tekscie */
+  [8, 9].forEach(function (k) {
+    if (sh.getLastColumn() < k) return;
+    const zakres = sh.getRange(2, k, n - 1, 1);
+    const f = zakres.getFormulas(), v = zakres.getValues();
+    for (let i = 0; i < n - 1; i++) {
+      const m = String(f[i][0] || '').match(/HYPERLINK\("([^"]+)"[,;]\s*"([^"]*)"\)/i);
+      const u = m ? m[1] : String(v[i][0] || '');
+      if (/^https?:\/\//.test(u)) sh.getRange(i + 2, k).setRichTextValue(link(m ? m[2] : 'Otwórz arkusz', u));
+    }
   });
   const g = glownyFolder();
   ARTUR_WSZYSTKIE.forEach(function (m) { try { g.addEditor(m); } catch (e) {} });
+}
+
+function link(tekst, url) {
+  return SpreadsheetApp.newRichTextValue().setText(tekst).setLinkUrl(url).build();
 }
 
 function czysc(t) {
