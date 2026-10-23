@@ -494,6 +494,7 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
 .lbx-fig img{max-width:min(94vw,1500px);max-height:86vh;width:auto;height:auto;
   display:block;border-radius:4px;opacity:0;transition:opacity .16s ease-out}
 .lbx-fig img.gotowe{opacity:1}
+.lbx-fig img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
 .lbx-licz{position:absolute;top:18px;left:50%;transform:translateX(-50%);
   color:#fff;font-size:.8rem;font-weight:600;letter-spacing:.06em;
   background:rgba(0,0,0,.45);padding:6px 12px;border-radius:20px}
@@ -515,6 +516,13 @@ header.nav + section:not(.hero) h2:first-of-type{margin-top:0}
 @media(prefers-reduced-motion:reduce){
   .lbx-fig img,.lbx-btn{transition:none}
 }
+/* --- galeria: kafelek z kilkoma zdjeciami realizacji (23.10) --- */
+.gallery .g-wiecej{position:absolute;top:10px;right:10px;z-index:2;pointer-events:none;
+  display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 8px;border-radius:999px;
+  background:rgba(16,14,11,.66);color:#fff;font-size:.72rem;font-weight:600;line-height:1.3;
+  letter-spacing:.01em;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.gallery .g-wiecej::before{content:"";width:7px;height:7px;border-radius:50%;background:#F8580E;flex:none}
+@media(max-width:700px){.gallery .g-wiecej{top:7px;right:7px;font-size:.68rem;padding:3px 8px 3px 7px}}
 </style>
 <style>
 /* --- uwagi Artura, WhatsApp 23.09 --- */
@@ -1065,7 +1073,7 @@ figure{margin:0}
           <p class="r-pasek"><span title="Lokalizacja">Warszawa, Wilanów</span><span title="Metraż">50 m²</span><span title="Czas">2 dni</span><span title="Podłoga">Deska warstwowa pływająca</span></p>
           <p class="r-data"><time datetime="2026-10-14">14 października 2026</time></p>
         </div>
-        <div class="r-dod"><div class="r-laczone"><h4>Przed i po</h4><figure><img src="img/wilanow2-porownanie-1.webp" alt="Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-porownanie-2.webp" alt="Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-porownanie-3.webp" alt="Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-porownanie-4.webp" alt="Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-porownanie-5.webp" alt="Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu" loading="lazy" decoding="async"></figure></div><div class="r-nowe"><figure><img src="img/wilanow2-po-1.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-2.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-3.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-4.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-5.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-6.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-7.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-8.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-9.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure></div></div>
+        <div class="r-dod"><div class="r-laczone"><h4>Przed i po</h4><figure><img src="img/wilanow2-porownanie-1.webp" alt="Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-porownanie-2.webp" alt="Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-porownanie-3.webp" alt="Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-porownanie-4.webp" alt="Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-porownanie-5.webp" alt="Deska warstwowa pływająca w Wilanowie, zestawienie przed i po cyklinowaniu" loading="lazy" decoding="async"></figure></div><div class="r-nowe"><figure><img src="img/wilanow2-po-1.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-2.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-3.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-4.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-5.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-6.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-7.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure><figure><img src="img/wilanow2-po-8.webp" alt="Deska warstwowa pływająca w Wilanowie po renowacji, naturalny odcień drewna" loading="lazy" decoding="async"></figure></div></div>
       </article>
       <article class="r-poz bezfot" id="r-wilanow-deska-warstwowa" data-data="2026-10-08">
         <div class="r-wiz"></div>
@@ -1093,16 +1101,16 @@ figure{margin:0}
       <p>Przekrój podłóg, które odnawialiśmy: kamienice, jodełka francuska, deska warstwowa, drewno egzotyczne i schody.</p>
     </div>
     <div class="gallery">
-      <figure class="tall"><img src="img/d816138dd0.webp" alt="Dąb naturalny, klepka w jodełkę, po renowacji"><figcaption>Dąb naturalny<small>Klepka dąb · jodełka · lakier wodny premium<i>SMART PREMIUM FLOOR™</i></small></figcaption></figure>
-      <figure class="wide"><img src="img/0e6240c18b.webp" alt="Dąb parzony po renowacji"><figcaption>Dąb parzony<small>Klepka dąb · olej twardy premium<i>SMART PREMIUM FLOOR™</i></small></figcaption></figure>
-      <figure><img src="img/726399dfe0.webp" alt="Dąb bielony po koloryzacji"><figcaption>Dąb bielony<small>Klepka dąb · koloryzacja<i>SMART PREMIUM FLOOR™</i></small></figcaption></figure>
-      <figure><img src="img/37f8581719.webp" alt="Jesion, mozaika"><figcaption>Jesion<small>Mozaika · lakier matowy<i>SMART KAMIENICA RESTORE™</i></small></figcaption></figure>
-      <figure><img src="img/dc0ebb0010.webp" alt="Parkiet w Domu Kultury Bródno"><figcaption>Dom Kultury, Bródno<small>Klepka dąb · sala widowiskowa<i>SMART PUBLIC RESTORE™</i></small></figcaption></figure>
+      <figure class="tall" data-zdjecia="img/real-dab-naturalny-2.webp|img/real-dab-naturalny-3.webp"><span class="g-wiecej" aria-hidden="true">+2 zdjęcia</span><img src="img/d816138dd0.webp" alt="Dąb naturalny, klepka w jodełkę, po renowacji"><figcaption>Dąb naturalny<small>Klepka dąb · jodełka · lakier wodny premium<i>SMART PREMIUM FLOOR™</i></small></figcaption></figure>
+      <figure class="wide" data-zdjecia="img/real-dab-parzony-2.webp|img/real-dab-parzony-3.webp|img/real-dab-parzony-4.webp"><span class="g-wiecej" aria-hidden="true">+3 zdjęcia</span><img src="img/0e6240c18b.webp" alt="Dąb parzony po renowacji"><figcaption>Dąb parzony<small>Klepka dąb · olej twardy premium<i>SMART PREMIUM FLOOR™</i></small></figcaption></figure>
+      <figure data-zdjecia="img/real-dab-bielony-2.webp|img/real-dab-bielony-3.webp|img/real-dab-bielony-4.webp|img/real-dab-bielony-5.webp"><span class="g-wiecej" aria-hidden="true">+4 zdjęcia</span><img src="img/726399dfe0.webp" alt="Dąb bielony po koloryzacji"><figcaption>Dąb bielony<small>Klepka dąb · koloryzacja<i>SMART PREMIUM FLOOR™</i></small></figcaption></figure>
+      <figure data-zdjecia="img/real-jesion-2.webp"><span class="g-wiecej" aria-hidden="true">+1 zdjęcie</span><img src="img/37f8581719.webp" alt="Jesion, mozaika"><figcaption>Jesion<small>Mozaika · lakier matowy<i>SMART KAMIENICA RESTORE™</i></small></figcaption></figure>
+      <figure data-zdjecia="img/real-brodno-2.webp|img/real-brodno-3.webp"><span class="g-wiecej" aria-hidden="true">+2 zdjęcia</span><img src="img/dc0ebb0010.webp" alt="Parkiet w Domu Kultury Bródno"><figcaption>Dom Kultury, Bródno<small>Klepka dąb · sala widowiskowa<i>SMART PUBLIC RESTORE™</i></small></figcaption></figure>
       <figure class="tall"><img src="img/80c5158bda.webp" alt="Merbau po cyklinowaniu"><figcaption>Merbau<small>Drewno egzotyczne · lakier wodny premium<i>SMART EXOTIC FLOOR™</i></small></figcaption></figure>
-      <figure><img src="img/90987ef07e.webp" alt="Merbau, lakier połysk"><figcaption>Merbau<small>Drewno egzotyczne · lakier połysk<i>SMART EXOTIC FLOOR™</i></small></figcaption></figure>
-      <figure><img src="img/01c7ae7311.webp" alt="Orzech amerykański po renowacji"><figcaption>Orzech amerykański<small>Drewno egzotyczne · olej twardy premium<i>SMART EXOTIC FLOOR™</i></small></figcaption></figure>
-      <figure><img src="img/7b5127fb56.webp" alt="Sukupira bengalska"><figcaption>Sukupira<small>Drewno egzotyczne · olej twardy premium<i>SMART EXOTIC FLOOR™</i></small></figcaption></figure>
-      <figure><img src="img/320fd09fdd.webp" alt="Bambus"><figcaption>Bambus<small>Drewno egzotyczne · lakier premium<i>SMART EXOTIC FLOOR™</i></small></figcaption></figure>
+      <figure data-zdjecia="img/real-merbau-2.webp|img/real-merbau-3.webp|img/real-merbau-4.webp"><span class="g-wiecej" aria-hidden="true">+3 zdjęcia</span><img src="img/90987ef07e.webp" alt="Merbau, lakier połysk"><figcaption>Merbau<small>Drewno egzotyczne · lakier połysk<i>SMART EXOTIC FLOOR™</i></small></figcaption></figure>
+      <figure data-zdjecia="img/real-orzech-2.webp|img/real-orzech-3.webp|img/real-orzech-4.webp|img/real-orzech-5.webp|img/real-orzech-6.webp"><span class="g-wiecej" aria-hidden="true">+5 zdjęć</span><img src="img/01c7ae7311.webp" alt="Orzech amerykański po renowacji"><figcaption>Orzech amerykański<small>Drewno egzotyczne · olej twardy premium<i>SMART EXOTIC FLOOR™</i></small></figcaption></figure>
+      <figure data-zdjecia="img/real-sukupira-2.webp|img/real-sukupira-3.webp|img/real-sukupira-4.webp|img/real-sukupira-5.webp|img/real-sukupira-6.webp"><span class="g-wiecej" aria-hidden="true">+5 zdjęć</span><img src="img/7b5127fb56.webp" alt="Sukupira bengalska"><figcaption>Sukupira<small>Drewno egzotyczne · olej twardy premium<i>SMART EXOTIC FLOOR™</i></small></figcaption></figure>
+      <figure data-zdjecia="img/real-bambus-2.webp|img/real-bambus-3.webp"><span class="g-wiecej" aria-hidden="true">+2 zdjęcia</span><img src="img/320fd09fdd.webp" alt="Bambus"><figcaption>Bambus<small>Drewno egzotyczne · lakier premium<i>SMART EXOTIC FLOOR™</i></small></figcaption></figure>
     </div>
   </div>
 </section>
@@ -1283,9 +1291,19 @@ figure{margin:0}
     var im = [].slice.call(k.querySelectorAll('img'));
     if(im.length) zestawy.push(im);
   });
-  var gal = [].slice.call(document.querySelectorAll('.gallery img'));
-  if(gal.length) zestawy.push(gal);
-  if(!zestawy.length) return;
+  /* galeria na dole: kazdy kafelek to osobna realizacja; dodatkowe zdjecia
+     z data-zdjecia dostaja src dopiero w chwili pokazania w podgladzie */
+  var galeria = [];
+  document.querySelectorAll('.gallery figure').forEach(function(fig){
+    var im = fig.querySelector('img');
+    if(!im) return;
+    var lista = [im];
+    (fig.getAttribute('data-zdjecia') || '').split('|').forEach(function(u, k){
+      if(u) lista.push({src: u, alt: (im.alt || '') + ' - zdjęcie ' + (k + 2)});
+    });
+    galeria.push(lista);
+  });
+  if(!zestawy.length && !galeria.length) return;
 
   var ov = document.createElement('div');
   ov.className = 'lbx';
@@ -1300,6 +1318,7 @@ figure{margin:0}
   document.body.appendChild(ov);
 
   var fot = ov.querySelector('.lbx-fig img');
+  fot.draggable = false;  /* bez tego przeciagniecie zdjecia mysza uruchamia drag i gubi pointerup */
   var licz = ov.querySelector('.lbx-licz');
   var zest = null, nr = 0, wracac = null;
 
@@ -1313,6 +1332,10 @@ figure{margin:0}
     var strzalki = zest.length > 1 ? '' : 'none';
     ov.querySelector('.lbx-prev').style.display = strzalki;
     ov.querySelector('.lbx-next').style.display = strzalki;
+    if(zest.length > 1){
+      var nast = zest[(nr + 1) % zest.length];
+      if(!nast.currentSrc){ var pre = new Image(); pre.decoding = 'async'; pre.src = nast.src; }
+    }
   }
   fot.addEventListener('load', function(){ fot.classList.add('gotowe'); });
 
@@ -1329,6 +1352,17 @@ figure{margin:0}
     fot.src = '';
     if(wracac) wracac.focus({preventScroll:true});
   }
+
+  galeria.forEach(function(lista){
+    var im = lista[0];
+    im.setAttribute('tabindex','0');
+    im.setAttribute('role','button');
+    if(lista.length > 1){ var n = lista.length, w = (n % 10 > 1 && n % 10 < 5 && (n % 100 < 12 || n % 100 > 14)) ? 'zdjęcia' : 'zdjęć'; im.setAttribute('aria-label', (im.alt || '') + ' - ' + n + ' ' + w + ', otwórz podgląd'); }
+    im.addEventListener('click', function(){ otworz(lista, 0, im); });
+    im.addEventListener('keydown', function(ev){
+      if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); otworz(lista, 0, im); }
+    });
+  });
 
   zestawy.forEach(function(lista){
     lista.forEach(function(im, i){
