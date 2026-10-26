@@ -1001,7 +1001,7 @@ figure{margin:0}
         </div>
       </div>
       <form class="ai-form" onsubmit="return false">
-        <div class="szer"><label for="imieKl">Imię i nazwisko (opcjonalnie)</label><input id="imieKl" type="text" autocomplete="name" placeholder="Jan Kowalski"></div><div class="szer"><label for="ulicaKl">Adres realizacji: ulica i numer</label><input id="ulicaKl" type="text" autocomplete="street-address" placeholder="np. ul. Przykładowa 1A"></div><div><label for="kodKl">Kod pocztowy</label><input id="kodKl" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="02-390"></div><div><label for="miastoKl">Miejscowość</label><input id="miastoKl" type="text" autocomplete="address-level2" value="Warszawa"></div><div><label for="dzielKl">Dzielnica</label><select id="dzielKl"><option value="">wybierz</option><option>Bemowo</option><option>Białołęka</option><option>Bielany</option><option>Mokotów</option><option>Ochota</option><option>Praga-Południe</option><option>Praga-Północ</option><option>Rembertów</option><option>Śródmieście</option><option>Targówek</option><option>Ursus</option><option>Ursynów</option><option>Wawer</option><option>Wesoła</option><option>Wilanów</option><option>Włochy</option><option>Wola</option><option>Żoliborz</option><option value="">poza Warszawą</option></select></div><div><label for="m2">Metraż podłogi (m²)</label><input id="m2" type="number" inputmode="numeric" value="" placeholder="0" min="0" max="600"></div><div><label for="typ">Jaki materiał</label><select id="typ"><option value="1">Klepka</option><option value="1">Mozaika</option><option value="1">Warstwowa</option><option value="1">Egzotyk</option></select></div><div><label for="wyk">Jakie wykończenie</label><select id="wyk"><option value="0">Lakier półmat</option><option value="0">Lakier mat</option><option value="8">Olej</option><option value="12">Twardy wosk</option><option value="55">Kolor</option></select></div><div><label for="pietroKl">Piętro</label><input id="pietroKl" type="number" inputmode="numeric" min="-1" max="60" placeholder="np. 3"></div><div class="pyt"><span>Winda</span><div class="tn"><label><input type="radio" name="winda" value="tak"> tak</label><label><input type="radio" name="winda" value="nie" checked> nie</label></div></div><div class="pyt"><span>Wymiana listew przypodłogowych</span><div class="tn"><label><input type="radio" name="listwy" value="nie" checked> nie</label><label><input type="radio" name="listwy" value="klasyczna"> klasyczna</label><label><input type="radio" name="listwy" value="MDF"> MDF</label></div></div><div><label for="obiektKl">Rodzaj obiektu</label><select id="obiektKl"><option>Mieszkanie</option><option>Dom</option><option>Lokal usługowy</option><option>Biuro / instytucja</option></select></div><div><label for="montazKl">Sposób montażu do podłoża</label><select id="montazKl"><option value="">nie wiem</option><option value="klejona">klejona do podłoża</option><option value="pływająca">pływająca</option><option value="na legarach">na legarach</option></select></div><div><label for="gatKl">Gatunek drewna (jeśli wiadomo)</label><select id="gatKl"><option value="">nie wiem</option><option>Dąb</option><option>Jesion</option><option>Buk</option><option>Sosna</option><option>Drewno egzotyczne</option></select></div><div><label for="listwyMb">Długość listew do wymiany (mb)</label><input id="listwyMb" type="number" inputmode="numeric" min="0" max="500" placeholder="np. 40"></div><div class="pyt"><span>Luźne lub skrzypiące klepki (stabilizacja)</span><div class="tn"><label><input type="radio" name="stab" value="tak"> tak</label><label><input type="radio" name="stab" value="nie" checked> nie</label><label><input type="radio" name="stab" value="nie wiem"> nie wiem</label></div></div><div><label for="stabM2">Powierzchnia do stabilizacji (m², jeśli wiadomo)</label><input id="stabM2" type="number" inputmode="numeric" min="0" max="600" placeholder="np. 10"></div><div class="pyt"><span>Ubytki, uszkodzone klepki do naprawy</span><div class="tn"><label><input type="radio" name="napr" value="tak"> tak</label><label><input type="radio" name="napr" value="nie" checked> nie</label><label><input type="radio" name="napr" value="nie wiem"> nie wiem</label></div></div><div class="pyt"><span>Czy meble będą usunięte?</span><div class="tn"><label><input type="radio" name="meble" value="tak" checked> tak</label><label><input type="radio" name="meble" value="nie"> nie</label></div></div><div class="szer"><label for="terminKl">Termin realizacji: preferowana data lub miesiąc</label><input id="terminKl" type="text" placeholder="np. 20 listopada albo grudzień"></div><div class="szer"><label for="uwagiKl">Uwagi / prace dodatkowe</label><textarea id="uwagiKl" rows="3" placeholder="np. korytarz ok. 8 m² do ustalenia"></textarea></div><div class="szer" id="dodBlok" style="display:none"><label>Prace dodatkowe / nietypowe <small style="font-weight:400;color:var(--muted,#6B5E52)">(wpisuje parkieciarz, wchodzi do oferty)</small></label><div id="dodLista"></div><button type="button" id="dodPlus" class="dod-plus">+ Dodaj pozycję</button></div><div><label for="telKl">Numer telefonu <span class="obow">*</span></label><input id="telKl" type="tel" inputmode="tel" autocomplete="tel" placeholder="600 000 000"></div><div><label for="mailKl">Adres e-mail, do przesłania wyceny <span class="obow">*</span></label><input id="mailKl" type="email" inputmode="email" autocomplete="email" placeholder="jan.kowalski@poczta.pl"></div><div class="szer" id="kopiaBlok" style="display:none"><label for="mailKopia">Wyślij najpierw do siebie</label><input id="mailKopia" type="email" inputmode="email" autocomplete="off" placeholder="smartparkiet.kontakt@gmail.com"><small class="podp-kopia">Kopia zgłoszenia trafia na ten adres. Klient dostaje ofertę PDF tylko wtedy, gdy zaznaczone jest pole powyżej.</small></div>
+        <div class="szer"><label for="imieKl">Imię i nazwisko (opcjonalnie)</label><input id="imieKl" type="text" autocomplete="name" placeholder="Jan Kowalski"></div><div class="szer"><label for="ulicaKl">Adres realizacji: ulica i numer</label><input id="ulicaKl" type="text" autocomplete="street-address" placeholder="np. ul. Przykładowa 1A"></div><div><label for="kodKl">Kod pocztowy</label><input id="kodKl" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="02-390"></div><div><label for="miastoKl">Miejscowość</label><input id="miastoKl" type="text" autocomplete="address-level2" value="Warszawa"></div><div><label for="dzielKl">Dzielnica</label><select id="dzielKl"><option value="">wybierz</option><option>Bemowo</option><option>Białołęka</option><option>Bielany</option><option>Mokotów</option><option>Ochota</option><option>Praga-Południe</option><option>Praga-Północ</option><option>Rembertów</option><option>Śródmieście</option><option>Targówek</option><option>Ursus</option><option>Ursynów</option><option>Wawer</option><option>Wesoła</option><option>Wilanów</option><option>Włochy</option><option>Wola</option><option>Żoliborz</option><option value="">poza Warszawą</option></select></div><div><label for="m2">Metraż podłogi (m²)</label><input id="m2" type="number" inputmode="numeric" value="" placeholder="0" min="0" max="600"><small class="maly-info" id="malyInfo"><b>Zasady wyceny małych metraży - SMART™</b><span>poniżej 10 m² - ryczałt 1500 zł na gotowo</span><span>od 10 do 22 m² - dopłata 30 zł/m² do standardowej stawki</span><span>powyżej 22 m² - standardowa stawka bez dopłaty</span></small></div><div><label for="typ">Jaki materiał</label><select id="typ"><option value="1">Klepka</option><option value="1">Mozaika</option><option value="1">Warstwowa</option><option value="1">Egzotyk</option></select></div><div><label for="wyk">Jakie wykończenie</label><select id="wyk"><option value="0">Lakier półmat</option><option value="0">Lakier mat</option><option value="8">Olej</option><option value="12">Twardy wosk</option><option value="55">Kolor</option></select></div><div><label for="pietroKl">Piętro</label><input id="pietroKl" type="number" inputmode="numeric" min="-1" max="60" placeholder="np. 3"></div><div class="pyt"><span>Winda</span><div class="tn"><label><input type="radio" name="winda" value="tak"> tak</label><label><input type="radio" name="winda" value="nie" checked> nie</label></div></div><div class="pyt"><span>Wymiana listew przypodłogowych</span><div class="tn"><label><input type="radio" name="listwy" value="nie" checked> nie</label><label><input type="radio" name="listwy" value="klasyczna"> klasyczna</label><label><input type="radio" name="listwy" value="MDF"> MDF</label><label><input type="radio" name="listwy" value="do uzgodnienia"> do uzgodnienia</label></div></div><div><label for="obiektKl">Rodzaj obiektu</label><select id="obiektKl"><option>Mieszkanie</option><option>Dom</option><option>Lokal usługowy</option><option>Biuro / instytucja</option></select></div><div><label for="montazKl">Sposób montażu do podłoża</label><select id="montazKl"><option value="">nie wiem</option><option value="klejona">klejona do podłoża</option><option value="pływająca">pływająca</option><option value="na legarach">na legarach</option></select></div><div><label for="gatKl">Gatunek drewna (jeśli wiadomo)</label><select id="gatKl"><option value="">nie wiem</option><option>Dąb</option><option>Jesion</option><option>Buk</option><option>Sosna</option><option>Drewno egzotyczne</option></select></div><div><label for="listwyMb">Długość listew do wymiany (mb)</label><input id="listwyMb" type="number" inputmode="numeric" min="0" max="500" placeholder="np. 40"></div><div class="pyt"><span>Luźne lub skrzypiące klepki (stabilizacja)</span><div class="tn"><label><input type="radio" name="stab" value="tak"> tak</label><label><input type="radio" name="stab" value="nie" checked> nie</label><label><input type="radio" name="stab" value="nie wiem"> nie wiem</label></div></div><div><label for="stabM2">Powierzchnia do stabilizacji (m², jeśli wiadomo)</label><input id="stabM2" type="number" inputmode="numeric" min="0" max="600" placeholder="np. 10"></div><div class="pyt"><span>Ubytki, uszkodzone klepki do naprawy</span><div class="tn"><label><input type="radio" name="napr" value="tak"> tak</label><label><input type="radio" name="napr" value="nie" checked> nie</label><label><input type="radio" name="napr" value="nie wiem"> nie wiem</label></div></div><div class="pyt"><span>Czy meble będą usunięte?</span><div class="tn"><label><input type="radio" name="meble" value="tak" checked> tak</label><label><input type="radio" name="meble" value="nie"> nie</label></div></div><div class="szer"><label for="terminKl">Termin realizacji: preferowana data lub miesiąc</label><input id="terminKl" type="text" placeholder="np. 20 listopada albo grudzień"></div><div class="szer"><label for="uwagiKl">Uwagi / prace dodatkowe</label><textarea id="uwagiKl" rows="3" placeholder="np. korytarz ok. 8 m² do ustalenia"></textarea></div><div class="szer" id="dodBlok" style="display:none"><label>Prace dodatkowe / nietypowe <small style="font-weight:400;color:var(--muted,#6B5E52)">(wpisuje parkieciarz, wchodzi do oferty)</small></label><div id="dodLista"></div><button type="button" id="dodPlus" class="dod-plus">+ Dodaj pozycję</button></div><div><label for="telKl">Numer telefonu <span class="obow">*</span></label><input id="telKl" type="tel" inputmode="tel" autocomplete="tel" placeholder="600 000 000"></div><div><label for="mailKl">Adres e-mail, do przesłania wyceny <span class="obow">*</span></label><input id="mailKl" type="email" inputmode="email" autocomplete="email" placeholder="jan.kowalski@poczta.pl"></div><div class="szer" id="kopiaBlok" style="display:none"><label for="mailKopia">Wyślij najpierw do siebie</label><input id="mailKopia" type="email" inputmode="email" autocomplete="off" placeholder="smartparkiet.kontakt@gmail.com"><small class="podp-kopia">Kopia zgłoszenia trafia na ten adres. Klient dostaje ofertę PDF tylko wtedy, gdy zaznaczone jest pole powyżej.</small></div>
         <div id="ts" style="margin:4px 0"></div><button class="btn btn-ghost" type="button" id="analizuj" hidden>Oceń zdjęcie teraz</button><button class="btn btn-amber" type="button" id="wyslij"><svg class="bi" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>Wyślij do bezpłatnej wyceny</button><p class="pod-przyc">Prosty formularz mobilny · około 2 minuty · <span class="obow">*</span> pole obowiązkowe: e-mail lub telefon</p><p class="blad-form" id="bladForm" hidden></p>
         <div class="wyslano" id="wyslano" hidden><b>Gdzie to trafia</b><p>Zgłoszenie trafia do naszego biura, a na Państwa adres, jeśli został podany, wysyłamy potwierdzenie przyjęcia. Telefony dyżurne: <b>602 242 815</b> i <b>606 949 222</b>. Odpowiedź w ciągu dwóch godzin roboczych.</p><p class="stan-wys" id="stanWys"></p><div class="podsum" id="podsum"></div><div class="drogi"><a class="btn btn-amber" id="waLink" href="#" target="_blank" rel="noopener">Wyślij przez WhatsApp</a><a class="btn btn-ghost" id="mailLink" href="#">Wyślij mailem</a></div></div>
       </form>
@@ -1021,6 +1021,7 @@ figure{margin:0}
   klient.forEach(function(x){var b=blok(x); if(b) f.insertBefore(b,ts);});
 })();
 </script>
+<style>/* Artur 26.10 11:42: zasady malych metrazy pod polem metrazu, mala kursywa */.ai-form .maly-info{display:block;margin-top:6px;font-size:.74rem;line-height:1.35;font-style:italic;color:#6B5E52;letter-spacing:0;text-transform:none;font-weight:400}.ai-form .maly-info b{display:block;font-weight:700;font-style:italic;color:#3A3F45}.ai-form .maly-info span{display:block}.ai-form .maly-info span::before{content:"- "}</style>
 <style>.dod-w{display:grid;grid-template-columns:1fr 1fr 1.5fr 44px;gap:6px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed #E2D8CC;align-items:end}.dod-w .dod-o{grid-column:1/-1}.dod-w label{display:block;font-size:.72rem;color:#6B5E52;margin:0 0 3px;letter-spacing:0;text-transform:none;font-weight:400}.dod-w input{width:100%;min-width:0}.dod-w .dod-x{border:0;background:#EDE6DC;border-radius:8px;height:44px;font-size:20px;cursor:pointer}.dod-plus{margin-top:2px;border:1px dashed #E8671F;background:transparent;color:#E8671F;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}</style>
 <script>
   /* Artur 20.10 16:28: pytanie 'Czy potrzebna pomoc z meblami?'. Wartosci radia bez zmian (meble='nie' = ekipa przesuwa),
@@ -1030,7 +1031,30 @@ figure{margin:0}
     var lt=rt.closest('label'),ln=rn.closest('label');if(!lt||!ln)return;
     lt.lastChild.textContent=' nie';ln.lastChild.textContent=' tak';ln.parentNode.insertBefore(ln,lt);})();
 /* Artur 20.10 16:28: przy naprawach zamiast 'nie wiem' napis 'do uzgodnienia' (wartosc bez zmian) */
-(function(){var r=document.querySelector('input[name=napr][value="nie wiem"]'),l=r&&r.closest('label');if(l&&l.lastChild)l.lastChild.textContent=' do uzgodnienia';})();
+(function(){['napr','stab'].forEach(function(n){var r=document.querySelector('input[name='+n+'][value="nie wiem"]'),l=r&&r.closest('label');if(l&&l.lastChild)l.lastChild.textContent=' do uzgodnienia';});})(); /* 26.10: stabilizacja tak samo jak naprawy (wartosc 'nie wiem' = do uzgodnienia) */
+/* Artur 25-26.10: automat "do uzgodnienia". Kolko przy pytaniu steruje polem liczbowym pod spodem:
+   do uzgodnienia (albo 'nie wiem') = pole zablokowane z napisem DO UZGODNIENIA, a w tabeli PDF kratka "Do uzg." zaznaczona;
+   tak / rodzaj listwy = pole otwarte do wpisania metrow; nie = pole puste i wylaczone. */
+(function(){
+  var PARY={stab:'stabM2',listwy:'listwyMb'};
+  var st=document.createElement('style');st.textContent=
+    '.ai-form input.pole-uzg,.ai-form input.pole-off{opacity:1;-webkit-text-fill-color:currentColor;cursor:not-allowed}'+
+    '.ai-form input.pole-off{background:#F3EFEA!important}'+
+    '.ai-form input.pole-uzg{background:#FFF3E8!important;border-color:#F3C9A8!important}'+
+    '.ai-form input.pole-uzg::placeholder{color:#E8671F;-webkit-text-fill-color:#E8671F;opacity:1;font-weight:700;text-transform:uppercase;letter-spacing:.04em}'+
+    '.ai-form input.pole-off::placeholder{color:#9A9088;-webkit-text-fill-color:#9A9088;opacity:1}';
+  document.head.appendChild(st);
+  function stan(n){var e=document.querySelector('input[name="'+n+'"]:checked'),v=e?e.value:'';
+    return (v==='do uzgodnienia'||v==='nie wiem')?'uzg':((v===''||v==='nie')?'nie':'tak');}
+  function sync(n){var p=document.getElementById(PARY[n]);if(!p)return;
+    if(p.dataset.ph==null)p.dataset.ph=p.placeholder||'';
+    var s=stan(n);p.classList.toggle('pole-uzg',s==='uzg');p.classList.toggle('pole-off',s==='nie');
+    if(s==='tak'){p.disabled=false;p.placeholder=p.dataset.ph;}
+    else{p.value='';p.disabled=true;p.placeholder=(s==='uzg'?'do uzgodnienia':'nie dotyczy');}}
+  document.addEventListener('change',function(e){var n=e.target&&e.target.name;if(PARY[n])sync(n);});
+  window.spSyncUzg=function(){Object.keys(PARY).forEach(sync);};
+  window.spSyncUzg();
+})();
 /* Artur 20.10 16:32: rodzaj obiektu jako cztery kolka zamiast listy (lista zostaje ukryta, kolka ja ustawiaja) */
 (function(){var sel=document.getElementById('obiektKl');if(!sel||document.getElementById('obiektKolka'))return;
   var w=document.createElement('div');w.className='tn';w.id='obiektKolka';w.style.flexWrap='wrap';
@@ -1437,22 +1461,30 @@ figure{margin:0}
   const pln=n=>(Math.round(n/10)*10).toLocaleString('pl-PL').replace(/ /g,' ');
   /* ceny dodatkow (Artur 13.10): listwy 50 zl/mb, zastrzyki stabilizujace 70 zl/m2, koloryzacja 70 zl/m2, naprawy do uzgodnienia */
   const CENY={listwy:50,stab:70,kolor:70};
+  /* ZASADY WYCENY MALYCH METRAZY - SMART (Artur 26.10 11:42; zastepuja wczesniejsze 25 zl / 30 zl do 20 m2 - latwo zmienic tutaj):
+     ponizej RYCZALT_DO m2 = ryczalt RYCZALT zl na gotowo (zamiast stawki za m2, bez doplaty),
+     od RYCZALT_DO do DOPLATA_DO m2 wlacznie = doplata DOPLATA zl/m2 do standardowej stawki, powyzej DOPLATA_DO = bez doplaty. */
+  const MALY={RYCZALT_DO:10,RYCZALT:1500,DOPLATA_DO:22,DOPLATA:30};
+  const malyTryb=a=>(a>0&&a<MALY.RYCZALT_DO)?'ryczalt':((a>=MALY.RYCZALT_DO&&a<=MALY.DOPLATA_DO)?'doplata':'');
   function zaznaczone(n){const e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:'';}
   function est(){
     const a=Math.max(0,+m2.value||0),k=+typ.value,wt=wyk.options[wyk.selectedIndex].text,w={'Olej':8,'Twardy wosk':12}[wt]||0;
-    const mb=(zaznaczone('listwy')&&zaznaczone('listwy')!=='nie')?Math.max(0,+(document.getElementById('listwyMb')||{}).value||0):0;
+    const mb=(zaznaczone('listwy')&&zaznaczone('listwy')!=='nie'&&zaznaczone('listwy')!=='do uzgodnienia')?Math.max(0,+(document.getElementById('listwyMb')||{}).value||0):0;
     const sm=zaznaczone('stab')==='tak'?Math.max(0,+(document.getElementById('stabM2')||{}).value||0):0;
     const kol=wt==='Kolor'?a*CENY.kolor:0;
     const ext=(window.spDodatkowe?window.spDodatkowe():[]),extS=ext.reduce((s,x)=>s+x.i*x.c,0);
-    const dod=mb*CENY.listwy+sm*CENY.stab+kol+extS;
-    const lo=(120+w)*a+dod,hi=(140+w)*a+dod;
+    const tm=malyTryb(a), dopM=tm==='doplata'?a*MALY.DOPLATA:0; /* Artur 26.10: male metraze widoczne od razu w widelkach */
+    const dod=mb*CENY.listwy+sm*CENY.stab+kol+extS+dopM;
+    const lo=(tm==='ryczalt'?MALY.RYCZALT:(120+w)*a)+dod,hi=(tm==='ryczalt'?MALY.RYCZALT:(140+w)*a)+dod;
     const days=a<=40?'1-2 dni':a<=90?'2 dni':a<=160?'3 dni':'4-5 dni';
-    oN.textContent=(lo||hi)?pln(lo)+'-'+pln(hi)+' zł':'0 zł'; /* Artur 21.10 11:33: metraz domyslnie 0 */
+    oN.textContent=(lo||hi)?(lo===hi?pln(lo):pln(lo)+'-'+pln(hi))+' zł':'0 zł'; /* Artur 21.10 11:33: metraz domyslnie 0 */
     const czesci=[];
-    if(mb)czesci.push('listwy '+mb+' mb × 50 zł');
-    if(sm)czesci.push('stabilizacja '+sm+' m² × 70 zł');else if(zaznaczone('stab')==='tak')czesci.push('stabilizacja: podaj m²');else if(zaznaczone('stab')==='do uzgodnienia')czesci.push('stabilizacja do uzgodnienia');
+    if(tm==='ryczalt')czesci.push('ryczałt SMART poniżej '+MALY.RYCZALT_DO+' m² '+MALY.RYCZALT+' zł');
+    if(dopM)czesci.push('dopłata do małego metrażu '+a+' m² × '+MALY.DOPLATA+' zł');
+    if(mb)czesci.push('listwy '+mb+' mb × 50 zł');else if(zaznaczone('listwy')==='do uzgodnienia')czesci.push('listwy do uzgodnienia');
+    if(sm)czesci.push('stabilizacja '+sm+' m² × 70 zł');else if(zaznaczone('stab')==='tak')czesci.push('stabilizacja: podaj m²');else if(zaznaczone('stab')==='do uzgodnienia'||zaznaczone('stab')==='nie wiem')czesci.push('stabilizacja do uzgodnienia');
     if(kol)czesci.push('koloryzacja '+a+' m² × 70 zł');
-    if(zaznaczone('napr')==='tak')czesci.push('naprawy do uzgodnienia');
+    if(zaznaczone('napr')==='tak'||zaznaczone('napr')==='nie wiem')czesci.push('naprawy do uzgodnienia');
     ext.forEach(x=>czesci.push(x.o+' '+x.i+' '+x.j+' × '+x.c+' zł'));
     oT.textContent=a+' m² · '+typ.options[typ.selectedIndex].text.toLowerCase()+' · '+wt.toLowerCase()+(czesci.length?' · w tym: '+czesci.join(', '):'')+' · ok. '+days+' · netto, orientacyjnie';
   }
@@ -1488,12 +1520,14 @@ figure{margin:0}
         ['Kontakt',[tel?('tel. '+tel):'',mail].filter(Boolean).join(', ')||'brak'],
         ['Adres',adres||'nie podano'],
         ['Dojazd',dojazd],
-        ['Listwy',(zn('listwy')&&zn('listwy')!=='nie')?('wymiana, listwa '+zn('listwy')+(arkusz().mb?', '+arkusz().mb+' mb':'')):'bez wymiany'],
+        ['Listwy',zn('listwy')==='do uzgodnienia'?'wymiana do uzgodnienia':((zn('listwy')&&zn('listwy')!=='nie')?('wymiana, listwa '+zn('listwy')+(arkusz().mb?', '+arkusz().mb+' mb':'')):'bez wymiany')],
         ['Obiekt',arkusz().obiekt],
-        ['Szczegóły',(()=>{const A=arkusz();return [A.rodzaj,A.technika,A.zn('stab')==='tak'?'stabilizacja klepek':(A.zn('stab')==='do uzgodnienia'?'stabilizacja klepek do uzgodnienia':''),A.zn('napr')==='tak'?'naprawy ubytków':'',A.meble?'meble przesuwa ekipa':'meble usuwa klient'].filter(Boolean).join(', ');})()],
+        ['Szczegóły',(()=>{const A=arkusz();return [A.rodzaj,A.technika,A.zn('stab')==='tak'?'stabilizacja klepek':((A.zn('stab')==='do uzgodnienia'||A.zn('stab')==='nie wiem')?'stabilizacja klepek do uzgodnienia':''),A.zn('napr')==='tak'?'naprawy ubytków':(A.zn('napr')==='nie wiem'?'naprawy do uzgodnienia':''),A.meble?'meble przesuwa ekipa':'meble usuwa klient'].filter(Boolean).join(', ');})()],
         ['Termin',termin||'klient nie podał'],
         ['Uwagi',pole('uwagiKl')||'brak'],
         ...((window.spDodatkowe?window.spDodatkowe():[]).length?[['Prace dodatkowe',window.spDodatkowe().map(x=>x.o+': '+x.i+' '+x.j+' × '+zl(x.c)+' = '+zl(x.i*x.c)).join('; ')]]:[]),
+        ...(arkusz().doplata?[['Dopłata do małego metrażu',arkusz().a+' m² × '+MALY.DOPLATA+' zł = '+zl(arkusz().doplata)+' (metraż '+MALY.RYCZALT_DO+'-'+MALY.DOPLATA_DO+' m², wliczona w ofertę)']]:[]),
+        ...(arkusz().ryczalt?[['Ryczałt SMART','metraż poniżej '+MALY.RYCZALT_DO+' m²: '+zl(MALY.RYCZALT)+' na gotowo zamiast stawki za m²']]:[]),
         ['Wstępna oferta',zl(arkusz().suma)+' netto (szczegóły w załączonym PDF)'],
         ['Zdjęcia',zdj+' i oferta PDF w załącznikach']
       ];
@@ -1525,21 +1559,28 @@ figure{margin:0}
       const a=Math.max(0,+m2.value||0), k=+typ.value||1;
       const wykT=wyk.options[wyk.selectedIndex].text, kolor=wykT==='Kolor';
       const dop={'Olej':8,'Twardy wosk':12}[wykT]||0;
-      const listwy=!!zn('listwy')&&zn('listwy')!=='nie', mb=listwy?Math.max(0,+pole('listwyMb')||0):0;
+      const lz=zn('listwy'), listwyUzg=lz==='do uzgodnienia', stabUzg=(zn('stab')==='do uzgodnienia'||zn('stab')==='nie wiem');
+      const listwy=!!lz&&lz!=='nie', mb=(listwy&&!listwyUzg)?Math.max(0,+pole('listwyMb')||0):0;
       const meble=zn('meble')==='nie';
       const cena=Math.round((130+dop)*100)/100; /* Artur 14.10: 130 zl/m2 niezaleznie od rodzaju podlogi */
-      const poz=[
-        ['Renowacja parkietu (m²)',a,cena],
-        ['Wymiana listew przypodłogowych'+(listwy&&zn('listwy')==='MDF'?' MDF':'')+' (mb)',mb,50],
-        ['Stabilizacja parkietu metodą iniekcji (m²)',zn('stab')==='tak'?(Math.max(0,+pole('stabM2')||0)||'do ustalenia'):(zn('stab')==='do uzgodnienia'?'do uzgodnienia':0),zn('stab')==='do uzgodnienia'?null:70], /* Artur 20.10 16:15-16:26: opcja 'do uzgodnienia' */
+      const tm=malyTryb(a), ryczalt=tm==='ryczalt';
+      const baza=[
+        ryczalt?['Renowacja parkietu - ryczałt SMART (poniżej '+MALY.RYCZALT_DO+' m²)',1,MALY.RYCZALT]:['Renowacja parkietu (m²)',a,cena],
+        ['Wymiana listew przypodłogowych'+(lz==='MDF'?' MDF':'')+' (mb)',listwyUzg?'do uzgodnienia':mb,listwyUzg?null:50], /* Artur 25.10: listwy 'do uzgodnienia' */
+        ['Stabilizacja parkietu metodą iniekcji (m²)',zn('stab')==='tak'?(Math.max(0,+pole('stabM2')||0)||'do ustalenia'):(stabUzg?'do uzgodnienia':0),stabUzg?null:70], /* Artur 20.10 16:15-16:26: opcja 'do uzgodnienia' */
         ['Naprawy parkietu (kpl.)',(zn('napr')==='tak'||zn('napr')==='nie wiem')?'do uzgodnienia':0,null], /* Artur 20.10 16:28: 'nie wiem' = do uzgodnienia */
         ['Koloryzacja parkietu (m²)',kolor?a:0,70],
         ['Przesunięcie mebli przez ekipę (usł.)',meble?1:0,300]
       ].map((q,k)=>{const cb=document.getElementById('uzg'+k);q[3]=!!(cb&&cb.checked)||((q[1]==='do uzgodnienia'||q[2]==null)&&q[1]!==0);return q;})
+;
+      /* Artur 26.10 11:42: przy metrazu 10-22 m2 automatycznie 2. pozycja "* Doplata do malego metrazu (10-22 m2)" (stawka MALY.DOPLATA),
+         ponizej 10 m2 pozycja 1 to ryczalt, powyzej 22 m2 doplaty nie ma. Kratki uzg0..uzg5 zostaja przy swoich pozycjach. */
+      const doplata=tm==='doplata'?a*MALY.DOPLATA:0;
+      const poz=baza.slice(0,1).concat(doplata?[['* Dopłata do małego metrażu ('+MALY.RYCZALT_DO+'-'+MALY.DOPLATA_DO+' m²)',a,MALY.DOPLATA,false]]:[],baza.slice(1))
        .concat((window.spDodatkowe?window.spDodatkowe():[]).map(x=>[x.o+' ('+x.j+')',x.i,x.c,!!x.u]));
       const suma=poz.reduce((s,p)=>s+(typeof p[1]==='number'&&p[2]?p[1]*p[2]:0),0);
       const p=pole('pietroKl'), winda=zn('winda');
-      return {pole,zn,a,wykT,kolor,mb,listwy,meble,poz,suma,
+      return {pole,zn,a,wykT,kolor,mb,listwy,listwyUzg,stabUzg,doplata,ryczalt,meble,poz,suma,
         adres:[[pole('ulicaKl'),pole('dzielKl')].filter(Boolean).join(' '),[pole('kodKl'),pole('miastoKl')].filter(Boolean).join(' ')].filter(Boolean).join(', '),
         ulica:pole('ulicaKl'),
         obiekt:pole('obiektKl')+(p===''?'':(p==='0'?', parter':', '+p+'. piętro'+(winda==='tak'?', winda':', bez windy'))),
@@ -1567,8 +1608,8 @@ figure{margin:0}
       const naglowek=(g,t,x,y)=>{g.fillStyle=NAGL;g.font='bold 34px Arial';g.fillText(t,x,y);g.fillStyle=POM;g.fillRect(x,y+24,60,4);};
       // strona 1
       let g=nowa(); g.textBaseline='alphabetic';
-      const kol=(W-2*M-40)/2;
-      naglowek(g,'DANE KLIENTA',M,190); naglowek(g,'SMARTPARKIET',M+kol+40,190);
+      const kol=(W-2*M-40)/2, xR=M+kol+40;
+      naglowek(g,'DANE KLIENTA',M,190); naglowek(g,'SMARTPARKIET',xR,190);
       const kl=[A.pole('imieKl')||'Klient (imię nie podane)',A.ulica||'adres nie podany',A.pole('telKl')||'-',A.obiekt,A.pole('mailKl')||'-'];
       const sp=['SMARTPARKIET','Artur Trembiński · +48 602 242 815','Suflerska 4','NIP 527 158 81 14','smartparkiet@gmail.com'];
       /* podzial na linie (najwyzej 2), slowa za dlugie lamane po znakach, nadmiar z wielokropkiem */
@@ -1576,47 +1617,46 @@ figure{margin:0}
         const dodaj=x=>{while(g.measureText(x).width>w){let k=x.length;while(k>1&&g.measureText(x.slice(0,k)).width>w)k--;out.push(x.slice(0,k));x=x.slice(k);}return x;};
         for(const s0 of sl){const n=l?l+' '+s0:s0;if(g.measureText(n).width<=w)l=n;else{if(l)out.push(l);l=dodaj(s0);}}if(l)out.push(l);
         if(out.length>maks){const r=out.slice(0,maks);let z=r[maks-1];while(z.length>3&&g.measureText(z+'…').width>w)z=z.slice(0,-1);r[maks-1]=z.trimEnd()+'…';return r;}return out;};
+      /* Artur 25-26.10: strona 1 ciasniej (wiersze 48 px), zeby pionowy pasek renowacji i tabela zmiescily sie na 1. stronie */
       let yk=212;
       for(let i=0;i<5;i++){
-        const fk='bold 24px Arial', a1=linie(g,kl[i],kol-32,fk,2), a2=linie(g,sp[i],kol-32,fk,2), n=Math.max(a1.length,a2.length), hw=26+n*30;
-        g.fillStyle='#fff';g.fillRect(M,yk,kol,hw);g.fillRect(M+kol+40,yk,kol,hw);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yk+1,kol-2,hw-2);g.strokeRect(M+kol+41,yk+1,kol-2,hw-2);
-        g.fillStyle='#565B61';g.font=fk;a1.forEach((l,j)=>g.fillText(l,M+16,yk+36+j*30));a2.forEach((l,j)=>g.fillText(l,M+kol+56,yk+36+j*30));
+        const fk='bold 22px Arial', a1=linie(g,kl[i],kol-32,fk,2), a2=linie(g,sp[i],kol-32,fk,2), n=Math.max(a1.length,a2.length), hw=20+n*28;
+        g.fillStyle='#fff';g.fillRect(M,yk,kol,hw);g.fillRect(xR,yk,kol,hw);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yk+1,kol-2,hw-2);g.strokeRect(xR+1,yk+1,kol-2,hw-2);
+        g.fillStyle='#565B61';g.font=fk;a1.forEach((l,j)=>g.fillText(l,M+16,yk+33+j*28));a2.forEach((l,j)=>g.fillText(l,xR+16,yk+33+j*28));
         yk+=hw+2;}
-      const yr=yk+50;
+      const yr=yk+46;
       naglowek(g,'RENOWACJA PARKIETU',M,yr);
-      /* Artur 15.10 16:58: technologia pod gatunkiem w 1. kolumnie, zakres prac w dwoch kolumnach obok siebie
-         (pozycje ida na przemian w bok, a nie w dol), zeby lista nie wypychala tresci na nastepna strone */
-      const k3=(W-2*M)/3,
-        kol1=[['Gatunek / rodzaj parkietu',[A.rodzaj].filter(Boolean)],['Technologia',['#CyklinowanieSmart',A.technika].filter(Boolean)]],
-        zak=['Cyklinowanie bezpyłowe',A.montaz?('Podłoga '+A.montaz):'',A.listwy?('Listwy '+A.zn('listwy')+(A.mb?' · '+A.mb+' mb':'')):'Listwy bez wymiany',
-          A.zn('stab')==='tak'?'Stabilizacja klepek':'',A.zn('napr')==='tak'?'Naprawy ubytków':'',A.kolor?'Koloryzacja':'',
+      /* Artur 25.10 i 26.10: "zakres prac i to, co zaznaczaja klienci, jedno w pionowym pasku", "przerzuc te informacje techniczne
+         z prawej strony na lewa, zeby bylo w pionie" - gatunek, zakres prac (pozycja pod pozycja) i technologia jednym paskiem
+         w lewej kolumnie pod DANE KLIENTA. Prawa kolumna pod SMARTPARKIET: termin i uwagi (wczesniej pelna szerokosc pod spodem). */
+      const zak=['Cyklinowanie bezpyłowe',A.montaz?('Podłoga '+A.montaz):'',
+          A.listwyUzg?'Wymiana listew do uzgodnienia':(A.listwy?('Listwy '+A.zn('listwy')+(A.mb?' · '+A.mb+' mb':'')):'Listwy bez wymiany'),
+          A.zn('stab')==='tak'?'Stabilizacja klepek':(A.stabUzg?'Stabilizacja klepek do uzgodnienia':''),
+          A.zn('napr')==='tak'?'Naprawy ubytków':(A.zn('napr')==='nie wiem'?'Naprawy do uzgodnienia':''),A.kolor?'Koloryzacja':'',
           /* Artur 15.10 16:37: kazda wpisana praca dodatkowa sama dopisuje sie do zakresu prac */
           ...(window.spDodatkowe?window.spDodatkowe():[]).map(x=>x.o)].filter(Boolean);
-      const fl='italic 22px Arial';
-      const pole=(t,x,yy,hc)=>{const ll=linie(g,t,k3-36,fl,2);g.fillStyle='#fff';g.fillRect(x+4,yy,k3-8,hc);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(x+5,yy+1,k3-10,hc-2);
-          g.fillStyle=CIEMNY;g.font=fl;ll.forEach((l,q)=>g.fillText(l,x+16,yy+32+q*28));};
-      const wys=t=>22+linie(g,t,k3-36,fl,2).length*28;
-      let yMax=0;
-      /* kolumna 1: gatunek, pod nim technologia */
-      {let yy=yr+60;kol1.forEach(([hd,w],n)=>{if(n)yy+=40;g.fillStyle=SZARY;wpisz(g,hd,M+12,yy,k3-24,24,'bold');yy+=20;
-        w.forEach(t=>{const hc=wys(t);pole(t,M,yy,hc);yy+=hc+4;});});yMax=Math.max(yMax,yy);}
-      /* kolumny 2 i 3: zakres prac na przemian, wiersze rowne */
-      {const x2=M+k3,x3=M+2*k3;g.fillStyle=SZARY;wpisz(g,'Zakres prac',x2+12,yr+60,k3-24,24,'bold');g.fillStyle=SZARY;wpisz(g,'Zakres prac',x3+12,yr+60,k3-24,24,'bold');
-        let yy=yr+80;for(let j=0;j<zak.length;j+=2){const a=zak[j],b=zak[j+1],hc=Math.max(wys(a),b?wys(b):0);pole(a,x2,yy,hc);if(b)pole(b,x3,yy,hc);yy+=hc+4;}
-        yMax=Math.max(yMax,yy);}
-      let y=yMax+36;
-      g.fillStyle=SZARY;g.font='bold 24px Arial';g.fillText('Informacje dodatkowe',M,y);y+=36;
-      g.fillStyle=CIEMNY;g.font='22px Arial';
-      y=zawin(g,'Termin: '+(A.pole('terminKl')||'do ustalenia')+'.',M,y,W-2*M,30);
-      /* Artur 14.10 11:07: pasek informacji dodatkowych zablokowany na 3 linijki, zeby wycena nie przeskakiwala na druga strone; pelna tresc uwag idzie w mailu */
-      /* Artur 20.10 16:30: prace dodatkowe / uwagi w osobnej ramce (jak pola arkusza), max 3 linijki - pelna tresc w mailu */
-      if(A.pole('uwagiKl')){g.font='21px Arial';const sz=W-2*M-28,sl=A.pole('uwagiKl').replace(/\s+/g,' ').split(' ');const ll=[];let l='';
+      const grupy=[['Gatunek / rodzaj parkietu',[A.rodzaj].filter(Boolean)],['Zakres prac',zak],['Technologia',['#CyklinowanieSmart',A.technika].filter(Boolean)]];
+      const fl='italic 21px Arial', lhp=26;
+      const pole=(t,x,yy,w)=>{const ll=linie(g,t,w-28,fl,2),hc=16+ll.length*lhp;g.fillStyle='#fff';g.fillRect(x,yy,w,hc);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(x+1,yy+1,w-2,hc-2);
+          g.fillStyle=CIEMNY;g.font=fl;ll.forEach((l,q)=>g.fillText(l,x+14,yy+28+q*lhp));return hc;};
+      let yL=yr+28;
+      grupy.forEach(([hd,w])=>{if(!w.length)return;yL+=34;g.fillStyle=SZARY;wpisz(g,hd,M+2,yL,kol-4,22,'bold');yL+=12;
+        w.forEach(t=>{yL+=pole(t,M,yL,kol)+4;});});
+      /* prawa kolumna: informacje dodatkowe */
+      let yP=yr+62;
+      g.fillStyle=SZARY;wpisz(g,'Informacje dodatkowe',xR+2,yP,kol-4,22,'bold');yP+=36;
+      g.fillStyle=CIEMNY;g.font='21px Arial';
+      yP=zawin(g,'Termin: '+(A.pole('terminKl')||'do ustalenia')+'.',xR,yP,kol,28);
+      /* Artur 20.10 16:30: prace dodatkowe / uwagi w osobnej ramce, w waskiej kolumnie max 6 linijek - pelna tresc w mailu */
+      if(A.pole('uwagiKl')){g.font='20px Arial';const sz=kol-28,sl=A.pole('uwagiKl').replace(/\s+/g,' ').split(' ');const ll=[];let l='';
         for(const w of sl){const n=l?l+' '+w:w;if(g.measureText(n).width>sz&&l){ll.push(l);l=w;}else l=n;}if(l)ll.push(l);
-        if(ll.length>3){ll.length=3;let o=ll[2];while(o.length>4&&g.measureText(o+' … (pełna treść w mailu)').width>sz)o=o.slice(0,-1);ll[2]=o.replace(/\s+\S*$/,'')+' … (pełna treść w mailu)';}
-        y+=6;g.fillStyle=SZARY;g.font='bold 20px Arial';g.fillText('Prace dodatkowe / uwagi',M,y);y+=12;
-        const hb=ll.length*28+20;g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M,y,W-2*M,hb);
-        g.fillStyle=CIEMNY;g.font='21px Arial';ll.forEach((t,k)=>g.fillText(t,M+14,y+30+k*28));y+=hb+34;}
-      y=zawin(g,'Przed rozpoczęciem prac prosimy o zapoznanie się z zasadami renowacji na ostatniej stronie.',M,y,W-2*M,30);
+        if(ll.length>6){ll.length=6;let o=ll[5];while(o.length>4&&g.measureText(o+' … (więcej w mailu)').width>sz)o=o.slice(0,-1);ll[5]=o.replace(/\s+\S*$/,'')+' … (więcej w mailu)';}
+        yP+=6;g.fillStyle=SZARY;g.font='bold 20px Arial';g.fillText('Prace dodatkowe / uwagi',xR,yP);yP+=12;
+        const hb=ll.length*26+18;g.fillStyle='#fff';g.fillRect(xR,yP,kol,hb);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(xR+1,yP+1,kol-2,hb-2);
+        g.fillStyle=CIEMNY;g.font='20px Arial';ll.forEach((t,k)=>g.fillText(t,xR+14,yP+28+k*26));yP+=hb+30;}
+      g.fillStyle=CIEMNY;g.font='21px Arial';
+      yP=zawin(g,'Przed rozpoczęciem prac prosimy o zapoznanie się z zasadami renowacji na ostatniej stronie.',xR,yP+6,kol,28);
+      let y=Math.max(yL,yP)+10;
       y+=24;
       // tabela cen (gdy sie nie zmiesci przed stopka, idzie na nastepna strone)
       /* wysokosc wiersza tabeli dopasowana do miejsca na stronie (50 px, w razie potrzeby do 36 px); nowa strona dopiero, gdy i tak sie nie zmiesci */
@@ -1639,7 +1679,7 @@ figure{margin:0}
         {const bx=cx[1]+60-13,by=y+Math.round(rh/2)-13;g.save();g.strokeStyle=CIEMNY;g.lineWidth=2;g.fillStyle='#fff';g.fillRect(bx,by,26,26);g.strokeRect(bx,by,26,26);
          if(p[3]){g.strokeStyle=POM;g.lineWidth=4;g.lineCap='round';g.lineJoin='round';g.beginPath();g.moveTo(bx+5,by+13);g.lineTo(bx+11,by+20);g.lineTo(bx+22,by+6);g.stroke();}
          g.restore();g.font='italic 22px Arial';g.fillStyle=CIEMNY;}
-        g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','-'),cx[2]+12,ty);
+        g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','do uzg.'),cx[2]+12,ty);
         g.fillText(p[2]==null?'do uzg.':zl(p[2]),cx[3]+12,ty);g.fillText(laczna?zl(laczna):'-',cx[4]+12,ty);y+=rh;});
       g.fillStyle=RAMKA;g.fillRect(cx[1],yT,1.5,y-yT);g.fillRect(cx[2],yT,1.5,y-yT);g.strokeStyle=POM;g.lineWidth=3;g.strokeRect(M+1.5,yT-52+1.5,cw-3,y-yT+52-3);y+=16;g.fillStyle='#fff';g.fillRect(M,y,cw,70);g.strokeStyle=POM;g.lineWidth=4;g.strokeRect(M+2,y+2,cw-4,66);g.fillStyle=CIEMNY;g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);g.fillStyle=POM;
       g.textAlign='right';g.fillText(zl(A.suma),W-M-20,y+46);g.textAlign='left';y+=100;
