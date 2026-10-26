@@ -1019,6 +1019,11 @@ figure{margin:0}
     lt.lastChild.textContent=' nie';ln.lastChild.textContent=' tak';ln.parentNode.insertBefore(ln,lt);})();
 /* Artur 20.10 16:28: przy naprawach zamiast 'nie wiem' napis 'do uzgodnienia' (wartosc bez zmian) */
 (function(){['napr','stab'].forEach(function(n){var r=document.querySelector('input[name='+n+'][value="nie wiem"]'),l=r&&r.closest('label');if(l&&l.lastChild)l.lastChild.textContent=' do uzgodnienia';});})(); /* 26.10: stabilizacja tak samo jak naprawy (wartosc 'nie wiem' = do uzgodnienia) */
+/* Artur 26.10 21:57: temat kazdego maila z wycena zaczyna sie od adresu (w skrzynce widac, czego dotyczy, bez otwierania):
+   "ulica nr, miejscowosc - 24 m² - <koncowka>"; bez adresu na poczatku imie / telefon. */
+window.spTemat=function(koniec){var v=function(id){return ((document.getElementById(id)||{}).value||'').trim();};
+  var kto=[v('ulicaKl'),v('miastoKl')].filter(Boolean).join(', ')||[v('imieKl'),v('telKl')?'tel. '+v('telKl'):''].filter(Boolean).join(', ')||'bez adresu';
+  return kto+' - '+String(Math.max(0,+v('m2')||0)).replace('.',',')+' m² - '+koniec;};
 /* Artur 25-26.10: automat "do uzgodnienia". Kolko przy pytaniu steruje polem liczbowym pod spodem:
    do uzgodnienia (albo 'nie wiem') = pole zablokowane z napisem DO UZGODNIENIA, a w tabeli PDF kratka "Do uzg." zaznaczona;
    tak / rodzaj listwy = pole otwarte do wpisania metrow; nie = pole puste i wylaczone. */
@@ -1095,8 +1100,7 @@ figure{margin:0}
       var o=w.querySelector('.dod-o').value.trim(),i=parseFloat((w.querySelector('.dod-i').value||'').replace(',','.')),
           j=w.querySelector('.dod-j').value.trim()||'szt.',c=parseFloat((w.querySelector('.dod-c').value||'').replace(',','.'));
       var u=w.querySelector('.dod-u');return {o:o,i:isFinite(i)&&i>0?i:1,j:j,c:isFinite(c)&&c>0?c:0,u:!!(u&&u.checked)};
-    }).filter(function(x){return x.o&&x.c;}).concat((function(){var m=parseFloat(((document.getElementById('mebleKw')||{}).value||'').replace(',','.'));
-      return isFinite(m)&&m>0?[{o:'Pomoc z meblami',i:1,j:'usł.',c:m}]:[];})());
+    }).filter(function(x){return x.o&&x.c;}); /* Artur 26.10 21:47: kwota z "Pomoc z meblami" NIE jest juz osobna pozycja - zastepuje 300 zl w stalym wierszu mebli (arkusz) */
   };
 })();
 </script>
@@ -1313,7 +1317,7 @@ figure{margin:0}
      a w trakcie negocjacji wracac do wczesniejszych wycen. Historia zapisuje sie TYLKO w telefonie parkieciarza
      (localStorage, tryb ?parkieciarz) - nigdzie publicznie, wiec dane klientow nie wisza w sieci. */
   var on=false; try{on=!!window.SP_ANALIZATOR||/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
-  var POLA=['m2','typ','wyk','gatKl','montazKl','listwyMb','stabM2','terminKl','uwagiKl','imieKl','ulicaKl','kodKl','miastoKl','dzielKl','obiektKl','pietroKl','telKl','mailKl'];
+  var POLA=['m2','typ','wyk','gatKl','montazKl','listwyMb','stabM2','mebleKw','terminKl','uwagiKl','imieKl','ulicaKl','kodKl','miastoKl','dzielKl','obiektKl','pietroKl','telKl','mailKl'];
   var RADIA=['listwy','stab','napr','meble','winda'];
   function zrzut(){var s={pola:{},radia:{},dod:[]};
     /* 22.10: listy rozwijane maja powtarzajace sie wartosci (Klepka/Mozaika = 1, oba lakiery = 0) - zapamietujemy tez pozycje */
@@ -1462,7 +1466,8 @@ figure{margin:0}
     const kol=wt==='Kolor'?a*CENY.kolor:0;
     const ext=(window.spDodatkowe?window.spDodatkowe():[]),extS=ext.reduce((s,x)=>s+x.i*x.c,0);
     const tm=malyTryb(a), dopM=tm==='doplata'?a*MALY.DOPLATA:0; /* Artur 26.10: male metraze widoczne od razu w widelkach */
-    const dod=mb*CENY.listwy+sm*CENY.stab+kol+extS+dopM;
+    const mkw=parseFloat(String((document.getElementById('mebleKw')||{}).value||'').replace(',','.')),mebZl=(isFinite(mkw)&&mkw>0)?mkw:(zaznaczone('meble')==='nie'?300:0); /* 26.10: jedna pozycja za meble, jak w PDF */
+    const dod=mb*CENY.listwy+sm*CENY.stab+kol+extS+dopM+mebZl;
     const lo=(tm==='ryczalt'?MALY.RYCZALT:(120+w)*a)+dod,hi=(tm==='ryczalt'?MALY.RYCZALT:(140+w)*a)+dod;
     const days=a<=40?'1-2 dni':a<=90?'2 dni':a<=160?'3 dni':'4-5 dni';
     oN.textContent=(lo||hi)?(lo===hi?pln(lo):pln(lo)+'-'+pln(hi))+' zł':'0 zł'; /* Artur 21.10 11:33: metraz domyslnie 0 */
@@ -1473,12 +1478,13 @@ figure{margin:0}
     if(sm)czesci.push('stabilizacja '+sm+' m² × 70 zł');else if(zaznaczone('stab')==='tak')czesci.push('stabilizacja: podaj m²');else if(zaznaczone('stab')==='do uzgodnienia'||zaznaczone('stab')==='nie wiem')czesci.push('stabilizacja do uzgodnienia');
     if(kol)czesci.push('koloryzacja '+a+' m² × 70 zł');
     if(zaznaczone('napr')==='tak'||zaznaczone('napr')==='nie wiem')czesci.push('naprawy do uzgodnienia');
+    if(mebZl)czesci.push('pomoc z meblami '+mebZl+' zł');
     ext.forEach(x=>czesci.push(x.o+' '+x.i+' '+x.j+' × '+x.c+' zł'));
     oT.textContent=a+' m² · '+typ.options[typ.selectedIndex].text.toLowerCase()+' · '+wt.toLowerCase()+(czesci.length?' · w tym: '+czesci.join(', '):'')+' · ok. '+days+' · netto, orientacyjnie';
   }
   [m2,typ,wyk].forEach(e=>e.addEventListener('input',est));
   document.addEventListener('input',e=>{if(e.target&&(/^(listwyMb|stabM2|mebleKw)$/.test(e.target.id)||(e.target.closest&&e.target.closest('#dodLista'))))est();});
-  document.addEventListener('change',e=>{if(e.target&&/^(listwy|stab|napr)$/.test(e.target.name))est();});
+  document.addEventListener('change',e=>{if(e.target&&/^(listwy|stab|napr|meble)$/.test(e.target.name))est();});
   est();
 
   /* Artur 24.09: "gdzie to potem leci jak kliknalem wyslij do parkieciarza" -
@@ -1549,7 +1555,10 @@ figure{margin:0}
       const dop={'Olej':8,'Twardy wosk':12}[wykT]||0;
       const lz=zn('listwy'), listwyUzg=lz==='do uzgodnienia', stabUzg=(zn('stab')==='do uzgodnienia'||zn('stab')==='nie wiem');
       const listwy=!!lz&&lz!=='nie', mb=(listwy&&!listwyUzg)?Math.max(0,+pole('listwyMb')||0):0;
-      const meble=zn('meble')==='nie';
+      /* Artur 26.10 21:47 "za kazdym razem sie dwa razy wpisuje": jedna pozycja za meble. Kwota wpisana w "Pomoc z meblami: kwota zl"
+         zastepuje domyslne 300 zl; bez kwoty i gdy meble przesuwa ekipa - 300 zl. */
+      const mebleKw=parseFloat(String(pole('mebleKw')).replace(',','.')), mebleCena=isFinite(mebleKw)&&mebleKw>0?mebleKw:300;
+      const meble=zn('meble')==='nie'||(isFinite(mebleKw)&&mebleKw>0);
       const cena=Math.round((130+dop)*100)/100; /* Artur 14.10: 130 zl/m2 niezaleznie od rodzaju podlogi */
       const tm=malyTryb(a), ryczalt=tm==='ryczalt';
       const baza=[
@@ -1558,7 +1567,7 @@ figure{margin:0}
         ['Stabilizacja parkietu metodą iniekcji (m²)',zn('stab')==='tak'?(Math.max(0,+pole('stabM2')||0)||'do ustalenia'):(stabUzg?'do uzgodnienia':0),stabUzg?null:70], /* Artur 20.10 16:15-16:26: opcja 'do uzgodnienia' */
         ['Naprawy parkietu (kpl.)',(zn('napr')==='tak'||zn('napr')==='nie wiem')?'do uzgodnienia':0,null], /* Artur 20.10 16:28: 'nie wiem' = do uzgodnienia */
         ['Koloryzacja parkietu (m²)',kolor?a:0,70],
-        ['Przesunięcie mebli przez ekipę (usł.)',meble?1:0,300]
+        ['Pomoc z meblami / przesunięcie mebli (usł.)',meble?1:0,mebleCena]
       ].map((q,k)=>{const cb=document.getElementById('uzg'+k);q[3]=!!(cb&&cb.checked)||((q[1]==='do uzgodnienia'||q[2]==null)&&q[1]!==0);return q;})
 ;
       /* Artur 26.10 11:42: przy metrazu 10-22 m2 automatycznie 2. pozycja "* Doplata do malego metrazu (10-22 m2)" (stawka MALY.DOPLATA),
@@ -1568,7 +1577,7 @@ figure{margin:0}
        .concat((window.spDodatkowe?window.spDodatkowe():[]).map(x=>[x.o+' ('+x.j+')',x.i,x.c,!!x.u]));
       const suma=poz.reduce((s,p)=>s+(typeof p[1]==='number'&&p[2]?p[1]*p[2]:0),0);
       const p=pole('pietroKl'), winda=zn('winda');
-      return {pole,zn,a,wykT,kolor,mb,listwy,listwyUzg,stabUzg,doplata,ryczalt,meble,poz,suma,
+      return {pole,zn,a,wykT,kolor,mb,listwy,listwyUzg,stabUzg,doplata,ryczalt,meble,mebleCena,poz,suma,
         adres:[[pole('ulicaKl'),pole('dzielKl')].filter(Boolean).join(' '),[pole('kodKl'),pole('miastoKl')].filter(Boolean).join(' ')].filter(Boolean).join(', '),
         ulica:pole('ulicaKl'),
         obiekt:pole('obiektKl')+(p===''?'':(p==='0'?', parter':', '+p+'. piętro'+(winda==='tak'?', winda':', bez windy'))),
@@ -1612,10 +1621,12 @@ figure{margin:0}
       const zak=['Cyklinowanie bezpyłowe',A.montaz?('Podłoga '+A.montaz):'',
           A.listwyUzg?'Wymiana listew do uzgodnienia':(A.listwy?('Listwy '+A.zn('listwy')+(A.mb?' · '+A.mb+' mb':'')):'Listwy bez wymiany'),
           A.zn('stab')==='tak'?'Stabilizacja klepek':(A.stabUzg?'Stabilizacja klepek do uzgodnienia':''),
-          A.zn('napr')==='tak'?'Naprawy ubytków':(A.zn('napr')==='nie wiem'?'Naprawy do uzgodnienia':''),A.kolor?'Koloryzacja':'',
+          A.zn('napr')==='tak'?'Naprawy ubytków':(A.zn('napr')==='nie wiem'?'Naprawy do uzgodnienia':''),A.kolor?'Koloryzacja':'',A.meble?'Pomoc z meblami':'',
           /* Artur 15.10 16:37: kazda wpisana praca dodatkowa sama dopisuje sie do zakresu prac */
           ...(window.spDodatkowe?window.spDodatkowe():[]).map(x=>x.o)].filter(Boolean);
-      const grupy=[['Gatunek / rodzaj parkietu',[A.rodzaj].filter(Boolean)],['Zakres prac',zak],['Technologia',['#CyklinowanieSmart',A.technika].filter(Boolean)]];
+      /* Artur 26.10 21:52: "te dwie pozycje Technologia mozesz wrzucic tutaj z boku" - Technologia w prawej kolumnie pod danymi SMARTPARKIET,
+         lewy pasek: gatunek -> zakres prac -> informacje dodatkowe */
+      const grupy=[['Gatunek / rodzaj parkietu',[A.rodzaj].filter(Boolean)],['Zakres prac',zak]], techn=['#CyklinowanieSmart',A.technika].filter(Boolean);
       const uwT=A.pole('uwagiKl').replace(/\s+/g,' ').trim();
       const GEST=[ /* fk/lk: dane klienta, fl/lh: pola paska, gap: odstep miedzy grupami, gb: odstep miedzy polami, fh: podpis grupy */
         {fk:22,lk:28,hk:20,fl:21,lh:26,pd:16,gap:34,gb:4,fh:22,hd:46,maxU:4},
@@ -1632,11 +1643,13 @@ figure{margin:0}
         const yr=yk+D.hd;
         if(rys)naglowek(g,'RENOWACJA PARKIETU',M,yr);
         const fl='italic '+D.fl+'px Arial';
-        const pole=(t,yy)=>{const ll=linie(g,t,kol-28,fl,2),hc=D.pd+ll.length*D.lh;
-          if(rys){g.fillStyle='#fff';g.fillRect(M,yy,kol,hc);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yy+1,kol-2,hc-2);
-            g.fillStyle=CIEMNY;g.font=fl;const by=yy+Math.round(hc/2-(ll.length-1)*D.lh/2+D.fl*0.36);ll.forEach((l,q)=>g.fillText(l,M+14,by+q*D.lh));}
+        const pole=(t,yy,x)=>{x=x||M;const ll=linie(g,t,kol-28,fl,2),hc=D.pd+ll.length*D.lh;
+          if(rys){g.fillStyle='#fff';g.fillRect(x,yy,kol,hc);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(x+1,yy+1,kol-2,hc-2);
+            g.fillStyle=CIEMNY;g.font=fl;const by=yy+Math.round(hc/2-(ll.length-1)*D.lh/2+D.fl*0.36);ll.forEach((l,q)=>g.fillText(l,x+14,by+q*D.lh));}
           return hc;};
-        const podpis=(t,yy)=>{if(rys){g.fillStyle=SZARY;wpisz(g,t,M+2,yy,kol-4,D.fh,'bold');}};
+        const podpis=(t,yy,x)=>{x=x||M;if(rys){g.fillStyle=SZARY;wpisz(g,t,x+2,yy,kol-4,D.fh,'bold');}};
+        /* prawa kolumna: Technologia na wysokosci pierwszego podpisu lewego paska */
+        let yRt=yr+28+D.gap;podpis('Technologia',yRt,xR);yRt+=10;techn.forEach(t=>{yRt+=pole(t,yRt,xR)+D.gb;});
         let yL=yr+28;
         grupy.forEach(([hd,w])=>{if(!w.length)return;yL+=D.gap;podpis(hd,yL);yL+=10;w.forEach(t=>{yL+=pole(t,yL)+D.gb;});});
         /* informacje dodatkowe na dole paska: termin, prace dodatkowe / uwagi (ramka, max D.maxU linii - pelna tresc w mailu), odeslanie do zasad */
@@ -1651,7 +1664,7 @@ figure{margin:0}
           yL+=hb+D.gb;}
         {const ft='italic '+(D.fl-1)+'px Arial',ll=linie(g,'Przed rozpoczęciem prac prosimy o zapoznanie się z zasadami renowacji na ostatniej stronie.',kol-4,ft,3);
           yL+=D.lh;if(rys){g.fillStyle=SZARY;g.font=ft;ll.forEach((t,k)=>g.fillText(t,M+2,yL+k*D.lh));}yL+=(ll.length-1)*D.lh;}
-        return yL;};
+        return Math.max(yL,yRt);};
       const miejsce=yy=>Math.floor(((H-80)-(yy+34)-52-16-100-62)/Math.max(1,A.poz.length));
       let D=GEST[GEST.length-1];for(const d of GEST){if(miejsce(uklad(d,false))>=40){D=d;break;}}
       let y=uklad(D,true)+10;
@@ -1728,7 +1741,7 @@ figure{margin:0}
         gg.fillText('SMARTPARKIET · Cyklinowanie SMART™ · tel. 602 242 815 · strona '+(i+1)+' z '+strony.length,W/2,H-28);gg.textAlign='left';});
       const pdf=new window.jspdf.jsPDF({unit:'mm',format:'a4',compress:true});
       strony.forEach((c,i)=>{if(i)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.82),'JPEG',0,0,210,297);});
-      const nazwa='Oferta_'+(A.pole('ulicaKl')||'SMARTPARKIET').replace(/[^\wąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+/g,'_').replace(/^_|_$/g,'').slice(0,40)+'.pdf';
+      const nazwa='Wycena_'+(A.pole('ulicaKl')||'SMARTPARKIET').replace(/[^\wąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+/g,'_').replace(/^_|_$/g,'').slice(0,40)+'.pdf';
       window.__sumaOferty=A.suma;
       window.__stronyOferty=strony;
       return new File([pdf.output('blob')],nazwa,{type:'application/pdf'});
@@ -1828,7 +1841,7 @@ figure{margin:0}
       const b64=f=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]||'');r.onerror=()=>ok('');r.readAsDataURL(f);});
       const wyslij=async pdf=>{let zd=[];try{zd=(await Promise.all((window.__gotowe||[]).map(b64))).filter(Boolean);}catch(e){}
         return fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',stan:stan,zdjecia:zd})}).catch(()=>{});};
+          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),stan:stan,zdjecia:zd})}).catch(()=>{});};
       if(window.__karta&&window.__karta.type==='application/pdf'){
         const r=new FileReader();
         r.onload=()=>wyslij(String(r.result).split(',')[1]||'');
@@ -1869,7 +1882,7 @@ figure{margin:0}
       const f=zbudujFormularz();
       const ust=(n,v)=>{const e=f.querySelector('[name="'+n+'"]'); if(e)e.value=v||'';};
       const pole=id=>((document.getElementById(id)||{}).value||'').trim();
-      ust('_subject',(window.__korekta?'Korekta wyceny: ':'Nowa wycena: ')+String(+m2.value||0).replace('.',',')+' m², '+(pole('ulicaKl')||'adres nie podany')+(pole('telKl')?', tel. '+pole('telKl'):''));
+      ust('_subject',window.spTemat(window.__korekta?'Korekta wyceny SMARTPARKIET':'Nowa wycena SMARTPARKIET')); /* Artur 26.10 21:57: temat zaczyna sie od adresu; fraza "Nowa wycena"/"Korekta wyceny" zostaje dla filtra Gmaila */
       /* Artur 14.10: oferta z cenami tylko do nas, klient dostaje samo potwierdzenie (autoodpowiedz FormSubmit) */
       ust('_cc',KOPIA);
       /* Artur 20.10 02:28: drugie pole - czasem wysyla najpierw do siebie, zanim klient dostanie potwierdzenie */
@@ -1956,7 +1969,7 @@ figure{margin:0}
       doBiura(t,(document.getElementById('mailKl')||{}).value||'');
       naDysk((document.getElementById('mailKl')||{}).value||'');
       waL.href='https://wa.me/48602242815?text='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi doślę w odpowiedzi.');
-      mailL.href='mailto:smartparkiet.kontakt@gmail.com?subject='+encodeURIComponent('Wycena ze zdjęć - '+(+m2.value||0)+' m2')+'&body='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi dołączam do tej wiadomości.');
+      mailL.href='mailto:smartparkiet.kontakt@gmail.com?subject='+encodeURIComponent(window.spTemat('Nowa wycena SMARTPARKIET'))+'&body='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi dołączam do tej wiadomości.');
       {const dr=document.querySelector('#wyslano .drogi'); if(dr)dr.hidden=true;}
       boxWys.hidden=false;
       try{window.__poWyslaniu&&window.__poWyslaniu();}catch(e){}
