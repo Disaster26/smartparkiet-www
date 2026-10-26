@@ -223,7 +223,7 @@ function doPost(e) {
         bcc: ARTUR, /* Artur 22.10: kopia maila do klienta w jego skrzynce */
         replyTo: ARTUR,
         name: 'SMARTPARKIET',
-        subject: 'Oferta renowacji parkietu - SMARTPARKIET',
+        subject: d.temat || 'Oferta renowacji parkietu - SMARTPARKIET', /* Artur 26.10 21:57: temat od adresu (budowany w wycena.html) */
         body: 'Dzień dobry,\n\n' + akapity.join('\n\n') + '\n\nPozdrawiamy\nSMARTPARKIET TREMBIŃSKI\nArtur | 602 242 815',
         htmlBody: mailHtml(akapity),
         attachments: [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Oferta_SMARTPARKIET.pdf')]
@@ -237,10 +237,10 @@ function doPost(e) {
         bcc: ARTUR, /* Artur 22.10: kopia maila do klienta w jego skrzynce */
         replyTo: ARTUR,
         name: 'SMARTPARKIET',
-        subject: 'Wstępna wycena renowacji parkietu - SMARTPARKIET',
+        subject: d.temat || 'Wstępna wycena renowacji parkietu - SMARTPARKIET', /* Artur 26.10 21:57: temat od adresu */
         body: 'Dzień dobry,\n\n' + akapity.join('\n\n') + '\n\nPozdrawiamy\nSMARTPARKIET TREMBIŃSKI\nArtur | 602 242 815',
         htmlBody: mailHtml(akapity),
-        attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', 'Wstepna_wycena_SMARTPARKIET.pdf')] : []
+        attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Wstepna_wycena_SMARTPARKIET.pdf')] : []
       });
     }
     return json({ ok: true, plik: nazwa, id: idStanu });
