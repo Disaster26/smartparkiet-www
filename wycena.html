@@ -1605,18 +1605,10 @@ figure{margin:0}
         const dodaj=x=>{while(g.measureText(x).width>w){let k=x.length;while(k>1&&g.measureText(x.slice(0,k)).width>w)k--;out.push(x.slice(0,k));x=x.slice(k);}return x;};
         for(const s0 of sl){const n=l?l+' '+s0:s0;if(g.measureText(n).width<=w)l=n;else{if(l)out.push(l);l=dodaj(s0);}}if(l)out.push(l);
         if(out.length>maks){const r=out.slice(0,maks);let z=r[maks-1];while(z.length>3&&g.measureText(z+'…').width>w)z=z.slice(0,-1);r[maks-1]=z.trimEnd()+'…';return r;}return out;};
-      /* Artur 25-26.10: strona 1 ciasniej (wiersze 48 px), zeby pionowy pasek renowacji i tabela zmiescily sie na 1. stronie */
-      let yk=212;
-      for(let i=0;i<5;i++){
-        const fk='bold 22px Arial', a1=linie(g,kl[i],kol-32,fk,2), a2=linie(g,sp[i],kol-32,fk,2), n=Math.max(a1.length,a2.length), hw=20+n*28;
-        g.fillStyle='#fff';g.fillRect(M,yk,kol,hw);g.fillRect(xR,yk,kol,hw);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yk+1,kol-2,hw-2);g.strokeRect(xR+1,yk+1,kol-2,hw-2);
-        g.fillStyle='#565B61';g.font=fk;a1.forEach((l,j)=>g.fillText(l,M+16,yk+33+j*28));a2.forEach((l,j)=>g.fillText(l,xR+16,yk+33+j*28));
-        yk+=hw+2;}
-      const yr=yk+46;
-      naglowek(g,'RENOWACJA PARKIETU',M,yr);
-      /* Artur 25.10 i 26.10: "zakres prac i to, co zaznaczaja klienci, jedno w pionowym pasku", "przerzuc te informacje techniczne
-         z prawej strony na lewa, zeby bylo w pionie" - gatunek, zakres prac (pozycja pod pozycja) i technologia jednym paskiem
-         w lewej kolumnie pod DANE KLIENTA. Prawa kolumna pod SMARTPARKIET: termin i uwagi (wczesniej pelna szerokosc pod spodem). */
+      /* Artur 25-26.10: gatunek, zakres prac (pozycja pod pozycja), technologia i - od 26.10 16:20 ("jeszcze tutaj zmiana pozycji") -
+         informacje dodatkowe jednym pionowym paskiem w LEWEJ kolumnie pod DANE KLIENTA; prawa kolumna tylko dane firmy.
+         Zeby tabela cen i kwota netto zostaly na 1. stronie, uklad ma 3 stopnie gestosci: najpierw liczymy na sucho,
+         wybieramy najluzniejszy, przy ktorym wiersz tabeli ma >= 40 px, i dopiero wtedy rysujemy. */
       const zak=['Cyklinowanie bezpyłowe',A.montaz?('Podłoga '+A.montaz):'',
           A.listwyUzg?'Wymiana listew do uzgodnienia':(A.listwy?('Listwy '+A.zn('listwy')+(A.mb?' · '+A.mb+' mb':'')):'Listwy bez wymiany'),
           A.zn('stab')==='tak'?'Stabilizacja klepek':(A.stabUzg?'Stabilizacja klepek do uzgodnienia':''),
@@ -1624,32 +1616,50 @@ figure{margin:0}
           /* Artur 15.10 16:37: kazda wpisana praca dodatkowa sama dopisuje sie do zakresu prac */
           ...(window.spDodatkowe?window.spDodatkowe():[]).map(x=>x.o)].filter(Boolean);
       const grupy=[['Gatunek / rodzaj parkietu',[A.rodzaj].filter(Boolean)],['Zakres prac',zak],['Technologia',['#CyklinowanieSmart',A.technika].filter(Boolean)]];
-      const fl='italic 21px Arial', lhp=26;
-      const pole=(t,x,yy,w)=>{const ll=linie(g,t,w-28,fl,2),hc=16+ll.length*lhp;g.fillStyle='#fff';g.fillRect(x,yy,w,hc);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(x+1,yy+1,w-2,hc-2);
-          g.fillStyle=CIEMNY;g.font=fl;ll.forEach((l,q)=>g.fillText(l,x+14,yy+28+q*lhp));return hc;};
-      let yL=yr+28;
-      grupy.forEach(([hd,w])=>{if(!w.length)return;yL+=34;g.fillStyle=SZARY;wpisz(g,hd,M+2,yL,kol-4,22,'bold');yL+=12;
-        w.forEach(t=>{yL+=pole(t,M,yL,kol)+4;});});
-      /* prawa kolumna: informacje dodatkowe */
-      let yP=yr+62;
-      g.fillStyle=SZARY;wpisz(g,'Informacje dodatkowe',xR+2,yP,kol-4,22,'bold');yP+=36;
-      g.fillStyle=CIEMNY;g.font='21px Arial';
-      yP=zawin(g,'Termin: '+(A.pole('terminKl')||'do ustalenia')+'.',xR,yP,kol,28);
-      /* Artur 20.10 16:30: prace dodatkowe / uwagi w osobnej ramce, w waskiej kolumnie max 6 linijek - pelna tresc w mailu */
-      if(A.pole('uwagiKl')){g.font='20px Arial';const sz=kol-28,sl=A.pole('uwagiKl').replace(/\s+/g,' ').split(' ');const ll=[];let l='';
-        for(const w of sl){const n=l?l+' '+w:w;if(g.measureText(n).width>sz&&l){ll.push(l);l=w;}else l=n;}if(l)ll.push(l);
-        if(ll.length>6){ll.length=6;let o=ll[5];while(o.length>4&&g.measureText(o+' … (więcej w mailu)').width>sz)o=o.slice(0,-1);ll[5]=o.replace(/\s+\S*$/,'')+' … (więcej w mailu)';}
-        yP+=6;g.fillStyle=SZARY;g.font='bold 20px Arial';g.fillText('Prace dodatkowe / uwagi',xR,yP);yP+=12;
-        const hb=ll.length*26+18;g.fillStyle='#fff';g.fillRect(xR,yP,kol,hb);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(xR+1,yP+1,kol-2,hb-2);
-        g.fillStyle=CIEMNY;g.font='20px Arial';ll.forEach((t,k)=>g.fillText(t,xR+14,yP+28+k*26));yP+=hb+30;}
-      g.fillStyle=CIEMNY;g.font='21px Arial';
-      yP=zawin(g,'Przed rozpoczęciem prac prosimy o zapoznanie się z zasadami renowacji na ostatniej stronie.',xR,yP+6,kol,28);
-      let y=Math.max(yL,yP)+10;
+      const uwT=A.pole('uwagiKl').replace(/\s+/g,' ').trim();
+      const GEST=[ /* fk/lk: dane klienta, fl/lh: pola paska, gap: odstep miedzy grupami, gb: odstep miedzy polami, fh: podpis grupy */
+        {fk:22,lk:28,hk:20,fl:21,lh:26,pd:16,gap:34,gb:4,fh:22,hd:46,maxU:4},
+        {fk:21,lk:26,hk:18,fl:20,lh:24,pd:14,gap:28,gb:3,fh:21,hd:42,maxU:3},
+        {fk:20,lk:24,hk:16,fl:18,lh:22,pd:12,gap:24,gb:2,fh:19,hd:40,maxU:2}];
+      const uklad=(D,rys)=>{
+        let yk=212;
+        for(let i=0;i<5;i++){
+          const fk='bold '+D.fk+'px Arial', a1=linie(g,kl[i],kol-32,fk,2), a2=linie(g,sp[i],kol-32,fk,2), n=Math.max(a1.length,a2.length), hw=D.hk+n*D.lk;
+          if(rys){g.fillStyle='#fff';g.fillRect(M,yk,kol,hw);g.fillRect(xR,yk,kol,hw);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yk+1,kol-2,hw-2);g.strokeRect(xR+1,yk+1,kol-2,hw-2);
+            const by=yk+Math.round(hw/2-(n-1)*D.lk/2+D.fk*0.36);
+            g.fillStyle='#565B61';g.font=fk;a1.forEach((l,j)=>g.fillText(l,M+16,by+j*D.lk));a2.forEach((l,j)=>g.fillText(l,xR+16,by+j*D.lk));}
+          yk+=hw+2;}
+        const yr=yk+D.hd;
+        if(rys)naglowek(g,'RENOWACJA PARKIETU',M,yr);
+        const fl='italic '+D.fl+'px Arial';
+        const pole=(t,yy)=>{const ll=linie(g,t,kol-28,fl,2),hc=D.pd+ll.length*D.lh;
+          if(rys){g.fillStyle='#fff';g.fillRect(M,yy,kol,hc);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yy+1,kol-2,hc-2);
+            g.fillStyle=CIEMNY;g.font=fl;const by=yy+Math.round(hc/2-(ll.length-1)*D.lh/2+D.fl*0.36);ll.forEach((l,q)=>g.fillText(l,M+14,by+q*D.lh));}
+          return hc;};
+        const podpis=(t,yy)=>{if(rys){g.fillStyle=SZARY;wpisz(g,t,M+2,yy,kol-4,D.fh,'bold');}};
+        let yL=yr+28;
+        grupy.forEach(([hd,w])=>{if(!w.length)return;yL+=D.gap;podpis(hd,yL);yL+=10;w.forEach(t=>{yL+=pole(t,yL)+D.gb;});});
+        /* informacje dodatkowe na dole paska: termin, prace dodatkowe / uwagi (ramka, max D.maxU linii - pelna tresc w mailu), odeslanie do zasad */
+        yL+=D.gap;podpis('Informacje dodatkowe',yL);yL+=10;
+        yL+=pole('Termin: '+(A.pole('terminKl')||'do ustalenia'),yL)+D.gb;
+        if(uwT){const fu=D.fl+'px Arial';let ll=linie(g,uwT,kol-28,fu,99);
+          if(ll.length>D.maxU){ll=ll.slice(0,D.maxU);g.font=fu;let o=ll[D.maxU-1];while(o.length>4&&g.measureText(o+' … (więcej w mailu)').width>kol-28)o=o.slice(0,-1);ll[D.maxU-1]=o.replace(/\s+\S*$/,'')+' … (więcej w mailu)';}
+          const hb=D.pd+ll.length*D.lh+(D.fl+8);
+          if(rys){g.fillStyle='#fff';g.fillRect(M,yL,kol,hb);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yL+1,kol-2,hb-2);
+            g.fillStyle=SZARY;g.font='bold '+(D.fl-2)+'px Arial';g.fillText('Prace dodatkowe / uwagi',M+14,yL+Math.round(D.pd/2)+D.fl);
+            g.fillStyle=CIEMNY;g.font=fu;ll.forEach((t,k)=>g.fillText(t,M+14,yL+Math.round(D.pd/2)+D.fl+8+(k+1)*D.lh-4));}
+          yL+=hb+D.gb;}
+        {const ft='italic '+(D.fl-1)+'px Arial',ll=linie(g,'Przed rozpoczęciem prac prosimy o zapoznanie się z zasadami renowacji na ostatniej stronie.',kol-4,ft,3);
+          yL+=D.lh;if(rys){g.fillStyle=SZARY;g.font=ft;ll.forEach((t,k)=>g.fillText(t,M+2,yL+k*D.lh));}yL+=(ll.length-1)*D.lh;}
+        return yL;};
+      const miejsce=yy=>Math.floor(((H-80)-(yy+34)-52-16-100-62)/Math.max(1,A.poz.length));
+      let D=GEST[GEST.length-1];for(const d of GEST){if(miejsce(uklad(d,false))>=40){D=d;break;}}
+      let y=uklad(D,true)+10;
       y+=24;
       // tabela cen (gdy sie nie zmiesci przed stopka, idzie na nastepna strone)
       /* wysokosc wiersza tabeli dopasowana do miejsca na stronie (50 px, w razie potrzeby do 36 px); nowa strona dopiero, gdy i tak sie nie zmiesci */
       let rh=Math.min(50,Math.floor(((H-80)-y-52-16-100-62)/Math.max(1,A.poz.length)));
-      if(rh<36){g=nowa();g.textBaseline='alphabetic';naglowek(g,'WYCENA',M,190);y=250;rh=50;}
+      if(rh<34){g=nowa();g.textBaseline='alphabetic';naglowek(g,'WYCENA',M,190);y=250;rh=50;}
       const cx=[M,M+500,M+620,M+740,M+890], cw=W-2*M; /* Artur 20.10 22:43: kolumna "Do uzg." */
       g.fillStyle=ZYWY;g.fillRect(M,y,cw,52);g.fillStyle='#fff';g.font='bold 23px Arial';
       ['Zakres prac','Do uzg.','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
