@@ -958,6 +958,7 @@ figure{margin:0}
       <a href="programy.html">Programy</a>
       <a href="realizacje.html">Realizacje</a>
       <a href="wycena.html" class="akt">Kalkulator online</a>
+      <a href="zamow-online.html">Zamów online</a>
       <a href="ekspertyza.html">Ekspertyza online</a>
       <a href="oddzialy.html">Oddziały</a>
       <a href="smart-partner.html">Program partnerski</a>
@@ -1023,7 +1024,7 @@ figure{margin:0}
    "ulica nr, miejscowosc - 24 m² - <koncowka>"; bez adresu na poczatku imie / telefon. */
 window.spTemat=function(koniec){var v=function(id){return ((document.getElementById(id)||{}).value||'').trim();};
   var kto=[v('ulicaKl'),v('miastoKl')].filter(Boolean).join(', ')||[v('imieKl'),v('telKl')?'tel. '+v('telKl'):''].filter(Boolean).join(', ')||'bez adresu';
-  return kto+' - '+String(Math.max(0,+v('m2')||0)).replace('.',',')+' m² - '+koniec;};
+  return kto+' - '+String(Math.max(0,+v('m2')||0)).replace('.',',')+' m² - '+(window.SP_ZAMOWIENIE?'ZAMÓWIENIE ONLINE - ':'')+koniec;}; /* 27.10: zamow-online.html - wyroznik zamowienia, "Nowa wycena" zostaje dla filtra */
 /* Artur 25-26.10: automat "do uzgodnienia". Kolko przy pytaniu steruje polem liczbowym pod spodem:
    do uzgodnienia (albo 'nie wiem') = pole zablokowane z napisem DO UZGODNIENIA, a w tabeli PDF kratka "Do uzg." zaznaczona;
    tak / rodzaj listwy = pole otwarte do wpisania metrow; nie = pole puste i wylaczone. */
@@ -1517,7 +1518,8 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         ['Listwy',zn('listwy')==='do uzgodnienia'?'wymiana do uzgodnienia':((zn('listwy')&&zn('listwy')!=='nie')?('wymiana, listwa '+zn('listwy')+(arkusz().mb?', '+arkusz().mb+' mb':'')):'bez wymiany')],
         ['Obiekt',arkusz().obiekt],
         ['Szczegóły',(()=>{const A=arkusz();return [A.rodzaj,A.technika,A.zn('stab')==='tak'?'stabilizacja klepek':((A.zn('stab')==='do uzgodnienia'||A.zn('stab')==='nie wiem')?'stabilizacja klepek do uzgodnienia':''),A.zn('napr')==='tak'?'naprawy ubytków':(A.zn('napr')==='nie wiem'?'naprawy do uzgodnienia':''),A.meble?'meble przesuwa ekipa':'meble usuwa klient'].filter(Boolean).join(', ');})()],
-        ['Termin',termin||'klient nie podał'],
+        ...(window.SP_ZAMOWIENIE?[['ZAMÓWIENIE ONLINE','Klient zamawia usługę i prosi o potwierdzenie terminu. Status: DO POTWIERDZENIA przez centralę (SMS lub e-mail do 2 godzin roboczych).']]:[]),
+        [window.SP_ZAMOWIENIE?'Preferowane terminy':'Termin',termin||'klient nie podał'],
         ['Uwagi',pole('uwagiKl')||'brak'],
         ...((window.spDodatkowe?window.spDodatkowe():[]).length?[['Prace dodatkowe',window.spDodatkowe().map(x=>x.o+': '+x.i+' '+x.j+' × '+zl(x.c)+' = '+zl(x.i*x.c)).join('; ')]]:[]),
         ...(arkusz().doplata?[['Dopłata do małego metrażu',arkusz().a+' m² × '+MALY.DOPLATA+' zł = '+zl(arkusz().doplata)+' (metraż '+MALY.RYCZALT_DO+'-'+MALY.DOPLATA_DO+' m², wliczona w ofertę)']]:[]),
@@ -1654,7 +1656,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         grupy.forEach(([hd,w])=>{if(!w.length)return;yL+=D.gap;podpis(hd,yL);yL+=10;w.forEach(t=>{yL+=pole(t,yL)+D.gb;});});
         /* informacje dodatkowe na dole paska: termin, prace dodatkowe / uwagi (ramka, max D.maxU linii - pelna tresc w mailu), odeslanie do zasad */
         yL+=D.gap;podpis('Informacje dodatkowe',yL);yL+=10;
-        yL+=pole('Termin: '+(A.pole('terminKl')||'do ustalenia'),yL)+D.gb;
+        yL+=pole((window.SP_ZAMOWIENIE?'Preferowane terminy (do potwierdzenia): ':'Termin: ')+(A.pole('terminKl')||'do ustalenia'),yL)+D.gb;
         if(uwT){const fu=D.fl+'px Arial';let ll=linie(g,uwT,kol-28,fu,99);
           if(ll.length>D.maxU){ll=ll.slice(0,D.maxU);g.font=fu;let o=ll[D.maxU-1];while(o.length>4&&g.measureText(o+' … (więcej w mailu)').width>kol-28)o=o.slice(0,-1);ll[D.maxU-1]=o.replace(/\s+\S*$/,'')+' … (więcej w mailu)';}
           const hb=D.pd+ll.length*D.lh+(D.fl+8);
@@ -1791,7 +1793,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       // stoja zwykle komunikaty i nie maja czego szukac w zgloszeniu
       const ma=t=>window.__analiza&&t&&t!=='-'&&t!=='\u2014'&&t!=='\u2026';
       const w=[];
-      w.push('Zgłoszenie ze strony SMARTPARKIET - wycena ze zdjęć');
+      w.push(window.SP_ZAMOWIENIE?'ZAMÓWIENIE ONLINE ze strony SMARTPARKIET - termin do potwierdzenia':'Zgłoszenie ze strony SMARTPARKIET - wycena ze zdjęć');
       w.push('Metraż: '+a+' m\u00b2');
       w.push('Podłoga: '+typ.options[typ.selectedIndex].text);
       w.push('Wykończenie: '+wyk.options[wyk.selectedIndex].text+' Berger-Seidle®');
@@ -1806,7 +1808,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       w.push('Piętro: '+(pole('pietroKl')||'nie podano'));
       w.push('Winda: '+zn('winda'));
       w.push('Wymiana listew przypodłogowych: '+zn('listwy'));
-      w.push('Termin realizacji: '+(pole('terminKl')||'nie podano'));
+      w.push((window.SP_ZAMOWIENIE?'Preferowane terminy (do potwierdzenia): ':'Termin realizacji: ')+(pole('terminKl')||'nie podano'));
       w.push('Widełki z kalkulatora: '+oN.textContent);
       if(zn('listwy')&&zn('listwy')!=='nie') w.push('Listwy wyceniamy po obejrzeniu zdjęć, nie wchodzą w widełki powyżej.');
       w.push('Telefon: '+(pole('telKl')||'nie podano'));
@@ -1841,7 +1843,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       const b64=f=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]||'');r.onerror=()=>ok('');r.readAsDataURL(f);});
       const wyslij=async pdf=>{let zd=[];try{zd=(await Promise.all((window.__gotowe||[]).map(b64))).filter(Boolean);}catch(e){}
         return fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),stan:stan,zdjecia:zd})}).catch(()=>{});};
+          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!window.SP_ZAMOWIENIE,terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):'',stan:stan,zdjecia:zd})}).catch(()=>{});};
       if(window.__karta&&window.__karta.type==='application/pdf'){
         const r=new FileReader();
         r.onload=()=>wyslij(String(r.result).split(',')[1]||'');
@@ -1890,7 +1892,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       if(kopOk) mail=kop;
       const mailOk=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail||'');
       ust('email',mailOk?mail:'');
-      ust('_autoresponse',mailOk?'Dzień dobry, dziękujemy za przesłanie zgłoszenia do bezpłatnej wyceny SMARTPARKIET. Parkieciarz obejrzy zdjęcia i odezwie się z wyceną w ciągu dwóch godzin roboczych. W razie pytań: 602 242 815. Pozdrawiamy, SMARTPARKIET':'');
+      ust('_autoresponse',mailOk&&window.SP_ZAMOWIENIE?'Dzień dobry, dziękujemy za zamówienie usługi SMARTPARKIET. Preferowany termin przekazaliśmy do centrali - potwierdzimy jego dostępność SMS-em lub e-mailem w ciągu maksymalnie 2 godzin roboczych. Termin staje się wiążący dopiero po potwierdzeniu. W razie pytań: 602 242 815. Pozdrawiamy, SMARTPARKIET':mailOk?'Dzień dobry, dziękujemy za przesłanie zgłoszenia do bezpłatnej wyceny SMARTPARKIET. Parkieciarz obejrzy zdjęcia i odezwie się z wyceną w ciągu dwóch godzin roboczych. W razie pytań: 602 242 815. Pozdrawiamy, SMARTPARKIET':'');
       ust('_template','box');
       ust('_captcha','false');
       ust('_next',location.origin+location.pathname.replace(/[^/]*$/,'')+'wyslane.html');
@@ -1927,6 +1929,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
           {const k=document.getElementById('komWyslane'); if(k)k.remove();}
           {const wb=document.getElementById('wyslano'); if(wb)wb.hidden=true;}
           bw&&bw.scrollIntoView({behavior:'smooth',block:'center'});
+          if(window.spZamowienieOk)window.spZamowienieOk(); /* 27.10: ekran "Oczekuje na potwierdzenie" w zamow-online.html */
           if(window.spPokazPopraw)window.spPokazPopraw(); if(window.spZapiszWycene)window.spZapiszWycene();
         }
       };
@@ -2879,14 +2882,11 @@ html body #wycena h2,html body .sticky h2{font-size:clamp(1.25rem,4.2vw,1.9rem)!
 html body #m2,html body #typ,html body #wyk,html body #gatKl,html body #montazKl{font-weight:700!important}
 </style>
 <style>/* 18.10: dolny pasek nad paskiem gestow Androida/iPhone - caly widoczny od razu po wejsciu */
-html body .cta-bar{padding-bottom:max(env(safe-area-inset-bottom),4px)!important;background:#fff!important;transition:bottom .15s ease-out}
+html body .cta-bar{padding-bottom:max(env(safe-area-inset-bottom),4px)!important;background:#fff!important}
 @media(max-width:900px){html body footer{padding-bottom:calc(var(--pasek,44px) + max(env(safe-area-inset-bottom),4px) + 8px)}}
 </style>
-<script>/* 18.10: pasek dolny przyklejony do faktycznie widocznej czesci ekranu (Chrome Android liczy dol z ukrytym paskiem adresu) */
-(function(){var b=document.querySelector('.cta-bar'),v=window.visualViewport;if(!b||!v)return;
-function f(){var o=window.innerHeight-v.height-v.offsetTop;b.style.bottom=(o>0&&o<200?o:0)+'px';}
-v.addEventListener('resize',f);v.addEventListener('scroll',f);window.addEventListener('resize',f);f();setTimeout(f,400);})();
-</script>
+<style id="pasek-dol-2710">/* 27.10 Artur (iPhone): "pasek lata po ekranie". Przyczyna: skrypt z 18.10 ustawial bottom = innerHeight - visualViewport.height; w Safari te wartosci rozjezdzaja sie przy chowaniu paska adresu, odbiciu i powiekszeniu, wiec pasek wisial w polowie ekranu. Teraz zawsze bottom:0 (Safari sam trzyma fixed przy dolnej krawedzi). */
+html body .cta-bar{bottom:0!important;top:auto!important}</style>
 <style>/* 18.10: stopka na telefonie - dlugi e-mail nie wchodzi na sasiednia kolumne */
 html body footer.site .cols>div{min-width:0!important}
 @media(max-width:620px){
@@ -3086,3 +3086,74 @@ html body #uzgPanel{margin:14px 0}
  if(document.readyState!=='loading')wyr();else document.addEventListener('DOMContentLoaded',wyr);
  window.addEventListener('load',wyr);window.addEventListener('resize',wyr);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(wyr);})();</script>
 <!-- wyrownanie opisow: KONIEC -->
+<style id="zamowienie-2710">/* 27.10 Artur: Koszyk SMART (zamow-online.html, window.SP_ZAMOWIENIE) - tylko na tej stronie */
+.zam-term{display:grid;gap:10px}
+.zam-w{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:8px;align-items:center}
+.zam-w input,.zam-w select{width:100%;min-width:0;min-height:48px;font-size:16px}
+.zam-dod{justify-self:start;border:1.5px dashed #E8671F;background:transparent;color:#E8671F;border-radius:12px;padding:12px 16px;font-weight:700;font-size:.95rem;cursor:pointer}
+.zam-pod{display:block;margin-top:6px;font-size:.8rem;line-height:1.4;color:#6B5E52;font-style:italic;text-transform:none;letter-spacing:0;font-weight:400}
+#zamOk{margin:16px 0 0;padding:18px 16px;border:2px solid #F8580E;border-radius:14px;background:#FFF8F2}
+#zamOk .zam-status{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:#14110E;color:#fff;font-weight:800;font-size:.78rem;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
+html.sp-zam #poprawBtn{display:none!important}
+#zamOk .zam-status i{width:10px;height:10px;border-radius:50%;background:#FFC53D;display:inline-block}
+#zamOk p{margin:12px 0 0;font-size:1rem;line-height:1.5;color:#1A1512}
+#zamOk p b{color:#1A1512}
+</style>
+<script>
+/* 27.10 Artur (01:16-01:42): ZAMÓW USŁUGĘ SMART ONLINE - ten sam arkusz co kalkulator, tylko:
+   mniej pol (bez gatunku, montazu, stabilizacji, napraw, kodu, dzielnicy, rodzaju obiektu - ocenia je parkieciarz ze zdjec),
+   1-3 preferowane terminy (data + pora dnia) zamiast pola tekstowego, przycisk WYŚLIJ DO POTWIERDZENIA
+   i po wyslaniu status "Oczekuje na potwierdzenie". Klient nie widzi kalendarza firmy. Dziala tylko gdy window.SP_ZAMOWIENIE. */
+(function(){
+  if(!window.SP_ZAMOWIENIE)return;
+  document.documentElement.classList.add('sp-zam'); /* prosto: bez przycisku "Popraw i wyślij ponownie" */
+  var f=document.querySelector('form.ai-form');if(!f)return;
+  function blok(id){var e=document.getElementById(id)||document.querySelector('input[name="'+id+'"]');if(!e)return null;while(e.parentElement&&e.parentElement!==f)e=e.parentElement;return e.parentElement===f?e:null;}
+  ['gatKl','montazKl','stab','stabM2','napr','kodKl','dzielKl','obiektKl'].forEach(function(id){var b=blok(id);if(b)b.style.display='none';});
+  /* preferowane terminy -> zapis do ukrytego #terminKl (mail, PDF, arkusz biorą go stamtąd) */
+  var tk=document.getElementById('terminKl'),tb=blok('terminKl');if(!tk||!tb)return;
+  tb.style.display='none';
+  var w=document.createElement('div');w.className='szer';w.id='terminyBlok';
+  w.innerHTML='<label>Preferowany termin <span class="obow">*</span></label><div class="zam-term" id="zamTerm"></div>'+
+    '<button type="button" class="zam-dod" id="zamDod">+ Dodaj drugi termin</button>'+
+    '<small class="zam-pod">Podaj 1-3 dogodne dni. Centrala potwierdzi dostępność SMS-em lub e-mailem.</small>';
+  var kontakt=[].slice.call(f.querySelectorAll('.sekcja-form')).filter(function(x){return /kontaktu/i.test(x.textContent);})[0];
+  var nag=document.createElement('div');nag.className='szer sekcja-form';nag.textContent='Preferowany termin';
+  if(kontakt){f.insertBefore(nag,kontakt);f.insertBefore(w,kontakt);}else{tb.after(w);}
+  var lista=w.querySelector('#zamTerm'),dod=w.querySelector('#zamDod');
+  var jutro=new Date(Date.now()+864e5),min=jutro.toISOString().slice(0,10);
+  function wiersz(){var d=document.createElement('div');d.className='zam-w';
+    d.innerHTML='<input type="date" min="'+min+'" aria-label="Data"><select aria-label="Pora dnia"><option value="">dowolna pora</option><option>rano</option><option>po południu</option></select>';
+    lista.appendChild(d);dod.hidden=lista.children.length>=3;dod.textContent=lista.children.length===1?'+ Dodaj drugi termin':'+ Dodaj trzeci termin';return d;}
+  function dzien(v){var p=v.split('-');if(p.length<3)return v;var d=new Date(+p[0],p[1]-1,+p[2]);
+    return ['nd','pn','wt','śr','cz','pt','sb'][d.getDay()]+' '+p[2]+'.'+p[1]+'.'+p[0];}
+  function sync(){var t=[].slice.call(lista.children).map(function(r){var a=r.querySelector('input').value,b=r.querySelector('select').value;return a?dzien(a)+(b?' '+b:''):'';}).filter(Boolean);
+    tk.value=t.map(function(x,i){return (t.length>1?(i+1)+') ':'')+x;}).join(', ');}
+  lista.addEventListener('input',sync);lista.addEventListener('change',sync);
+  dod.onclick=function(){var r=wiersz();r.querySelector('input').focus();};
+  wiersz();
+  /* przycisk i podpis */
+  var bw=document.getElementById('wyslij');
+  if(bw){var sv=bw.querySelector('svg');bw.textContent='';if(sv)bw.appendChild(sv);bw.appendChild(document.createTextNode('Wyślij do potwierdzenia'));bw.dataset.oryg=bw.innerHTML;}
+  var pp=f.querySelector('.pod-przyc');if(pp)pp.innerHTML='Termin wiąże dopiero po potwierdzeniu przez centralę · <span class="obow">*</span> e-mail lub telefon';
+  /* bez terminu nie wysylamy (to zamowienie, nie sama wycena) */
+  if(bw)bw.addEventListener('click',function(e){if(tk.value.trim())return;e.stopImmediatePropagation();e.preventDefault();
+    var bl=document.getElementById('bladForm');if(bl){bl.textContent='Proszę wybrać przynajmniej jeden preferowany termin.';bl.hidden=false;}
+    var i=lista.querySelector('input');if(i){i.scrollIntoView({block:'center'});i.focus();}},true);
+  window.spZamowienieOk=function(){
+    var p=document.getElementById('zamOk');
+    if(!p){p=document.createElement('div');p.id='zamOk';p.setAttribute('role','status');
+      p.innerHTML='<span class="zam-status"><i></i>Oczekuje na potwierdzenie</span>'+
+        '<p><b>Dziękujemy za zgłoszenie!</b> Twój preferowany termin został przesłany do centrali SMARTPARKIET™. Potwierdzimy jego dostępność SMS-em lub e-mailem w ciągu maksymalnie 2 godzin roboczych.</p>'+
+        '<p>Termin staje się wiążący dopiero po potwierdzeniu przez centralę SMART.</p>'+
+        '<p style="font-size:.9rem;color:#4A5058">Wybrane terminy: '+(tk.value||'-')+'</p>';
+      bw.parentNode.insertBefore(p,bw.nextSibling);}
+    var sm=bw&&bw.querySelector('small');if(sm)sm.textContent='Zamówienie przyjęte - czekamy na potwierdzenie terminu.';
+    setTimeout(function(){p.scrollIntoView({behavior:'smooth',block:'center'});},350);
+  };
+})();
+</script>
+<style id="menu-13-2710">/* 27.10: 13. pozycja menu (Zamow online) - menu w jednym rzedzie bez przewijania w bok */
+@media (min-width:1240px) and (max-width:1449px){html body header.nav nav a,html body header.nav.open nav a{font-size:11.5px!important;padding:6px 3.5px!important}html body header.nav .brand-t{font-size:14px!important}}
+@media (min-width:1450px) and (max-width:1919px){html body header.nav nav{gap:10px!important}html body header.nav nav a{font-size:12.2px!important;padding-left:3px!important;padding-right:3px!important;letter-spacing:0!important}}
+</style>

@@ -952,6 +952,7 @@ figure{margin:0}
       <a href="programy.html">Programy</a>
       <a href="realizacje.html">Realizacje</a>
       <a href="wycena.html">Kalkulator online</a>
+      <a href="zamow-online.html">Zamów online</a>
       <a href="ekspertyza.html">Ekspertyza online</a>
       <a href="oddzialy.html">Oddziały</a>
       <a href="smart-partner.html">Program partnerski</a>
@@ -1810,14 +1811,11 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 }
 </style>
 <style>/* 18.10: dolny pasek nad paskiem gestow Androida/iPhone - caly widoczny od razu po wejsciu */
-html body .cta-bar{padding-bottom:max(env(safe-area-inset-bottom),4px)!important;background:#fff!important;transition:bottom .15s ease-out}
+html body .cta-bar{padding-bottom:max(env(safe-area-inset-bottom),4px)!important;background:#fff!important}
 @media(max-width:900px){html body footer{padding-bottom:calc(var(--pasek,44px) + max(env(safe-area-inset-bottom),4px) + 8px)}}
 </style>
-<script>/* 18.10: pasek dolny przyklejony do faktycznie widocznej czesci ekranu (Chrome Android liczy dol z ukrytym paskiem adresu) */
-(function(){var b=document.querySelector('.cta-bar'),v=window.visualViewport;if(!b||!v)return;
-function f(){var o=window.innerHeight-v.height-v.offsetTop;b.style.bottom=(o>0&&o<200?o:0)+'px';}
-v.addEventListener('resize',f);v.addEventListener('scroll',f);window.addEventListener('resize',f);f();setTimeout(f,400);})();
-</script>
+<style id="pasek-dol-2710">/* 27.10 Artur (iPhone): "pasek lata po ekranie". Przyczyna: skrypt z 18.10 ustawial bottom = innerHeight - visualViewport.height; w Safari te wartosci rozjezdzaja sie przy chowaniu paska adresu, odbiciu i powiekszeniu, wiec pasek wisial w polowie ekranu. Teraz zawsze bottom:0 (Safari sam trzyma fixed przy dolnej krawedzi). */
+html body .cta-bar{bottom:0!important;top:auto!important}</style>
 <style>/* 18.10: stopka na telefonie - dlugi e-mail nie wchodzi na sasiednia kolumne */
 html body footer.site .cols>div{min-width:0!important}
 @media(max-width:620px){
@@ -1905,4 +1903,8 @@ html body footer.site .cols>div.c-oddzialy a:hover,html body footer.site .cols>d
 @media(min-width:861px){html body footer.site .cols a{font-size:.78rem!important;color:#DDD5CB!important}html body footer.site .cols a:hover{color:#fff!important}}</style>
 <style id="stopka-pasek-2210">/* Artur 21.10 03:14: dolny napis stopki w jednym pasku na telefonie */
 @media(max-width:620px){html body footer.site .fine>span:last-child{white-space:nowrap!important;letter-spacing:.02em!important;font-size:min(.7rem,calc(2.55vw - 1.25px))!important}}
+</style>
+<style id="menu-13-2710">/* 27.10: 13. pozycja menu (Zamow online) - menu w jednym rzedzie bez przewijania w bok */
+@media (min-width:1240px) and (max-width:1449px){html body header.nav nav a,html body header.nav.open nav a{font-size:11.5px!important;padding:6px 3.5px!important}html body header.nav .brand-t{font-size:14px!important}}
+@media (min-width:1450px) and (max-width:1919px){html body header.nav nav{gap:10px!important}html body header.nav nav a{font-size:12.2px!important;padding-left:3px!important;padding-right:3px!important;letter-spacing:0!important}}
 </style>
