@@ -2023,6 +2023,9 @@ html body footer.site .cols>div.c-oddzialy a:hover,html body footer.site .cols>d
 <style id="nav-zam-2710">/* Artur 27.10 03:00: "Zamów online" pierwsza pozycja menu, pomaranczowa pigulka z koszykiem */
 html body header.nav nav a.nav-zam{display:inline-flex!important;align-items:center;gap:6px;background:#FF6A13!important;color:#fff!important;border-radius:999px;padding:7px 14px!important;font-weight:800!important;border:0!important;text-decoration:none!important;width:auto!important;align-self:center;line-height:1.1}
 html body header.nav nav a.nav-zam svg{width:17px;height:17px;flex:0 0 auto}
+html body header.nav nav a.nav-zam{animation:navZamPlyw 3s ease-in-out infinite} /* Artur 27.10 03:27: "zeby plywal" - lekkie unoszenie 3 px (translate nie zmienia ukladu menu) */
+@keyframes navZamPlyw{0%,100%{translate:0 0}50%{translate:0 -3px}}
+@media(prefers-reduced-motion:reduce){html body header.nav nav a.nav-zam{animation:none}}
 html body header.nav nav a.nav-zam:hover{background:#F25F0C!important;color:#fff!important}html body header.nav nav a.nav-zam.akt{background:#FF6A13!important;color:#fff!important;box-shadow:0 0 0 2px #fff,0 0 0 4px #FF6A13}
 html body header.nav nav a.nav-zam::after,html body header.nav nav a.nav-zam::before{display:none!important}
 @media(max-width:1239px){html body header.nav.open nav a.nav-zam{align-self:flex-start;margin:10px 0 8px!important;padding:11px 18px!important;font-size:1rem!important}}
