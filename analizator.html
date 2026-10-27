@@ -968,9 +968,9 @@ figure{margin:0}
       <a href="zamow-online.html#koszyk" class="nav-zam"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H7"/><circle cx="10" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>Zamów online</a>
       <a href="zamow-online.html#jak-to-dziala" class="nav-zam-opis">Zamawianie usługi online</a>
       <a href="o-nas.html">O firmie</a>
-      <a href="metoda.html">Metoda SMART</a>
+      <a href="metoda.html"><span class="nm-m">Nasza metoda SMART</span><span class="nm-d">Metoda SMART</span></a>
       <a href="cennik.html">Cennik</a>
-      <a href="programy.html">Programy</a>
+      <a href="programy.html"><span class="nm-m">Nasze programy</span><span class="nm-d">Programy</span></a>
       <a href="realizacje.html">Realizacje</a>
       <a href="wycena.html" class="akt">Kalkulator online</a>
       <a href="ekspertyza.html">Ekspertyza online</a>
@@ -1390,7 +1390,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       </div>
       <div class="c-kontakt"><h4>Kontakt</h4><a href="tel:+48602242815">602 242 815</a><a href="mailto:smartparkiet@gmail.com">smartparkiet@gmail.com</a><a href="https://wa.me/48602242815">WhatsApp</a></div>
       <div class="c-oddzialy"><h4>Oddziały</h4><a href="cyklinowanie-rembertow.html">Suflerska 4, Rembertów</a><a href="cyklinowanie-ochota.html">Grójecka 208, lok. 229, Ochota</a><a href="cyklinowanie-targowek.html">Turmoncka 17A, lok. 21, Targówek</a><a href="cyklinowanie-mokotow.html">Belwederska 23, Mokotów</a></div>
-      <div class="c-wiecej"><h4>Więcej</h4><div class="ww"><div><a href="cennik.html">Cennik</a><a href="programy.html">Programy</a><a href="realizacje.html">Realizacje</a><a href="schody.html">Schody</a></div><div><a href="ekspertyza.html">Ekspertyza online</a><a href="blog.html">Poradniki</a><a href="parkiet-w-kamienicy.html">Kamienice</a></div></div></div>
+      <div class="c-wiecej"><h4>Więcej</h4><div class="ww"><div><a href="cennik.html">Cennik</a><a href="programy.html">Programy</a><a href="realizacje.html">Realizacje</a><a href="schody.html">Schody</a></div><div><a href="ekspertyza.html">Ekspertyza online</a><a href="blog.html">Poradniki</a><a href="parkiet-w-kamienicy.html">Kamienice</a><a href="dla-pracowni.html" class="ww-prac" style="color:#FF6A13!important">Dla pracowni</a></div></div></div>
     </div>
     <div class="fine"><span>© 2026 SMARTPARKIET<sup>™</sup> <span class="autor">Artur Trembiński</span></span><span>Cyklinowanie SMART<sup>™</sup> <i>|</i> autorski system renowacji SMARTPARKIET</span></div>
   </div>
@@ -3165,7 +3165,7 @@ html.zp-otw,html.zp-otw body{overflow:hidden}
   /* 27.10 02:57: gwiazdki tylko przy polach wymaganych; reszta opcjonalna (szczegoly przy potwierdzeniu) */
   [['m2',' <span class="obow">*</span>'],['ulicaKl',' <span class="obow">*</span>']].forEach(function(q){var l=f.querySelector('label[for="'+q[0]+'"]');if(l&&!l.querySelector('.obow'))l.insertAdjacentHTML('beforeend',q[1]);});
   [['pietroKl','Piętro (opcjonalnie)'],['uwagiKl','Uwagi do zlecenia / opcjonalnie']].forEach(function(q){var l=f.querySelector('label[for="'+q[0]+'"]');if(l)l.textContent=q[1];});
-  var dz=document.getElementById('drop');if(dz){var bz=dz.querySelector('b');if(bz)bz.textContent='Zdjęcia podłogi (opcjonalnie, najlepiej 4-6)';}
+  var dz=document.getElementById('drop');if(dz){var bz=dz.querySelector('b');if(bz)bz.textContent='Zdjęcia podłogi (opcjonalnie)';}
   var lz0=document.getElementById('licZdj');if(lz0)lz0.textContent='Dodano 0 z 12 zdjęć (zalecane 4-6)';
   /* preferowane terminy -> zapis do ukrytego #terminKl (mail, PDF, arkusz biorą go stamtąd) */
   var tk=document.getElementById('terminKl'),tb=blok('terminKl');if(!tk||!tb)return;
@@ -3173,7 +3173,7 @@ html.zp-otw,html.zp-otw body{overflow:hidden}
   var w=document.createElement('div');w.className='szer';w.id='terminyBlok';
   w.innerHTML='<label>Preferowany termin <span class="obow">*</span></label><div class="zam-term" id="zamTerm"></div>'+
     '<button type="button" class="zam-dod" id="zamDod">+ Dodaj drugi termin</button>'+
-    '<small class="zam-godz">Prace zaczynamy między 8:00 a 9:00.</small>'+
+    '<small class="zam-godz">Pracujemy w godzinach 9:00-16:00.</small>'+
     '<small class="zam-pod">Podaj 1-3 dogodne dni. Centrala potwierdzi dostępność SMS-em lub e-mailem.</small>';
   var kontakt=[].slice.call(f.querySelectorAll('.sekcja-form')).filter(function(x){return /kontaktu/i.test(x.textContent);})[0];
   var nag=document.createElement('div');nag.className='szer sekcja-form';nag.textContent='Preferowany termin';
@@ -3345,6 +3345,18 @@ html.pwa .sp-dok{transition:opacity .25s ease!important;bottom:calc(var(--pasek,
 <script>/* 27.10 15:46: wykrycie trybu aplikacji (ikona na ekranie glownym) */
 (function(){try{if((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone)document.documentElement.classList.add('pwa');}catch(e){}})();
 </script>
+<style>/* === Artur 28.10: START === */
+/* etykiety pol na szarym pasku (00:12) - tylko naglowki pol, nie opcje tak/nie */
+#wycena .ai-form > div > label:first-child,#wycena .ai-form .pyt > span{display:block;background:#ECEDEF;border-radius:6px;padding:7px 10px;margin:0 0 8px;line-height:1.3}
+#wycena .ai-form > div > label:first-child small{display:inline}
+/* Koszyk SMART: niska ramka zdjec w jednej linii (18:31) */
+.koszyk-tyt ~ #drop{padding:10px 14px!important;min-height:0!important;gap:10px;flex-direction:row!important;align-items:center;justify-content:space-between}
+.koszyk-tyt ~ #drop b{font-size:.92rem;line-height:1.3}
+.koszyk-tyt ~ #drop .btn{padding:8px 14px!important;min-height:0!important;font-size:.85rem;white-space:nowrap}
+.koszyk-tyt ~ #miniatury{padding-top:6px!important;padding-bottom:6px!important;min-height:0!important}
+/* === Artur 28.10: KONIEC === */</style>
+<style id="menu-2810">/* telefon: pelne nazwy, komputer: krotkie (inaczej 13 pozycji nie miesci sie w naglowku) */.nm-d{display:none}@media(min-width:1240px){.nm-m{display:none}.nm-d{display:inline}}/* Artur 28.10 00:24: w rozwinietym menu na telefonie pigulka "Zamow online" po prawej, pod przyciskiem telefonu */@media(max-width:1239px){html body header.nav.open nav a.nav-zam{align-self:flex-end!important}}</style>
+<style id="stopka-2810">/* Artur 28.10 00:30: na iPhonie po dociagnieciu do konca strony Safari pokazywal jasne tlo pod czarna stopka ("leci dalej na bialo"). Cien stopki maluje czern w strefie odbicia, nie wydluzajac strony. */html body footer{box-shadow:0 100vh 0 100vh #14110E}</style>
 <style>/* analizator: okienko SMS wyroznione (Artur 21.10 17:27) */
 html body .sms-box{background:#3A3D42!important;border:1.5px solid #3A3D42!important;color:#F4EFE8;box-shadow:0 6px 18px rgba(20,17,14,.18)}
 html body .sms-box::before{content:"Analizator";display:block;font-size:1.15rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#FF8A4C;margin:0 0 6px}
@@ -3360,6 +3372,10 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
 #folOf{margin:0 0 12px;padding:12px;border-radius:10px;background:#2A2C30;border:1px solid #5A5E65}
 #folOf b{display:block;color:#FF8A4C!important;font-size:.95rem;letter-spacing:.04em;margin:0 0 6px}
 #folOf select{width:100%;font:inherit;font-size:.95rem;padding:10px;border-radius:8px;background:#fff;color:#14110E;border:0}
+#folWyn{display:grid;gap:6px;margin:0 0 8px}#folWyn:empty{display:none}
+#folWyn button{display:block;width:100%;text-align:left;font:inherit;font-size:.92rem;line-height:1.35;padding:10px 12px;border-radius:8px;border:0;background:#fff;color:#14110E;cursor:pointer}
+#folWyn button small{display:block;color:#6A6F76;font-size:.78rem;margin-top:2px}
+#folWyn button.st{background:#ECEDEF}
 #folInfo{margin:6px 0 0;font-size:.85rem;color:#E9E4DD!important;min-height:1em}
 #wycHist{display:none!important}
 </style>
@@ -3386,9 +3402,12 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
  async function lista(){info('Pobieram listę ofert...');var j;try{j=await api('a=lista');}catch(e){}
   if(!j)return;if(!j.ok){info(j.blad||'Nie udało się pobrać listy.');if(j.blad==='Brak dostępu')pokazPin();return;}
   WSZ=j.lista||[];pokazListe();
-  info(j.lista.length?'Wybierz ofertę - wczytają się wszystkie pola i zdjęcia.':'Folder jest pusty - trafiają tu oferty wysłane od 22.10.');}
+  info(j.lista.length?'Wpisz kilka liter ulicy albo wybierz z listy. Oferty od 22.10 wczytują się ze zdjęciami, starsze (szare) - same dane klienta.':'Folder jest pusty.');}
  async function wczytaj(id){info('Wczytuję ofertę...');var j;try{j=await api('a=wczytaj&id='+encodeURIComponent(id));}catch(e){}
   if(!j)return;if(!j.ok){info('Nie udało się wczytać oferty.');return;}
+  if(j.stara){var sm=document.getElementById('smsWklej'),bt=document.getElementById('smsRozrzuc');
+   if(sm&&bt){sm.value=j.tekst||'';bt.click();}
+   info('Stara oferta z '+(j.kiedy||'przed 22.10')+' - wczytane dane klienta i metraż. Zdjęć i zaznaczeń z tamtej wyceny nie zapisywaliśmy, uzupełnij je i wyślij ponownie.'+(j.pozycje&&j.pozycje.length?' Pozycje z tamtej oferty: '+j.pozycje.join('; ')+'.':''));return;}
   var o=j.oferta;
   var pop=document.getElementById('poprawBtn');if(pop)pop.click();
   var mini=document.getElementById('miniatury'),b,n=0;
@@ -3408,18 +3427,26 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
   var qs=q.replace(/\s+/g,'');
   var lis=WSZ.filter(function(o){if(!q)return true;var t=bezOg(o.opis);return t.indexOf(q)>=0||(qs&&t.replace(/\s+/g,'').indexOf(qs)>=0);});
   sel.innerHTML='<option value="">'+(q?('Znaleziono: '+lis.length+' - wybierz ofertę…'):('Wybierz ofertę do poprawki ('+WSZ.length+')…'))+'</option>'+lis.map(function(o){
-   return '<option value="'+o.id+'">'+String(o.opis).replace(/</g,'')+'</option>';}).join('');}
+   return '<option value="'+o.id+'">'+String(o.opis).replace(/</g,'')+'</option>';}).join('');
+  var wyn=document.getElementById('folWyn');if(!wyn)return;
+  if(!q){wyn.innerHTML='';return;}
+  wyn.innerHTML=lis.length?lis.slice(0,8).map(function(o){var t=String(o.opis).replace(/</g,'').split(' · ');
+   return '<button type="button" data-id="'+o.id+'"'+(o.stara?' class="st"':'')+'>'+t.slice(1,3).join(' · ')+'<small>'+[t[0]].concat(t.slice(3)).join(' · ')+'</small></button>';}).join('')
+   +(lis.length>8?'<small style="color:#E9E4DD">i jeszcze '+(lis.length-8)+' - wpisz więcej liter</small>':''):'<small style="color:#E9E4DD">Nic nie znaleziono - spróbuj inaczej: 3-4 litery ulicy, końcówka telefonu albo data (np. 21.10).</small>';}
  function start(){var box=document.querySelector('.sms-box');if(document.getElementById('folOf')){if(k())lista();return;}if(!box)return;
   var w=document.createElement('div');w.id='folOf';
-  w.innerHTML='<b>Folder ofert</b><input id="folSzuk" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Szukaj: 3-4 litery ulicy, telefon lub data" aria-label="Szukaj oferty" style="width:100%;min-height:44px;font-size:16px;margin:0 0 8px;padding:8px 12px;border:1.5px solid #3A3F45;border-radius:10px;box-sizing:border-box"><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
+  w.innerHTML='<b>Folder ofert</b><input id="folSzuk" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Szukaj: 3-4 litery ulicy, telefon lub data" aria-label="Szukaj oferty" style="width:100%;min-height:44px;font-size:16px;margin:0 0 8px;padding:8px 12px;border:1.5px solid #3A3F45;border-radius:10px;box-sizing:border-box"><div id="folWyn"></div><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
   box.insertBefore(w,box.firstChild);
   var sel=document.getElementById('folSel');
   sel.addEventListener('pointerdown',function(){if(sel.options.length<2)lista();},{once:true});
   sel.addEventListener('focus',function(){if(sel.options.length<2)lista();},{once:true});
   sel.addEventListener('change',function(){if(sel.value)wczytaj(sel.value);});
+  document.getElementById('folWyn').addEventListener('click',function(ev){var b=ev.target.closest('button[data-id]');if(!b)return;
+   document.getElementById('folWyn').innerHTML='';wczytaj(b.getAttribute('data-id'));});
   var sz=document.getElementById('folSzuk');
   sz.addEventListener('focus',function(){if(!WSZ.length)lista();});
   sz.addEventListener('input',function(){if(!WSZ.length){lista();return;}pokazListe();});
+  sz.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();sz.blur();}});
   var m=location.hash.match(/oferta=([\w-]+)/);if(m)wczytaj(m[1]);else if(k())lista();else pokazPin();}
  window.spFolderStart=start;
  if(document.readyState!=='loading')start();else document.addEventListener('DOMContentLoaded',start);
