@@ -952,9 +952,9 @@ figure{margin:0}
       <a href="zamow-online.html#koszyk" class="nav-zam"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H7"/><circle cx="10" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>Zamów online</a>
       <a href="zamow-online.html#jak-to-dziala" class="nav-zam-opis">Zamawianie usługi online</a>
       <a href="o-nas.html">O firmie</a>
-      <a href="metoda.html">Metoda SMART</a>
+      <a href="metoda.html"><span class="nm-m">Nasza metoda SMART</span><span class="nm-d">Metoda SMART</span></a>
       <a href="cennik.html">Cennik</a>
-      <a href="programy.html">Programy</a>
+      <a href="programy.html"><span class="nm-m">Nasze programy</span><span class="nm-d">Programy</span></a>
       <a href="realizacje.html">Realizacje</a>
       <a href="wycena.html">Kalkulator online</a>
       <a href="ekspertyza.html">Ekspertyza online</a>
@@ -1118,7 +1118,7 @@ figure{margin:0}
       </div>
       <div class="c-kontakt"><h4>Kontakt</h4><a href="tel:+48602242815">602 242 815</a><a href="mailto:smartparkiet@gmail.com">smartparkiet@gmail.com</a><a href="https://wa.me/48602242815">WhatsApp</a></div>
       <div class="c-oddzialy"><h4>Oddziały</h4><a href="cyklinowanie-rembertow.html">Suflerska 4, Rembertów</a><a href="cyklinowanie-ochota.html">Grójecka 208, lok. 229, Ochota</a><a href="cyklinowanie-targowek.html">Turmoncka 17A, lok. 21, Targówek</a><a href="cyklinowanie-mokotow.html">Belwederska 23, Mokotów</a></div>
-      <div class="c-wiecej"><h4>Więcej</h4><div class="ww"><div><a href="cennik.html">Cennik</a><a href="programy.html">Programy</a><a href="realizacje.html">Realizacje</a><a href="schody.html">Schody</a></div><div><a href="ekspertyza.html">Ekspertyza online</a><a href="blog.html">Poradniki</a><a href="parkiet-w-kamienicy.html">Kamienice</a></div></div></div>
+      <div class="c-wiecej"><h4>Więcej</h4><div class="ww"><div><a href="cennik.html">Cennik</a><a href="programy.html">Programy</a><a href="realizacje.html">Realizacje</a><a href="schody.html">Schody</a></div><div><a href="ekspertyza.html">Ekspertyza online</a><a href="blog.html">Poradniki</a><a href="parkiet-w-kamienicy.html">Kamienice</a><a href="dla-pracowni.html" class="ww-prac" style="color:#FF6A13!important">Dla pracowni</a></div></div></div>
     </div>
     <div class="fine"><span>© 2026 SMARTPARKIET<sup>™</sup> <span class="autor">Artur Trembiński</span></span><span>Cyklinowanie SMART<sup>™</sup> <i>|</i> autorski system renowacji SMARTPARKIET</span></div>
   </div>
@@ -2138,3 +2138,5 @@ html.pwa .sp-dok{transition:opacity .25s ease!important;bottom:calc(var(--pasek,
 <script>/* 27.10 15:46: wykrycie trybu aplikacji (ikona na ekranie glownym) */
 (function(){try{if((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone)document.documentElement.classList.add('pwa');}catch(e){}})();
 </script>
+<style id="menu-2810">/* telefon: pelne nazwy, komputer: krotkie (inaczej 13 pozycji nie miesci sie w naglowku) */.nm-d{display:none}@media(min-width:1240px){.nm-m{display:none}.nm-d{display:inline}}/* Artur 28.10 00:24: w rozwinietym menu na telefonie pigulka "Zamow online" po prawej, pod przyciskiem telefonu */@media(max-width:1239px){html body header.nav.open nav a.nav-zam{align-self:flex-end!important}}</style>
+<style id="stopka-2810">/* Artur 28.10 00:30: na iPhonie po dociagnieciu do konca strony Safari pokazywal jasne tlo pod czarna stopka ("leci dalej na bialo"). Cien stopki maluje czern w strefie odbicia, nie wydluzajac strony. */html body footer{box-shadow:0 100vh 0 100vh #14110E}</style>

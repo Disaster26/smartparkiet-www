@@ -98,6 +98,10 @@ FOLDER_JS = r"""<style>
 #folOf{margin:0 0 12px;padding:12px;border-radius:10px;background:#2A2C30;border:1px solid #5A5E65}
 #folOf b{display:block;color:#FF8A4C!important;font-size:.95rem;letter-spacing:.04em;margin:0 0 6px}
 #folOf select{width:100%;font:inherit;font-size:.95rem;padding:10px;border-radius:8px;background:#fff;color:#14110E;border:0}
+#folWyn{display:grid;gap:6px;margin:0 0 8px}#folWyn:empty{display:none}
+#folWyn button{display:block;width:100%;text-align:left;font:inherit;font-size:.92rem;line-height:1.35;padding:10px 12px;border-radius:8px;border:0;background:#fff;color:#14110E;cursor:pointer}
+#folWyn button small{display:block;color:#6A6F76;font-size:.78rem;margin-top:2px}
+#folWyn button.st{background:#ECEDEF}
 #folInfo{margin:6px 0 0;font-size:.85rem;color:#E9E4DD!important;min-height:1em}
 #wycHist{display:none!important}
 </style>
@@ -124,9 +128,12 @@ FOLDER_JS = r"""<style>
  async function lista(){info('Pobieram listę ofert...');var j;try{j=await api('a=lista');}catch(e){}
   if(!j)return;if(!j.ok){info(j.blad||'Nie udało się pobrać listy.');if(j.blad==='Brak dostępu')pokazPin();return;}
   WSZ=j.lista||[];pokazListe();
-  info(j.lista.length?'Wybierz ofertę - wczytają się wszystkie pola i zdjęcia.':'Folder jest pusty - trafiają tu oferty wysłane od 22.10.');}
+  info(j.lista.length?'Wpisz kilka liter ulicy albo wybierz z listy. Oferty od 22.10 wczytują się ze zdjęciami, starsze (szare) - same dane klienta.':'Folder jest pusty.');}
  async function wczytaj(id){info('Wczytuję ofertę...');var j;try{j=await api('a=wczytaj&id='+encodeURIComponent(id));}catch(e){}
   if(!j)return;if(!j.ok){info('Nie udało się wczytać oferty.');return;}
+  if(j.stara){var sm=document.getElementById('smsWklej'),bt=document.getElementById('smsRozrzuc');
+   if(sm&&bt){sm.value=j.tekst||'';bt.click();}
+   info('Stara oferta z '+(j.kiedy||'przed 22.10')+' - wczytane dane klienta i metraż. Zdjęć i zaznaczeń z tamtej wyceny nie zapisywaliśmy, uzupełnij je i wyślij ponownie.'+(j.pozycje&&j.pozycje.length?' Pozycje z tamtej oferty: '+j.pozycje.join('; ')+'.':''));return;}
   var o=j.oferta;
   var pop=document.getElementById('poprawBtn');if(pop)pop.click();
   var mini=document.getElementById('miniatury'),b,n=0;
@@ -146,18 +153,26 @@ FOLDER_JS = r"""<style>
   var qs=q.replace(/\s+/g,'');
   var lis=WSZ.filter(function(o){if(!q)return true;var t=bezOg(o.opis);return t.indexOf(q)>=0||(qs&&t.replace(/\s+/g,'').indexOf(qs)>=0);});
   sel.innerHTML='<option value="">'+(q?('Znaleziono: '+lis.length+' - wybierz ofertę…'):('Wybierz ofertę do poprawki ('+WSZ.length+')…'))+'</option>'+lis.map(function(o){
-   return '<option value="'+o.id+'">'+String(o.opis).replace(/</g,'')+'</option>';}).join('');}
+   return '<option value="'+o.id+'">'+String(o.opis).replace(/</g,'')+'</option>';}).join('');
+  var wyn=document.getElementById('folWyn');if(!wyn)return;
+  if(!q){wyn.innerHTML='';return;}
+  wyn.innerHTML=lis.length?lis.slice(0,8).map(function(o){var t=String(o.opis).replace(/</g,'').split(' · ');
+   return '<button type="button" data-id="'+o.id+'"'+(o.stara?' class="st"':'')+'>'+t.slice(1,3).join(' · ')+'<small>'+[t[0]].concat(t.slice(3)).join(' · ')+'</small></button>';}).join('')
+   +(lis.length>8?'<small style="color:#E9E4DD">i jeszcze '+(lis.length-8)+' - wpisz więcej liter</small>':''):'<small style="color:#E9E4DD">Nic nie znaleziono - spróbuj inaczej: 3-4 litery ulicy, końcówka telefonu albo data (np. 21.10).</small>';}
  function start(){var box=document.querySelector('.sms-box');if(document.getElementById('folOf')){if(k())lista();return;}if(!box)return;
   var w=document.createElement('div');w.id='folOf';
-  w.innerHTML='<b>Folder ofert</b><input id="folSzuk" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Szukaj: 3-4 litery ulicy, telefon lub data" aria-label="Szukaj oferty" style="width:100%;min-height:44px;font-size:16px;margin:0 0 8px;padding:8px 12px;border:1.5px solid #3A3F45;border-radius:10px;box-sizing:border-box"><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
+  w.innerHTML='<b>Folder ofert</b><input id="folSzuk" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Szukaj: 3-4 litery ulicy, telefon lub data" aria-label="Szukaj oferty" style="width:100%;min-height:44px;font-size:16px;margin:0 0 8px;padding:8px 12px;border:1.5px solid #3A3F45;border-radius:10px;box-sizing:border-box"><div id="folWyn"></div><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
   box.insertBefore(w,box.firstChild);
   var sel=document.getElementById('folSel');
   sel.addEventListener('pointerdown',function(){if(sel.options.length<2)lista();},{once:true});
   sel.addEventListener('focus',function(){if(sel.options.length<2)lista();},{once:true});
   sel.addEventListener('change',function(){if(sel.value)wczytaj(sel.value);});
+  document.getElementById('folWyn').addEventListener('click',function(ev){var b=ev.target.closest('button[data-id]');if(!b)return;
+   document.getElementById('folWyn').innerHTML='';wczytaj(b.getAttribute('data-id'));});
   var sz=document.getElementById('folSzuk');
   sz.addEventListener('focus',function(){if(!WSZ.length)lista();});
   sz.addEventListener('input',function(){if(!WSZ.length){lista();return;}pokazListe();});
+  sz.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();sz.blur();}});
   var m=location.hash.match(/oferta=([\w-]+)/);if(m)wczytaj(m[1]);else if(k())lista();else pokazPin();}
  window.spFolderStart=start;
  if(document.readyState!=='loading')start();else document.addEventListener('DOMContentLoaded',start);

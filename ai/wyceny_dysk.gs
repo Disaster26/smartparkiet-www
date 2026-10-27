@@ -334,6 +334,7 @@ function doGet(e) {
   if (p.a === 'lista' || p.a === 'wczytaj') {
     if (String(p.k || '') !== kluczListy()) return json({ ok: false, blad: 'Brak dostępu' });
     if (p.a === 'wczytaj') {
+      if (/^a_/.test(String(p.id || ''))) return json(staraOferta(String(p.id).slice(2)));
       const f = DriveApp.getFileById(String(p.id || ''));
       if (f.getParents().next().getName() !== FOLDER_POPRAWKI) return json({ ok: false, blad: 'Brak dostępu' });
       return json({ ok: true, oferta: JSON.parse(f.getBlob().getDataAsString()) });
@@ -344,8 +345,9 @@ function doGet(e) {
       const f = it.next();
       lista.push({ id: f.getId(), opis: f.getDescription() || f.getName().replace(/\.json$/, ''), t: f.getDateCreated().getTime() });
     }
+    lista.push.apply(lista, stareZRejestru());
     lista.sort(function (x, y) { return y.t - x.t; });
-    return json({ ok: true, lista: lista.slice(0, 300) });
+    return json({ ok: true, lista: lista.slice(0, 600) });
   }
   return ContentService.createTextOutput('SMARTPARKIET wyceny - dziala');
 }
@@ -356,3 +358,57 @@ function start() {
   try { f.addEditor(ARTUR); } catch (e) {}
   Logger.log('Folder: ' + f.getUrl() + ' | limit maili: ' + MailApp.getRemainingDailyQuota());
 }
+
+/* 28.10 Artur: oferty sprzed 22.10 nie maja zapisu JSON (pola + zdjecia), ale maja wiersz w Rejestrze wycen
+   i wlasny arkusz. Na liscie folderu pokazujemy je z dopiskiem "stara", a wczytanie czyta arkusz. */
+function stareZRejestru() {
+  const it = glownyFolder().getFilesByName('Rejestr wycen');
+  if (!it.hasNext()) return [];
+  const sh = SpreadsheetApp.open(it.next()).getSheets()[0];
+  const n = sh.getLastRow();
+  if (n < 2) return [];
+  const kol = Math.max(9, sh.getLastColumn());
+  const v = sh.getRange(2, 1, n - 1, kol).getDisplayValues();
+  const rt = sh.getRange(2, 8, n - 1, 2).getRichTextValues();
+  const wynik = [];
+  for (let i = 0; i < v.length; i++) {
+    if (rt[i][1] && rt[i][1].getLinkUrl()) continue;            /* ma zapis JSON - jest juz na liscie */
+    const u = (rt[i][0] && rt[i][0].getLinkUrl()) || String(v[i][7] || '');
+    const m = u.match(/\/d\/([\w-]{20,})/);
+    if (!m) continue;
+    const t = dataZRejestru(v[i][0]);
+    wynik.push({ id: 'a_' + m[1], t: t, stara: true,
+      opis: [v[i][0], v[i][3], v[i][1], v[i][2], (v[i][4] ? v[i][4] + ' m²' : ''), 'stara oferta'].filter(String).join(' · ') });
+  }
+  return wynik;
+}
+
+function dataZRejestru(d) {
+  const m = String(d || '').match(/(\d{1,2})\.(\d{1,2})\.(\d{4})(?:[ ,]+(\d{1,2}):(\d{2}))?/);
+  return m ? new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0)).getTime() : 0;
+}
+
+function staraOferta(id) {
+  const f = DriveApp.getFileById(id);
+  /* tylko arkusze z folderu wycen (folder miesiaca w "SMARTPARKIET - wyceny") */
+  const rodzic = f.getParents();
+  if (!rodzic.hasNext()) return { ok: false, blad: 'Brak dostępu' };
+  const r = rodzic.next(), dziadek = r.getParents();
+  if (r.getName() !== FOLDER && !(dziadek.hasNext() && dziadek.next().getName() === FOLDER)) return { ok: false, blad: 'Brak dostępu' };
+  const v = SpreadsheetApp.openById(id).getSheets()[0].getDataRange().getDisplayValues();
+  const d = {};
+  const poz = [];
+  let wTabeli = false;
+  v.forEach(function (w) {
+    if (w[0] === 'Pozycja') { wTabeli = true; return; }
+    if (wTabeli) { if (w[0] && w[2] !== 'Razem netto') poz.push(w[0] + (w[1] ? ' - ' + w[1] : '')); return; }
+    if (w[0]) d[w[0]] = w[1];
+  });
+  const m2 = poz.filter(function (p) { return /m²|m2/i.test(p); })[0] || '';
+  const ile = (m2.match(/ - ([\d.,]+)/) || [])[1] || '';
+  const tekst = ['1. ' + (d['Adres'] || ''), '2. ' + (d['Telefon'] || ''), '3. ' + (d['E-mail'] || ''),
+    '4. ' + (ile ? ile + ' m2' : ''), '6. ' + (d['Termin'] || ''), d['Klient'] || '',
+    d['Uwagi'] ? 'Uwagi: ' + d['Uwagi'] : ''].filter(function (x) { return x && !/^\d\. $/.test(x); }).join('\n');
+  return { ok: true, stara: true, tekst: tekst, kiedy: d['Data'] || '', pozycje: poz, arkusz: f.getUrl() };
+}
+
