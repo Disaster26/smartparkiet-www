@@ -1658,8 +1658,9 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         const yr=yk+D.hd;
         if(rys)naglowek(g,'RENOWACJA PARKIETU',M,yr);
         const fl='italic '+D.fl+'px Arial';
-        const pole=(t,yy,x)=>{x=x||M;const ll=linie(g,t,kol-28,fl,2),hc=D.pd+ll.length*D.lh;
-          if(rys){g.fillStyle='#fff';g.fillRect(x,yy,kol,hc);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(x+1,yy+1,kol-2,hc-2);
+        /* ak = ramka wyrozniona (Artur 27.10 02:40: preferowane terminy / CHCE ZAMOWIC na jasnopomaranczowym tle) */
+        const pole=(t,yy,x,ak)=>{x=x||M;const ll=linie(g,t,kol-28,fl,2),hc=D.pd+ll.length*D.lh;
+          if(rys){g.fillStyle=ak?'#FFF1E3':'#fff';g.fillRect(x,yy,kol,hc);g.strokeStyle=ak?'#F8580E':RAMKA;g.lineWidth=ak?2.5:2;g.strokeRect(x+1,yy+1,kol-2,hc-2);
             g.fillStyle=CIEMNY;g.font=fl;const by=yy+Math.round(hc/2-(ll.length-1)*D.lh/2+D.fl*0.36);ll.forEach((l,q)=>g.fillText(l,x+14,by+q*D.lh));}
           return hc;};
         const podpis=(t,yy,x)=>{x=x||M;if(rys){g.fillStyle=SZARY;wpisz(g,t,x+2,yy,kol-4,D.fh,'bold');}};
@@ -1669,9 +1670,9 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         grupy.forEach(([hd,w])=>{if(!w.length)return;yL+=D.gap;podpis(hd,yL);yL+=10;w.forEach(t=>{yL+=pole(t,yL)+D.gb;});});
         /* informacje dodatkowe na dole paska: termin, prace dodatkowe / uwagi (ramka, max D.maxU linii - pelna tresc w mailu), odeslanie do zasad */
         yL+=D.gap;podpis('Informacje dodatkowe',yL);yL+=10;
-        yL+=pole((window.SP_ZAMOWIENIE?'Preferowane terminy (do potwierdzenia): ':'Termin: ')+(A.pole('terminKl')||'do ustalenia'),yL)+D.gb;
+        yL+=pole((window.SP_ZAMOWIENIE?'Preferowane terminy (do potwierdzenia): ':'Termin: ')+(A.pole('terminKl')||'do ustalenia'),yL,M,!!window.SP_ZAMOWIENIE)+D.gb;
         /* Artur 27.10 01:52: klient zaznaczyl "Chce skorzystac z wykonania uslugi na podstawie tej oferty" */
-        {const ch=window.spChce&&window.spChce();if(ch)yL+=pole('CHCE ZAMÓWIĆ na podstawie oferty - termin: '+ch.termin+' (do potwierdzenia)',yL)+D.gb;}
+        {const ch=window.spChce&&window.spChce();if(ch)yL+=pole('CHCE ZAMÓWIĆ na podstawie oferty - termin: '+ch.termin+' (do potwierdzenia)',yL,M,true)+D.gb;}
         if(uwT){const fu=D.fl+'px Arial';let ll=linie(g,uwT,kol-28,fu,99);
           if(ll.length>D.maxU){ll=ll.slice(0,D.maxU);g.font=fu;let o=ll[D.maxU-1];while(o.length>4&&g.measureText(o+' … (więcej w mailu)').width>kol-28)o=o.slice(0,-1);ll[D.maxU-1]=o.replace(/\s+\S*$/,'')+' … (więcej w mailu)';}
           const hb=D.pd+ll.length*D.lh+(D.fl+8);
@@ -3114,6 +3115,21 @@ html.sp-zam #poprawBtn,html.sp-zam #anPasek,html.sp-zam #analizuj{display:none!i
 #zamOk .zam-status i{width:10px;height:10px;border-radius:50%;background:#FFC53D;display:inline-block}
 #zamOk p{margin:12px 0 0;font-size:1rem;line-height:1.5;color:#1A1512}
 #zamOk p b{color:#1A1512}
+#zamPodglad{position:fixed;inset:0;z-index:5000;background:rgba(20,17,14,.55);display:flex;align-items:flex-end;justify-content:center;padding:0}
+#zamPodglad[hidden]{display:none}
+html.zp-otw,html.zp-otw body{overflow:hidden}
+#zamPodglad .zp-k{background:#fff;width:100%;max-width:560px;max-height:92vh;max-height:92dvh;overflow:auto;border-radius:18px 18px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -10px 30px rgba(0,0,0,.25)}
+@media(min-width:700px){#zamPodglad{align-items:center}#zamPodglad .zp-k{border-radius:18px}}
+#zamPodglad .zp-o{margin:0;font:800 .75rem/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#E8580E}
+#zamPodglad h2{margin:6px 0 12px;font:900 1.35rem/1.2 Inter,sans-serif;color:#14110E}
+#zamPodglad dl{margin:0;border-top:1px solid #EFE6DB}
+#zamPodglad dl div{display:grid;grid-template-columns:118px minmax(0,1fr);gap:10px;padding:9px 0;border-bottom:1px dashed #EFE6DB}
+#zamPodglad dt{font:700 .7rem/1.4 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6B5E52;padding-top:2px}
+#zamPodglad dd{margin:0;font-size:.95rem;line-height:1.4;color:#1A1512;overflow-wrap:anywhere}
+#zamPodglad .zp-u{margin:12px 0 14px;font-size:.85rem;line-height:1.45;font-style:italic;color:#4A5058}
+#zamPodglad button{display:block;width:100%;min-height:54px;border-radius:12px;font:800 1rem/1.2 Inter,sans-serif;cursor:pointer}
+#zamPodglad .zp-wys{border:0;background:#F8580E;color:#fff;text-transform:uppercase;letter-spacing:.04em}
+#zamPodglad .zp-pop{margin-top:10px;border:1.5px solid #14110E;background:#fff;color:#14110E}
 </style>
 <script>
 /* 27.10 Artur (01:16-01:42): ZAMÓW USŁUGĘ SMART ONLINE - ten sam arkusz co kalkulator, tylko:
@@ -3156,6 +3172,42 @@ html.sp-zam #poprawBtn,html.sp-zam #anPasek,html.sp-zam #analizuj{display:none!i
   if(bw)bw.addEventListener('click',function(e){if(tk.value.trim())return;e.stopImmediatePropagation();e.preventDefault();
     var bl=document.getElementById('bladForm');if(bl){bl.textContent='Proszę wybrać przynajmniej jeden preferowany termin.';bl.hidden=false;}
     var i=lista.querySelector('input');if(i){i.scrollIntoView({block:'center'});i.focus();}},true);
+  /* Artur 27.10 02:36: przed wyslaniem krok "Sprawdź swoje zamówienie" (podglad). Przycisk w formularzu otwiera podsumowanie,
+     wysylka idzie dopiero z podgladu ("WYŚLIJ DO POTWIERDZENIA"). "Popraw" zamyka podglad. */
+  if(bw){var potw=false,pz=document.getElementById('zamPodglad');
+    bw.lastChild.textContent='Sprawdź swoje zamówienie';bw.dataset.oryg=bw.innerHTML;
+    if(!pz){pz=document.createElement('div');pz.id='zamPodglad';pz.hidden=true;pz.setAttribute('role','dialog');pz.setAttribute('aria-modal','true');pz.setAttribute('aria-labelledby','zpTyt');
+      pz.innerHTML='<div class="zp-k"><p class="zp-o">Koszyk SMART</p><h2 id="zpTyt">Sprawdź swoje zamówienie</h2><dl id="zpLista"></dl>'+
+        '<p class="zp-u">Kwota jest wstępna - koszty i termin potwierdza centrala SMARTPARKIET&trade; SMS-em lub e-mailem.</p>'+
+        '<button type="button" class="zp-wys" id="zpWys">Wyślij do potwierdzenia</button><button type="button" class="zp-pop" id="zpPop">Popraw</button></div>';
+      document.body.appendChild(pz);}
+    var v=function(id){return ((document.getElementById(id)||{}).value||'').trim();};
+    var zn=function(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:'';};
+    var tekst=function(id){var e=document.getElementById(id);return e&&e.options?e.options[e.selectedIndex].text:'';};
+    function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+    function pokaz(){var lz=zn('listwy'),mk=v('mebleKw'),n=(window.__pliki?window.__pliki():[]).length;
+      var w=[['Usługa','Cyklinowanie SMART&trade; - renowacja parkietu'],
+        ['Podłoga',esc(tekst('typ')+', '+tekst('wyk').toLowerCase())],
+        ['Metraż',esc((v('m2')||'0')+' m²')],
+        ['Listwy',lz&&lz!=='nie'?esc('wymiana'+(lz==='do uzgodnienia'?' - do uzgodnienia':', '+lz+(v('listwyMb')?', '+v('listwyMb')+' mb':''))):'bez wymiany'],
+        ['Meble',zn('meble')==='nie'||mk?'pomoc ekipy przy meblach':'usuwa klient'],
+        ['Adres',esc([v('ulicaKl'),v('miastoKl')].filter(Boolean).join(', ')||'nie podano')],
+        ['Preferowane terminy',esc(tk.value||'-')],
+        ['Kontakt',esc([v('telKl')?'tel. '+v('telKl'):'',v('mailKl')].filter(Boolean).join(', ')||'-')],
+        ['Zdjęcia',n?String(n):'brak - można dosłać później'],
+        ['Kwota wstępna','<b>'+esc((document.getElementById('oN')||{}).textContent||'-')+'</b> netto']];
+      pz.querySelector('#zpLista').innerHTML=w.map(function(r){return '<div><dt>'+r[0]+'</dt><dd>'+r[1]+'</dd></div>';}).join('');
+      pz.hidden=false;document.documentElement.classList.add('zp-otw');setTimeout(function(){pz.querySelector('#zpWys').focus();},50);}
+    function zamknij(){pz.hidden=true;document.documentElement.classList.remove('zp-otw');}
+    pz.querySelector('#zpPop').onclick=function(){zamknij();bw.scrollIntoView({block:'center'});};
+    pz.addEventListener('click',function(e){if(e.target===pz)zamknij();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!pz.hidden)zamknij();});
+    pz.querySelector('#zpWys').onclick=function(){zamknij();potw=true;bw.click();};
+    bw.addEventListener('click',function(e){if(potw){potw=false;return;}if(bw.disabled||bw.classList.contains('wyslane'))return;
+      if(!tk.value.trim())return; /* komunikat o terminie daje blok wyzej */
+      if(v('mailKl').length<5&&v('telKl').replace(/\D/g,'').length<9)return; /* brak kontaktu - komunikat glownego formularza */
+      e.stopImmediatePropagation();e.preventDefault();var bl=document.getElementById('bladForm');if(bl)bl.hidden=true;pokaz();},true);
+  }
   window.spZamowienieOk=function(){
     var p=document.getElementById('zamOk');
     if(!p){p=document.createElement('div');p.id='zamOk';p.setAttribute('role','status');

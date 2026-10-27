@@ -186,6 +186,41 @@ function mailHtml(akapity) {
     '</td></tr></table></div>';
 }
 
+/* 27.10 02:36-02:44 Artur: tresc maila do klienta po wycenie / zamowieniu online - dokladnie jego slowa.
+   zamowienie=true: zamow-online.html albo zaznaczone "Chce skorzystac z wykonania uslugi" w wycena.html. */
+function mailPotwierdzenie(zamowienie) {
+  const B = t => '<b>' + t + '</b>';
+  const tel = '<a href="tel:+48602242815" style="color:#FE6500;font-weight:700;text-decoration:none">602 242 815</a>';
+  const ak = zamowienie ? [
+    'Dziękujemy za złożenie zamówienia online na usługę ' + B('CYKLINOWANIE SMART&trade;') + '.',
+    'W załączniku przesyłamy wstępną kalkulację.',
+    'Wkrótce skontaktujemy się z Państwem w celu ' + B('potwierdzenia dostępności wybranego terminu oraz uzgodnienia szczegółów realizacji') + '.',
+    B('Ważne:') + ' Złożenie zamówienia nie oznacza jeszcze rezerwacji terminu. Termin zostanie ostatecznie potwierdzony przez naszą centralę.',
+    'Dziękujemy za zaufanie!'
+  ] : [
+    'Dziękujemy za skorzystanie z wyceny online usługi ' + B('CYKLINOWANIE SMART&trade;') + '.',
+    'W załączniku przesyłamy wstępną kalkulację.',
+    'Dziękujemy za zaufanie!'
+  ];
+  const p = ak.map(t => '<p style="margin:0 0 14px">' + t + '</p>').join('');
+  const html = '<div style="background:#F4EFE9;padding:24px 12px;font-family:Arial,Helvetica,sans-serif">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;border-collapse:collapse">' +
+    '<tr><td style="background:#14110E;padding:18px 24px;border-bottom:3px solid #FE6500">' +
+      '<img src="https://smartparkiet.com.pl/img/logo-znak.png" width="30" height="30" alt="" style="vertical-align:middle;border:0">' +
+      '<span style="vertical-align:middle;margin-left:10px;color:#fff;font-size:18px;font-weight:800;letter-spacing:.06em">SMART<span style="color:#FE6500">PARKIET</span></span></td></tr>' +
+    '<tr><td style="background:#ffffff;padding:26px 24px 24px;color:#1F2328;font-size:15px;line-height:1.6">' +
+      '<p style="margin:0 0 14px">Dzień dobry!</p>' + p +
+      '<p style="margin:18px 0 0"><b>SMARTPARKIET&trade;</b><br>&#128222; ' + tel + '</p>' +
+      '<p style="margin:14px 0 0;font-style:italic;color:#4A5058">Bez bałaganu, bez pyłu, bez stresu!</p></td></tr>' +
+    '<tr><td style="background:#ffffff;padding:0 24px 24px">' +
+      '<a href="tel:+48602242815" style="display:inline-block;border:1.5px solid #FE6500;color:#FE6500;font-weight:700;font-size:14px;text-decoration:none;padding:9px 18px;border-radius:4px">Zadzwoń</a></td></tr>' +
+    '<tr><td style="padding:14px 24px;color:#6B5E52;font-size:12px;text-align:center"><a href="https://smartparkiet.com.pl" style="color:#6B5E52;text-decoration:none">smartparkiet.com.pl</a> &middot; Cyklinowanie SMART&trade;</td></tr>' +
+    '</table></div>';
+  const txt = t => t.replace(/<[^>]+>/g, '').replace(/&trade;/g, '™');
+  const text = 'Dzień dobry!\n\n' + ak.map(txt).join('\n\n') + '\n\nSMARTPARKIET™\n📞 602 242 815\n\nBez bałaganu, bez pyłu, bez stresu!';
+  return { html: html, text: text };
+}
+
 function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
@@ -229,20 +264,16 @@ function doPost(e) {
         attachments: [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Oferta_SMARTPARKIET.pdf')]
       });
     } else if (POTWIERDZENIE && mailOk) {
-      /* 21.10 Artur: jego tresc, w zalaczniku karta z kalkulacja */
-      const akapity = ['dziękujemy za zainteresowanie ofertą naszej firmy. W załączniku przesyłamy naszą wstępną kalkulację online.',
-        'Prosimy o potwierdzenie otrzymania i zapraszamy do kontaktu telefonicznego pod numerem 602 242 815.'];
-      /* 27.10 Artur: zamowienie online (zamow-online.html) - dopisek o preferowanych terminach do potwierdzenia */
-      /* 27.10: zamow-online.html albo "Chce skorzystac z wykonania uslugi" w wycena.html */
-      if (d.zamowienie) akapity.splice(1, 0, (d.terminy ? 'Państwa preferowany termin (' + d.terminy + ') został przesłany do centrali SMARTPARKIET. Potwierdzimy jego dostępność' : 'Państwa zamówienie zostało przesłane do centrali SMARTPARKIET. Termin ustalimy') + ' SMS-em lub e-mailem w ciągu maksymalnie 2 godzin roboczych. Termin staje się wiążący dopiero po potwierdzeniu przez centralę SMART.');
+      /* 27.10 02:36-02:44 Artur: nowa tresc potwierdzenia (zamowienie online / "Chce zamowic" vs zwykla wycena) */
+      const m = mailPotwierdzenie(!!d.zamowienie);
       MailApp.sendEmail({
         to: mail,
         bcc: ARTUR, /* Artur 22.10: kopia maila do klienta w jego skrzynce */
         replyTo: ARTUR,
         name: 'SMARTPARKIET',
         subject: d.temat || 'Wstępna wycena renowacji parkietu - SMARTPARKIET', /* Artur 26.10 21:57: temat od adresu */
-        body: 'Dzień dobry,\n\n' + akapity.join('\n\n') + '\n\nPozdrawiamy\nSMARTPARKIET TREMBIŃSKI\nArtur | 602 242 815',
-        htmlBody: mailHtml(akapity),
+        body: m.text,
+        htmlBody: m.html,
         attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Wstepna_wycena_SMARTPARKIET.pdf')] : []
       });
     }
