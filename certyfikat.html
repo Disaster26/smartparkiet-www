@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Certyfikat wykonania usługi SMART - PROJEKT | SMARTPARKIET</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#14110E">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Manrope:wght@400;500;600;700&display=swap">
+<!-- Artur 27.10 01:53-01:57: PROJEKT (makieta) certyfikatu wykonania uslugi online + gwarancja + przeglad + opinia.
+     Strona statyczna z przykladowymi danymi, noindex, NIEPODLINKOWANA z menu, NIE wchodzi do paczki smartparkiet.com.pl (build.py pomija).
+     Zasady Google: certyfikat, gwarancja i przeglad przysluguja NIEZALEZNIE od opinii; opinia to tylko zachecenie, bez nagrody i bez warunku. -->
+<style>
+:root{--pom:#F8580E;--pom2:#C2410C;--czarny:#14110E;--grafit:#1F2328;--grafit2:#4A5058;--krem:#FAF7F2;--kreska:#E7DED3;--zielen:#1F7A4D}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--krem);color:var(--grafit);font-family:Manrope,Inter,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+a{color:inherit}
+.pasek{background:var(--czarny);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;font:800 15px/1 Inter,sans-serif;letter-spacing:.06em}
+.pasek img{width:30px;height:30px}
+.pasek em{font-style:normal;color:var(--pom)}
+.projekt{background:#FFC53D;color:#14110E;text-align:center;font:800 12px/1.35 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:8px 16px}
+main{max-width:560px;margin:0 auto;padding:18px 16px 40px}
+.karta{background:#fff;border:1px solid var(--kreska);border-radius:18px;box-shadow:0 10px 30px rgba(20,17,14,.07);overflow:hidden}
+.k-gora{padding:22px 18px 18px;border-top:6px solid var(--pom);text-align:center}
+.pieczec{width:74px;height:74px;margin:0 auto 10px;border-radius:50%;background:var(--pom);display:grid;place-items:center;box-shadow:0 0 0 6px #FFE4D4}
+.pieczec svg{width:40px;height:40px}
+.k-gora .typ{font:700 12px/1 Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--pom2)}
+.k-gora h1{font:900 1.45rem/1.2 Inter,sans-serif;margin:8px 0 6px;color:var(--czarny)}
+.nr{display:inline-block;margin-top:6px;padding:7px 14px;border-radius:999px;background:var(--czarny);color:#fff;font:800 .95rem/1 Inter,sans-serif;letter-spacing:.06em}
+.status{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;font-weight:700;color:var(--zielen)}
+.status i{width:10px;height:10px;border-radius:50%;background:var(--zielen)}
+dl{margin:0;padding:6px 18px 4px;border-top:1px solid var(--kreska)}
+dl div{display:grid;grid-template-columns:120px minmax(0,1fr);gap:10px;padding:11px 0;border-bottom:1px dashed var(--kreska)}
+dl div:last-child{border-bottom:0}
+dt{font:700 11px/1.4 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--grafit2);padding-top:2px}
+dd{margin:0;font-weight:600;line-height:1.45}
+.sekcja{padding:16px 18px;border-top:1px solid var(--kreska)}
+.sekcja h2{font:800 1rem/1.3 Inter,sans-serif;margin:0 0 10px;color:var(--czarny)}
+.zakres{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+.zakres li{position:relative;padding-left:24px;line-height:1.45}
+.zakres li::before{content:"";position:absolute;left:0;top:5px;width:14px;height:8px;border-left:3px solid var(--pom);border-bottom:3px solid var(--pom);transform:rotate(-45deg)}
+.kafle{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kafel{border:1.5px solid var(--kreska);border-radius:14px;padding:14px 12px;background:#FFFCF8}
+.kafel b{display:block;font:900 1.3rem/1.1 Inter,sans-serif;color:var(--pom2)}
+.kafel span{display:block;margin-top:4px;font-size:.85rem;line-height:1.35;color:var(--grafit2)}
+details{border:1px solid var(--kreska);border-radius:12px;background:#fff;margin-top:10px}
+summary{cursor:pointer;list-style:none;padding:14px 16px;font-weight:800;display:flex;justify-content:space-between;gap:10px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--pom);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"-"}
+details .tr{padding:0 16px 14px;font-size:.93rem;line-height:1.6;color:var(--grafit2)}
+details ol,details ul{margin:0;padding-left:20px}
+details li{margin-bottom:6px}
+.opinia{padding:18px;border-top:1px solid var(--kreska);background:#FFF8F2;text-align:center}
+.opinia p{margin:0 0 12px;line-height:1.5}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;border:0;border-radius:14px;background:var(--pom);color:#fff;font:800 1rem/1.2 Inter,sans-serif;letter-spacing:.02em;text-decoration:none;cursor:pointer;padding:12px 16px;text-align:center}
+.btn svg{width:22px;height:22px;flex:0 0 auto}
+.drobne{font-size:.8rem;line-height:1.45;color:var(--grafit2);margin-top:10px}
+.btn2{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;margin-top:10px;border:1.5px solid var(--czarny);border-radius:14px;background:#fff;font:700 .95rem/1 Inter,sans-serif;color:var(--czarny);text-decoration:none}
+.proces{margin-top:26px}
+.proces>h2{font:900 1.15rem/1.3 Inter,sans-serif;margin:0 0 4px}
+.proces>p{margin:0 0 6px;color:var(--grafit2);font-size:.92rem;line-height:1.5}
+.uwaga{margin-top:12px;padding:14px;border-left:4px solid var(--pom);background:#fff;border-radius:0 12px 12px 0;font-size:.92rem;line-height:1.55}
+.stopka{text-align:center;font-size:.8rem;color:var(--grafit2);margin-top:22px;line-height:1.5}
+</style>
+
+<div class="pasek"><img src="img/logo-znak.png" alt="" width="30" height="30">SMART<em>PARKIET</em></div>
+<div class="projekt">PRZYKŁAD - projekt do akceptacji, dane fikcyjne</div>
+
+<main>
+  <article class="karta" aria-label="Certyfikat wykonania usługi">
+    <div class="k-gora">
+      <div class="pieczec" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg></div>
+      <div class="typ">Certyfikat wykonania usługi</div>
+      <h1>Cyklinowanie SMART&trade;</h1>
+      <span class="nr" id="nr">SP-2026-0001</span>
+      <div class="status"><i></i>Usługa wykonana i odebrana</div>
+    </div>
+    <dl>
+      <div><dt>Data odbioru</dt><dd id="dOdb">27.10.2026</dd></div>
+      <div><dt>Miejsce</dt><dd>Warszawa - Mokotów <small style="color:#6B5E52">(bez adresu - RODO)</small></dd></div>
+      <div><dt>Klient</dt><dd>Pan Jan K.</dd></div>
+      <div><dt>Podłoga</dt><dd>Klepka dębowa, 42 m²</dd></div>
+      <div><dt>Program</dt><dd>SMART PREMIUM FLOOR&trade;</dd></div>
+      <div><dt>Wykonawca</dt><dd>SMARTPARKIET, oddział Mokotów</dd></div>
+    </dl>
+    <section class="sekcja">
+      <h2>Zakres wykonanych prac</h2>
+      <ul class="zakres">
+        <li>Cyklinowanie bezpyłowe, szlif w kilku gradacjach</li>
+        <li>Wypełnienie szczelin masą z pyłu tego samego drewna</li>
+        <li>Trzy warstwy lakieru wodnego Berger-Seidle (półmat)</li>
+        <li>Wymiana listew przypodłogowych, 38 mb</li>
+      </ul>
+    </section>
+    <section class="sekcja">
+      <h2>Gwarancja i przegląd</h2>
+      <div class="kafle">
+        <div class="kafel"><b>24 mies.</b><span>gwarancja na powłokę lakierniczą, do <span id="dGw">27.10.2028</span></span></div>
+        <div class="kafel"><b>Przegląd</b><span>bezpłatny, po roku - od <span id="dPrz">27.10.2027</span></span></div>
+      </div>
+      <details>
+        <summary>Warunki eksploatacji podłogi</summary>
+        <div class="tr"><ol>
+          <li>Przez pierwsze 3 godziny po ostatniej warstwie nie wchodzić, potem tylko w skarpetach. Meble wracają po 3-4 dniach.</li>
+          <li>Przez pierwsze 14 dni nie myć podłogi detergentami, nie kłaść dywanów.</li>
+          <li>Pod meble filcowe podkładki, pod krzesła i fotele na kółkach - kółka silikonowe lub mata ochronna.</li>
+          <li>Wilgotność powietrza 45-65%, temperatura 18-25°C (zimą nawilżacz).</li>
+          <li>Myć lekko wilgotnym, dobrze wykręconym mopem i środkiem do podłóg lakierowanych. Bez myjek parowych, wosków do paneli i środków z amoniakiem lub alkoholem.</li>
+          <li>Rozlane płyny wycierać od razu, nie zostawiać stojącej wody, doniczki stawiać na podstawkach.</li>
+          <li>Przy wejściu wycieraczka - piasek działa na lakier jak papier ścierny.</li>
+          <li>Przy remontach podłogę zabezpieczyć (tektura, folia z podkładem), nie przesuwać ciężkich mebli bez podkładek.</li>
+        </ol></div>
+      </details>
+      <details>
+        <summary>Warunki gwarancji (projekt)</summary>
+        <div class="tr"><ol>
+          <li><b>Okres:</b> 24 miesiące od daty odbioru wpisanej w certyfikacie.</li>
+          <li><b>Zakres:</b> powłoka lakiernicza wykonana przez SMARTPARKIET - łuszczenie, odspajanie, pęcherze lub brak przyczepności powłoki z przyczyn technologicznych.</li>
+          <li><b>Gwarancja nie obejmuje:</b> naturalnego zużycia i zarysowań, wgnieceń i uszkodzeń mechanicznych; pracy drewna (szczeliny, wykruszanie szpachli, skrzypienie); stabilizacji metodą iniekcji; skutków zalania, wilgoci i nieszczelnych instalacji; zmiany koloru drewna pod wpływem światła; listew, których wykonawca nie wymieniał; uszkodzeń od niewłaściwych środków czyszczących.</li>
+          <li><b>Warunek:</b> użytkowanie zgodne z warunkami eksploatacji powyżej i z zasadami renowacji z oferty.</li>
+          <li><b>Zgłoszenie:</b> SMS, WhatsApp lub e-mail ze zdjęciami i numerem certyfikatu, najlepiej w ciągu 14 dni od zauważenia usterki. Po oględzinach wykonawca naprawia lub odnawia miejscowo uszkodzony fragment.</li>
+          <li><b>Przegląd:</b> po ok. 12 miesiącach bezpłatny przegląd podłogi, umawiany przez klienta.</li>
+          <li><b>Niezależnie od opinii:</b> certyfikat, gwarancja i przegląd przysługują bez względu na to, czy klient wystawi opinię.</li>
+          <li>Gwarancja nie wyłącza ani nie ogranicza uprawnień konsumenta z tytułu rękojmi / niezgodności usługi z umową.</li>
+        </ol>
+        <p style="margin:10px 0 0;font-style:italic">Tekst roboczy - do weryfikacji przez Artura i prawnika przed użyciem.</p></div>
+      </details>
+    </section>
+    <section class="opinia">
+      <p><b>Ostatni krok w systemie SMART:</b> potwierdź, że usługa została wykonana, i napisz kilka słów o nas w Google. To pomaga innym wybrać dobrą ekipę.</p>
+      <a class="btn" href="#" id="btnOpinia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>Potwierdź wykonanie - wystaw opinię</a>
+      <p class="drobne">Opinia jest dobrowolna. Certyfikat, gwarancja i bezpłatny przegląd obowiązują niezależnie od niej.</p>
+      <a class="btn2" href="tel:+48602242815">Zgłoś usterkę lub umów przegląd: 602 242 815</a>
+    </section>
+  </article>
+
+  <section class="proces" aria-label="Opis projektu">
+    <h2>Jak to działa (projekt dla SMARTPARKIET)</h2>
+    <p>Ta część nie będzie widoczna dla klienta - opis dla Artura.</p>
+    <details open>
+      <summary>Proces w 4 krokach</summary>
+      <div class="tr"><ol>
+        <li><b>Po odbiorze prac</b> brygadzista albo Artur otwiera zlecenie w Analizatorze (Folder ofert) i klika jeden przycisk <b>"Wystaw certyfikat"</b>. Dane bierze z oferty: podłoga, metraż, program, zakres; dopisuje się data odbioru.</li>
+        <li><b>System nadaje numer</b> po kolei: SP-2026-0001, SP-2026-0002... (licznik i wpis w arkuszu "Rejestr wycen"). Link ma też krótki kod, żeby nikt nie podglądał cudzych certyfikatów przez zmianę numeru.</li>
+        <li><b>Klient dostaje link</b> SMS-em / WhatsAppem / e-mailem: certyfikat, gwarancja, warunki, termin przeglądu - bez papierów. Na stronie tylko dzielnica i imię z inicjałem, bez adresu.</li>
+        <li><b>Po 11 miesiącach</b> automatyczne przypomnienie do klienta o bezpłatnym przeglądzie (Apps Script).</li>
+      </ol></div>
+    </details>
+    <details>
+      <summary>Dlaczego opinia nie jest warunkiem (zasady Google)</summary>
+      <div class="tr"><p style="margin:0">Google zabrania uzależniania czegokolwiek od opinii (gwarancji, przeglądu, rabatu, certyfikatu) i nagradzania za opinie. Za to grozi usunięcie opinii, a nawet zawieszenie wizytówki. Dlatego przycisk opinii jest naturalnym ostatnim krokiem ("Potwierdź wykonanie"), a nie "haczykiem". Klient i tak go kliknie, bo dostaje ładny, przydatny certyfikat z gwarancją - to wystarczająca zachęta.</p></div>
+    </details>
+    <div class="uwaga">Makieta: przyciski nic nie wysyłają, dane są przykładowe. Po akceptacji Artura można to podpiąć pod Analizator i arkusz wycen.</div>
+  </section>
+  <p class="stopka">SMARTPARKIET &middot; Cyklinowanie SMART&trade; &middot; tel. 602 242 815<br>Certyfikat online - bez papierologii</p>
+</main>
+<script>
+(function(){
+  /* numer z adresu (?nr=SP-2026-0001) - w makiecie tylko wyswietlany */
+  var m=/[?&]nr=([A-Za-z0-9-]{4,20})/.exec(location.search);if(m)document.getElementById('nr').textContent=m[1].toUpperCase();
+  document.getElementById('btnOpinia').addEventListener('click',function(e){e.preventDefault();
+    alert('PROJEKT: tu otworzy się formularz opinii Google wybranego oddziału. Certyfikat i gwarancja obowiązują niezależnie od opinii.');});
+})();
+</script>

@@ -952,7 +952,7 @@ figure{margin:0}
     <a class="brand" href="index.html"><img src="img/logo-znak.png" alt="SMARTPARKIET"><span class="brand-t">SMARTPARKIET</span></a>
     <nav>
       <a href="o-nas.html">O firmie</a>
-      <a href="metoda.html">O naszej metodzie</a>
+      <a href="metoda.html">Jak działamy</a>
       <a href="cennik.html">Cennik</a>
       <a href="programy.html">Programy</a>
       <a href="realizacje.html">Realizacje</a>
@@ -1032,7 +1032,7 @@ figure{margin:0}
    "ulica nr, miejscowosc - 24 m² - <koncowka>"; bez adresu na poczatku imie / telefon. */
 window.spTemat=function(koniec){var v=function(id){return ((document.getElementById(id)||{}).value||'').trim();};
   var kto=[v('ulicaKl'),v('miastoKl')].filter(Boolean).join(', ')||[v('imieKl'),v('telKl')?'tel. '+v('telKl'):''].filter(Boolean).join(', ')||'bez adresu';
-  return kto+' - '+String(Math.max(0,+v('m2')||0)).replace('.',',')+' m² - '+(window.SP_ZAMOWIENIE?'ZAMÓWIENIE ONLINE - ':'')+koniec;}; /* 27.10: zamow-online.html - wyroznik zamowienia, "Nowa wycena" zostaje dla filtra */
+  return kto+' - '+String(Math.max(0,+v('m2')||0)).replace('.',',')+' m² - '+(window.SP_ZAMOWIENIE?'ZAMÓWIENIE ONLINE - ':((window.spChce&&window.spChce())?'CHCE ZAMÓWIĆ - ':''))+koniec;}; /* 27.10: zamow-online.html - wyroznik zamowienia, "Nowa wycena" zostaje dla filtra */
 /* Artur 25-26.10: automat "do uzgodnienia". Kolko przy pytaniu steruje polem liczbowym pod spodem:
    do uzgodnienia (albo 'nie wiem') = pole zablokowane z napisem DO UZGODNIENIA, a w tabeli PDF kratka "Do uzg." zaznaczona;
    tak / rodzaj listwy = pole otwarte do wpisania metrow; nie = pole puste i wylaczone. */
@@ -1526,6 +1526,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         ['Listwy',zn('listwy')==='do uzgodnienia'?'wymiana do uzgodnienia':((zn('listwy')&&zn('listwy')!=='nie')?('wymiana, listwa '+zn('listwy')+(arkusz().mb?', '+arkusz().mb+' mb':'')):'bez wymiany')],
         ['Obiekt',arkusz().obiekt],
         ['Szczegóły',(()=>{const A=arkusz();return [A.rodzaj,A.technika,A.zn('stab')==='tak'?'stabilizacja klepek':((A.zn('stab')==='do uzgodnienia'||A.zn('stab')==='nie wiem')?'stabilizacja klepek do uzgodnienia':''),A.zn('napr')==='tak'?'naprawy ubytków':(A.zn('napr')==='nie wiem'?'naprawy do uzgodnienia':''),A.meble?'meble przesuwa ekipa':'meble usuwa klient'].filter(Boolean).join(', ');})()],
+        ...((window.spChce&&window.spChce())?[['CHCE ZAMÓWIĆ','Klient chce wykonania usługi na podstawie tej oferty (bez wizji lokalnej). Termin: '+window.spChce().termin+' - do potwierdzenia przez centralę.']]:[]),
         ...(window.SP_ZAMOWIENIE?[['ZAMÓWIENIE ONLINE','Klient zamawia usługę i prosi o potwierdzenie terminu. Status: DO POTWIERDZENIA przez centralę (SMS lub e-mail do 2 godzin roboczych).']]:[]),
         [window.SP_ZAMOWIENIE?'Preferowane terminy':'Termin',termin||'klient nie podał'],
         ['Uwagi',pole('uwagiKl')||'brak'],
@@ -1665,6 +1666,8 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         /* informacje dodatkowe na dole paska: termin, prace dodatkowe / uwagi (ramka, max D.maxU linii - pelna tresc w mailu), odeslanie do zasad */
         yL+=D.gap;podpis('Informacje dodatkowe',yL);yL+=10;
         yL+=pole((window.SP_ZAMOWIENIE?'Preferowane terminy (do potwierdzenia): ':'Termin: ')+(A.pole('terminKl')||'do ustalenia'),yL)+D.gb;
+        /* Artur 27.10 01:52: klient zaznaczyl "Chce skorzystac z wykonania uslugi na podstawie tej oferty" */
+        {const ch=window.spChce&&window.spChce();if(ch)yL+=pole('CHCE ZAMÓWIĆ na podstawie oferty - termin: '+ch.termin+' (do potwierdzenia)',yL)+D.gb;}
         if(uwT){const fu=D.fl+'px Arial';let ll=linie(g,uwT,kol-28,fu,99);
           if(ll.length>D.maxU){ll=ll.slice(0,D.maxU);g.font=fu;let o=ll[D.maxU-1];while(o.length>4&&g.measureText(o+' … (więcej w mailu)').width>kol-28)o=o.slice(0,-1);ll[D.maxU-1]=o.replace(/\s+\S*$/,'')+' … (więcej w mailu)';}
           const hb=D.pd+ll.length*D.lh+(D.fl+8);
@@ -1802,6 +1805,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       const ma=t=>window.__analiza&&t&&t!=='-'&&t!=='\u2014'&&t!=='\u2026';
       const w=[];
       w.push(window.SP_ZAMOWIENIE?'ZAMÓWIENIE ONLINE ze strony SMARTPARKIET - termin do potwierdzenia':'Zgłoszenie ze strony SMARTPARKIET - wycena ze zdjęć');
+      if(window.spChce&&window.spChce())w.push('CHCE ZAMÓWIĆ: klient chce wykonania usługi na podstawie tej oferty, termin: '+window.spChce().termin+' (do potwierdzenia)');
       w.push('Metraż: '+a+' m\u00b2');
       w.push('Podłoga: '+typ.options[typ.selectedIndex].text);
       w.push('Wykończenie: '+wyk.options[wyk.selectedIndex].text+' Berger-Seidle®');
@@ -1851,7 +1855,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       const b64=f=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]||'');r.onerror=()=>ok('');r.readAsDataURL(f);});
       const wyslij=async pdf=>{let zd=[];try{zd=(await Promise.all((window.__gotowe||[]).map(b64))).filter(Boolean);}catch(e){}
         return fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!window.SP_ZAMOWIENIE,terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):'',stan:stan,zdjecia:zd})}).catch(()=>{});};
+          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!(window.SP_ZAMOWIENIE||(window.spChce&&window.spChce())),terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):((window.spChce&&window.spChce()&&window.spChce().data)?window.spChce().termin:''),stan:stan,zdjecia:zd})}).catch(()=>{});};
       if(window.__karta&&window.__karta.type==='application/pdf'){
         const r=new FileReader();
         r.onload=()=>wyslij(String(r.result).split(',')[1]||'');
@@ -3165,6 +3169,42 @@ html.sp-zam #poprawBtn,html.sp-zam #anPasek,html.sp-zam #analizuj{display:none!i
 @media (min-width:1240px) and (max-width:1449px){html body header.nav nav a,html body header.nav.open nav a{font-size:11.5px!important;padding:6px 3.5px!important}html body header.nav .brand-t{font-size:14px!important}}
 @media (min-width:1450px) and (max-width:1919px){html body header.nav nav{gap:10px!important}html body header.nav nav a{font-size:12.2px!important;padding-left:3px!important;padding-right:3px!important;letter-spacing:0!important}}
 </style>
+<style id="chce-zamowic-2710">/* Artur 27.10 01:52: "Chce skorzystac z wykonania uslugi na podstawie tej oferty" */
+#chceBlok{margin:4px 0 6px;padding:14px;border:2px solid #F8580E;border-radius:14px;background:#FFF8F2}
+#chceBlok label.chce-gl{display:flex;align-items:flex-start;gap:12px;font-size:1rem;font-weight:800;line-height:1.35;color:#14110E;text-transform:none;letter-spacing:0;margin:0;cursor:pointer}
+#chceBlok label.chce-gl input{width:26px;height:26px;flex:0 0 26px;margin:0;accent-color:#F8580E}
+#chceOpcje{margin:12px 0 0 38px;display:grid;gap:10px}
+#chceOpcje label{display:flex;align-items:center;gap:10px;font-size:.95rem;font-weight:600;text-transform:none;letter-spacing:0;color:#3A3F45;margin:0;cursor:pointer}
+#chceOpcje input[type=radio]{width:20px;height:20px;margin:0;accent-color:#F8580E}
+#chceData{min-height:46px;font-size:16px;width:100%;max-width:220px}
+#chceBlok small{display:block;margin:10px 0 0 38px;font-size:.8rem;color:#6B5E52;font-style:italic;line-height:1.4}
+</style>
+<script>
+/* Artur 27.10 01:52: klienci po wycenie pytaja, czy przyjedziemy bez wizji lokalnej. Jedno pole wyboru + termin do uzgodnienia
+   albo preferowana data. Zaznaczenie idzie do tematu ("CHCE ZAMÓWIĆ - Nowa wycena"), tresci maila, PDF i Apps Script
+   (te same pola zamowienie/terminy co zamow-online.html). Nie ma go w zamow-online (tam to juz zamowienie) ani w analizatorze. */
+(function(){
+  if(window.SP_ZAMOWIENIE||window.SP_ANALIZATOR)return;
+  var on=false;try{on=/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
+  if(on)return;
+  var f=document.querySelector('form.ai-form');if(!f)return;
+  var w=document.createElement('div');w.className='szer';w.id='chceBlok';
+  var jutro=new Date(Date.now()+864e5).toISOString().slice(0,10);
+  w.innerHTML='<label class="chce-gl"><input type="checkbox" id="chceZam"> Chcę skorzystać z wykonania usługi na podstawie tej oferty</label>'+
+    '<div id="chceOpcje" hidden><label><input type="radio" name="chceT" value="uzg" checked> termin do uzgodnienia</label>'+
+    '<label><input type="radio" name="chceT" value="data"> mam preferowany termin:</label><input type="date" id="chceData" min="'+jutro+'" aria-label="Preferowany termin" hidden></div>'+
+    '<small id="chcePod" hidden>Bez wizji lokalnej, na podstawie zdjęć. Termin potwierdzimy SMS-em lub e-mailem.</small>';
+  var kontakt=[].slice.call(f.querySelectorAll('.sekcja-form')).filter(function(x){return /kontaktu/i.test(x.textContent);})[0];
+  if(kontakt)f.insertBefore(w,kontakt);else f.insertBefore(w,document.getElementById('ts'));
+  var cb=w.querySelector('#chceZam'),op=w.querySelector('#chceOpcje'),dt=w.querySelector('#chceData'),pod=w.querySelector('#chcePod');
+  function u(){op.hidden=!cb.checked;pod.hidden=!cb.checked;var d=(w.querySelector('input[name=chceT]:checked')||{}).value==='data';dt.hidden=!d;if(d&&!dt.hidden&&!dt.value)dt.focus();}
+  w.addEventListener('change',u);
+  function dzien(v){var p=v.split('-');if(p.length<3)return v;var d=new Date(+p[0],p[1]-1,+p[2]);return ['nd','pn','wt','śr','cz','pt','sb'][d.getDay()]+' '+p[2]+'.'+p[1]+'.'+p[0];}
+  /* stan dla tematu, maila, PDF i Apps Script */
+  window.spChce=function(){if(!cb.checked)return null;var d=(w.querySelector('input[name=chceT]:checked')||{}).value==='data'&&dt.value;
+    return {termin:d?dzien(dt.value):'do uzgodnienia',data:!!d};};
+})();
+</script>
 <style id="zamow-strona">/* zamow-online.html: kroki i tytul koszyka */
 html body .zam-kroki{list-style:none;counter-reset:zk;margin:18px 0 0;padding:0;display:grid;gap:10px}
 html body .zam-kroki li{counter-increment:zk;position:relative;padding:2px 0 2px 46px;min-height:34px;font-size:1rem;line-height:1.4;color:#fff}
