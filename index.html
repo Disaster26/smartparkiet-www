@@ -1008,7 +1008,6 @@ figure{margin:0}
       <a href="programy.html">Programy</a>
       <a href="realizacje.html">Realizacje</a>
       <a href="wycena.html">Kalkulator online</a>
-      <a href="zamow-online.html">Zamów online</a>
       <a href="ekspertyza.html">Ekspertyza online</a>
       <a href="oddzialy.html">Oddziały</a>
       <a href="smart-partner.html">Program partnerski</a>
@@ -3078,36 +3077,69 @@ html body .usl-linki{margin-top:6px;font-size:.92rem;line-height:1.9}
 html body .usl-linki a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 </style>
 
-<a class="zam-fab" id="zamFab" href="zamow-online.html" aria-label="Zamów usługę SMART online"><span class="zf-ik" aria-hidden="true"><svg viewBox="0 0 36 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path class="zf-smugi" d="M1 9h5M2.5 13h4M4 17h3"/><path d="M9.5 4H12l2.4 10.4a1.5 1.5 0 0 0 1.5 1.2h9.4a1.5 1.5 0 0 0 1.5-1.1L33 8H13"/><circle cx="17" cy="20.2" r="1.7"/><circle cx="25.5" cy="20.2" r="1.7"/></svg></span><span class="zf-t">ZAMÓW <b>USŁUGĘ</b> ONLINE</span><span class="zf-s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></a>
-<style id="zam-fab-2710">/* Artur 27.10 01:36: plywajacy przycisk ZAMOW USLUGE ONLINE. Na telefonie najpierw stoi w hero nad przyciskiem wyceny
-   (puste miejsce na maszynie, prostokat z jego zrzutu), po przewinieciu przykleja sie nad dolnym paskiem. Bez transform na przodkach,
-   pozycja tylko bottom (jak dolny pasek) - nie "lata" w Safari. Od 901 px: prawy dolny rog. */
-.zam-fab{position:absolute;z-index:60;left:50%;top:0;transform:translateX(-50%);display:inline-flex;align-items:center;gap:9px;height:52px;padding:0 7px 0 14px;border-radius:999px;
-  background:#F8580E;color:#fff;font:800 15px/1 Inter,system-ui,sans-serif;letter-spacing:.03em;white-space:nowrap;text-decoration:none;
-  box-shadow:0 8px 22px rgba(20,17,14,.38),0 0 0 2px rgba(255,255,255,.9);-webkit-tap-highlight-color:transparent}
+<a class="zam-fab" id="zamFab" href="zamow-online.html" aria-label="Zamów usługę SMART online"><span class="zf-ik" aria-hidden="true"><svg viewBox="0 0 36 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path class="zf-smugi" d="M1 9h5M2.5 13h4M4 17h3"/><path d="M9.5 4H12l2.4 10.4a1.5 1.5 0 0 0 1.5 1.2h9.4a1.5 1.5 0 0 0 1.5-1.1L33 8H13"/><circle cx="17" cy="20.2" r="1.7"/><circle cx="25.5" cy="20.2" r="1.7"/></svg></span><span class="zf-t">ZAMÓW</span><span class="zf-s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></a>
+<style id="zam-fab-2710">/* Artur 27.10 02:05-02:25: krotki, dyskretny przycisk ZAMOW (koszyk + strzalka), zaokraglony prostokat.
+   Lata po ekranie: wolny, lagodny dryf miedzy losowymi bezpiecznymi miejscami (omija naglowek, dolny pasek i przyciski hero),
+   mozna go przeciagnac palcem; dziala tez nad otwartym menu. Pozycja tylko top/left:0 + transform na SAMYM przycisku
+   (bez bottom liczonego z visualViewport - to byl blad "latajacego paska"). prefers-reduced-motion = stoi w miejscu. */
+.zam-fab{position:fixed;left:0;top:0;z-index:1200;display:inline-flex;align-items:center;gap:7px;height:44px;padding:0 5px 0 10px;border-radius:14px;
+  background:#F8580E;color:#fff;font:800 14px/1 Inter,system-ui,sans-serif;letter-spacing:.06em;white-space:nowrap;text-decoration:none;
+  box-shadow:0 6px 18px rgba(20,17,14,.32),0 0 0 2px rgba(255,255,255,.92);-webkit-tap-highlight-color:transparent;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;
+  transform:translate3d(-999px,-999px,0);will-change:transform;opacity:0;transition:opacity .4s ease}
+.zam-fab.gotowy{opacity:.97}
+.zam-fab.dryf{transition:transform 6.5s cubic-bezier(.45,.05,.55,.95),opacity .4s ease}
+.zam-fab.ciagnie{transition:none;opacity:1;box-shadow:0 10px 26px rgba(20,17,14,.42),0 0 0 2px #fff}
 .zam-fab:visited,.zam-fab:hover{color:#fff;text-decoration:none}
-.zam-fab .zf-ik svg{width:34px;height:23px;display:block}
-.zam-fab .zf-t b{color:#14110E;font-weight:900}
-.zam-fab .zf-s{width:38px;height:38px;border-radius:50%;background:#fff;color:#F8580E;display:grid;place-items:center}
-.zam-fab .zf-s svg{width:20px;height:20px}
-.zam-fab.plywa{position:fixed;top:auto!important;bottom:calc(var(--pasek,44px) + max(env(safe-area-inset-bottom),4px) + 12px);animation:zfWlot .35s ease-out}
-@media(min-width:901px){.zam-fab,.zam-fab.plywa{position:fixed;top:auto!important;left:auto;right:24px;bottom:24px;transform:none;height:56px;font-size:16px;animation:none}}
-@media(max-width:350px){.zam-fab{font-size:13.5px;gap:7px}.zam-fab .zf-ik svg{width:28px}}
-@keyframes zfWlot{from{opacity:0;transform:translate(-50%,24px)}to{opacity:1;transform:translateX(-50%)}}
-.zam-fab::after{content:"";position:absolute;inset:-2px;border-radius:inherit;box-shadow:0 0 0 0 rgba(248,88,14,.55);animation:zfPuls 2.8s ease-out infinite;pointer-events:none}
-@keyframes zfPuls{0%{box-shadow:0 0 0 0 rgba(248,88,14,.55)}70%{box-shadow:0 0 0 14px rgba(248,88,14,0)}100%{box-shadow:0 0 0 0 rgba(248,88,14,0)}}
-.zam-fab .zf-smugi{animation:zfSmugi 1.4s ease-in-out infinite}
-@keyframes zfSmugi{0%,100%{transform:translateX(0);opacity:1}50%{transform:translateX(-2px);opacity:.55}}
-@media(prefers-reduced-motion:reduce){.zam-fab,.zam-fab.plywa,.zam-fab::after,.zam-fab .zf-smugi{animation:none!important}}
+.zam-fab .zf-ik svg{width:27px;height:18px;display:block}
+.zam-fab .zf-s{width:30px;height:30px;border-radius:10px;background:#fff;color:#F8580E;display:grid;place-items:center}
+.zam-fab .zf-s svg{width:16px;height:16px}
+.zam-fab .zf-smugi{animation:zfSmugi 1.6s ease-in-out infinite}
+@keyframes zfSmugi{0%,100%{transform:translateX(0);opacity:1}50%{transform:translateX(-2px);opacity:.5}}
+@media(prefers-reduced-motion:reduce){.zam-fab.dryf{transition:opacity .4s ease}.zam-fab .zf-smugi{animation:none}}
 </style>
 <script>
-(function(){var f=document.getElementById('zamFab'),b=document.querySelector('.hero .cta .btn-amber');if(!f)return;
-  function u(){
-    if(innerWidth>900){f.classList.add('plywa');f.style.top='';return;}
-    var plywa=!b||scrollY>innerHeight*0.6||(innerHeight+scrollY)>=document.documentElement.scrollHeight-4;
-    if(plywa){if(!f.classList.contains('plywa'))f.classList.add('plywa');f.style.top='';}
-    else{f.classList.remove('plywa');f.style.top=Math.round(b.getBoundingClientRect().top+scrollY-f.offsetHeight-16)+'px';}}
-  addEventListener('scroll',u,{passive:true});addEventListener('resize',u);addEventListener('load',u);u();setTimeout(u,600);
+(function(){var f=document.getElementById('zamFab');if(!f)return;
+  var spokoj=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var x=0,y=0,timer=null,przeciagniety=false;
+  function rect(e){if(!e)return null;var r=e.getBoundingClientRect();return r.width&&r.height?r:null;}
+  function zakazane(){var z=[],q=function(s){[].forEach.call(document.querySelectorAll(s),function(e){var r=rect(e);if(r&&r.bottom>0&&r.top<innerHeight&&getComputedStyle(e).visibility!=='hidden')z.push(r);});};
+    q('header.nav');q('.hero .cta .btn');q('.hero-op-nav');
+    var bar=document.querySelector('.cta-bar');if(bar&&document.documentElement.classList.contains('cta-on'))q('.cta-bar');
+    return z;}
+  function granice(){var h=document.querySelector('header.nav'),hb=h?Math.max(0,h.getBoundingClientRect().bottom):0;
+    var bar=document.querySelector('.cta-bar'),bb=(bar&&getComputedStyle(bar).display!=='none')?bar.offsetHeight:0;
+    return {x0:10,x1:innerWidth-f.offsetWidth-10,y0:hb+10,y1:innerHeight-bb-f.offsetHeight-12};}
+  function koliduje(px,py){var w=f.offsetWidth,h=f.offsetHeight,m=8;return zakazane().some(function(r){return px<r.right+m&&px+w>r.left-m&&py<r.bottom+m&&py+h>r.top-m;});}
+  function ustaw(px,py,plynnie){x=px;y=py;f.classList.toggle('dryf',!!plynnie&&!spokoj);f.style.transform='translate3d('+Math.round(px)+'px,'+Math.round(py)+'px,0)';}
+  function cel(){var g=granice();if(g.x1<g.x0||g.y1<g.y0)return null;
+    for(var i=0;i<40;i++){var px=g.x0+Math.random()*(g.x1-g.x0),py=g.y0+Math.random()*(g.y1-g.y0);
+      if(Math.hypot(px-x,py-y)<90)continue;if(!koliduje(px,py))return [px,py];}return null;}
+  function startowa(){/* najpierw puste miejsce na maszynie nad przyciskiem wyceny (prostokat z jego zrzutu) */
+    var b=rect(document.querySelector('.hero .cta .btn-amber')),g=granice();
+    if(innerWidth>900||!b)return [g.x1-14,g.y1-14];
+    return [Math.min(g.x1,innerWidth-f.offsetWidth-24),Math.max(g.y0,b.top-f.offsetHeight-18)];}
+  function krok(){if(przeciagniety||spokoj||innerWidth>900)return;var c=cel();if(c)ustaw(c[0],c[1],true);}
+  function petla(){clearInterval(timer);if(spokoj||innerWidth>900)return; /* komputer: stoi w prawym dolnym rogu */timer=setInterval(function(){if(!document.hidden)krok();},8000);}
+  function popraw(){/* po przewinieciu / zmianie ekranu: wyjdz z zakazanego miejsca i z ekranu */
+    var g=granice();var nx=Math.min(Math.max(x,g.x0),g.x1),ny=Math.min(Math.max(y,g.y0),g.y1);
+    if(nx!==x||ny!==y||koliduje(nx,ny)){var c=koliduje(nx,ny)?cel():[nx,ny];if(c)ustaw(c[0],c[1],true);}}
+  /* przeciaganie palcem */
+  f.setAttribute('draggable','false');f.addEventListener('dragstart',function(e){e.preventDefault();}); /* link nie moze startowac natywnego przeciagania */
+  var sx,sy,ox,oy,ruszyl=false,ciagnie=false;
+  f.addEventListener('pointerdown',function(e){ciagnie=true;ruszyl=false;sx=e.clientX;sy=e.clientY;
+    /* zlap przycisk tam, gdzie faktycznie jest (w trakcie dryfu x/y to cel, nie biezace miejsce) */
+    var r=f.getBoundingClientRect();ustaw(r.left,r.top,false);ox=x;oy=y;try{f.setPointerCapture(e.pointerId);}catch(_){}});
+  f.addEventListener('pointermove',function(e){if(!ciagnie)return;var dx=e.clientX-sx,dy=e.clientY-sy;
+    if(!ruszyl&&Math.hypot(dx,dy)<7)return;ruszyl=true;f.classList.add('ciagnie');f.classList.remove('dryf');
+    var g=granice();ustaw(Math.min(Math.max(ox+dx,g.x0),g.x1),Math.min(Math.max(oy+dy,g.y0),g.y1),false);e.preventDefault();});
+  function koniec(){if(!ciagnie)return;ciagnie=false;f.classList.remove('ciagnie');
+    if(ruszyl){przeciagniety=true;setTimeout(function(){przeciagniety=false;},12000);}}
+  f.addEventListener('pointerup',koniec);f.addEventListener('pointercancel',koniec);
+  f.addEventListener('click',function(e){if(ruszyl){e.preventDefault();ruszyl=false;}});
+  function start(){var s=startowa();ustaw(s[0],s[1],false);f.offsetWidth;f.classList.add('gotowy');petla();if(!spokoj&&innerWidth<=900)setTimeout(krok,4500);}
+  addEventListener('resize',popraw);addEventListener('scroll',function(){clearTimeout(f._t);f._t=setTimeout(popraw,180);},{passive:true});
+  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.burger'))setTimeout(function(){popraw();krok();},250);});
+  if(document.readyState==='complete')start();else addEventListener('load',start);
 })();
 </script>
 <style id="filary-link-2710">html body .akr-filary{margin:6px 0 26px;font-weight:700;font-size:1.02rem}html body .akr-filary a{color:#C2410C;text-decoration:underline;text-underline-offset:4px}</style>

@@ -48,8 +48,8 @@ LEWA = '''    <div class="sticky">
       <p class="lead se-lead">Zamówienie renowacji parkietu w jednym formularzu - <b>Koszyk SMART</b>. Bez dzwonienia i bez umawiania oględzin na start.</p>
       <ol class="zam-kroki">
         <li><b>Podaj dane</b> - adres, metraż, rodzaj podłogi i 4-6 zdjęć.</li>
-        <li><b>Poznaj cenę</b> - kalkulator od razu liczy kwotę.</li>
-        <li><b>Wybierz termin</b> - 1-3 dogodne dni.</li>
+        <li><b>Poznaj cenę</b> - kalkulator od razu liczy kwotę; zamówienie wymaga potwierdzenia kosztów przez centralę.</li>
+        <li><b>Wybierz termin</b> - 1-3 dogodne dni, potwierdzimy dostępność.</li>
         <li><b>Wyślij do potwierdzenia</b> - jeden przycisk.</li>
         <li><b>Otrzymaj potwierdzenie</b> - SMS lub e-mail w ciągu 2 godzin roboczych.</li>
       </ol>
