@@ -233,7 +233,8 @@ function doPost(e) {
       const akapity = ['dziękujemy za zainteresowanie ofertą naszej firmy. W załączniku przesyłamy naszą wstępną kalkulację online.',
         'Prosimy o potwierdzenie otrzymania i zapraszamy do kontaktu telefonicznego pod numerem 602 242 815.'];
       /* 27.10 Artur: zamowienie online (zamow-online.html) - dopisek o preferowanych terminach do potwierdzenia */
-      if (d.zamowienie) akapity.splice(1, 0, 'Państwa preferowany termin' + (d.terminy ? ' (' + d.terminy + ')' : '') + ' został przesłany do centrali SMARTPARKIET. Potwierdzimy jego dostępność SMS-em lub e-mailem w ciągu maksymalnie 2 godzin roboczych. Termin staje się wiążący dopiero po potwierdzeniu przez centralę SMART.');
+      /* 27.10: zamow-online.html albo "Chce skorzystac z wykonania uslugi" w wycena.html */
+      if (d.zamowienie) akapity.splice(1, 0, (d.terminy ? 'Państwa preferowany termin (' + d.terminy + ') został przesłany do centrali SMARTPARKIET. Potwierdzimy jego dostępność' : 'Państwa zamówienie zostało przesłane do centrali SMARTPARKIET. Termin ustalimy') + ' SMS-em lub e-mailem w ciągu maksymalnie 2 godzin roboczych. Termin staje się wiążący dopiero po potwierdzeniu przez centralę SMART.');
       MailApp.sendEmail({
         to: mail,
         bcc: ARTUR, /* Artur 22.10: kopia maila do klienta w jego skrzynce */
