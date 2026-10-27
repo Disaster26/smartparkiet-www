@@ -988,7 +988,8 @@ figure{margin:0}
   <div class="wrap">
     <a class="brand" href="index.html"><img src="img/logo-znak.png" alt="SMARTPARKIET"><span class="brand-t">SMARTPARKIET</span></a>
     <nav>
-      <a href="zamow-online.html" class="nav-zam"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H7"/><circle cx="10" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>Zamów online</a>
+      <a href="zamow-online.html#koszyk" class="nav-zam"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H7"/><circle cx="10" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>Zamów online</a>
+      <a href="zamow-online.html#jak-to-dziala" class="nav-zam-opis">Zamawianie usługi online</a>
       <a href="o-nas.html">O nas</a>
       <a href="metoda.html">Metoda SMART</a>
       <a href="cennik.html">Cennik</a>
@@ -1218,7 +1219,7 @@ figure{margin:0}
       </div>
       <div class="c-kontakt"><h4>Kontakt</h4><a href="tel:+48602242815">602 242 815</a><a href="mailto:smartparkiet@gmail.com">smartparkiet@gmail.com</a><a href="https://wa.me/48602242815">WhatsApp</a></div>
       <div class="c-oddzialy"><h4>Oddziały</h4><a href="cyklinowanie-rembertow.html">Suflerska 4, Rembertów</a><a href="cyklinowanie-ochota.html">Grójecka 208, lok. 229, Ochota</a><a href="cyklinowanie-targowek.html">Turmoncka 17A, lok. 21, Targówek</a><a href="cyklinowanie-mokotow.html">Belwederska 23, Mokotów</a></div>
-      <div class="c-wiecej"><h4>Więcej</h4><div class="ww"><div><a href="cennik.html">Cennik</a><a href="programy.html">Programy</a><a href="realizacje.html">Realizacje</a><a href="schody.html">Schody</a></div><div><a href="ekspertyza.html">Ekspertyza online</a><a href="blog.html">Poradniki</a><a href="parkiet-w-kamienicy.html">Kamienice</a><a href="dla-pracowni.html">Dla pracowni</a></div></div></div>
+      <div class="c-wiecej"><h4>Więcej</h4><div class="ww"><div><a href="cennik.html">Cennik</a><a href="programy.html">Programy</a><a href="realizacje.html">Realizacje</a><a href="schody.html">Schody</a></div><div><a href="ekspertyza.html">Ekspertyza online</a><a href="blog.html">Poradniki</a><a href="parkiet-w-kamienicy.html">Kamienice</a></div></div></div>
     </div>
     <div class="fine"><span>© 2026 SMARTPARKIET<sup>™</sup> <span class="autor">Artur Trembiński</span></span><span>Cyklinowanie SMART<sup>™</sup> <i>|</i> nazwy są znakami SMARTPARKIET</span></div>
   </div>
@@ -2738,3 +2739,25 @@ html body header.nav nav a.nav-zam::after,html body header.nav nav a.nav-zam::be
 @media(min-width:1450px) and (max-width:1919px){html body header.nav nav{gap:7px!important}}
 @media(min-width:1240px){html body header.nav nav a.nav-zam{padding:4px 9px!important;margin-right:4px!important}html body header.nav nav a.nav-zam svg{width:14px;height:14px}}
 </style>
+<style id="runda-1546">/* Artur 27.10 11:30-15:46 */
+/* menu: pigulka "Zamow online" -> koszyk, pierwsza pozycja listy "Zamawianie uslugi online" pomaranczowym tekstem -> opis */
+html body header.nav nav a.nav-zam-opis{color:#FF6A13!important;font-weight:800!important}
+@media(min-width:1240px){html body header.nav nav a.nav-zam-opis{display:none!important}} /* komputer: menu w jednym rzedzie, opis pod koszykiem */
+@media(max-width:1239px){html body header.nav.open nav a.nav-zam{margin:12px 0 6px!important}}
+/* ZAMOW CYKLINOWANIE ONLINE + Udostepnij w jednej linii - mniejsza czcionka na telefonie */
+@media(max-width:900px){
+  .sp-dok{left:10px!important;right:10px;flex-wrap:nowrap;gap:6px!important}
+  .sp-dok .zam-fab,.sp-dok #spUdost{font-size:min(11px,2.85vw)!important;letter-spacing:.01em!important;padding:0 9px 0 7px!important;gap:5px!important;height:34px!important}
+  .sp-dok .zf-ik svg{width:20px!important;height:14px!important}
+  .sp-dok #spUdost svg{width:14px!important;height:14px!important}
+}
+/* dolny pasek ZADZWON/WHATSAPP/WYCENA: napisy w jednej linii */
+@media(max-width:430px){html body .cta-bar a{letter-spacing:.04em!important;font-size:min(.74rem,3.1vw)!important;white-space:nowrap!important;gap:5px!important}html body .cta-bar a span{letter-spacing:.04em!important}}
+/* tryb aplikacji z ikony (standalone): pasek i przyciski stoja na stale, bez chowania/wysuwania i bez "gumowego" przewijania */
+html.pwa,html.pwa body{overscroll-behavior-y:none}
+html.pwa .cta-bar{transform:none!important;transition:none!important;bottom:0!important}
+html.pwa .sp-dok{transition:opacity .25s ease!important;bottom:calc(var(--pasek,44px) + max(env(safe-area-inset-bottom),4px) + 10px)!important}
+</style>
+<script>/* 27.10 15:46: wykrycie trybu aplikacji (ikona na ekranie glownym) */
+(function(){try{if((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone)document.documentElement.classList.add('pwa');}catch(e){}})();
+</script>

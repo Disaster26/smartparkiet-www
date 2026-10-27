@@ -39,7 +39,7 @@ s = s[:m.end()] + NL + '<script>window.SP_ZAMOWIENIE=1;</script>' + s[m.end():]
 
 # menu: aktywna nowa zakladka
 zamien('<a href="wycena.html" class="akt">Kalkulator online</a>', '<a href="wycena.html">Kalkulator online</a>')
-zamien('<a href="zamow-online.html" class="nav-zam">', '<a href="zamow-online.html" class="nav-zam akt">')
+zamien('<a href="zamow-online.html#koszyk" class="nav-zam">', '<a href="zamow-online.html#koszyk" class="nav-zam akt">')
 
 # lewa kolumna: opis programu + 5 krokow
 LEWA = '''    <div class="sticky zam-gora">
@@ -66,8 +66,8 @@ TEKST = """<section class="zam-tekst" id="jak-to-dziala">
     <p>Nie musisz już dzwonić, pytać o wolne terminy ani umawiać oględzin, żeby poznać cenę.</p>
     <p>Zamów CYKLINOWANIE SMART&trade; online, poznaj wstępną wycenę i wskaż dogodne dla siebie terminy.</p>
     <p>To Ty decydujesz, kiedy chcesz przeprowadzić renowację. My dopasujemy ekipę i organizację pracy do Twoich potrzeb i harmonogramu.</p>
-    <p><b>Złóż zamówienie online!</b> Centrala SMARTPARKIET&trade; potwierdzi dostępność wybranego terminu oraz szczegóły realizacji w ciągu 2 godzin roboczych.</p>
-    <p class="zt-haslo">Twój czas. Twój termin.<br>My po prostu robimy robotę!</p>
+    <p><b>Złóż zamówienie online!</b> Nasze biuro potwierdzi dostępność wybranego terminu oraz szczegóły realizacji w ciągu 2 godzin roboczych.</p>
+    <p class="zt-haslo"><i>Twój parkiet. Twój termin.<br>My tylko robimy robotę!</i></p>
     <p><a class="btn btn-amber" href="#koszyk">Przejdź do Koszyka SMART</a></p>
   </div>
 </section>
@@ -81,7 +81,7 @@ html body .zam-kroki li{counter-increment:zk;position:relative;padding:1px 0 1px
 html body .zam-kroki li::before{content:counter(zk);position:absolute;left:0;top:0;width:26px;height:26px;font-size:.85rem!important;border-radius:50%;background:#fff;color:#FF6A13;font-weight:900;display:grid;place-items:center;font-size:1rem}
 html body .zam-kroki li b{color:#fff;font-weight:800}
 html body .zam-uwaga{margin-top:12px!important;line-height:1.4!important;font-size:.92rem!important;font-style:italic;color:#fff!important}
-html body .koszyk-tyt{scroll-margin-top:72px;margin:4px 0 12px;font-weight:900;font-size:1.75rem;line-height:1.15;letter-spacing:.05em;text-transform:uppercase;color:#FF6A13;text-align:center} /* Artur 27.10 03:21: na srodku, pomaranczowy, wiekszy */
+html body .koszyk-tyt{scroll-margin-top:72px;margin:4px 0 12px;font-weight:900;font-size:1.4rem;line-height:1.15;letter-spacing:.03em;white-space:nowrap;text-transform:uppercase;color:#FF6A13;text-align:center} /* Artur 27.10 03:21: na srodku, pomaranczowy, wiekszy */
 html body .koszyk-tyt::before{content:"";display:inline-block;width:22px;height:22px;margin:0 8px -3px 0;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF6A13' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H7'/%3E%3Ccircle cx='10' cy='19.5' r='1.4'/%3E%3Ccircle cx='17' cy='19.5' r='1.4'/%3E%3C/svg%3E")}
 @media(max-width:700px){
   html body #wycena{padding-top:22px!important}
