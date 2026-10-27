@@ -38,7 +38,7 @@ zamien('<link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.
        '<meta name="apple-mobile-web-app-title" content="Analizator">')
 zamien('<link rel="icon" type="image/png" sizes="192x192" href="img/ikona-192.png">',
        '<link rel="icon" type="image/png" sizes="192x192" href="img/analizator-192.png?v=3">')
-s = re.sub(r'<meta name="theme-color" content="[^"]*">', '<meta name="theme-color" content="#F8580E">', s, count=1)
+s = re.sub(r'<meta name="theme-color" content="[^"]*">', '<meta name="theme-color" content="#FF6A13">', s, count=1)
 
 # 2. tryb parkieciarza zawsze + blokada PIN (zaraz po <meta viewport>, przed reszta skryptow)
 BRAMKA = '''<script>window.SP_ANALIZATOR=1;
@@ -69,7 +69,7 @@ html.an-zamek,html.an-zamek body{overflow:hidden!important}
 #anPin b{font-size:1.25rem;letter-spacing:.04em;color:#14110E}
 #anPin label{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:#4A5058;font-weight:700}
 #anPin input{width:100%%;font-size:1.4rem;text-align:center;letter-spacing:.15em;padding:10px;border:1.5px solid #3A3F45;border-radius:10px}
-#anPin button{width:100%%;border:0;border-radius:10px;padding:12px;font-weight:800;font-size:1rem;background:#F8580E;color:#fff;cursor:pointer}
+#anPin button{width:100%%;border:0;border-radius:10px;padding:12px;font-weight:800;font-size:1rem;background:#FF6A13;color:#fff;cursor:pointer}
 #anPin p{margin:0;min-height:1.2em;font-size:.85rem;color:#B23B1E}
 </style>''' % DYSK
 m = re.search(r'<meta name="viewport"[^>]*>', s)
@@ -109,7 +109,7 @@ FOLDER_JS = r"""<style>
  /* brak klucza na tym urzadzeniu: pole PIN w ramce folderu (bez okienek przegladarki) */
  function pokazPin(){var e=document.getElementById('folInfo');if(!e||document.getElementById('folPin'))return;
   e.innerHTML='<span style="display:flex;gap:6px"><input id="folPin" type="password" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="Hasło" aria-label="Hasło do folderu ofert" style="flex:1;min-width:0;padding:10px;border-radius:8px;border:0;font-size:1rem">'+
-   '<button type="button" id="folPinB" style="border:0;border-radius:8px;padding:10px 14px;background:#F8580E;color:#fff;font-weight:800">Otwórz folder</button></span>';
+   '<button type="button" id="folPinB" style="border:0;border-radius:8px;padding:10px 14px;background:#FF6A13;color:#fff;font-weight:800">Otwórz folder</button></span>';
   var go=async function(){var v=document.getElementById('folPin').value.trim();if(!v)return;
    var j;try{j=await (await fetch(U+'?a=klucz&pin='+encodeURIComponent(v))).json();}catch(x){info('Brak internetu - spróbuj ponownie');return;}
    if(!j.ok){info(j.blad==='Zły PIN'?'Nieprawidłowe hasło':(j.blad||'Błąd'));setTimeout(pokazPin,1500);return;}

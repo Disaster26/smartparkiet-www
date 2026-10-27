@@ -45,7 +45,7 @@
 
 :root{
   --bg:#FFFFFF; --bg2:#F6F4F1; --ink:#0E0E0E; --ink2:#3F4144; --mute:#707176;
-  --line:#E7E3DD; --wood:#F8580E; --amber:#F8580E; --amber-ink:#B83C06; --white:#FFFFFF;
+  --line:#E7E3DD; --wood:#FF6A13; --amber:#FF6A13; --amber-ink:#B83C06; --white:#FFFFFF;
   --dark:#100E0B; --dark2:#1A1613; --on-dark:#FFFFFF; --on-dark2:#B3B0AD;
   --max:1180px;
 }
@@ -100,7 +100,7 @@ section{padding:96px 0;scroll-margin-top:72px}
 .hero{position:relative;color:var(--on-dark);background:var(--dark);overflow:hidden}
 .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;opacity:.6}
 .hero-old{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;opacity:.6;filter:saturate(.35) brightness(.6) contrast(.85) sepia(.3);clip-path:inset(0 0 0 var(--s,0%));z-index:1}
-.hero-edge{position:absolute;top:0;bottom:0;left:var(--s,0%);width:3px;background:linear-gradient(180deg,transparent,var(--amber),transparent);z-index:1;opacity:var(--eo,1);box-shadow:0 0 24px 6px rgba(248,88,14,.35)}
+.hero-edge{position:absolute;top:0;bottom:0;left:var(--s,0%);width:3px;background:linear-gradient(180deg,transparent,var(--amber),transparent);z-index:1;opacity:var(--eo,1);box-shadow:0 0 24px 6px rgba(255,106,19,.35)}
 .hero-cap{position:absolute;right:24px;bottom:22px;z-index:3;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--on-dark2);font-weight:700;opacity:var(--eo,1);transition:opacity .6s}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(16,14,11,.94) 0%,rgba(16,14,11,.7) 50%,rgba(16,14,11,.2) 100%)}
 .hero .wrap{position:relative;z-index:2;padding-top:104px;padding-bottom:88px}
@@ -170,7 +170,7 @@ section{padding:96px 0;scroll-margin-top:72px}
 .lab-opts button{text-align:left;padding:12px 14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);border-radius:4px;font:inherit;cursor:pointer;color:var(--on-dark);display:flex;justify-content:space-between;gap:10px;align-items:baseline;transition:border-color .2s,background .2s}
 .lab-opts button b{font-weight:700;font-size:.92rem}
 .lab-opts button span{font-size:.78rem;color:var(--on-dark2);white-space:nowrap}
-.lab-opts button[aria-pressed="true"]{border-color:var(--amber);background:rgba(248,88,14,.14)}
+.lab-opts button[aria-pressed="true"]{border-color:var(--amber);background:rgba(255,106,19,.14)}
 .lab-opts button[aria-pressed="true"] span{color:var(--amber)}
 .lab-stage{position:relative;aspect-ratio:2/1;border-radius:6px;overflow:hidden;background:#0B0907;user-select:none;touch-action:none;cursor:ew-resize}
 .lab-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -225,7 +225,7 @@ section{padding:96px 0;scroll-margin-top:72px}
 .ai-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0}
 .ai-photo{position:relative;min-height:260px;background:#ECE6DC}
 .ai-photo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.ai-photo .scan{position:absolute;left:0;right:0;height:2px;background:var(--amber);box-shadow:0 0 18px 4px rgba(248,88,14,.6);top:0;opacity:0}
+.ai-photo .scan{position:absolute;left:0;right:0;height:2px;background:var(--amber);box-shadow:0 0 18px 4px rgba(255,106,19,.6);top:0;opacity:0}
 .ai-photo.scanning .scan{opacity:1;animation:scan 1.6s linear infinite}
 @keyframes scan{from{top:0}to{top:100%}}
 .ai-photo .empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute);font-size:.9rem;text-align:center;padding:20px}
@@ -254,7 +254,7 @@ section{padding:96px 0;scroll-margin-top:72px}
 .tl li::after{content:"";position:absolute;left:8px;top:18px;bottom:0;width:2px;background:rgba(255,255,255,.1)}
 .tl li:last-child::after{display:none}
 .tl li.done::before{background:var(--amber)}
-.tl li.now::before{background:var(--amber);box-shadow:0 0 0 5px rgba(248,88,14,.25)}
+.tl li.now::before{background:var(--amber);box-shadow:0 0 0 5px rgba(255,106,19,.25)}
 .tl b{display:block;font-size:.9rem;color:var(--on-dark)}
 .tl li:not(.done):not(.now) b{color:var(--on-dark2)}
 .tl span{font-size:.76rem;color:var(--on-dark2)}
@@ -272,14 +272,14 @@ section{padding:96px 0;scroll-margin-top:72px}
 .map .d path{fill:#2B2620;stroke:#100E0B;stroke-width:1.2;transition:fill .25s}
 .map .d[data-b="1"] path{fill:#2E2820}.map .d[data-b="2"] path{fill:#2A2622}.map .d[data-b="3"] path{fill:#2C2721}.map .d[data-b="4"] path{fill:#2D2823}
 .map .d:hover path{fill:#3A3127}
-.map .d.on path{fill:#5A4320;stroke:#F8580E}
+.map .d.on path{fill:#5A4320;stroke:#FF6A13}
 .map .d text{fill:#8F857A;font-family:Manrope,sans-serif;font-size:11px;font-weight:600;pointer-events:none;transition:fill .2s;paint-order:stroke;stroke:#100E0B;stroke-width:3px;stroke-linejoin:round}
 .map .d:hover text,.map .d.on text{fill:#FFFFFF}
 .map .pin circle.ring{transition:r .3s,opacity .3s}
 .map .pin.on circle.ring{r:34;opacity:.32}
 .branches{display:grid;gap:10px}
 .branch{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;padding:16px 18px;border:1px solid rgba(255,255,255,.1);border-radius:6px;background:rgba(255,255,255,.02);transition:border-color .2s,background .2s;cursor:pointer}
-.branch.on{border-color:var(--amber);background:rgba(248,88,14,.08)}
+.branch.on{border-color:var(--amber);background:rgba(255,106,19,.08)}
 .branch .k{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.12);color:var(--on-dark);font-weight:800;display:grid;place-items:center;font-family:Inter,"Helvetica Neue",Helvetica,sans-serif}
 .branch.on .k{background:var(--amber);color:#0E0E0E}
 .branch b{display:block;font-size:1rem}
@@ -299,14 +299,14 @@ section{padding:96px 0;scroll-margin-top:72px}
 .cal-grid .dh{color:var(--on-dark2);text-align:center;padding-bottom:4px;line-height:1.2}
 .cal-grid .dh b{display:block;color:var(--on-dark);font-size:.85rem}
 .cal-grid .c{height:34px;border-radius:3px;border:1px solid transparent;cursor:default;background:rgba(255,255,255,.06)}
-.cal-grid .c.f{background:rgba(248,88,14,.28);cursor:pointer}
-.cal-grid .c.f:hover{background:rgba(248,88,14,.5)}
-.cal-grid .c.h{background:linear-gradient(135deg,rgba(248,88,14,.28) 50%,rgba(255,255,255,.06) 50%);cursor:pointer}
+.cal-grid .c.f{background:rgba(255,106,19,.28);cursor:pointer}
+.cal-grid .c.f:hover{background:rgba(255,106,19,.5)}
+.cal-grid .c.h{background:linear-gradient(135deg,rgba(255,106,19,.28) 50%,rgba(255,255,255,.06) 50%);cursor:pointer}
 .cal-grid .c.on{border-color:#fff;background:var(--amber)}
 .cal-grid .c.we{opacity:.35;cursor:default}
 .cal-legend{margin-top:12px;font-size:.78rem;color:var(--on-dark2);display:flex;gap:14px;align-items:center}
 .cal-legend i{display:inline-block;width:14px;height:14px;border-radius:3px;background:rgba(255,255,255,.06);vertical-align:middle;margin-right:4px}
-.cal-legend i.f{background:rgba(248,88,14,.28)}.cal-legend i.h{background:linear-gradient(135deg,rgba(248,88,14,.28) 50%,rgba(255,255,255,.06) 50%)}
+.cal-legend i.f{background:rgba(255,106,19,.28)}.cal-legend i.h{background:linear-gradient(135deg,rgba(255,106,19,.28) 50%,rgba(255,255,255,.06) 50%)}
 @media(max-width:800px){.cal-grid{grid-template-columns:110px repeat(14,44px)}}
 
 /* REVIEW big */
@@ -356,12 +356,12 @@ footer.site .fine{margin-top:40px;padding-top:20px;border-top:1px solid rgba(255
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
 
-/* ====== MOTYW MARKI (22.09, v2) - czern + pomarancz #F8580E z logo ====== */
+/* ====== MOTYW MARKI (22.09, v2) - czern + pomarancz #FF6A13 z logo ====== */
 :root{
   --bg:#FFFFFF; --bg2:#F6F4F1; --ink:#0E0E0E; --ink2:#3F4144; --mute:#707176;
-  --line:#E7E3DD; --wood:#F8580E; --amber:#F8580E; --amber-ink:#B83C06; --white:#fff;
+  --line:#E7E3DD; --wood:#FF6A13; --amber:#FF6A13; --amber-ink:#B83C06; --white:#fff;
   --dark:#100E0B; --dark2:#1A1613; --on-dark:#FFFFFF; --on-dark2:#B3B0AD;
-  --pom:#F8580E; --pom-ciemny:#D9480B;
+  --pom:#FF6A13; --pom-ciemny:#D9480B;
 }
 body{background:var(--bg);color:var(--ink)}
 ::selection{background:var(--pom);color:#fff}
@@ -636,9 +636,9 @@ header.nav nav a.akt{color:var(--pom-tekst)!important}
 .cal-grid .dh{color:var(--grafit2)}
 .cal-grid .dh b{color:var(--grafit)}
 .cal-grid .c{background:var(--kosc3)}
-.cal-grid .c.f{background:rgba(248,88,14,.30)}
-.cal-grid .c.f:hover{background:rgba(248,88,14,.55)}
-.cal-grid .c.h{background:linear-gradient(135deg,rgba(248,88,14,.30) 50%,var(--kosc3) 50%)}
+.cal-grid .c.f{background:rgba(255,106,19,.30)}
+.cal-grid .c.f:hover{background:rgba(255,106,19,.55)}
+.cal-grid .c.h{background:linear-gradient(135deg,rgba(255,106,19,.30) 50%,var(--kosc3) 50%)}
 .cal-grid .c.on{border-color:var(--grafit);background:var(--pom)}
 
 /* --- mapa dzielnic --- */
@@ -710,7 +710,7 @@ footer.site .fine{border-top:1px solid var(--kreska)}
 .map .d[data-b="3"] path{fill:#F1EADE}
 .map .d[data-b="4"] path{fill:#EDE5D7}
 .map .d:hover path{fill:#E2D5C0}
-.map .d.on path{fill:#FBDCC2;stroke:#F8580E;stroke-width:1.8}
+.map .d.on path{fill:#FBDCC2;stroke:#FF6A13;stroke-width:1.8}
 .map .d text{fill:#5C544B;stroke:#FFFFFF;stroke-width:3px;font-weight:700}
 .map .d:hover text,.map .d.on text{fill:#1A1512}
 .map .pin circle{stroke:#FFFFFF!important}
@@ -760,7 +760,7 @@ footer.site p{color:#B5ADA3}
 .rv-head .g{box-shadow:0 1px 2px rgba(26,21,18,.04),0 14px 34px -22px rgba(26,21,18,.22)}
 .branch{border:1px solid var(--kreska);border-radius:6px;transition:box-shadow .2s,border-color .2s}
 .branch:hover{box-shadow:0 1px 2px rgba(26,21,18,.04),0 12px 28px -20px rgba(26,21,18,.26)}
-.branch.on{border-color:#F8580E;box-shadow:0 1px 2px rgba(248,88,14,.10),0 14px 30px -20px rgba(248,88,14,.35)}
+.branch.on{border-color:#FF6A13;box-shadow:0 1px 2px rgba(255,106,19,.10),0 14px 30px -20px rgba(255,106,19,.35)}
 
 /* --- typografia: spokojniejsze naglowki --- */
 h1,h2,h3{letter-spacing:-.018em}
@@ -1017,7 +1017,7 @@ figure{margin:0}
 })();
 </script>
 <style>/* Artur 26.10 11:42: zasady malych metrazy pod polem metrazu, mala kursywa */.ai-form .maly-info{display:block;margin-top:6px;font-size:.74rem;line-height:1.35;font-style:italic;color:#6B5E52;letter-spacing:0;text-transform:none;font-weight:400}.ai-form .maly-info b{display:block;font-weight:700;font-style:italic;color:#3A3F45}.ai-form .maly-info span{display:block}.ai-form .maly-info span::before{content:"- "}</style>
-<style>.dod-w{display:grid;grid-template-columns:1fr 1fr 1.5fr 44px;gap:6px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed #E2D8CC;align-items:end}.dod-w .dod-o{grid-column:1/-1}.dod-w label{display:block;font-size:.72rem;color:#6B5E52;margin:0 0 3px;letter-spacing:0;text-transform:none;font-weight:400}.dod-w input{width:100%;min-width:0}.dod-w .dod-x{border:0;background:#EDE6DC;border-radius:8px;height:44px;font-size:20px;cursor:pointer}.dod-plus{margin-top:2px;border:1px dashed #E8671F;background:transparent;color:#E8671F;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}</style>
+<style>.dod-w{display:grid;grid-template-columns:1fr 1fr 1.5fr 44px;gap:6px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed #E2D8CC;align-items:end}.dod-w .dod-o{grid-column:1/-1}.dod-w label{display:block;font-size:.72rem;color:#6B5E52;margin:0 0 3px;letter-spacing:0;text-transform:none;font-weight:400}.dod-w input{width:100%;min-width:0}.dod-w .dod-x{border:0;background:#EDE6DC;border-radius:8px;height:44px;font-size:20px;cursor:pointer}.dod-plus{margin-top:2px;border:1px dashed #FF6A13;background:transparent;color:#FF6A13;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}</style>
 <script>
   /* Artur 20.10 16:28: pytanie 'Czy potrzebna pomoc z meblami?'. Wartosci radia bez zmian (meble='nie' = ekipa przesuwa),
      zmienia sie tylko tresc: 'tak' (pomoc) to dawne 'nie', 'nie' to dawne 'tak'. */
@@ -1041,7 +1041,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     '.ai-form input.pole-uzg,.ai-form input.pole-off{opacity:1;-webkit-text-fill-color:currentColor;cursor:not-allowed}'+
     '.ai-form input.pole-off{background:#F3EFEA!important}'+
     '.ai-form input.pole-uzg{background:#FFF3E8!important;border-color:#F3C9A8!important}'+
-    '.ai-form input.pole-uzg::placeholder{color:#E8671F;-webkit-text-fill-color:#E8671F;opacity:1;font-weight:700;text-transform:uppercase;letter-spacing:.04em}'+
+    '.ai-form input.pole-uzg::placeholder{color:#FF6A13;-webkit-text-fill-color:#FF6A13;opacity:1;font-weight:700;text-transform:uppercase;letter-spacing:.04em}'+
     '.ai-form input.pole-off::placeholder{color:#9A9088;-webkit-text-fill-color:#9A9088;opacity:1}';
   document.head.appendChild(st);
   function stan(n){var e=document.querySelector('input[name="'+n+'"]:checked'),v=e?e.value:'';
@@ -1079,7 +1079,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
   /* Artur 20.10 18:05: klient dostaje oferte PDF z Gmaila SMARTPARKIET (skrypt Dysku, DYSK_URL) */
   var mkl=document.getElementById('mailKl');if(mkl&&!document.getElementById('ofertaKl')){var ow=document.createElement('label');ow.className='oferta-kl';
     ow.style.cssText='display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;font-weight:600;text-transform:none;letter-spacing:0;color:#3A3F45;cursor:pointer';
-    ow.innerHTML='<input type="checkbox" id="ofertaKl" checked style="width:20px;height:20px;accent-color:#F8580E"> Wyślij klientowi ofertę PDF na ten adres';mkl.after(ow);}
+    ow.innerHTML='<input type="checkbox" id="ofertaKl" checked style="width:20px;height:20px;accent-color:#FF6A13"> Wyślij klientowi ofertę PDF na ten adres';mkl.after(ow);}
   bl.style.display='';
   function wiersz(){
     var d=document.createElement('div');d.className='dod-w';
@@ -1112,11 +1112,11 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
   };
 })();
 </script>
-<style>.sms-box{grid-column:1/-1;background:#FFF6F0;border:1.5px dashed #F8580E;border-radius:12px;padding:14px 16px;margin-bottom:6px}
+<style>.sms-box{grid-column:1/-1;background:#FFF6F0;border:1.5px dashed #FF6A13;border-radius:12px;padding:14px 16px;margin-bottom:6px}
 .sms-box b{display:block;font-size:.95rem;margin-bottom:4px}.sms-box p{font-size:.82rem;color:#6B5E52;margin:0 0 8px}
 .sms-box textarea{width:100%;min-height:110px;font:inherit;font-size:.9rem}
 .sms-box .sms-akcje{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-.sms-box button{border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer;background:#F8580E;color:#fff}
+.sms-box button{border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer;background:#FF6A13;color:#fff}
 .sms-box button.sms-czysc{background:#EDE6DC;color:#3A3F45}
 .sms-wynik{font-size:.82rem;margin-top:10px;line-height:1.5}.sms-wynik .ok{color:#1F7A4D}.sms-wynik .brak{color:#B23B1E}
 .sms-podswietl{box-shadow:0 0 0 3px rgba(46,139,87,.45)!important;transition:box-shadow .3s}</style>
@@ -1305,18 +1305,18 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
 </script>
 
 <style>/* kolor kalkulatora 14.10 (Artur: "pokolorowac, dodac pomaranczowego" - wzor: formularz z jego starej strony) */
-#wycena{background:linear-gradient(160deg,#F8580E 0%,#EE6A1F 55%,#E8671F 100%)!important}
+#wycena{background:linear-gradient(160deg,#FF6A13 0%,#FF6A13 55%,#FF6A13 100%)!important}
 #wycena .sticky h2,#wycena .sticky .lead,#wycena .sticky p{color:#fff!important}
 #wycena .sticky .oczko{color:#FFE3D2!important}#wycena .sticky .oczko span{background:#fff!important}
 #wycena .ai{border:0!important;border-radius:16px!important;box-shadow:0 18px 50px rgba(120,40,0,.28)}
 #wycena .ai-form{background:#fff!important}
-#wycena .ai-form .sekcja-form{color:#E8580E!important;font-size:1.05rem!important;border-top:2px solid #FBD3BE!important}
-#wycena .ai-form .sekcja-form:after{content:"";display:block;width:44px;height:3px;background:#F8580E;border-radius:2px;margin-top:8px}
+#wycena .ai-form .sekcja-form{color:#FF6A13!important;font-size:1.05rem!important;border-top:2px solid #FBD3BE!important}
+#wycena .ai-form .sekcja-form:after{content:"";display:block;width:44px;height:3px;background:#FF6A13;border-radius:2px;margin-top:8px}
 #wycena .ai-form label,#wycena .ai-form .pyt>span{color:#D9480F!important}
-#wycena .ai-form select:focus,#wycena .ai-form input:focus,#wycena .ai-form textarea:focus{border-color:#F8580E!important;outline:0;box-shadow:0 0 0 3px rgba(248,88,14,.18)}
-#wycena .ai-form input[type=radio]{accent-color:#F8580E}
+#wycena .ai-form select:focus,#wycena .ai-form input:focus,#wycena .ai-form textarea:focus{border-color:#FF6A13!important;outline:0;box-shadow:0 0 0 3px rgba(255,106,19,.18)}
+#wycena .ai-form input[type=radio]{accent-color:#FF6A13}
 #wycena .drop{background:#FFF6F0!important;border-color:#F8A27A!important}
-.popraw-btn{grid-column:1/-1;margin-top:10px;border:2px solid #F8580E;background:#fff;color:#E8580E;font-weight:800;border-radius:10px;padding:14px 18px;cursor:pointer;font-size:1rem}
+.popraw-btn{grid-column:1/-1;margin-top:10px;border:2px solid #FF6A13;background:#fff;color:#FF6A13;font-weight:800;border-radius:10px;padding:14px 18px;cursor:pointer;font-size:1rem}
 .wyc-hist{display:flex;gap:8px;align-items:center;margin:0 0 10px;flex-wrap:wrap}.wyc-hist select{flex:1;min-width:0}
 </style>
 <script>
@@ -1600,10 +1600,10 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     /* PDF w ukladzie arkusza Artura (A4, 1240x1754 px na strone) */
     async function ofertaPdf(zdj){
       if(!window.jspdf||!window.jspdf.jsPDF)return null;
-      const A=arkusz(), W=1240, H=1754, M=90, POM='#FE6500', PASEK='#FFFFFF', NAGL='#16191D', CIEMNY='#1F2328', SZARY='#4A5058', TLO='#FFFFFF', RAMKA='#565B61'; /* Artur 20.10 01:44: ramki pol grafitowe jak tekst w polach (bylo #FE6500). */ /* Artur 17.10 21:59: paski zywym pomaranczem jak na stronie (bylo #F3B48F) */
+      const A=arkusz(), W=1240, H=1754, M=90, POM='#FF6A13', PASEK='#FFFFFF', NAGL='#16191D', CIEMNY='#1F2328', SZARY='#4A5058', TLO='#FFFFFF', RAMKA='#565B61'; /* Artur 20.10 01:44: ramki pol grafitowe jak tekst w polach (bylo #FF6A13). */ /* Artur 17.10 21:59: paski zywym pomaranczem jak na stronie (bylo #F3B48F) */
       const nr=new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(Math.random()*9000)+1000);
       const strony=[];
-      const ZYWY='#FE6500';
+      const ZYWY='#FF6A13';
       const nowa=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
         /* cala strona w zywym pomaranczu, tresc na bialej karcie (jak formularz na starej stronie Artura) */
         g.fillStyle=ZYWY;g.fillRect(0,0,W,H);g.fillStyle='#fff';
@@ -1656,7 +1656,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         const fl='italic '+D.fl+'px Arial';
         /* ak = ramka wyrozniona (Artur 27.10 02:40: preferowane terminy / CHCE ZAMOWIC na jasnopomaranczowym tle) */
         const pole=(t,yy,x,ak)=>{x=x||M;const ll=linie(g,t,kol-28,fl,2),hc=D.pd+ll.length*D.lh;
-          if(rys){g.fillStyle=ak?'#FFF1E3':'#fff';g.fillRect(x,yy,kol,hc);g.strokeStyle=ak?'#F8580E':RAMKA;g.lineWidth=ak?2.5:2;g.strokeRect(x+1,yy+1,kol-2,hc-2);
+          if(rys){g.fillStyle=ak?'#FFF1E3':'#fff';g.fillRect(x,yy,kol,hc);g.strokeStyle=ak?'#FF6A13':RAMKA;g.lineWidth=ak?2.5:2;g.strokeRect(x+1,yy+1,kol-2,hc-2);
             g.fillStyle=CIEMNY;g.font=fl;const by=yy+Math.round(hc/2-(ll.length-1)*D.lh/2+D.fl*0.36);ll.forEach((l,q)=>g.fillText(l,x+14,by+q*D.lh));}
           return hc;};
         const podpis=(t,yy,x)=>{x=x||M;if(rys){g.fillStyle=SZARY;wpisz(g,t,x+2,yy,kol-4,D.fh,'bold');}};
@@ -1765,7 +1765,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         const W=1240,H=1754,c=document.createElement('canvas');c.width=W;c.height=H;
         const g=c.getContext('2d');
         g.fillStyle='#fff';g.fillRect(0,0,W,H);
-        g.fillStyle='#E8671F';g.fillRect(0,0,W,120);
+        g.fillStyle='#FF6A13';g.fillRect(0,0,W,120);
         g.fillStyle='#fff';g.font='bold 52px Arial';g.fillText('SMARTPARKIET',60,80);
         g.font='28px Arial';g.textAlign='right';
         const teraz=new Date();
@@ -2008,7 +2008,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     bWys.parentNode.insertBefore(b,bWys);
     const ov=document.createElement('div');ov.id='podgladOv';
     ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(20,22,26,.92);display:none;flex-direction:column';
-    ov.innerHTML='<div style="display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;background:#16191D;color:#fff;font:600 15px Arial"><span>Podgląd oferty (tak dostanie klient)</span><span style="display:flex;gap:8px"><button type="button" id="podgladWys" style="background:#FE6500;color:#fff;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Wyślij</button><button type="button" id="podgladZam" style="background:#fff;color:#16191D;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Popraw</button></span></div><div id="podgladStr" style="flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px"></div><div style="display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#16191D"><button type="button" id="podgladPdf" style="flex:1;background:#4A5058;color:#fff;border:1.5px solid #8A9099;border-radius:10px;padding:12px 10px;font:700 14px Arial">Pobierz PDF</button><button type="button" id="podgladWa" style="flex:1;background:#25D366;color:#fff;border:0;border-radius:10px;padding:12px 10px;font:700 14px Arial">Wyślij PDF na WhatsApp</button><button type="button" id="podgladCzat" style="flex:1;background:#fff;color:#16191D;border:0;border-radius:10px;padding:12px 10px;font:700 14px Arial">Otwórz czat z klientem</button></div>';
+    ov.innerHTML='<div style="display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;background:#16191D;color:#fff;font:600 15px Arial"><span>Podgląd oferty (tak dostanie klient)</span><span style="display:flex;gap:8px"><button type="button" id="podgladWys" style="background:#FF6A13;color:#fff;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Wyślij</button><button type="button" id="podgladZam" style="background:#fff;color:#16191D;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Popraw</button></span></div><div id="podgladStr" style="flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px"></div><div style="display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#16191D"><button type="button" id="podgladPdf" style="flex:1;background:#4A5058;color:#fff;border:1.5px solid #8A9099;border-radius:10px;padding:12px 10px;font:700 14px Arial">Pobierz PDF</button><button type="button" id="podgladWa" style="flex:1;background:#25D366;color:#fff;border:0;border-radius:10px;padding:12px 10px;font:700 14px Arial">Wyślij PDF na WhatsApp</button><button type="button" id="podgladCzat" style="flex:1;background:#fff;color:#16191D;border:0;border-radius:10px;padding:12px 10px;font:700 14px Arial">Otwórz czat z klientem</button></div>';
     document.body.appendChild(ov);
     const zam=()=>{ov.style.display='none';document.body.style.overflow='';};
     ov.querySelector('#podgladZam').onclick=zam;
@@ -2543,7 +2543,7 @@ footer.site .fine{font-size:.58rem!important}
   background-size:46px 46px}
 .smart-produkt::after{content:"";position:absolute;left:-10%;top:-30%;width:70%;height:90%;
   pointer-events:none;border-radius:50%;
-  background:radial-gradient(circle,rgba(248,88,14,.16),transparent 62%)}
+  background:radial-gradient(circle,rgba(255,106,19,.16),transparent 62%)}
 .smart-produkt>.wrap{position:relative;z-index:1}
 .smart-produkt .oczko{color:#FF8A4C}
 .smart-produkt .oczko span{background:#FF6B2C}
@@ -2640,7 +2640,7 @@ footer.site .fine{font-size:.58rem!important}
 }
 
 /* --- liczby w pasku faktow: kazda swoim kolorem ----------------------- */
-.facts .wrap>div:nth-child(1) b{color:#F8580E}
+.facts .wrap>div:nth-child(1) b{color:#FF6A13}
 .facts .wrap>div:nth-child(2) b{color:#1E5F9E}
 .facts .wrap>div:nth-child(3) b{color:#C0392B}
 .facts .wrap>div:nth-child(4) b{color:#1F7A4D}
@@ -2673,7 +2673,7 @@ footer.site .fine{font-size:.58rem!important}
   justify-content:center;width:34px;height:34px;border-radius:50%;
   background:var(--kk,var(--amber));color:#fff;font-weight:800;font-size:.8rem;
   margin-bottom:12px;box-shadow:0 0 0 4px rgba(0,0,0,.05)}
-.steps .step:nth-child(1){--kk:#F8580E}
+.steps .step:nth-child(1){--kk:#FF6A13}
 .steps .step:nth-child(2){--kk:#1E5F9E}
 .steps .step:nth-child(3){--kk:#C0392B}
 .steps .step:nth-child(4){--kk:#1F7A4D}
@@ -2841,7 +2841,7 @@ header.nav .tel{font-size:calc(var(--naglowek-f) * .88)!important}
 <style>.ai-form textarea{width:100%;max-width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:4px;font:inherit;background:var(--white);color:var(--ink);resize:vertical}</style>
 <style>.miniatury{display:grid!important;grid-template-columns:repeat(3,1fr);gap:8px}.miniatury .lic{grid-column:1/-1}.miniatury .mzw{display:flex;flex-direction:column;gap:4px;min-width:0}.miniatury .mzw .mz{width:100%;height:auto;aspect-ratio:4/3}.miniatury .podp{width:100%;min-width:0;padding:5px 6px;font:inherit;font-size:.74rem;border:1px solid var(--line);border-radius:3px}@media(min-width:900px){.miniatury{grid-template-columns:repeat(4,1fr)}}</style>
 <style>.ai-form #wyslij.wyslane{background:#2E8B57!important;border-color:#2E8B57!important;color:#fff!important;opacity:1}.kom-wyslane{grid-column:1/-1;background:#EAF6EF;border:2px solid #2E8B57;border-radius:6px;padding:14px 16px;text-align:center;color:#1F5E3B}.kom-wyslane b{display:block;font-size:1.5rem;letter-spacing:.04em}.kom-wyslane span{display:block;font-size:.9rem;margin-top:4px}</style>
-<style>.ai-form .obow{color:#E8671F;font-weight:700}.ai-form .pola-obow{grid-column:1/-1;font-size:.8rem;color:var(--mute);margin:-2px 0 0}</style>
+<style>.ai-form .obow{color:#FF6A13;font-weight:700}.ai-form .pola-obow{grid-column:1/-1;font-size:.8rem;color:var(--mute);margin:-2px 0 0}</style>
 <!-- kalkulator 20:41: KONIEC -->
 <style>/* 14.10: podpis na zdjeciu podgladu jest po lewej - przy kwadratowym okienku (komputer) przycinamy od prawej */
 .ai-photo img[src*="podloga-smart"]{object-position:left center}</style>
@@ -2916,9 +2916,9 @@ html body footer.site .cols>div{min-width:0!important}
 }
 </style>
 <style>/* Artur 18.10 16:26: jeden odcien pomaranczy w naglowkach-oczkach i separatorach, mocniejsze paski SMART */
-html body .oczko,html body .akr-zh,html body .akr-zh i{color:#FE6500!important}
-html body .oczko span{background:#FE6500!important}
-html body .vs td.vs-tak,html body .vs .vs-tak{box-shadow:inset 5px 0 0 #FE6500!important;background:rgba(254,101,0,.09)!important}
+html body .oczko,html body .akr-zh,html body .akr-zh i{color:#FF6A13!important}
+html body .oczko span{background:#FF6A13!important}
+html body .vs td.vs-tak,html body .vs .vs-tak{box-shadow:inset 5px 0 0 #FF6A13!important;background:rgba(254,101,0,.09)!important}
 </style>
 
 
@@ -2989,9 +2989,9 @@ html body .vs td.vs-tak,html body .vs .vs-tak{box-shadow:inset 5px 0 0 #FE6500!i
   var on=false;try{on=!!window.SP_ANALIZATOR||/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
   var li=document.getElementById('dodLista'),db=document.getElementById('dodBlok');if(!on||!li||!db)return;
   var st=document.createElement('style');st.textContent='.dod-w label.dod-uzg{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:600;color:#3A3F45;text-transform:none;letter-spacing:0;margin:0!important}'+
-    '.dod-w label.dod-uzg input,#uzgPanel input{width:20px!important;height:20px;accent-color:#F8580E;margin:0}'+
+    '.dod-w label.dod-uzg input,#uzgPanel input{width:20px!important;height:20px;accent-color:#FF6A13;margin:0}'+
     '#uzgPanel{margin:0 0 14px;padding:12px 14px;border:1.5px solid #F3C9A8;border-radius:12px;background:#FFF8F2}'+
-    '#uzgPanel b{display:block;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:#E8671F;margin-bottom:8px}'+
+    '#uzgPanel b{display:block;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:#FF6A13;margin-bottom:8px}'+
     '#uzgPanel .uz{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px}'+
     '#uzgPanel label{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;text-transform:none;letter-spacing:0;color:#3A3F45;margin:0}';
   document.head.appendChild(st);
@@ -3062,7 +3062,7 @@ footer.site .an-link a{color:rgba(255,255,255,.28)!important;text-decoration:non
 <style id="parkieciarz-2210">/* Artur 22.10 12:01-12:04 (grupa) */
 html body #smsWklej{min-height:58vh!important;min-height:58svh!important;font-size:16px;line-height:1.5}
 html body #dodBlok{padding:12px 14px;border:1.5px solid #F3C9A8;border-radius:12px;background:#FFF8F2}
-html body #dodBlok>label:first-child{color:#E8671F;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase}
+html body #dodBlok>label:first-child{color:#FF6A13;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase}
 html body #uzgPanel{margin:14px 0}
 </style>
 <script>
@@ -3107,11 +3107,12 @@ html body #uzgPanel{margin:14px 0}
 <!-- wyrownanie opisow: KONIEC -->
 <style id="zamowienie-2710">/* 27.10 Artur: Koszyk SMART (zamow-online.html, window.SP_ZAMOWIENIE) - tylko na tej stronie */
 .zam-term{display:grid;gap:10px}
-.zam-w{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:8px;align-items:center}
-.zam-w input,.zam-w select{width:100%;min-width:0;min-height:48px;font-size:16px}
-.zam-dod{justify-self:start;border:1.5px dashed #E8671F;background:transparent;color:#E8671F;border-radius:12px;padding:12px 16px;font-weight:700;font-size:.95rem;cursor:pointer}
+.zam-w{display:block}
+.zam-w input{width:100%;max-width:210px;min-width:0;min-height:42px;padding:6px 10px!important;font-size:16px} /* Artur 27.10 03:24: kalendarz mniejszy */
+.zam-godz{display:block;margin-top:2px;font-size:.88rem;font-weight:700;color:#3A3F45;text-transform:none;letter-spacing:0}
+.zam-dod{justify-self:start;border:1.5px dashed #FF6A13;background:transparent;color:#FF6A13;border-radius:12px;padding:12px 16px;font-weight:700;font-size:.95rem;cursor:pointer}
 .zam-pod{display:block;margin-top:6px;font-size:.8rem;line-height:1.4;color:#6B5E52;font-style:italic;text-transform:none;letter-spacing:0;font-weight:400}
-#zamOk{margin:16px 0 0;padding:18px 16px;border:2px solid #F8580E;border-radius:14px;background:#FFF8F2}
+#zamOk{margin:16px 0 0;padding:18px 16px;border:2px solid #FF6A13;border-radius:14px;background:#FFF8F2}
 #zamOk .zam-status{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:#14110E;color:#fff;font-weight:800;font-size:.78rem;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
 html.sp-zam #poprawBtn,html.sp-zam #anPasek,html.sp-zam #analizuj{display:none!important} /* Koszyk SMART: bez dodatkow - prosto */
 #zamOk .zam-status i{width:10px;height:10px;border-radius:50%;background:#FFC53D;display:inline-block}
@@ -3124,7 +3125,7 @@ html.sp-zam #poprawBtn,html.sp-zam #anPasek,html.sp-zam #analizuj{display:none!i
 #zamOk .zam-os .zo-ik{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#EFE9E2;color:#9A9088}
 #zamOk .zam-os .zo-ik svg{width:22px;height:22px}
 #zamOk .zam-os li.on{color:#1A1512}
-#zamOk .zam-os li.on .zo-ik{background:#F8580E;color:#fff;box-shadow:0 0 0 5px #FFE1CC}
+#zamOk .zam-os li.on .zo-ik{background:#FF6A13;color:#fff;box-shadow:0 0 0 5px #FFE1CC}
 #zamOk .zam-os b{display:block;text-transform:uppercase;letter-spacing:.04em;font-size:.92rem;margin-top:2px}
 #zamOk .zam-os li.on b{color:#C2410C}
 #zamOk .zam-os span{display:block;font-size:.92rem;line-height:1.4;margin-top:2px}
@@ -3133,7 +3134,7 @@ html.sp-zam #poprawBtn,html.sp-zam #anPasek,html.sp-zam #analizuj{display:none!i
 html.zp-otw,html.zp-otw body{overflow:hidden}
 #zamPodglad .zp-k{background:#fff;width:100%;max-width:560px;max-height:92vh;max-height:92dvh;overflow:auto;border-radius:18px 18px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -10px 30px rgba(0,0,0,.25)}
 @media(min-width:700px){#zamPodglad{align-items:center}#zamPodglad .zp-k{border-radius:18px}}
-#zamPodglad .zp-o{margin:0;font:800 .75rem/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#E8580E}
+#zamPodglad .zp-o{margin:0;font:800 .75rem/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#FF6A13}
 #zamPodglad h2{margin:6px 0 12px;font:900 1.35rem/1.2 Inter,sans-serif;color:#14110E}
 #zamPodglad dl{margin:0;border-top:1px solid #EFE6DB}
 #zamPodglad dl div{display:grid;grid-template-columns:118px minmax(0,1fr);gap:10px;padding:9px 0;border-bottom:1px dashed #EFE6DB}
@@ -3141,7 +3142,7 @@ html.zp-otw,html.zp-otw body{overflow:hidden}
 #zamPodglad dd{margin:0;font-size:.95rem;line-height:1.4;color:#1A1512;overflow-wrap:anywhere}
 #zamPodglad .zp-u{margin:12px 0 14px;font-size:.85rem;line-height:1.45;font-style:italic;color:#4A5058}
 #zamPodglad button{display:block;width:100%;min-height:54px;border-radius:12px;font:800 1rem/1.2 Inter,sans-serif;cursor:pointer}
-#zamPodglad .zp-wys{border:0;background:#F8580E;color:#fff;text-transform:uppercase;letter-spacing:.04em}
+#zamPodglad .zp-wys{border:0;background:#FF6A13;color:#fff;text-transform:uppercase;letter-spacing:.04em}
 #zamPodglad .zp-pop{margin-top:10px;border:1.5px solid #14110E;background:#fff;color:#14110E}
 </style>
 <script>
@@ -3157,7 +3158,7 @@ html.zp-otw,html.zp-otw body{overflow:hidden}
   ['gatKl','montazKl','stab','stabM2','napr','kodKl','dzielKl','obiektKl'].forEach(function(id){var b=blok(id);if(b)b.style.display='none';});
   /* 27.10 02:57: gwiazdki tylko przy polach wymaganych; reszta opcjonalna (szczegoly przy potwierdzeniu) */
   [['m2',' <span class="obow">*</span>'],['ulicaKl',' <span class="obow">*</span>']].forEach(function(q){var l=f.querySelector('label[for="'+q[0]+'"]');if(l&&!l.querySelector('.obow'))l.insertAdjacentHTML('beforeend',q[1]);});
-  [['pietroKl','Piętro (opcjonalnie)'],['uwagiKl','Uwagi (opcjonalnie)']].forEach(function(q){var l=f.querySelector('label[for="'+q[0]+'"]');if(l)l.textContent=q[1];});
+  [['pietroKl','Piętro (opcjonalnie)'],['uwagiKl','Uwagi do zlecenia / opcjonalnie']].forEach(function(q){var l=f.querySelector('label[for="'+q[0]+'"]');if(l)l.textContent=q[1];});
   var dz=document.getElementById('drop');if(dz){var bz=dz.querySelector('b');if(bz)bz.textContent='Zdjęcia podłogi (opcjonalnie, najlepiej 4-6)';}
   var lz0=document.getElementById('licZdj');if(lz0)lz0.textContent='Dodano 0 z 12 zdjęć (zalecane 4-6)';
   /* preferowane terminy -> zapis do ukrytego #terminKl (mail, PDF, arkusz biorą go stamtąd) */
@@ -3166,6 +3167,7 @@ html.zp-otw,html.zp-otw body{overflow:hidden}
   var w=document.createElement('div');w.className='szer';w.id='terminyBlok';
   w.innerHTML='<label>Preferowany termin <span class="obow">*</span></label><div class="zam-term" id="zamTerm"></div>'+
     '<button type="button" class="zam-dod" id="zamDod">+ Dodaj drugi termin</button>'+
+    '<small class="zam-godz">Prace zaczynamy między 8:00 a 9:00.</small>'+
     '<small class="zam-pod">Podaj 1-3 dogodne dni. Centrala potwierdzi dostępność SMS-em lub e-mailem.</small>';
   var kontakt=[].slice.call(f.querySelectorAll('.sekcja-form')).filter(function(x){return /kontaktu/i.test(x.textContent);})[0];
   var nag=document.createElement('div');nag.className='szer sekcja-form';nag.textContent='Preferowany termin';
@@ -3173,11 +3175,11 @@ html.zp-otw,html.zp-otw body{overflow:hidden}
   var lista=w.querySelector('#zamTerm'),dod=w.querySelector('#zamDod');
   var jutro=new Date(Date.now()+864e5),min=jutro.toISOString().slice(0,10);
   function wiersz(){var d=document.createElement('div');d.className='zam-w';
-    d.innerHTML='<input type="date" min="'+min+'" aria-label="Data"><select aria-label="Pora dnia"><option value="">dowolna pora</option><option>rano</option><option>po południu</option></select>';
+    d.innerHTML='<input type="date" min="'+min+'" aria-label="Data">'; /* Artur 27.10 03:24: bez pory dnia - prace zaczynamy 8-9 */
     lista.appendChild(d);dod.hidden=lista.children.length>=3;dod.textContent=lista.children.length===1?'+ Dodaj drugi termin':'+ Dodaj trzeci termin';return d;}
   function dzien(v){var p=v.split('-');if(p.length<3)return v;var d=new Date(+p[0],p[1]-1,+p[2]);
     return ['nd','pn','wt','śr','cz','pt','sb'][d.getDay()]+' '+p[2]+'.'+p[1]+'.'+p[0];}
-  function sync(){var t=[].slice.call(lista.children).map(function(r){var a=r.querySelector('input').value,b=r.querySelector('select').value;return a?dzien(a)+(b?' '+b:''):'';}).filter(Boolean);
+  function sync(){var t=[].slice.call(lista.children).map(function(r){var a=r.querySelector('input').value;return a?dzien(a):'';}).filter(Boolean);
     tk.value=t.map(function(x,i){return (t.length>1?(i+1)+') ':'')+x;}).join(', ');}
   lista.addEventListener('input',sync);lista.addEventListener('change',sync);
   dod.onclick=function(){var r=wiersz();r.querySelector('input').focus();};
@@ -3241,12 +3243,12 @@ html.zp-otw,html.zp-otw body{overflow:hidden}
 @media (min-width:1450px) and (max-width:1919px){html body header.nav nav{gap:10px!important}html body header.nav nav a{font-size:12.2px!important;padding-left:3px!important;padding-right:3px!important;letter-spacing:0!important}}
 </style>
 <style id="chce-zamowic-2710">/* Artur 27.10 01:52: "Chce skorzystac z wykonania uslugi na podstawie tej oferty" */
-#chceBlok{margin:4px 0 6px;padding:14px;border:2px solid #F8580E;border-radius:14px;background:#FFF8F2}
+#chceBlok{margin:4px 0 6px;padding:14px;border:2px solid #FF6A13;border-radius:14px;background:#FFF8F2}
 #chceBlok label.chce-gl{display:flex;align-items:flex-start;gap:12px;font-size:1rem;font-weight:800;line-height:1.35;color:#14110E;text-transform:none;letter-spacing:0;margin:0;cursor:pointer}
-#chceBlok label.chce-gl input{width:26px;height:26px;flex:0 0 26px;margin:0;accent-color:#F8580E}
+#chceBlok label.chce-gl input{width:26px;height:26px;flex:0 0 26px;margin:0;accent-color:#FF6A13}
 #chceOpcje{margin:12px 0 0 38px;display:grid;gap:10px}
 #chceOpcje label{display:flex;align-items:center;gap:10px;font-size:.95rem;font-weight:600;text-transform:none;letter-spacing:0;color:#3A3F45;margin:0;cursor:pointer}
-#chceOpcje input[type=radio]{width:20px;height:20px;margin:0;accent-color:#F8580E}
+#chceOpcje input[type=radio]{width:20px;height:20px;margin:0;accent-color:#FF6A13}
 #chceData{min-height:46px;font-size:16px;width:100%;max-width:220px}
 #chceBlok small{display:block;margin:10px 0 0 38px;font-size:.8rem;color:#6B5E52;font-style:italic;line-height:1.4}
 </style>
@@ -3277,9 +3279,9 @@ html.zp-otw,html.zp-otw body{overflow:hidden}
 })();
 </script>
 <style id="nav-zam-2710">/* Artur 27.10 03:00: "Zamów online" pierwsza pozycja menu, pomaranczowa pigulka z koszykiem */
-html body header.nav nav a.nav-zam{display:inline-flex!important;align-items:center;gap:6px;background:#F8580E!important;color:#fff!important;border-radius:999px;padding:7px 14px!important;font-weight:800!important;border:0!important;text-decoration:none!important;width:auto!important;align-self:center;line-height:1.1}
+html body header.nav nav a.nav-zam{display:inline-flex!important;align-items:center;gap:6px;background:#FF6A13!important;color:#fff!important;border-radius:999px;padding:7px 14px!important;font-weight:800!important;border:0!important;text-decoration:none!important;width:auto!important;align-self:center;line-height:1.1}
 html body header.nav nav a.nav-zam svg{width:17px;height:17px;flex:0 0 auto}
-html body header.nav nav a.nav-zam:hover,html body header.nav nav a.nav-zam.akt{background:#C2410C!important;color:#fff!important}
+html body header.nav nav a.nav-zam:hover{background:#F25F0C!important;color:#fff!important}html body header.nav nav a.nav-zam.akt{background:#FF6A13!important;color:#fff!important;box-shadow:0 0 0 2px #fff,0 0 0 4px #FF6A13}
 html body header.nav nav a.nav-zam::after,html body header.nav nav a.nav-zam::before{display:none!important}
 @media(max-width:1239px){html body header.nav.open nav a.nav-zam{align-self:flex-start;margin:10px 0 8px!important;padding:11px 18px!important;font-size:1rem!important}}
 @media(min-width:1450px) and (max-width:1919px){html body header.nav nav{gap:7px!important}}
@@ -3310,19 +3312,22 @@ window.spZamPanel=function(terminy){
 #zamOk .zam-dr{font-size:.9rem;color:#4A5058;margin:8px 0 0}
 #zamOk{scroll-margin-top:80px}
 </style>
+<style id="kwota-2710">/* Artur 27.10 03:22: duza kwota (np. "0 zl") pomaranczowa, nie czerwonawa */
+html body .ai-out .est .n,html body .ai-form .est .n,html body #oN{color:#FF6A13!important}</style>
 <style id="zamow-strona">/* zamow-online.html: kroki i tytul koszyka */
 html body .zam-kroki{list-style:none;counter-reset:zk;margin:14px 0 0;padding:0;display:grid;gap:7px}
 html body .zam-kroki li{counter-increment:zk;position:relative;padding:1px 0 1px 36px;min-height:26px;font-size:.92rem;line-height:1.35;color:#fff}
-html body .zam-kroki li::before{content:counter(zk);position:absolute;left:0;top:0;width:26px;height:26px;font-size:.85rem!important;border-radius:50%;background:#fff;color:#E8580E;font-weight:900;display:grid;place-items:center;font-size:1rem}
+html body .zam-kroki li::before{content:counter(zk);position:absolute;left:0;top:0;width:26px;height:26px;font-size:.85rem!important;border-radius:50%;background:#fff;color:#FF6A13;font-weight:900;display:grid;place-items:center;font-size:1rem}
 html body .zam-kroki li b{color:#fff;font-weight:800}
 html body .zam-uwaga{margin-top:12px!important;line-height:1.4!important;font-size:.92rem!important;font-style:italic;color:#fff!important}
-html body .koszyk-tyt{scroll-margin-top:72px;margin:0 0 10px;font-weight:900;font-size:1.35rem;letter-spacing:.04em;text-transform:uppercase;color:#14110E}
-html body .koszyk-tyt::before{content:"";display:inline-block;width:22px;height:22px;margin:0 8px -3px 0;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F8580E' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H7'/%3E%3Ccircle cx='10' cy='19.5' r='1.4'/%3E%3Ccircle cx='17' cy='19.5' r='1.4'/%3E%3C/svg%3E")}
+html body .koszyk-tyt{scroll-margin-top:72px;margin:4px 0 12px;font-weight:900;font-size:1.75rem;line-height:1.15;letter-spacing:.05em;text-transform:uppercase;color:#FF6A13;text-align:center} /* Artur 27.10 03:21: na srodku, pomaranczowy, wiekszy */
+html body .koszyk-tyt::before{content:"";display:inline-block;width:22px;height:22px;margin:0 8px -3px 0;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF6A13' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H7'/%3E%3Ccircle cx='10' cy='19.5' r='1.4'/%3E%3Ccircle cx='17' cy='19.5' r='1.4'/%3E%3C/svg%3E")}
 @media(max-width:700px){
   html body #wycena{padding-top:22px!important}
-  html body .zam-gora h2{font-size:1.45rem!important;line-height:1.15!important;margin:0!important}
+  html body #wycena .zam-gora h2{font-size:1.2rem!important;line-height:1.2!important;margin:0!important} /* Artur 27.10 03:20: mniejsza czcionka */
   html body .zam-gora .se-lead{margin-top:8px!important;font-size:1rem!important}
   html body .zam-gora .zam-uwaga{font-size:.85rem!important}
   html body #wycena .split{gap:18px!important}
 }
+html body #wycena .zam-gora h2{font-size:clamp(1.2rem,1.9vw,1.6rem)!important;line-height:1.2!important}
 </style>

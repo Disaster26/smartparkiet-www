@@ -61,18 +61,19 @@ s = re.sub(r'    <div class="sticky">.*?</div>\s*<div class="ai">', lambda m: LE
 CSS = '''<style id="zamow-strona">/* zamow-online.html: kroki i tytul koszyka */
 html body .zam-kroki{list-style:none;counter-reset:zk;margin:14px 0 0;padding:0;display:grid;gap:7px}
 html body .zam-kroki li{counter-increment:zk;position:relative;padding:1px 0 1px 36px;min-height:26px;font-size:.92rem;line-height:1.35;color:#fff}
-html body .zam-kroki li::before{content:counter(zk);position:absolute;left:0;top:0;width:26px;height:26px;font-size:.85rem!important;border-radius:50%;background:#fff;color:#E8580E;font-weight:900;display:grid;place-items:center;font-size:1rem}
+html body .zam-kroki li::before{content:counter(zk);position:absolute;left:0;top:0;width:26px;height:26px;font-size:.85rem!important;border-radius:50%;background:#fff;color:#FF6A13;font-weight:900;display:grid;place-items:center;font-size:1rem}
 html body .zam-kroki li b{color:#fff;font-weight:800}
 html body .zam-uwaga{margin-top:12px!important;line-height:1.4!important;font-size:.92rem!important;font-style:italic;color:#fff!important}
-html body .koszyk-tyt{scroll-margin-top:72px;margin:0 0 10px;font-weight:900;font-size:1.35rem;letter-spacing:.04em;text-transform:uppercase;color:#14110E}
-html body .koszyk-tyt::before{content:"";display:inline-block;width:22px;height:22px;margin:0 8px -3px 0;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F8580E' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H7'/%3E%3Ccircle cx='10' cy='19.5' r='1.4'/%3E%3Ccircle cx='17' cy='19.5' r='1.4'/%3E%3C/svg%3E")}
+html body .koszyk-tyt{scroll-margin-top:72px;margin:4px 0 12px;font-weight:900;font-size:1.75rem;line-height:1.15;letter-spacing:.05em;text-transform:uppercase;color:#FF6A13;text-align:center} /* Artur 27.10 03:21: na srodku, pomaranczowy, wiekszy */
+html body .koszyk-tyt::before{content:"";display:inline-block;width:22px;height:22px;margin:0 8px -3px 0;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF6A13' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H7'/%3E%3Ccircle cx='10' cy='19.5' r='1.4'/%3E%3Ccircle cx='17' cy='19.5' r='1.4'/%3E%3C/svg%3E")}
 @media(max-width:700px){
   html body #wycena{padding-top:22px!important}
-  html body .zam-gora h2{font-size:1.45rem!important;line-height:1.15!important;margin:0!important}
+  html body #wycena .zam-gora h2{font-size:1.2rem!important;line-height:1.2!important;margin:0!important} /* Artur 27.10 03:20: mniejsza czcionka */
   html body .zam-gora .se-lead{margin-top:8px!important;font-size:1rem!important}
   html body .zam-gora .zam-uwaga{font-size:.85rem!important}
   html body #wycena .split{gap:18px!important}
 }
+html body #wycena .zam-gora h2{font-size:clamp(1.2rem,1.9vw,1.6rem)!important;line-height:1.2!important}
 </style>'''
 s = s.rstrip() + NL + CSS.replace('\n', NL) + NL
 
