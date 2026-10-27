@@ -72,7 +72,7 @@ details li{margin-bottom:6px}
       <div class="pieczec" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg></div>
       <div class="typ">Certyfikat wykonania usługi</div>
       <h1>Cyklinowanie SMART&trade;</h1>
-      <span class="nr" id="nr">SP-2026-0001</span>
+      <span class="nr" id="nr">SMART/2026/1027/001</span>
       <div class="status"><i></i>Usługa wykonana i odebrana</div>
     </div>
     <dl>
@@ -141,7 +141,7 @@ details li{margin-bottom:6px}
       <summary>Proces w 4 krokach</summary>
       <div class="tr"><ol>
         <li><b>Po odbiorze prac</b> brygadzista albo Artur otwiera zlecenie w Analizatorze (Folder ofert) i klika jeden przycisk <b>"Wystaw certyfikat"</b>. Dane bierze z oferty: podłoga, metraż, program, zakres; dopisuje się data odbioru.</li>
-        <li><b>System nadaje numer</b> po kolei: SP-2026-0001, SP-2026-0002... (licznik i wpis w arkuszu "Rejestr wycen"). Link ma też krótki kod, żeby nikt nie podglądał cudzych certyfikatów przez zmianę numeru.</li>
+        <li><b>Numer certyfikatu = numer zamówienia</b> nadany przy zamówieniu online, np. SMART/2026/1027/001 (rok / miesiąc i dzień / kolejny numer dnia; jest już w arkuszu "Rejestr wycen"). Link ma też krótki kod, żeby nikt nie podglądał cudzych certyfikatów przez zmianę numeru.</li>
         <li><b>Klient dostaje link</b> SMS-em / WhatsAppem / e-mailem: certyfikat, gwarancja, warunki, termin przeglądu - bez papierów. Na stronie tylko dzielnica i imię z inicjałem, bez adresu.</li>
         <li><b>Po 11 miesiącach</b> automatyczne przypomnienie do klienta o bezpłatnym przeglądzie (Apps Script).</li>
       </ol></div>
@@ -156,8 +156,8 @@ details li{margin-bottom:6px}
 </main>
 <script>
 (function(){
-  /* numer z adresu (?nr=SP-2026-0001) - w makiecie tylko wyswietlany */
-  var m=/[?&]nr=([A-Za-z0-9-]{4,20})/.exec(location.search);if(m)document.getElementById('nr').textContent=m[1].toUpperCase();
+  /* numer z adresu (?nr=SMART/2026/1027/001) - w makiecie tylko wyswietlany */
+  var m=/[?&]nr=([A-Za-z0-9%\/-]{4,40})/.exec(location.search);if(m){var t=decodeURIComponent(m[1]).toUpperCase();if(/^SMART\/\d{4}\/\d{4}\/\d{3,}$/.test(t))document.getElementById('nr').textContent=t;}
   document.getElementById('btnOpinia').addEventListener('click',function(e){e.preventDefault();
     alert('PROJEKT: tu otworzy się formularz opinii Google wybranego oddziału. Certyfikat i gwarancja obowiązują niezależnie od opinii.');});
 })();
