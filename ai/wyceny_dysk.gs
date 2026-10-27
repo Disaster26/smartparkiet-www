@@ -105,6 +105,25 @@ function arkuszWyceny(folder, nazwa, a, kiedy) {
 }
 
 /* jeden zbiorczy arkusz: wiersz na kazda wycene, najnowsze na gorze */
+/* Artur 27.10 02:57: numer zamowienia SMART/RRRR/MMDD/NNN - kolejny numer dnia (PropertiesService + LockService).
+   Nadawany tylko zamowieniom (zamow-online, "Chce zamowic"). Ten sam numer = pozniej numer certyfikatu wykonania. */
+function nadajNumer() {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  try {
+    const teraz = new Date();
+    const rok = Utilities.formatDate(teraz, 'Europe/Warsaw', 'yyyy');
+    const md = Utilities.formatDate(teraz, 'Europe/Warsaw', 'MMdd');
+    const pr = PropertiesService.getScriptProperties();
+    const klucz = 'nrZam_' + rok + md;
+    const n = Number(pr.getProperty(klucz) || 0) + 1;
+    pr.setProperty(klucz, String(n));
+    return 'SMART/' + rok + '/' + md + '/' + ('00' + n).slice(-Math.max(3, String(n).length));
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 function rejestr(a, kiedy, url, idStanu) {
   const g = glownyFolder();
   const it = g.getFilesByName('Rejestr wycen');
@@ -132,6 +151,10 @@ function rejestr(a, kiedy, url, idStanu) {
       .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
     sh.getRange(2, 9).setRichTextValue(link('Otwórz w analizatorze', 'https://smartparkiet.com.pl/analizator.html#oferta=' + idStanu));
   }
+  /* 27.10: kolumna J - numer zamowienia (puste przy zwyklej wycenie) */
+  if (sh.getRange(1, 10).getValue() !== 'Nr zamówienia') sh.getRange(1, 10).setValue('Nr zamówienia')
+    .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
+  sh.getRange(2, 10).setValue(a.numer || '').setBackground(null).setFontColor('#1A1A1A').setFontWeight(a.numer ? 'bold' : 'normal');
 }
 
 /* jednorazowo: poprawia stare wiersze rejestru (kolor + klikalne linki). Uruchomic recznie z edytora. */
@@ -188,7 +211,7 @@ function mailHtml(akapity) {
 
 /* 27.10 02:36-02:44 Artur: tresc maila do klienta po wycenie / zamowieniu online - dokladnie jego slowa.
    zamowienie=true: zamow-online.html albo zaznaczone "Chce skorzystac z wykonania uslugi" w wycena.html. */
-function mailPotwierdzenie(zamowienie) {
+function mailPotwierdzenie(zamowienie, numer) {
   const B = t => '<b>' + t + '</b>';
   const tel = '<a href="tel:+48602242815" style="color:#FE6500;font-weight:700;text-decoration:none">602 242 815</a>';
   const ak = zamowienie ? [
@@ -196,13 +219,21 @@ function mailPotwierdzenie(zamowienie) {
     'W załączniku przesyłamy wstępną kalkulację.',
     'Wkrótce skontaktujemy się z Państwem w celu ' + B('potwierdzenia dostępności wybranego terminu oraz uzgodnienia szczegółów realizacji') + '.',
     B('Ważne:') + ' Złożenie zamówienia nie oznacza jeszcze rezerwacji terminu. Termin zostanie ostatecznie potwierdzony przez naszą centralę.',
+    '%STATUS%',
     'Dziękujemy za zaufanie!'
   ] : [
     'Dziękujemy za skorzystanie z wyceny online usługi ' + B('CYKLINOWANIE SMART&trade;') + '.',
     'W załączniku przesyłamy wstępną kalkulację.',
     'Dziękujemy za zaufanie!'
   ];
-  const p = ak.map(t => '<p style="margin:0 0 14px">' + t + '</p>').join('');
+  if (zamowienie && numer) ak.splice(1, 0, 'Numer zamówienia: ' + B(numer));
+  /* 27.10 02:57: dwa statusy jak na stronie - przyjete (aktywny) i potwierdzone (jeszcze nie) */
+  const status = '<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:2px 0 16px;width:100%;background:#FFF5EC;border:1px solid #F6C9A6">' +
+    '<tr><td style="padding:10px 12px;width:34px;vertical-align:top"><div style="width:26px;height:26px;border-radius:13px;background:#FE6500;color:#fff;text-align:center;line-height:26px;font-size:15px">&#9201;</div></td>' +
+    '<td style="padding:10px 12px 10px 0;font-size:14px;line-height:1.4"><b style="color:#C2410C">ZAMÓWIENIE PRZYJĘTE</b><br>Oczekuje na potwierdzenie centrali.</td></tr>' +
+    '<tr><td style="padding:0 12px 10px;vertical-align:top"><div style="width:26px;height:26px;border-radius:13px;background:#E7DED3;color:#8A8078;text-align:center;line-height:26px;font-size:15px">&#10003;</div></td>' +
+    '<td style="padding:0 12px 10px 0;font-size:14px;line-height:1.4;color:#8A8078"><b>ZAMÓWIENIE POTWIERDZONE</b><br>Termin i zakres prac zostały zatwierdzone.</td></tr></table>';
+  const p = ak.map(t => t === '%STATUS%' ? status : '<p style="margin:0 0 14px">' + t + '</p>').join('');
   const html = '<div style="background:#F4EFE9;padding:24px 12px;font-family:Arial,Helvetica,sans-serif">' +
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;border-collapse:collapse">' +
     '<tr><td style="background:#14110E;padding:18px 24px;border-bottom:3px solid #FE6500">' +
@@ -217,7 +248,7 @@ function mailPotwierdzenie(zamowienie) {
     '<tr><td style="padding:14px 24px;color:#6B5E52;font-size:12px;text-align:center"><a href="https://smartparkiet.com.pl" style="color:#6B5E52;text-decoration:none">smartparkiet.com.pl</a> &middot; Cyklinowanie SMART&trade;</td></tr>' +
     '</table></div>';
   const txt = t => t.replace(/<[^>]+>/g, '').replace(/&trade;/g, '™');
-  const text = 'Dzień dobry!\n\n' + ak.map(txt).join('\n\n') + '\n\nSMARTPARKIET™\n📞 602 242 815\n\nBez bałaganu, bez pyłu, bez stresu!';
+  const text = 'Dzień dobry!\n\n' + ak.map(t => t === '%STATUS%' ? 'Status: ZAMÓWIENIE PRZYJĘTE - oczekuje na potwierdzenie centrali.\nNastępny krok: ZAMÓWIENIE POTWIERDZONE - termin i zakres prac zostaną zatwierdzone.' : txt(t)).join('\n\n') + '\n\nSMARTPARKIET™\n📞 602 242 815\n\nBez bałaganu, bez pyłu, bez stresu!';
   return { html: html, text: text };
 }
 
@@ -225,7 +256,9 @@ function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
     const kiedy = Utilities.formatDate(new Date(), 'Europe/Warsaw', 'yyyy-MM-dd HH-mm');
-    const nazwa = czysc(kiedy + ' ' + (d.opis || 'wycena')) + '.pdf';
+    /* 27.10: numer zamowienia ze strony; gdy strona go nie dostala - nadajemy tutaj (tylko zamowienia) */
+    const numer = /^SMART\/\d{4}\/\d{4}\/\d{3,}$/.test(String(d.numer || '')) ? String(d.numer) : (d.zamowienie ? nadajNumer() : '');
+    const nazwa = czysc(kiedy + ' ' + (numer ? numer.replace(/\//g, '-') + ' ' : '') + (d.opis || 'wycena')) + '.pdf';
     const folder = folderMiesiaca();
     if (d.pdf) {
       folder.createFile(Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', nazwa));
@@ -243,6 +276,7 @@ function doPost(e) {
     if (d.arkusz) {
       try {
         const a = d.arkusz;
+        a.numer = numer;
         const tytul = String.fromCodePoint(0x1F4CD) + ' ' + czysc((a.ulica || a.imie || a.tel || 'wycena') + ' ' + kiedy.slice(0, 10));
         const url = arkuszWyceny(folder, tytul, a, kiedy);
         rejestr(a, kiedy, url, idStanu);
@@ -265,19 +299,19 @@ function doPost(e) {
       });
     } else if (POTWIERDZENIE && mailOk) {
       /* 27.10 02:36-02:44 Artur: nowa tresc potwierdzenia (zamowienie online / "Chce zamowic" vs zwykla wycena) */
-      const m = mailPotwierdzenie(!!d.zamowienie);
+      const m = mailPotwierdzenie(!!d.zamowienie, numer);
       MailApp.sendEmail({
         to: mail,
         bcc: ARTUR, /* Artur 22.10: kopia maila do klienta w jego skrzynce */
         replyTo: ARTUR,
         name: 'SMARTPARKIET',
-        subject: d.temat || 'Wstępna wycena renowacji parkietu - SMARTPARKIET', /* Artur 26.10 21:57: temat od adresu */
+        subject: (d.temat && numer && d.temat.indexOf(numer) < 0 ? d.temat.replace(' - Wstępna wycena', ' - ' + numer + ' - Wstępna wycena') : d.temat) || 'Wstępna wycena renowacji parkietu - SMARTPARKIET', /* Artur 26.10 21:57: temat od adresu; 27.10: z numerem */
         body: m.text,
         htmlBody: m.html,
         attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Wstepna_wycena_SMARTPARKIET.pdf')] : []
       });
     }
-    return json({ ok: true, plik: nazwa, id: idStanu });
+    return json({ ok: true, plik: nazwa, id: idStanu, nr: numer });
   } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({ ok: false, blad: String(err) }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -296,6 +330,7 @@ function doGet(e) {
     if (!hasloOk(p.pin)) { c.put('bledyPin', String(bledy + 1), 3600); return json({ ok: false, blad: 'Zły PIN' }); }
     return json({ ok: true, k: kluczListy() });
   }
+  if (p.a === 'nr') return json({ ok: true, nr: nadajNumer() }); /* 27.10: numer zamowienia dla strony (przed PDF i mailem do biura) */
   if (p.a === 'lista' || p.a === 'wczytaj') {
     if (String(p.k || '') !== kluczListy()) return json({ ok: false, blad: 'Brak dostępu' });
     if (p.a === 'wczytaj') {

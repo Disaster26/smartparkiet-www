@@ -42,16 +42,15 @@ zamien('<a href="wycena.html" class="akt">Kalkulator online</a>', '<a href="wyce
 zamien('<a href="zamow-online.html">Zamów online</a>', '<a href="zamow-online.html" class="akt">Zamów online</a>')
 
 # lewa kolumna: opis programu + 5 krokow
-LEWA = '''    <div class="sticky">
-      <p class="oczko"><span></span>Programy SMART</p>
-      <h2>ZAMÓW USŁUGĘ SMART ONLINE&trade;</h2>
-      <p class="lead se-lead">Zamówienie renowacji parkietu w jednym formularzu - <b>Koszyk SMART</b>. Bez dzwonienia i bez umawiania oględzin na start.</p>
+LEWA = '''    <div class="sticky zam-gora">
+      <h2>ZAMÓW USŁUGĘ CYKLINOWANIE SMART ONLINE&trade;</h2>
+      <p class="lead se-lead">Wycena i zamówienie bez wychodzenia z domu.</p>
       <ol class="zam-kroki">
-        <li><b>Podaj dane</b> - adres, metraż, rodzaj podłogi i 4-6 zdjęć.</li>
-        <li><b>Poznaj cenę</b> - kalkulator od razu liczy kwotę; zamówienie wymaga potwierdzenia kosztów przez centralę.</li>
-        <li><b>Wybierz termin</b> - 1-3 dogodne dni, potwierdzimy dostępność.</li>
-        <li><b>Wyślij do potwierdzenia</b> - jeden przycisk.</li>
-        <li><b>Otrzymaj potwierdzenie</b> - SMS lub e-mail w ciągu 2 godzin roboczych.</li>
+        <li><b>Podaj dane</b> - adres, metraż i zdjęcia.</li>
+        <li><b>Poznaj cenę</b> - kalkulacja wstępna, ostateczną kwotę zatwierdza centrala.</li>
+        <li><b>Wybierz termin</b> - wskaż dogodne dni.</li>
+        <li><b>Złóż zamówienie</b> - jednym kliknięciem.</li>
+        <li><b>Otrzymaj potwierdzenie</b> - do 2 godzin roboczych.</li>
       </ol>
       <p class="lead zam-uwaga">Termin staje się wiążący dopiero po potwierdzeniu przez centralę SMARTPARKIET&trade;.</p>
     </div>
@@ -60,13 +59,20 @@ LEWA = '''    <div class="sticky">
 s = re.sub(r'    <div class="sticky">.*?</div>\s*<div class="ai">', lambda m: LEWA.replace('\n', NL), s, count=1, flags=re.S)
 
 CSS = '''<style id="zamow-strona">/* zamow-online.html: kroki i tytul koszyka */
-html body .zam-kroki{list-style:none;counter-reset:zk;margin:18px 0 0;padding:0;display:grid;gap:10px}
-html body .zam-kroki li{counter-increment:zk;position:relative;padding:2px 0 2px 46px;min-height:34px;font-size:1rem;line-height:1.4;color:#fff}
-html body .zam-kroki li::before{content:counter(zk);position:absolute;left:0;top:0;width:34px;height:34px;border-radius:50%;background:#fff;color:#E8580E;font-weight:900;display:grid;place-items:center;font-size:1rem}
+html body .zam-kroki{list-style:none;counter-reset:zk;margin:14px 0 0;padding:0;display:grid;gap:7px}
+html body .zam-kroki li{counter-increment:zk;position:relative;padding:1px 0 1px 36px;min-height:26px;font-size:.92rem;line-height:1.35;color:#fff}
+html body .zam-kroki li::before{content:counter(zk);position:absolute;left:0;top:0;width:26px;height:26px;font-size:.85rem!important;border-radius:50%;background:#fff;color:#E8580E;font-weight:900;display:grid;place-items:center;font-size:1rem}
 html body .zam-kroki li b{color:#fff;font-weight:800}
-html body .zam-uwaga{margin-top:16px!important;font-size:.92rem!important;font-style:italic;color:#fff!important}
+html body .zam-uwaga{margin-top:12px!important;line-height:1.4!important;font-size:.92rem!important;font-style:italic;color:#fff!important}
 html body .koszyk-tyt{margin:0 0 10px;font-weight:900;font-size:1.35rem;letter-spacing:.04em;text-transform:uppercase;color:#14110E}
 html body .koszyk-tyt::before{content:"";display:inline-block;width:22px;height:22px;margin:0 8px -3px 0;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F8580E' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H7'/%3E%3Ccircle cx='10' cy='19.5' r='1.4'/%3E%3Ccircle cx='17' cy='19.5' r='1.4'/%3E%3C/svg%3E")}
+@media(max-width:700px){
+  html body #wycena{padding-top:22px!important}
+  html body .zam-gora h2{font-size:1.45rem!important;line-height:1.15!important;margin:0!important}
+  html body .zam-gora .se-lead{margin-top:8px!important;font-size:1rem!important}
+  html body .zam-gora .zam-uwaga{font-size:.85rem!important}
+  html body #wycena .split{gap:18px!important}
+}
 </style>'''
 s = s.rstrip() + NL + CSS.replace('\n', NL) + NL
 

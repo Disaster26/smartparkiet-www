@@ -1024,7 +1024,7 @@ figure{margin:0}
    "ulica nr, miejscowosc - 24 m² - <koncowka>"; bez adresu na poczatku imie / telefon. */
 window.spTemat=function(koniec){var v=function(id){return ((document.getElementById(id)||{}).value||'').trim();};
   var kto=[v('ulicaKl'),v('miastoKl')].filter(Boolean).join(', ')||[v('imieKl'),v('telKl')?'tel. '+v('telKl'):''].filter(Boolean).join(', ')||'bez adresu';
-  return kto+' - '+String(Math.max(0,+v('m2')||0)).replace('.',',')+' m² - '+(window.SP_ZAMOWIENIE?'ZAMÓWIENIE ONLINE - ':((window.spChce&&window.spChce())?'CHCE ZAMÓWIĆ - ':''))+koniec;}; /* 27.10: zamow-online.html - wyroznik zamowienia, "Nowa wycena" zostaje dla filtra */
+  return kto+' - '+String(Math.max(0,+v('m2')||0)).replace('.',',')+' m² - '+(window.SP_ZAMOWIENIE?'ZAMÓWIENIE ONLINE - ':((window.spChce&&window.spChce())?'CHCE ZAMÓWIĆ - ':''))+(window.__nrZam?window.__nrZam+' - ':'')+koniec;}; /* 27.10 02:57: numer zamowienia przed koncowka (filtr Gmaila na "Nowa wycena") */ /* 27.10: zamow-online.html - wyroznik zamowienia, "Nowa wycena" zostaje dla filtra */
 /* Artur 25-26.10: automat "do uzgodnienia". Kolko przy pytaniu steruje polem liczbowym pod spodem:
    do uzgodnienia (albo 'nie wiem') = pole zablokowane z napisem DO UZGODNIENIA, a w tabeli PDF kratka "Do uzg." zaznaczona;
    tak / rodzaj listwy = pole otwarte do wpisania metrow; nie = pole puste i wylaczone. */
@@ -1525,6 +1525,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         ...((window.spDodatkowe?window.spDodatkowe():[]).length?[['Prace dodatkowe',window.spDodatkowe().map(x=>x.o+': '+x.i+' '+x.j+' × '+zl(x.c)+' = '+zl(x.i*x.c)).join('; ')]]:[]),
         ...(arkusz().doplata?[['Dopłata do małego metrażu',arkusz().a+' m² × '+MALY.DOPLATA+' zł = '+zl(arkusz().doplata)+' (metraż '+MALY.RYCZALT_DO+'-'+MALY.DOPLATA_DO+' m², wliczona w ofertę)']]:[]),
         ...(arkusz().ryczalt?[['Ryczałt SMART','metraż poniżej '+MALY.RYCZALT_DO+' m²: '+zl(MALY.RYCZALT)+' na gotowo zamiast stawki za m²']]:[]),
+        ...(window.__nrZam?[['Nr zamówienia',window.__nrZam]]:[]),
         ['Wstępna oferta',zl(arkusz().suma)+' netto (szczegóły w załączonym PDF)'],
         ['Zdjęcia',zdj+' i oferta PDF w załącznikach']
       ];
@@ -1601,7 +1602,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         g.fillStyle=ZYWY;g.fillRect(0,0,W,H);g.fillStyle='#fff';
         if(g.roundRect){g.beginPath();g.roundRect(36,124,W-72,H-124-72,22);g.fill();}else g.fillRect(36,124,W-72,H-124-72);
         g.fillStyle='#fff';g.font='bold 46px Arial';g.textBaseline='middle';g.fillText('SMARTPARKIET',M-30,64);
-        g.font='24px Arial';g.textAlign='right';g.fillText('Wstępna oferta renowacji parkietu · nr '+nr,W-M+30,64);g.textAlign='left';strony.push(c);return g;};
+        g.font='24px Arial';g.textAlign='right';g.fillText(window.__nrZam?('Zamówienie nr '+window.__nrZam):('Wstępna oferta renowacji parkietu · nr '+nr),W-M+30,64);g.textAlign='left';strony.push(c);return g;};
       const zawin=(g,t,x,y,w,lh)=>{const sl=String(t).split(' ');let l='';for(const s of sl){const n=l?l+' '+s:s;if(g.measureText(n).width>w&&l){g.fillText(l,x,y);y+=lh;l=s;}else l=n;}if(l){g.fillText(l,x,y);y+=lh;}return y;};
       /* tekst dopasowany do szerokosci: najpierw mniejsza czcionka (do 15 px), potem skrot z wielokropkiem */
       const wpisz=(g,t,x,y,w,px,styl)=>{t=String(t);let f=px;g.font=(styl||'')+' '+f+'px Arial';while(g.measureText(t).width>w&&f>15){f--;g.font=(styl||'')+' '+f+'px Arial';}if(g.measureText(t).width>w){while(t.length>3&&g.measureText(t+'…').width>w)t=t.slice(0,-1);t=t.trimEnd()+'…';}g.fillText(t,x,y);};
@@ -1848,7 +1849,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       const b64=f=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]||'');r.onerror=()=>ok('');r.readAsDataURL(f);});
       const wyslij=async pdf=>{let zd=[];try{zd=(await Promise.all((window.__gotowe||[]).map(b64))).filter(Boolean);}catch(e){}
         return fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!(window.SP_ZAMOWIENIE||(window.spChce&&window.spChce())),terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):((window.spChce&&window.spChce()&&window.spChce().data)?window.spChce().termin:''),stan:stan,zdjecia:zd})}).catch(()=>{});};
+          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!(window.SP_ZAMOWIENIE||(window.spChce&&window.spChce())),numer:window.__nrZam||'',terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):((window.spChce&&window.spChce()&&window.spChce().data)?window.spChce().termin:''),stan:stan,zdjecia:zd})}).catch(()=>{});};
       if(window.__karta&&window.__karta.type==='application/pdf'){
         const r=new FileReader();
         r.onload=()=>wyslij(String(r.result).split(',')[1]||'');
@@ -1969,6 +1970,12 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       try{window.__gotowe=await Promise.all(pl.map(zmniejsz));}catch(e){window.__gotowe=pl;}
       /* zalaczniki ukladaja sie alfabetycznie po nazwie: Oferta_... przed Zdjecie_01... */
       window.__gotowe=window.__gotowe.map((f,i)=>new File([f],'Zdjecie_'+String(i+1).padStart(2,'0')+'.jpg',{type:f.type||'image/jpeg'}));
+      /* Artur 27.10 02:57: numer zamowienia SMART/RRRR/MMDD/NNN tylko dla zamowien (zamow-online, "Chcę zamówić"); nadaje Apps Script
+         (licznik dnia + LockService). Bez odpowiedzi w 6 s - bez numeru na ekranie/w PDF, numer nada wtedy sam skrypt przy zapisie. */
+      if((window.SP_ZAMOWIENIE||(window.spChce&&window.spChce()))&&!window.__nrZam&&DYSK_URL){
+        try{const ac=new AbortController();const to=setTimeout(()=>ac.abort(),6000);
+          const j=await fetch(DYSK_URL+'?a=nr',{signal:ac.signal}).then(r=>r.json());clearTimeout(to);
+          if(j&&j.ok&&/^SMART\/\d{4}\/\d{4}\/\d{3,}$/.test(j.nr))window.__nrZam=j.nr;}catch(e){}}
       try{window.__karta=await ofertaPdf(window.__gotowe);}catch(e){window.__karta=null;}
       if(!window.__karta)window.__karta=await karta(dane(),window.__gotowe);
       bWys.disabled=false;
@@ -2068,7 +2075,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     if(!mini)return;
     window.__podpisy=podpisy;
     mini.innerHTML=pliki.map((f,i)=>'<span class="mzw"><span class="mz"><img alt="" src="'+URL.createObjectURL(f)+'"><button type="button" data-i="'+i+'" aria-label="Usuń zdjęcie">×</button></span><input class="podp" data-p="'+i+'" type="text" maxlength="40" placeholder="podpis, np. korytarz" value="'+String(podpisy[i]||'').replace(/"/g,'&quot;')+'"></span>').join('')+
-      '<span class="lic" id="licZdj">Dodano '+pliki.length+' z 12 zdjęć'+(pliki.length<4?' (minimum 4)':'')+'</span>';
+      '<span class="lic" id="licZdj">Dodano '+pliki.length+' z 12 zdjęć'+(pliki.length<4?(window.SP_ZAMOWIENIE?' (zalecane 4-6)':' (minimum 4)'):'')+'</span>';
   }
   if(mini)mini.addEventListener('input',e=>{const p=e.target.closest('input.podp'); if(p){podpisy[+p.dataset.p]=p.value; window.__podpisy=podpisy;}});
   if(mini)mini.addEventListener('click',e=>{const b=e.target.closest('button[data-i]'); if(!b)return;
@@ -3103,6 +3110,17 @@ html.sp-zam #poprawBtn,html.sp-zam #anPasek,html.sp-zam #analizuj{display:none!i
 #zamOk .zam-status i{width:10px;height:10px;border-radius:50%;background:#FFC53D;display:inline-block}
 #zamOk p{margin:12px 0 0;font-size:1rem;line-height:1.5;color:#1A1512}
 #zamOk p b{color:#1A1512}
+#zamOk .zam-nr{margin:0 0 12px;font-size:.95rem}
+#zamOk .zam-os{list-style:none;margin:0 0 6px;padding:0;display:grid;gap:0}
+#zamOk .zam-os li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:start;position:relative;padding:0 0 16px;color:#8A8078}
+#zamOk .zam-os li:not(:last-child)::after{content:"";position:absolute;left:19px;top:40px;bottom:2px;width:2px;background:#E7DED3}
+#zamOk .zam-os .zo-ik{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#EFE9E2;color:#9A9088}
+#zamOk .zam-os .zo-ik svg{width:22px;height:22px}
+#zamOk .zam-os li.on{color:#1A1512}
+#zamOk .zam-os li.on .zo-ik{background:#F8580E;color:#fff;box-shadow:0 0 0 5px #FFE1CC}
+#zamOk .zam-os b{display:block;text-transform:uppercase;letter-spacing:.04em;font-size:.92rem;margin-top:2px}
+#zamOk .zam-os li.on b{color:#C2410C}
+#zamOk .zam-os span{display:block;font-size:.92rem;line-height:1.4;margin-top:2px}
 #zamPodglad{position:fixed;inset:0;z-index:5000;background:rgba(20,17,14,.55);display:flex;align-items:flex-end;justify-content:center;padding:0}
 #zamPodglad[hidden]{display:none}
 html.zp-otw,html.zp-otw body{overflow:hidden}
@@ -3130,6 +3148,11 @@ html.zp-otw,html.zp-otw body{overflow:hidden}
   var f=document.querySelector('form.ai-form');if(!f)return;
   function blok(id){var e=document.getElementById(id)||document.querySelector('input[name="'+id+'"]');if(!e)return null;while(e.parentElement&&e.parentElement!==f)e=e.parentElement;return e.parentElement===f?e:null;}
   ['gatKl','montazKl','stab','stabM2','napr','kodKl','dzielKl','obiektKl'].forEach(function(id){var b=blok(id);if(b)b.style.display='none';});
+  /* 27.10 02:57: gwiazdki tylko przy polach wymaganych; reszta opcjonalna (szczegoly przy potwierdzeniu) */
+  [['m2',' <span class="obow">*</span>'],['ulicaKl',' <span class="obow">*</span>']].forEach(function(q){var l=f.querySelector('label[for="'+q[0]+'"]');if(l&&!l.querySelector('.obow'))l.insertAdjacentHTML('beforeend',q[1]);});
+  [['pietroKl','Piętro (opcjonalnie)'],['uwagiKl','Uwagi (opcjonalnie)']].forEach(function(q){var l=f.querySelector('label[for="'+q[0]+'"]');if(l)l.textContent=q[1];});
+  var dz=document.getElementById('drop');if(dz){var bz=dz.querySelector('b');if(bz)bz.textContent='Zdjęcia podłogi (opcjonalnie, najlepiej 4-6)';}
+  var lz0=document.getElementById('licZdj');if(lz0)lz0.textContent='Dodano 0 z 12 zdjęć (zalecane 4-6)';
   /* preferowane terminy -> zapis do ukrytego #terminKl (mail, PDF, arkusz biorą go stamtąd) */
   var tk=document.getElementById('terminKl'),tb=blok('terminKl');if(!tk||!tb)return;
   tb.style.display='none';
@@ -3167,7 +3190,7 @@ html.zp-otw,html.zp-otw body{overflow:hidden}
     if(!pz){pz=document.createElement('div');pz.id='zamPodglad';pz.hidden=true;pz.setAttribute('role','dialog');pz.setAttribute('aria-modal','true');pz.setAttribute('aria-labelledby','zpTyt');
       pz.innerHTML='<div class="zp-k"><p class="zp-o">Koszyk SMART</p><h2 id="zpTyt">Sprawdź swoje zamówienie</h2><dl id="zpLista"></dl>'+
         '<p class="zp-u">Kwota jest wstępna - koszty i termin potwierdza centrala SMARTPARKIET&trade; SMS-em lub e-mailem.</p>'+
-        '<button type="button" class="zp-wys" id="zpWys">Wyślij do potwierdzenia</button><button type="button" class="zp-pop" id="zpPop">Popraw</button></div>';
+        '<button type="button" class="zp-wys" id="zpWys">Złóż zamówienie</button><button type="button" class="zp-pop" id="zpPop">Popraw</button></div>';
       document.body.appendChild(pz);}
     var v=function(id){return ((document.getElementById(id)||{}).value||'').trim();};
     var zn=function(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:'';};
@@ -3194,12 +3217,20 @@ html.zp-otw,html.zp-otw body{overflow:hidden}
     bw.addEventListener('click',function(e){if(potw){potw=false;return;}if(bw.disabled||bw.classList.contains('wyslane'))return;
       if(!tk.value.trim())return; /* komunikat o terminie daje blok wyzej */
       if(v('mailKl').length<5&&v('telKl').replace(/\D/g,'').length<9)return; /* brak kontaktu - komunikat glownego formularza */
+      /* Artur 27.10 02:57: wymagane tylko niezbedne - adres, metraz, kontakt, termin; reszta opcjonalna */
+      var brak=!(+v('m2')>0)?'m2':(!v('ulicaKl')?'ulicaKl':'');
+      if(brak){e.stopImmediatePropagation();e.preventDefault();var bl2=document.getElementById('bladForm');
+        if(bl2){bl2.textContent=brak==='m2'?'Proszę podać metraż podłogi.':'Proszę podać adres realizacji (ulica i numer).';bl2.hidden=false;}
+        var el=document.getElementById(brak);if(el){el.scrollIntoView({block:'center'});el.focus();}return;}
       e.stopImmediatePropagation();e.preventDefault();var bl=document.getElementById('bladForm');if(bl)bl.hidden=true;pokaz();},true);
   }
   window.spZamowienieOk=function(){
     var p=document.getElementById('zamOk');
     if(!p){p=document.createElement('div');p.id='zamOk';p.setAttribute('role','status');
-      p.innerHTML='<span class="zam-status"><i></i>Oczekuje na potwierdzenie</span>'+
+      /* Artur 27.10 02:57: dwa statusy - przyjete (aktywny) i potwierdzone (jeszcze nie) */
+      p.innerHTML=(window.__nrZam?'<p class="zam-nr">Numer zamówienia: <b>'+window.__nrZam+'</b></p>':'')+
+        '<ol class="zam-os"><li class="on"><span class="zo-ik" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><b>Zamówienie przyjęte</b><span>Oczekuje na potwierdzenie centrali.</span></div></li>'+
+        '<li><span class="zo-ik" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><div><b>Zamówienie potwierdzone</b><span>Termin i zakres prac zostały zatwierdzone.</span></div></li></ol>'+
         '<p><b>Dziękujemy za zgłoszenie!</b> Twój preferowany termin został przesłany do centrali SMARTPARKIET™. Potwierdzimy jego dostępność SMS-em lub e-mailem w ciągu maksymalnie 2 godzin roboczych.</p>'+
         '<p>Termin staje się wiążący dopiero po potwierdzeniu przez centralę SMART.</p>'+
         '<p style="font-size:.9rem;color:#4A5058">Wybrane terminy: '+(tk.value||'-')+'</p>';
