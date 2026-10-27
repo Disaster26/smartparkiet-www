@@ -58,6 +58,23 @@ LEWA = '''    <div class="sticky zam-gora">
       <p class="koszyk-tyt" id="koszyk">Koszyk SMART</p>'''
 s = re.sub(r'    <div class="sticky">.*?</div>\s*<div class="ai">', lambda m: LEWA.replace('\n', NL), s, count=1, flags=re.S)
 
+# Artur 27.10 03:48-03:51: tekst o zamowieniach online - pod koszykiem (nad nim zostaja krotkie kroki, zeby koszyk byl wysoko)
+TEKST = """<section class="zam-tekst" id="jak-to-dziala">
+  <div class="wrap">
+    <h2>ZAMÓW CYKLINOWANIE SMART ONLINE&trade;</h2>
+    <p class="zt-lead">Teraz to my dostosowujemy się do Twojego harmonogramu!</p>
+    <p>Nie musisz już dzwonić, pytać o wolne terminy ani umawiać oględzin, żeby poznać cenę.</p>
+    <p>Zamów CYKLINOWANIE SMART&trade; online, poznaj wstępną wycenę i wskaż dogodne dla siebie terminy.</p>
+    <p>To Ty decydujesz, kiedy chcesz przeprowadzić renowację. My dopasujemy ekipę i organizację pracy do Twoich potrzeb i harmonogramu.</p>
+    <p><b>Złóż zamówienie online!</b> Centrala SMARTPARKIET&trade; potwierdzi dostępność wybranego terminu oraz szczegóły realizacji w ciągu 2 godzin roboczych.</p>
+    <p class="zt-haslo">Twój czas. Twój termin.<br>My po prostu robimy robotę!</p>
+    <p><a class="btn btn-amber" href="#koszyk">Przejdź do Koszyka SMART</a></p>
+  </div>
+</section>
+"""
+i = s.index('id="wycena">'); j = s.index('</section>', i) + len('</section>')
+s = s[:j] + NL + TEKST.replace('\n', NL) + s[j:]
+
 CSS = '''<style id="zamow-strona">/* zamow-online.html: kroki i tytul koszyka */
 html body .zam-kroki{list-style:none;counter-reset:zk;margin:14px 0 0;padding:0;display:grid;gap:7px}
 html body .zam-kroki li{counter-increment:zk;position:relative;padding:1px 0 1px 36px;min-height:26px;font-size:.92rem;line-height:1.35;color:#fff}
@@ -74,6 +91,12 @@ html body .koszyk-tyt::before{content:"";display:inline-block;width:22px;height:
   html body #wycena .split{gap:18px!important}
 }
 html body #wycena .zam-gora h2{font-size:clamp(1.2rem,1.9vw,1.6rem)!important;line-height:1.2!important}
+html body .zam-tekst{background:#fff;padding:44px 0 52px}
+html body .zam-tekst .wrap{max-width:760px}
+html body .zam-tekst h2{margin:0 0 12px;font-size:clamp(1.25rem,3vw,1.8rem);line-height:1.2;color:#14110E}
+html body .zam-tekst .zt-lead{font-size:1.15rem;font-weight:800;color:#FF6A13;margin:0 0 14px}
+html body .zam-tekst p{font-size:1.02rem;line-height:1.6;color:#3A3F45;margin:0 0 12px}
+html body .zam-tekst .zt-haslo{margin:18px 0 22px;font:900 1.3rem/1.3 Inter,system-ui,sans-serif;color:#14110E;border-left:4px solid #FF6A13;padding-left:14px}
 </style>'''
 s = s.rstrip() + NL + CSS.replace('\n', NL) + NL
 
