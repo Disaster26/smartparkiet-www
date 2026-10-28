@@ -1630,7 +1630,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     async function ofertaPdf(zdj){
       if(!window.jspdf||!window.jspdf.jsPDF)return null;
       const A=arkusz(), W=1240, H=1754, M=90, POM='#FF6A13', PASEK='#FFFFFF', NAGL='#16191D', CIEMNY='#1F2328', SZARY='#4A5058', TLO='#FFFFFF', RAMKA='#565B61'; /* Artur 20.10 01:44: ramki pol grafitowe jak tekst w polach (bylo #FF6A13). */ /* Artur 17.10 21:59: paski zywym pomaranczem jak na stronie (bylo #F3B48F) */
-      const nr=new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(Math.random()*9000)+1000);
+      const nr=new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(Math.random()*9000)+1000);window.__nrOferty=nr; /* Artur 28.10 22:24: numer oferty trafia tez do opisu zapisu w folderze ofert */
       const strony=[];
       const ZYWY='#FF6A13';
       const nowa=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
@@ -1875,7 +1875,11 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     function naDysk(mail){
       if(!DYSK_URL)return;
       const pole=id=>((document.getElementById(id)||{}).value||'').trim();
-      const opis=[(+m2.value||0)+' m2',pole('ulicaKl'),pole('dzielKl'),pole('imieKl'),pole('telKl')].filter(Boolean).join(' ');
+      /* Artur 28.10 22:24: w folderze ofert wersje tego samego klienta byly nie do odroznienia - do opisu kwota netto i numer oferty
+         (zaraz po metrazu, bo Apps Script tnie opis do 120 znakow; telefon zostaje na koncu do szukania) */
+      let netto='';try{const A0=arkusz();netto=A0&&A0.suma?('netto '+Math.round(A0.suma)+' zł'):'';}catch(e){}
+      const opis=[(+m2.value||0)+' m2',netto,window.__nrOferty?('nr '+window.__nrOferty):'',pole('ulicaKl'),pole('dzielKl'),pole('imieKl'),pole('telKl')].filter(Boolean).join(' ');
+      window.spFolderNieaktualny=true; /* lista w folderze ofert pobierze sie od nowa */
       /* Artur 15.10 11:48: kazda wycena ma trafic takze jako osobny arkusz Google (plus wiersz w rejestrze wycen) */
       let ark=null;
       try{const A=arkusz();ark={imie:pole('imieKl'),tel:pole('telKl'),mail:mail||pole('mailKl'),adres:A.adres,ulica:A.ulica,
