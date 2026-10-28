@@ -62,6 +62,7 @@ s = re.sub(r'    <div class="sticky">.*?</div>\s*<div class="ai">', lambda m: LE
 TEKST = """<section class="zam-tekst" id="jak-to-dziala">
   <div class="wrap">
     <h2>ZAMÓW CYKLINOWANIE SMART ONLINE&trade;</h2>
+    <p class="zt-start"><b>Zamawianie usługi odnowienia starej podłogi nigdy wcześniej nie było tak proste!</b></p>
     <p>Nie musisz już dzwonić, pytać o wolne terminy ani umawiać oględzin, żeby poznać cenę.</p>
     <p class="zt-lead">Teraz to my dostosowujemy się do Twojego harmonogramu!</p>
     <p>Zamów CYKLINOWANIE SMART&trade; online, poznaj wstępną wycenę i wskaż dogodne dla siebie terminy.</p>
