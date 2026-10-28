@@ -1877,7 +1877,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
        Skrypt ai/wyceny_dysk.gs wdrozony na jego koncie; tu adres /exec. Pusty = funkcja wylaczona.
        Ten sam skrypt wysyla klientowi potwierdzenie (autoodpowiedz FormSubmit nie dochodzi). */
     const DYSK_URL='https://script.google.com/macros/s/AKfycbxC1j9MytYHxqD-ONdcd8Bar5SxnAVnmr8pxP1_pdEEIZzB1hbh9AXRDtXEg5hX0QXzDA/exec';
-    function naDysk(mail){
+    function naDysk(mail,plik){
       if(!DYSK_URL)return;
       const pole=id=>((document.getElementById(id)||{}).value||'').trim();
       /* Artur 28.10 22:24: w folderze ofert wersje tego samego klienta byly nie do odroznienia - do opisu kwota netto i numer oferty
@@ -1897,12 +1897,16 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       const wyslij=async pdf=>{let zd=[];try{zd=(await Promise.all((window.__gotowe||[]).map(b64))).filter(Boolean);}catch(e){}
         return fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
           body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!(window.SP_ZAMOWIENIE||(window.spChce&&window.spChce())),numer:window.__nrZam||'',ekspres:!!(window.spOpcje&&window.spOpcje().ekspres),sciany:!!(window.spOpcje&&window.spOpcje().sciany),terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):((window.spChce&&window.spChce()&&window.spChce().data)?window.spChce().termin:''),stan:stan,zdjecia:zd})}).catch(()=>{});};
-      if(window.__karta&&window.__karta.type==='application/pdf'){
+      const pdfF=plik||window.__karta;
+      if(pdfF&&pdfF.type==='application/pdf'){
         const r=new FileReader();
         r.onload=()=>wyslij(String(r.result).split(',')[1]||'');
-        r.readAsDataURL(window.__karta);
+        r.readAsDataURL(pdfF);
       }else wyslij('');
     }
+    /* Artur 28.10 22:30: oferty wysylane z podgladu przez "Wyslij PDF na WhatsApp" / "Pobierz PDF" nie trafialy do Folderu ofert
+       (zapis byl tylko przy "Wyslij" mailem). Teraz zapis raz na kazdy PDF z podgladu - bez maila do klienta (pusty mailKlienta). */
+    window.spZapiszPodglad=f=>{if(!f||window.__zapisanyPodglad===f)return;window.__zapisanyPodglad=f;try{naDysk('',f);}catch(e){}};
     /* Artur 10.10 22:32: zdjecie ma dojsc jako ZALACZNIK do maila.
        Koncowka /ajax w FormSubmit przyjmuje tylko tekst, pliki idą wyłącznie
        zwyklym formularzem multipart. Dlatego skladamy ukryty formularz
@@ -2058,12 +2062,13 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     const telWa=()=>{let d=((document.getElementById('telKl')||{}).value||'').replace(/\D/g,'');if(d.length===9)d='48'+d;return d.length>=11?d:'';};
     ov.querySelector('#podgladWa').onclick=async()=>{
       const f=window.__pdfPodglad; if(!f)return;
+      if(window.spZapiszPodglad)window.spZapiszPodglad(f);
       if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Oferta SMARTPARKIET',text:'Dzień dobry, w załączniku oferta renowacji parkietu. SMARTPARKIET, tel. 602 242 815'});}catch(e){}}
       else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();a.remove();
         alert('Ten telefon nie udostępnia plików bezpośrednio. PDF zapisany - dołącz go w WhatsApp z plików.');}
     };
     /* 21.10 (12:49): podglad + zapis PDF od razu na telefonie/komputerze (np. do druku) */
-    ov.querySelector('#podgladPdf').onclick=()=>{const f=window.__pdfPodglad; if(!f)return;
+    ov.querySelector('#podgladPdf').onclick=()=>{const f=window.__pdfPodglad; if(!f)return;if(window.spZapiszPodglad)window.spZapiszPodglad(f);
       const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name||'Oferta_SMARTPARKIET.pdf';document.body.appendChild(a);a.click();a.remove();};
     ov.querySelector('#podgladCzat').onclick=()=>{const t=telWa();if(!t){alert('Brak numeru telefonu klienta w formularzu.');return;}
       window.open('https://wa.me/'+t+'?text='+encodeURIComponent('Dzień dobry, z tej strony SMARTPARKIET. Za chwilę prześlemy Państwu ofertę renowacji parkietu w formacie PDF.'),'_blank');};
