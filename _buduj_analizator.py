@@ -150,8 +150,12 @@ FOLDER_JS = r"""<style>
  var WSZ=[];
  function bezOg(t){return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l');}
  function pokazListe(){var sel=document.getElementById('folSel'),q=bezOg((document.getElementById('folSzuk')||{}).value||'').trim();
-  var qs=q.replace(/\s+/g,'');
-  var lis=WSZ.filter(function(o){if(!q)return true;var t=bezOg(o.opis);return t.indexOf(q)>=0||(qs&&t.replace(/\s+/g,'').indexOf(qs)>=0);});
+  /* Artur 28.10 wieczor: "AL.Jana" nie znajdowalo "AL. JANA PAWLA II 61/36". Kropki, przecinki, podkreslenia, ukosniki = spacje;
+     kazde slowo zapytania musi byc fragmentem tekstu oferty (adres, nazwa pliku, klient, telefon, data), w dowolnej kolejnosci */
+  var tnij=function(t){return bezOg(t).replace(/[.,_\/\\;:·()\-]+/g,' ').replace(/\s+/g,' ').trim();};
+  var qn=tnij(q),qw=qn?qn.split(' '):[],qs=qn.replace(/\s+/g,'');
+  var lis=WSZ.filter(function(o){if(!q)return true;var t=tnij(o.opis+' '+(o.plik||'')),tz=t.replace(/\s+/g,'');
+   return (qw.length&&qw.every(function(w){return t.indexOf(w)>=0;}))||(qs.length>2&&tz.indexOf(qs)>=0);});
   sel.innerHTML='<option value="">'+(q?('Znaleziono: '+lis.length+' - wybierz ofertę…'):('Wybierz ofertę do poprawki ('+WSZ.length+')…'))+'</option>'+lis.map(function(o){
    return '<option value="'+o.id+'">'+String(o.opis).replace(/</g,'')+'</option>';}).join('');
   var wyn=document.getElementById('folWyn');if(!wyn)return;
