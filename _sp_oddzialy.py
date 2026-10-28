@@ -10,8 +10,20 @@ oddzialu, opis uslug, realizacje, opinie z tej wizytowki, mape i przycisk wyceny
 Do tego dane strukturalne LocalBusiness, zeby Google wiedzial, ze to osobna
 placowka, a nie kopia strony glownej.
 
-Uzycie:  python _sp_oddzialy.py
+Uzycie (od 28.10.2026):
+  python _sp_oddzialy.py --nowy cyklinowanie-ursynow.html
+      buduje JEDNA nowa podstrone z aktualnej podstrony-siostry (SIOSTRA, dzis
+      cyklinowanie-mokotow.html), wiec przejmuje wszystkie pozniejsze poprawki
+      (styl, przyciski, stopka, dok ZAMOW ONLINE). Podmienia tylko dane oddzialu.
+  python _sp_oddzialy.py --pelna
+      STARY tryb z 10.10: generuje od zera wszystkie podstrony i sekcje na index.html.
+      UWAGA: podstrony i index.html byly potem poprawiane recznie (og:image,
+      przyciski, teksty sekcji "Nasze oddzialy") - pelny przebieg te poprawki COFA.
+Piaty oddzial (Ursynow/Kabaty, 28.10.2026) nie ma jeszcze wizytowki Google:
+'cid' i 'opinia' = None, wtedy zamiast opinii idzie zdanie o wizytowce w przygotowaniu.
+Po zalozeniu wizytowki: wpisac cid i podmienic ten akapit na stronie recznie.
 """
+import sys
 import io
 import os
 import re
@@ -62,7 +74,20 @@ ODDZIALY = [
         'opinia': ('„Podłoga wygląda świetnie, cyklinowanie z uzupełnieniem '
                    'przestrzeni między deskami.”', 'opinia Google, wizytówka Mokotów'),
     },
+    {
+        # Artur 28.10.2026 wieczor: piaty oddzial zatwierdzony, "odpalaj tam wizytowke".
+        # Kod pocztowy 02-798 wg OpenStreetMap (budynek Mielczarskiego 8, Kabaty). Bez numeru lokalu.
+        'plik': 'cyklinowanie-ursynow.html', 'dz': 'Ursynów',
+        'ulica': 'ul. Mielczarskiego 8', 'kod': '02-798', 'miasto': 'Warszawa',
+        'cid': None,
+        'rola': 'Punkt na Kabatach, przy stacji metra Kabaty i al. KEN. Obsługuje południe Warszawy.',
+        'obszar': ['Kabaty', 'Natolin', 'Ursynów', 'Wilanów', 'Powsin'],
+        'eta': 'ok. 10-20 min',
+        'opinia': None,
+        'geo': (52.1291, 21.0617),
+    },
 ]
+SIOSTRA = 'cyklinowanie-mokotow.html'
 
 STYL = '''
 <style>
@@ -297,4 +322,96 @@ def main():
     print('oddzialy.html: odnosniki do podstron')
 
 
-main()
+def ld_oddzialu(o):
+    """Dane strukturalne podstrony; bez wizytowki (cid None) bez sameAs, z geo jesli jest."""
+    d = ('{"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"SMARTPARKIET %s",'
+         '"description":"Cyklinowanie bezpyłowe i renowacja parkietu, oddział %s.",'
+         '"url":"%s/%s","telephone":"+48602242815","email":"smartparkiet@gmail.com",'
+         '"image":"%s/img/og-smartparkiet-artur.jpg",'
+         '"address":{"@type":"PostalAddress","streetAddress":"%s","addressLocality":"Warszawa",'
+         '"postalCode":"%s","addressCountry":"PL"},"areaServed":[%s]'
+         % (o['dz'], o['dz'], BAZA, o['plik'], BAZA, o['ulica'].replace('ul. ', ''), o['kod'],
+            ','.join('{"@type":"Place","name":"%s"}' % x for x in o['obszar'])))
+    if o.get('geo'):
+        d += ',"geo":{"@type":"GeoCoordinates","latitude":%s,"longitude":%s}' % o['geo']
+    if o.get('cid'):
+        d += ',"sameAs":["https://maps.google.com/?cid=%s"]' % o['cid']
+    d += ',"priceRange":"$$","parentOrganization":{"@type":"Organization","name":"SMARTPARKIET Trembiński"}}'
+    return '<script type="application/ld+json">' + d + '</script>'
+
+
+def nowy(plik):
+    """Nowa podstrona oddzialu z aktualnej podstrony-siostry (28.10.2026)."""
+    o = next(x for x in ODDZIALY if x['plik'] == plik)
+    s_ = next(x for x in ODDZIALY if x['plik'] == SIOSTRA)
+    t = io.open(os.path.join(KAT, SIOSTRA), encoding='utf-8', newline='').read()
+
+    def zam(a, b, tekst, n=None):
+        if a not in tekst:
+            raise SystemExit('brak we wzorze: ' + a[:70])
+        return tekst.replace(a, b) if n is None else tekst.replace(a, b, n)
+
+    i = t.index('</header>')
+    j = t.index('<footer class="site">')
+    gora, tresc_, dol = t[:i], t[i:j], t[j:]
+
+    # 1. glowa: tytuly, opisy, canonical, og, okruszki
+    gora = zam(SIOSTRA.replace('.html', ''), plik.replace('.html', ''), gora)
+    gora = zam(s_['ulica'], o['ulica'], gora)
+    gora = zam(s_['dz'], o['dz'], gora)
+
+    # 2. tresc
+    tresc_ = zam('Oddział %s</p>' % s_['dz'], 'Oddział %s</p>' % o['dz'], tresc_)
+    tresc_ = zam('<em>%s</em>' % s_['dz'], '<em>%s</em>' % o['dz'], tresc_)
+    tresc_ = zam(s_['rola'], o['rola'], tresc_)
+    tresc_ = zam('<dd>%s<br>%s Warszawa</dd>' % (s_['ulica'], s_['kod']),
+                 '<dd>%s<br>%s Warszawa</dd>' % (o['ulica'], o['kod']), tresc_)
+    tresc_ = zam('<dd>%s</dd></div>\n    </div>' % s_['eta'], '<dd>%s</dd></div>\n    </div>' % o['eta'], tresc_)
+    tresc_ = re.sub(r'<div class="odz-obszar">.*?</div>',
+                    '<div class="odz-obszar">' + ''.join('<span>%s</span>' % x for x in o['obszar']) + '</div>',
+                    tresc_, count=1, flags=re.S)
+    if o.get('opinia'):
+        raise SystemExit('oddzial z opinia - dopisac obsluge')
+    nowa_op = ('<h2 style="margin-top:30px">Wizytówka Google</h2>\n'
+               '    <div class="odz-op">\n'
+               '      <p>Wizytówka Google oddziału %s jest w przygotowaniu. Opinie klientów '
+               'z pozostałych oddziałów są na stronie <a href="oddzialy.html">Oddziały</a>.</p>\n'
+               '    </div>' % o['dz'])
+    tresc_, n = re.subn(r'<h2 style="margin-top:30px">Opinia z wizytówki [^<]*</h2>\s*<div class="odz-op">.*?</p>\s*</div>',
+                        nowa_op, tresc_, count=1, flags=re.S)
+    if n != 1:
+        raise SystemExit('nie znalazlem bloku opinii')
+    adres_q = '%s,+%s+Warszawa' % (o['ulica'].replace('ul. ', '').replace(' ', '+'), o['kod'])
+    tresc_, n = re.subn(r'(<iframe class="odz-mapa" src=")[^"]*(")',
+                        r'\g<1>https://www.google.com/maps?q=%s&output=embed\g<2>' % adres_q, tresc_, count=1)
+    tresc_ = zam('title="Mapa dojazdu, oddział %s"' % s_['dz'], 'title="Mapa dojazdu, oddział %s"' % o['dz'], tresc_)
+    linki = ''.join('<a href="%s">Cyklinowanie %s</a>' % (x['plik'], x['dz']) for x in ODDZIALY if x['plik'] != plik)
+    tresc_, n = re.subn(r'(<h2 style="margin-top:30px">Pozostałe oddziały</h2>\s*<div class="odz-inne">).*?(</div>)',
+                        lambda m: m.group(1) + linki + m.group(2), tresc_, count=1, flags=re.S)
+    if n != 1:
+        raise SystemExit('nie znalazlem listy pozostalych oddzialow')
+    if s_['dz'] in tresc_.replace('Cyklinowanie %s' % s_['dz'], ''):
+        raise SystemExit('w tresci zostala nazwa siostry: sprawdzic wzor')
+
+    # 3. dol: dane strukturalne oddzialu
+    dol, n = re.subn(r'<script type="application/ld\+json">\{"@context":"https://schema.org","@type":"HomeAndConstructionBusiness".*?</script>',
+                     lambda m: ld_oddzialu(o), dol, count=1, flags=re.S)
+    if n != 1:
+        raise SystemExit('nie znalazlem danych strukturalnych')
+
+    io.open(os.path.join(KAT, plik), 'w', encoding='utf-8', newline='').write(gora + tresc_ + dol)
+    og_s = os.path.join(KAT, 'og', SIOSTRA.replace('.html', '.jpg'))
+    og_n = os.path.join(KAT, 'og', plik.replace('.html', '.jpg'))
+    if os.path.exists(og_s) and not os.path.exists(og_n):
+        import shutil
+        shutil.copyfile(og_s, og_n)
+    print('zapisane:', plik, '(z', SIOSTRA + ')')
+
+
+if __name__ == '__main__':
+    if len(sys.argv) > 2 and sys.argv[1] == '--nowy':
+        nowy(sys.argv[2])
+    elif '--pelna' in sys.argv:
+        main()
+    else:
+        print(__doc__)
