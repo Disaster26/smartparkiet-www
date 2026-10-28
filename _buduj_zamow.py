@@ -23,7 +23,7 @@ def zamien(stare, nowe, n=1):
     s = s.replace(stare, nowe, n)
 
 TYT = 'Zamów usługę SMART online - cyklinowanie parkietu Warszawa | SMARTPARKIET'
-OPIS = 'ZAMÓW USŁUGĘ SMART ONLINE™: podaj metraż i zdjęcia, zobacz cenę z kalkulatora, wybierz preferowany termin i wyślij do potwierdzenia. Centrala SMARTPARKIET potwierdza termin SMS-em lub e-mailem.'
+OPIS = 'ZAMÓW USŁUGĘ SMART ONLINE™: podaj metraż i zdjęcia, zobacz cenę z kalkulatora, wybierz preferowany termin i wyślij do potwierdzenia. Biuro SMARTPARKIET potwierdza termin SMS-em lub e-mailem.'
 s = re.sub(r'<title>.*?</title>', '<title>' + TYT + '</title>', s, count=1, flags=re.S)
 s = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="' + OPIS + '">', s, count=1)
 s = s.replace('smartparkiet-www/wycena.html"', 'smartparkiet-www/zamow-online.html"').replace('smartparkiet.com.pl/wycena.html"', 'smartparkiet.com.pl/zamow-online.html"')
@@ -44,15 +44,14 @@ zamien('<a href="zamow-online.html#koszyk" class="nav-zam">', '<a href="zamow-on
 # lewa kolumna: opis programu + 5 krokow
 LEWA = '''    <div class="sticky zam-gora">
       <h2>ZAMÓW USŁUGĘ CYKLINOWANIE SMART ONLINE&trade;</h2>
-      <p class="lead se-lead">Wycena i zamówienie bez wychodzenia z domu.</p>
       <ol class="zam-kroki">
         <li><b>Podaj dane</b> - adres, metraż i zdjęcia.</li>
-        <li><b>Poznaj cenę</b> - kalkulacja wstępna, ostateczną kwotę zatwierdza centrala.</li>
+        <li><b>Poznaj cenę</b> - kalkulacja wstępna, ostateczną kwotę zatwierdza biuro.</li>
         <li><b>Wybierz termin</b> - wskaż dogodne dni.</li>
         <li><b>Złóż zamówienie</b> - jednym kliknięciem.</li>
         <li><b>Otrzymaj potwierdzenie</b> - do 2 godzin roboczych.</li>
       </ol>
-      <p class="lead zam-uwaga">Termin staje się wiążący dopiero po potwierdzeniu przez centralę SMARTPARKIET&trade;.</p>
+      <p class="lead zam-uwaga">Termin staje się wiążący dopiero po potwierdzeniu przez biuro SMARTPARKIET&trade;.</p>
     </div>
     <div class="ai">
       <p class="koszyk-tyt" id="koszyk">Koszyk SMART</p>'''
@@ -62,13 +61,12 @@ s = re.sub(r'    <div class="sticky">.*?</div>\s*<div class="ai">', lambda m: LE
 TEKST = """<section class="zam-tekst" id="jak-to-dziala">
   <div class="wrap">
     <h2>ZAMÓW CYKLINOWANIE SMART ONLINE&trade;</h2>
-    <p class="zt-start"><b>Zamawianie usługi odnowienia starej podłogi nigdy wcześniej nie było tak proste!</b></p>
-    <p>Nie musisz już dzwonić, pytać o wolne terminy ani umawiać oględzin, żeby poznać cenę.</p>
+    <p class="zt-start"><b>Renowacja parkietu jeszcze nigdy nie była tak prosta!</b></p>
+    <p>Bez telefonów, oględzin i oczekiwania na wycenę.</p>
     <p class="zt-lead">Teraz to my dostosowujemy się do Twojego harmonogramu!</p>
-    <p>Zamów CYKLINOWANIE SMART&trade; online, poznaj wstępną wycenę i wskaż dogodne dla siebie terminy.</p>
-    <p>To Ty decydujesz, kiedy chcesz przeprowadzić renowację. My dopasujemy ekipę i organizację pracy do Twoich potrzeb i harmonogramu.</p>
-    <p><b>Złóż zamówienie online!</b> Nasze biuro potwierdzi dostępność wybranego terminu oraz szczegóły realizacji w ciągu 2 godzin roboczych.</p>
-    <p class="zt-haslo"><i>Twój parkiet. Twoja wycena. Twój termin.<br>My tylko robimy robotę!</i></p>
+    <p>Zamów CYKLINOWANIE SMART&trade; online, poznaj wstępną wycenę i wybierz dogodne terminy.</p>
+    <p><b>Złóż zamówienie online!</b> W ciągu 2 godzin roboczych potwierdzimy dostępność wybranego terminu i szczegóły realizacji.</p>
+    <p class="zt-haslo"><i>Twój parkiet. Twój termin. Twoja wycena.<br>My tylko robimy robotę!</i></p>
     <p><a class="btn btn-amber" href="#koszyk">Przejdź do Koszyka SMART</a></p>
   </div>
 </section>

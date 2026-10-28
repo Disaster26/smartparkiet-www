@@ -218,7 +218,7 @@ function mailPotwierdzenie(zamowienie, numer) {
     'Dziękujemy za złożenie zamówienia online na usługę ' + B('CYKLINOWANIE SMART&trade;') + '.',
     'W załączniku przesyłamy wstępną kalkulację.',
     'Wkrótce skontaktujemy się z Państwem w celu ' + B('potwierdzenia dostępności wybranego terminu oraz uzgodnienia szczegółów realizacji') + '.',
-    B('Ważne:') + ' Złożenie zamówienia nie oznacza jeszcze rezerwacji terminu. Termin zostanie ostatecznie potwierdzony przez naszą centralę.',
+    B('Ważne:') + ' Złożenie zamówienia nie oznacza jeszcze rezerwacji terminu. Termin zostanie ostatecznie potwierdzony przez nasze biuro.',
     '%STATUS%',
     'Dziękujemy za zaufanie!'
   ] : [
@@ -230,7 +230,7 @@ function mailPotwierdzenie(zamowienie, numer) {
   /* 27.10 02:57: dwa statusy jak na stronie - przyjete (aktywny) i potwierdzone (jeszcze nie) */
   const status = '<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:2px 0 16px;width:100%;background:#FFF5EC;border:1px solid #F6C9A6">' +
     '<tr><td style="padding:10px 12px;width:34px;vertical-align:top"><div style="width:26px;height:26px;border-radius:13px;background:#FE6500;color:#fff;text-align:center;line-height:26px;font-size:15px">&#9201;</div></td>' +
-    '<td style="padding:10px 12px 10px 0;font-size:14px;line-height:1.4"><b style="color:#C2410C">ZAMÓWIENIE PRZYJĘTE</b><br>Oczekuje na potwierdzenie centrali.</td></tr>' +
+    '<td style="padding:10px 12px 10px 0;font-size:14px;line-height:1.4"><b style="color:#C2410C">ZAMÓWIENIE PRZYJĘTE</b><br>Oczekuje na potwierdzenie biura.</td></tr>' +
     '<tr><td style="padding:0 12px 10px;vertical-align:top"><div style="width:26px;height:26px;border-radius:13px;background:#E7DED3;color:#8A8078;text-align:center;line-height:26px;font-size:15px">&#10003;</div></td>' +
     '<td style="padding:0 12px 10px 0;font-size:14px;line-height:1.4;color:#8A8078"><b>ZAMÓWIENIE POTWIERDZONE</b><br>Termin i zakres prac zostały zatwierdzone.</td></tr></table>';
   const p = ak.map(t => t === '%STATUS%' ? status : '<p style="margin:0 0 14px">' + t + '</p>').join('');
@@ -242,13 +242,13 @@ function mailPotwierdzenie(zamowienie, numer) {
     '<tr><td style="background:#ffffff;padding:26px 24px 24px;color:#1F2328;font-size:15px;line-height:1.6">' +
       '<p style="margin:0 0 14px">Dzień dobry!</p>' + p +
       '<p style="margin:18px 0 0"><b>SMARTPARKIET&trade;</b><br>&#128222; ' + tel + '</p>' +
-      '<p style="margin:14px 0 0;font-style:italic;color:#4A5058">Twój parkiet. Twoja wycena. Twój termin. My tylko robimy robotę!</p></td></tr>' +
+      '<p style="margin:14px 0 0;font-style:italic;color:#4A5058">Twój parkiet. Twój termin. Twoja wycena.<br>My tylko robimy robotę!</p></td></tr>' +
     '<tr><td style="background:#ffffff;padding:0 24px 24px">' +
       '<a href="tel:+48602242815" style="display:inline-block;border:1.5px solid #FE6500;color:#FE6500;font-weight:700;font-size:14px;text-decoration:none;padding:9px 18px;border-radius:4px">Zadzwoń</a></td></tr>' +
     '<tr><td style="padding:14px 24px;color:#6B5E52;font-size:12px;text-align:center"><a href="https://smartparkiet.com.pl" style="color:#6B5E52;text-decoration:none">smartparkiet.com.pl</a> &middot; Cyklinowanie SMART&trade;</td></tr>' +
     '</table></div>';
   const txt = t => t.replace(/<[^>]+>/g, '').replace(/&trade;/g, '™');
-  const text = 'Dzień dobry!\n\n' + ak.map(t => t === '%STATUS%' ? 'Status: ZAMÓWIENIE PRZYJĘTE - oczekuje na potwierdzenie centrali.\nNastępny krok: ZAMÓWIENIE POTWIERDZONE - termin i zakres prac zostaną zatwierdzone.' : txt(t)).join('\n\n') + '\n\nSMARTPARKIET™\n📞 602 242 815\n\nTwój parkiet. Twoja wycena. Twój termin. My tylko robimy robotę!';
+  const text = 'Dzień dobry!\n\n' + ak.map(t => t === '%STATUS%' ? 'Status: ZAMÓWIENIE PRZYJĘTE - oczekuje na potwierdzenie biura.\nNastępny krok: ZAMÓWIENIE POTWIERDZONE - termin i zakres prac zostaną zatwierdzone.' : txt(t)).join('\n\n') + '\n\nSMARTPARKIET™\n📞 602 242 815\n\nTwój parkiet. Twój termin. Twoja wycena.\nMy tylko robimy robotę!';
   return { html: html, text: text };
 }
 
