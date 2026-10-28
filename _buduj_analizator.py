@@ -102,6 +102,10 @@ FOLDER_JS = r"""<style>
 #folWyn button{display:block;width:100%;text-align:left;font:inherit;font-size:.92rem;line-height:1.35;padding:10px 12px;border-radius:8px;border:0;background:#fff;color:#14110E;cursor:pointer}
 #folWyn button small{display:block;color:#6A6F76;font-size:.78rem;margin-top:2px}
 #folWyn button.st{background:#ECEDEF}
+#folWyn .fw-k{display:flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;color:#4A5058;margin-bottom:2px}
+#folWyn .fw-k i{font-style:normal;font-size:.68rem;letter-spacing:.06em;padding:2px 7px;border-radius:999px}
+#folWyn .fw-n{background:#FF6A13;color:#fff}#folWyn .fw-s{background:#D5D8DC;color:#3A3F45}
+#folWyn button.fw-old{background:#F1F2F4;color:#4A5058}
 #folInfo{margin:6px 0 0;font-size:.85rem;color:#E9E4DD!important;min-height:1em}
 #wycHist{display:none!important}
 </style>
@@ -121,13 +125,13 @@ FOLDER_JS = r"""<style>
   document.getElementById('folPinB').onclick=go;document.getElementById('folPin').onkeydown=function(ev){if(ev.key==='Enter'){ev.preventDefault();go();}};}
  async function klucz(){var x=k();if(x)return x;pokazPin();return '';}
  async function api(q){var x=await klucz();if(!x)return null;
-  var j=await (await fetch(U+'?'+q+'&k='+encodeURIComponent(x))).json();
+  var j=await (await fetch(U+'?'+q+'&k='+encodeURIComponent(x)+'&_='+Date.now(),{cache:'no-store'})).json(); /* 28.10: bez cache przegladarki */
   if(!j.ok&&j.blad==='Brak dostępu'){try{localStorage.removeItem('spKlucz');}catch(e){}}return j;}
  function plik(b,i){var s=atob(b),a=new Uint8Array(s.length);for(var n=0;n<s.length;n++)a[n]=s.charCodeAt(n);
   return new File([a],'Zdjecie_'+String(i+1).padStart(2,'0')+'.jpg',{type:'image/jpeg'});}
  async function lista(){info('Pobieram listę ofert...');var j;try{j=await api('a=lista');}catch(e){}
   if(!j)return;if(!j.ok){info(j.blad||'Nie udało się pobrać listy.');if(j.blad==='Brak dostępu')pokazPin();return;}
-  WSZ=j.lista||[];pokazListe();
+  WSZ=(j.lista||[]).slice().sort(function(x,y){return (y.t||0)-(x.t||0);});WSZ_T=Date.now();window.spFolderNieaktualny=false;pokazListe();
   info(j.lista.length?'Wpisz kilka liter ulicy albo wybierz z listy. Oferty od 22.10 wczytują się ze zdjęciami, starsze (szare) - same dane klienta.':'Folder jest pusty.');}
  async function wczytaj(id){info('Wczytuję ofertę...');var j;try{j=await api('a=wczytaj&id='+encodeURIComponent(id));}catch(e){}
   if(!j)return;if(!j.ok){info('Nie udało się wczytać oferty.');return;}
@@ -147,7 +151,20 @@ FOLDER_JS = r"""<style>
   var ok=document.getElementById('ofertaKl');if(ok&&o.mailKlienta)ok.checked=true;
   info('Wczytana oferta z '+o.kiedy+' ('+((o.zdjecia||[]).length)+' zdj.). Popraw, co trzeba, i wyślij ponownie - klient dostanie poprawioną ofertę.');}
  /* Artur 27.10 13:22-13:24: lista ofert za dluga - pole szukania (3-4 litery ulicy, telefon albo data) filtruje na zywo */
- var WSZ=[];
+ var WSZ=[],WSZ_T=0;
+ /* Artur 28.10 22:24: po korekcie i wysylce wyszukiwarka pokazywala STARA wersje - lista byla pobrana raz przy otwarciu strony
+    i nigdy odswiezana (nowy zapis w Dysku byl, ale nie na liscie w telefonie). Teraz: pobieranie przy kazdym wejsciu w pole szukania
+    (najwyzej co 15 s) i zawsze po wyslaniu oferty; wersje tego samego klienta oznaczone, najnowsza na gorze. */
+ var LAD=null;function odswiez(){if(!LAD)LAD=lista().finally(function(){LAD=null;});return LAD;}
+ function swieza(){return WSZ.length&&!window.spFolderNieaktualny&&Date.now()-WSZ_T<15000;}
+ function rozbierz(o){var op=String(o.opis||''),m=op.match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2})[-:](\d{2})\s*/),kiedy='',reszta=op;
+  if(m){kiedy=m[3]+'.'+m[2]+' '+m[4]+':'+m[5];reszta=op.slice(m[0].length);}
+  else if(o.t){var d=new Date(o.t);kiedy=('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
+  var nt=(reszta.match(/netto (\d+) zł/)||[])[1],nr=(reszta.match(/nr (\d{8}-\d{3,5})/)||[])[1];
+  reszta=reszta.replace(/netto \d+ zł\s*/,'').replace(/nr \d{8}-\d{3,5}\s*/,'').trim();
+  var tel=(reszta.replace(/[\s-]/g,'').match(/(\+?48)?(\d{9})(?!.*\d{9})/)||[])[2]||'';
+  var klucz=tel||bezOg(reszta).replace(/^\d+([.,]\d+)?\s*m2?\s*/,'').replace(/[^a-z0-9]/g,'').slice(0,24);
+  return {kiedy:kiedy,netto:nt?(+nt).toLocaleString('pl-PL').replace(/\u00a0/g,' ')+' zł':'',nr:nr||'',reszta:reszta.replace(/</g,''),klucz:klucz};}
  function bezOg(t){return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l');}
  function pokazListe(){var sel=document.getElementById('folSel'),q=bezOg((document.getElementById('folSzuk')||{}).value||'').trim();
   /* Artur 28.10 wieczor: "AL.Jana" nie znajdowalo "AL. JANA PAWLA II 61/36". Kropki, przecinki, podkreslenia, ukosniki = spacje;
@@ -156,12 +173,16 @@ FOLDER_JS = r"""<style>
   var qn=tnij(q),qw=qn?qn.split(' '):[],qs=qn.replace(/\s+/g,'');
   var lis=WSZ.filter(function(o){if(!q)return true;var t=tnij(o.opis+' '+(o.plik||'')),tz=t.replace(/\s+/g,'');
    return (qw.length&&qw.every(function(w){return t.indexOf(w)>=0;}))||(qs.length>2&&tz.indexOf(qs)>=0);});
-  sel.innerHTML='<option value="">'+(q?('Znaleziono: '+lis.length+' - wybierz ofertę…'):('Wybierz ofertę do poprawki ('+WSZ.length+')…'))+'</option>'+lis.map(function(o){
-   return '<option value="'+o.id+'">'+String(o.opis).replace(/</g,'')+'</option>';}).join('');
+  var ile={},bylo={};lis.forEach(function(o){var r=rozbierz(o);o._r=r;ile[r.klucz]=(ile[r.klucz]||0)+1;});
+  lis.forEach(function(o){var r=o._r;r.wersja=ile[r.klucz]>1?(bylo[r.klucz]?'starsza wersja':'NAJNOWSZA'):'';bylo[r.klucz]=1;});
+  sel.innerHTML='<option value="">'+(q?('Znaleziono: '+lis.length+' - wybierz ofertę…'):('Wybierz ofertę do poprawki ('+WSZ.length+')…'))+'</option>'+lis.map(function(o){var r=o._r;
+   return '<option value="'+o.id+'">'+[r.kiedy,r.wersja,r.netto,r.reszta].filter(Boolean).join(' · ')+'</option>';}).join('');
   var wyn=document.getElementById('folWyn');if(!wyn)return;
   if(!q){wyn.innerHTML='';return;}
-  wyn.innerHTML=lis.length?lis.slice(0,8).map(function(o){var t=String(o.opis).replace(/</g,'').split(' · ');
-   return '<button type="button" data-id="'+o.id+'"'+(o.stara?' class="st"':'')+'>'+t.slice(1,3).join(' · ')+'<small>'+[t[0]].concat(t.slice(3)).join(' · ')+'</small></button>';}).join('')
+  wyn.innerHTML=lis.length?lis.slice(0,8).map(function(o){var r=o._r,t=String(o.opis).replace(/</g,'').split(' · ');
+   var gl=o.stara?t.slice(1,3).join(' · '):r.reszta;
+   var znak=r.wersja==='NAJNOWSZA'?'<i class="fw-n">NAJNOWSZA</i>':(r.wersja?'<i class="fw-s">starsza wersja</i>':'');
+   return '<button type="button" data-id="'+o.id+'"'+(o.stara?' class="st"':(r.wersja==='starsza wersja'?' class="fw-old"':''))+'><span class="fw-k">'+r.kiedy+znak+'</span>'+gl+'<small>'+[r.netto?('netto '+r.netto):'',r.nr?('nr '+r.nr):'',o.stara?'stara oferta':''].filter(Boolean).join(' · ')+'</small></button>';}).join('')
    +(lis.length>8?'<small style="color:#E9E4DD">i jeszcze '+(lis.length-8)+' - wpisz więcej liter</small>':''):'<small style="color:#E9E4DD">Nic nie znaleziono - spróbuj inaczej: 3-4 litery ulicy, końcówka telefonu albo data (np. 21.10).</small>';}
  function start(){var box=document.querySelector('.sms-box');if(document.getElementById('folOf')){if(k())lista();return;}if(!box)return;
   var w=document.createElement('div');w.id='folOf';
@@ -174,8 +195,10 @@ FOLDER_JS = r"""<style>
   document.getElementById('folWyn').addEventListener('click',function(ev){var b=ev.target.closest('button[data-id]');if(!b)return;
    document.getElementById('folWyn').innerHTML='';wczytaj(b.getAttribute('data-id'));});
   var sz=document.getElementById('folSzuk');
-  sz.addEventListener('focus',function(){if(!WSZ.length)lista();});
-  sz.addEventListener('input',function(){if(!WSZ.length){lista();return;}pokazListe();});
+  sz.addEventListener('focus',function(){if(!swieza())odswiez();});
+  sz.addEventListener('input',function(){if(!swieza()){odswiez();return;}pokazListe();});
+  sel.addEventListener('focus',function(){if(!swieza())odswiez();});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)window.spFolderNieaktualny=true;});
   sz.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();sz.blur();}});
   var m=location.hash.match(/oferta=([\w-]+)/);if(m)wczytaj(m[1]);else if(k())lista();else pokazPin();}
  window.spFolderStart=start;
