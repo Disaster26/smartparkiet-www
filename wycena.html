@@ -1107,6 +1107,11 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       var c=parseFloat(String(document.getElementById('naprCena').value||'').replace(',','.')),i=parseFloat(String(document.getElementById('naprIl').value||'').replace(',','.'));
       if(!(isFinite(c)&&c>0))return null;return {i:isFinite(i)&&i>0?i:1,j:(document.getElementById('naprJm').value||'').trim()||'kpl.',c:c};};
   })();
+  /* Artur 28.10 22:27: stawka VAT do paska Kwota brutto w PDF - 8% (domyslnie) albo 23% */
+  (function(){var db=document.getElementById('dodBlok');if(!db||document.getElementById('vatBlok'))return;
+    var d=document.createElement('div');d.className='pyt';d.id='vatBlok';
+    d.innerHTML='<span>Stawka VAT w ofercie (kwota brutto w PDF)</span><div class="tn"><label><input type="radio" name="vat" value="8" checked> 8%</label><label><input type="radio" name="vat" value="23"> 23%</label></div>';
+    db.parentNode.insertBefore(d,db);})();
   /* Artur 15.10 17:01-17:03: przegladarka podstawiala jego wlasny kod pocztowy i dane klientowi - w trybie parkieciarza bez autouzupelniania */
   [].slice.call(document.querySelectorAll('#ulicaKl,#kodKl,#miastoKl,#imieKl,#telKl,#mailKl,#terminKl')).forEach(function(i){i.setAttribute('autocomplete','off');i.setAttribute('autocorrect','off');i.setAttribute('name','sp-'+i.id+'-'+Math.random().toString(36).slice(2,7));});
   window.spDodatkowe=function(){
@@ -1332,7 +1337,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
      (localStorage, tryb ?parkieciarz) - nigdzie publicznie, wiec dane klientow nie wisza w sieci. */
   var on=false; try{on=!!window.SP_ANALIZATOR||/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
   var POLA=['m2','typ','wyk','gatKl','montazKl','listwyMb','stabM2','mebleKw','naprIl','naprJm','naprCena','terminKl','uwagiKl','imieKl','ulicaKl','kodKl','miastoKl','dzielKl','obiektKl','pietroKl','telKl','mailKl'];
-  var RADIA=['listwy','stab','napr','meble','winda'];
+  var RADIA=['listwy','stab','napr','meble','winda','vat'];
   function zrzut(){var s={pola:{},radia:{},dod:[]};
     /* 22.10: listy rozwijane maja powtarzajace sie wartosci (Klepka/Mozaika = 1, oba lakiery = 0) - zapamietujemy tez pozycje */
     s.idx={};POLA.forEach(function(id){var e=document.getElementById(id);if(e){s.pola[id]=e.value;if(e.tagName==='SELECT')s.idx[id]=e.selectedIndex;}});
@@ -1689,13 +1694,13 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         {const ft='italic '+(D.fl-1)+'px Arial',ll=linie(g,'Przed rozpoczęciem prac prosimy o zapoznanie się z zasadami renowacji na ostatniej stronie.',kol-4,ft,3);
           yL+=D.lh;if(rys){g.fillStyle=SZARY;g.font=ft;ll.forEach((t,k)=>g.fillText(t,M+2,yL+k*D.lh));}yL+=(ll.length-1)*D.lh;}
         return Math.max(yL,yRt);};
-      const miejsce=yy=>Math.floor(((H-80)-(yy+34)-52-16-100-62)/Math.max(1,A.poz.length));
+      const miejsce=yy=>Math.floor(((H-80)-(yy+34)-52-16-100-62-74)/Math.max(1,A.poz.length)); /* 28.10: -74 = pasek Kwota brutto */
       let D=GEST[GEST.length-1];for(const d of GEST){if(miejsce(uklad(d,false))>=40){D=d;break;}}
       let y=uklad(D,true)+10;
       y+=24;
       // tabela cen (gdy sie nie zmiesci przed stopka, idzie na nastepna strone)
       /* wysokosc wiersza tabeli dopasowana do miejsca na stronie (50 px, w razie potrzeby do 36 px); nowa strona dopiero, gdy i tak sie nie zmiesci */
-      let rh=Math.min(50,Math.floor(((H-80)-y-52-16-100-62)/Math.max(1,A.poz.length)));
+      let rh=Math.min(50,Math.floor(((H-80)-y-52-16-100-62-74)/Math.max(1,A.poz.length)));
       if(rh<34){g=nowa();g.textBaseline='alphabetic';naglowek(g,'WYCENA',M,190);y=250;rh=50;}
       const cx=[M,M+500,M+620,M+740,M+890], cw=W-2*M; /* Artur 20.10 22:43: kolumna "Do uzg." */
       g.fillStyle=ZYWY;g.fillRect(M,y,cw,52);g.fillStyle='#fff';g.font='bold 23px Arial';
@@ -1717,7 +1722,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','do uzg.'),cx[2]+12,ty);
         g.fillText(p[2]==null?'do uzg.':zl(p[2]),cx[3]+12,ty);g.fillText(laczna?zl(laczna):'-',cx[4]+12,ty);y+=rh;});
       g.fillStyle=RAMKA;g.fillRect(cx[1],yT,1.5,y-yT);g.fillRect(cx[2],yT,1.5,y-yT);g.strokeStyle=POM;g.lineWidth=3;g.strokeRect(M+1.5,yT-52+1.5,cw-3,y-yT+52-3);y+=16;g.fillStyle='#fff';g.fillRect(M,y,cw,70);g.strokeStyle=POM;g.lineWidth=4;g.strokeRect(M+2,y+2,cw-4,66);g.fillStyle=CIEMNY;g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);g.fillStyle=POM;
-      g.textAlign='right';g.fillText(zl(A.suma),W-M-20,y+46);g.textAlign='left';y+=100;
+      g.textAlign='right';g.fillText(zl(A.suma),W-M-20,y+46);g.textAlign='left';y+=84;{/* Artur 28.10 22:27: pod netto pasek brutto; stawka VAT z przelacznika w analizatorze (domyslnie 8% - remont lokalu mieszkalnego) */const st=window.spVat?window.spVat():8,br=A.suma>0?Math.round(A.suma*(100+st))/100:0;g.fillStyle='#fff';g.fillRect(M,y,cw,60);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,y+1,cw-2,58);g.fillStyle=CIEMNY;g.font='bold 26px Arial';g.fillText('Kwota brutto (VAT '+st+'%)',M+20,y+40);g.textAlign='right';g.fillText(br?zl(br):'-',W-M-20,y+40);g.textAlign='left';}y+=90;
       g.fillStyle=SZARY;g.font='italic 20px Arial';
       y=zawin(g,'Pracownik jest upoważniony do przyjęcia płatności gotówką (kwota netto). Faktura wystawiana na życzenie klienta. Wycena wstępna, przygotowana na podstawie danych i zdjęć od klienta; ostateczną cenę potwierdza SMARTPARKIET.',M,y,W-2*M,28);
       // zdjecia, 6 na strone, bez pustych ramek
@@ -3401,6 +3406,7 @@ html body #naprBlok .napr-w input{width:100%;box-sizing:border-box;min-height:44
 #spTabBtn[hidden]{display:none}
 @media(min-width:901px){#spTabBtn{right:24px;bottom:24px}}
 </style>
+<script>window.spVat=function(){var e=document.querySelector('input[name=vat]:checked');var v=e?+e.value:8;return v===23?23:8;};</script>
 <script id="tab-btn-2810n">(function(){
  /* Artur 28.10 21:5x: "plywajacy przycisk do podgladu tabelki, zebym nie latal w dol za kazdym razem" - tylko tryb parkieciarza/analizator.
     Podglad tabeli = "Podglad oferty przed wyslaniem" (PDF z tabela pozycji i suma) na samym dole formularza. Przycisk otwiera go od razu
