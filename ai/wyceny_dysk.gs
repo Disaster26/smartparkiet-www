@@ -242,13 +242,13 @@ function mailPotwierdzenie(zamowienie, numer) {
     '<tr><td style="background:#ffffff;padding:26px 24px 24px;color:#1F2328;font-size:15px;line-height:1.6">' +
       '<p style="margin:0 0 14px">Dzień dobry!</p>' + p +
       '<p style="margin:18px 0 0"><b>SMARTPARKIET&trade;</b><br>&#128222; ' + tel + '</p>' +
-      '<p style="margin:14px 0 0;font-style:italic;color:#4A5058">Twój parkiet. Twój termin. My tylko robimy robotę!</p></td></tr>' +
+      '<p style="margin:14px 0 0;font-style:italic;color:#4A5058">Twój parkiet. Twoja wycena. Twój termin. My tylko robimy robotę!</p></td></tr>' +
     '<tr><td style="background:#ffffff;padding:0 24px 24px">' +
       '<a href="tel:+48602242815" style="display:inline-block;border:1.5px solid #FE6500;color:#FE6500;font-weight:700;font-size:14px;text-decoration:none;padding:9px 18px;border-radius:4px">Zadzwoń</a></td></tr>' +
     '<tr><td style="padding:14px 24px;color:#6B5E52;font-size:12px;text-align:center"><a href="https://smartparkiet.com.pl" style="color:#6B5E52;text-decoration:none">smartparkiet.com.pl</a> &middot; Cyklinowanie SMART&trade;</td></tr>' +
     '</table></div>';
   const txt = t => t.replace(/<[^>]+>/g, '').replace(/&trade;/g, '™');
-  const text = 'Dzień dobry!\n\n' + ak.map(t => t === '%STATUS%' ? 'Status: ZAMÓWIENIE PRZYJĘTE - oczekuje na potwierdzenie centrali.\nNastępny krok: ZAMÓWIENIE POTWIERDZONE - termin i zakres prac zostaną zatwierdzone.' : txt(t)).join('\n\n') + '\n\nSMARTPARKIET™\n📞 602 242 815\n\nTwój parkiet. Twój termin. My tylko robimy robotę!';
+  const text = 'Dzień dobry!\n\n' + ak.map(t => t === '%STATUS%' ? 'Status: ZAMÓWIENIE PRZYJĘTE - oczekuje na potwierdzenie centrali.\nNastępny krok: ZAMÓWIENIE POTWIERDZONE - termin i zakres prac zostaną zatwierdzone.' : txt(t)).join('\n\n') + '\n\nSMARTPARKIET™\n📞 602 242 815\n\nTwój parkiet. Twoja wycena. Twój termin. My tylko robimy robotę!';
   return { html: html, text: text };
 }
 
