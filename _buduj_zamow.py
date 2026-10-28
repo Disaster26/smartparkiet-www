@@ -62,12 +62,12 @@ s = re.sub(r'    <div class="sticky">.*?</div>\s*<div class="ai">', lambda m: LE
 TEKST = """<section class="zam-tekst" id="jak-to-dziala">
   <div class="wrap">
     <h2>ZAMÓW CYKLINOWANIE SMART ONLINE&trade;</h2>
-    <p class="zt-lead">Teraz to my dostosowujemy się do Twojego harmonogramu!</p>
     <p>Nie musisz już dzwonić, pytać o wolne terminy ani umawiać oględzin, żeby poznać cenę.</p>
+    <p class="zt-lead">Teraz to my dostosowujemy się do Twojego harmonogramu!</p>
     <p>Zamów CYKLINOWANIE SMART&trade; online, poznaj wstępną wycenę i wskaż dogodne dla siebie terminy.</p>
     <p>To Ty decydujesz, kiedy chcesz przeprowadzić renowację. My dopasujemy ekipę i organizację pracy do Twoich potrzeb i harmonogramu.</p>
     <p><b>Złóż zamówienie online!</b> Nasze biuro potwierdzi dostępność wybranego terminu oraz szczegóły realizacji w ciągu 2 godzin roboczych.</p>
-    <p class="zt-haslo"><i>Twój parkiet. Twój termin.<br>My tylko robimy robotę!</i></p>
+    <p class="zt-haslo"><i>Twój parkiet. Twoja wycena. Twój termin.<br>My tylko robimy robotę!</i></p>
     <p><a class="btn btn-amber" href="#koszyk">Przejdź do Koszyka SMART</a></p>
   </div>
 </section>
