@@ -60,11 +60,12 @@ s = re.sub(r'    <div class="sticky">.*?</div>\s*<div class="ai">', lambda m: LE
 # Artur 27.10 03:48-03:51: tekst o zamowieniach online - pod koszykiem (nad nim zostaja krotkie kroki, zeby koszyk byl wysoko)
 TEKST = """<section class="zam-tekst" id="jak-to-dziala">
   <div class="wrap">
-    <h2>ZAMÓW CYKLINOWANIE SMART ONLINE&trade;</h2>
+    <h2>ZAMÓW CYKLINOWANIE SMART ONLINE&trade; + EKSPRES 48H</h2>
     <p class="zt-start"><b>Renowacja parkietu jeszcze nigdy nie była tak prosta!</b></p>
     <p>Bez telefonów, oględzin i oczekiwania na wycenę.</p>
     <p class="zt-lead">Teraz to my dostosowujemy się do Twojego harmonogramu!</p>
-    <p>Zamów CYKLINOWANIE SMART&trade; online, poznaj wstępną wycenę i wybierz dogodne terminy.</p>
+    <p><b>Zamów CYKLINOWANIE SMART&trade; online, poznaj wstępną wycenę i wybierz dogodne terminy.</b></p>
+    <p><b>Potrzebujesz szybkiego startu?</b> W koszyku zaznacz tryb ekspres 48h (start w 24-48 h, do 40 m²).</p>
     <p><b>Złóż zamówienie online!</b> W ciągu 2 godzin roboczych potwierdzimy dostępność wybranego terminu i szczegóły realizacji.</p>
     <p class="zt-haslo"><i>Twój parkiet. Twój termin. Twoja wycena.<br>My tylko robimy robotę!</i></p>
     <p><a class="btn btn-amber" href="#koszyk">Przejdź do Koszyka SMART</a></p>
