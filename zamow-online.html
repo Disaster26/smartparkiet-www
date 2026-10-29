@@ -1638,10 +1638,15 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       const nr=new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(Math.random()*9000)+1000);window.__nrOferty=nr; /* Artur 28.10 22:24: numer oferty trafia tez do opisu zapisu w folderze ofert */
       const strony=[];
       const ZYWY='#FF6A13';
+      /* Artur 29.10 20:34 (wzor Oferta_BACHMACKA_1_5.pdf z 14.10): "powtorz uklad, ktory jest obecnie, tylko w tej formule estetycznej",
+         zostawiajac jaskrawy pomarancz. EST=true: biala strona, pomaranczowy pasek u gory, pola jako jasne pasy bez ramek,
+         wiersze tabeli na przemian jasne/biale, Kwota netto na pomaranczowym pasku. EST=false = wyglad sprzed 29.10. */
+      const EST=true, JASNY='#FFEEE2', JASNY2='#FFE0CB';
       const nowa=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
         /* cala strona w zywym pomaranczu, tresc na bialej karcie (jak formularz na starej stronie Artura) */
-        g.fillStyle=ZYWY;g.fillRect(0,0,W,H);g.fillStyle='#fff';
-        if(g.roundRect){g.beginPath();g.roundRect(36,124,W-72,H-124-72,22);g.fill();}else g.fillRect(36,124,W-72,H-124-72);
+        if(EST){g.fillStyle='#fff';g.fillRect(0,0,W,H);g.fillStyle=ZYWY;g.fillRect(0,0,W,124);}
+        else{g.fillStyle=ZYWY;g.fillRect(0,0,W,H);g.fillStyle='#fff';
+        if(g.roundRect){g.beginPath();g.roundRect(36,124,W-72,H-124-72,22);g.fill();}else g.fillRect(36,124,W-72,H-124-72);}
         g.fillStyle='#fff';g.font='bold 46px Arial';g.textBaseline='middle';g.fillText('SMARTPARKIET',M-30,64);
         g.font='24px Arial';g.textAlign='right';g.fillText(window.__nrZam?('Zamówienie nr '+window.__nrZam):('Wstępna oferta renowacji parkietu · nr '+nr),W-M+30,64);g.textAlign='left';strony.push(c);return g;};
       const zawin=(g,t,x,y,w,lh)=>{const sl=String(t).split(' ');let l='';for(const s of sl){const n=l?l+' '+s:s;if(g.measureText(n).width>w&&l){g.fillText(l,x,y);y+=lh;l=s;}else l=n;}if(l){g.fillText(l,x,y);y+=lh;}return y;};
@@ -1681,7 +1686,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         let yk=212;
         for(let i=0;i<5;i++){
           const fk='bold '+D.fk+'px Arial', a1=linie(g,kl[i],kol-32,fk,2), a2=linie(g,sp[i],kol-32,fk,2), n=Math.max(a1.length,a2.length), hw=D.hk+n*D.lk;
-          if(rys){g.fillStyle='#fff';g.fillRect(M,yk,kol,hw);g.fillRect(xR,yk,kol,hw);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yk+1,kol-2,hw-2);g.strokeRect(xR+1,yk+1,kol-2,hw-2);
+          if(rys){if(EST){g.fillStyle=i%2?'#fff':JASNY;g.fillRect(M,yk,kol,hw);g.fillRect(xR,yk,kol,hw);}else{g.fillStyle='#fff';g.fillRect(M,yk,kol,hw);g.fillRect(xR,yk,kol,hw);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yk+1,kol-2,hw-2);g.strokeRect(xR+1,yk+1,kol-2,hw-2);}
             const by=yk+Math.round(hw/2-(n-1)*D.lk/2+D.fk*0.36);
             g.fillStyle='#565B61';g.font=fk;a1.forEach((l,j)=>g.fillText(l,M+16,by+j*D.lk));a2.forEach((l,j)=>g.fillText(l,xR+16,by+j*D.lk));}
           yk+=hw+2;}
@@ -1690,7 +1695,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         const fl='italic '+D.fl+'px Arial';
         /* ak = ramka wyrozniona (Artur 27.10 02:40: preferowane terminy / CHCE ZAMOWIC na jasnopomaranczowym tle) */
         const pole=(t,yy,x,ak)=>{x=x||M;const ll=linie(g,t,kol-28,fl,2),hc=D.pd+ll.length*D.lh;
-          if(rys){g.fillStyle=ak?'#FFF1E3':'#fff';g.fillRect(x,yy,kol,hc);g.strokeStyle=ak?'#FF6A13':RAMKA;g.lineWidth=ak?2.5:2;g.strokeRect(x+1,yy+1,kol-2,hc-2);
+          if(rys){if(EST){g.fillStyle=ak?JASNY2:JASNY;g.fillRect(x,yy,kol,hc);if(ak){g.fillStyle=ZYWY;g.fillRect(x,yy,5,hc);}}else{g.fillStyle=ak?'#FFF1E3':'#fff';g.fillRect(x,yy,kol,hc);g.strokeStyle=ak?'#FF6A13':RAMKA;g.lineWidth=ak?2.5:2;g.strokeRect(x+1,yy+1,kol-2,hc-2);}
             g.fillStyle=CIEMNY;g.font=fl;const by=yy+Math.round(hc/2-(ll.length-1)*D.lh/2+D.fl*0.36);ll.forEach((l,q)=>g.fillText(l,x+14,by+q*D.lh));}
           return hc;};
         const podpis=(t,yy,x)=>{x=x||M;if(rys){g.fillStyle=SZARY;wpisz(g,t,x+2,yy,kol-4,D.fh,'bold');}};
@@ -1713,7 +1718,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         if(uwT){const fu=D.fl+'px Arial';let ll=linie(g,uwT,kol-28,fu,99);
           if(ll.length>D.maxU){ll=ll.slice(0,D.maxU);g.font=fu;let o=ll[D.maxU-1];while(o.length>4&&g.measureText(o+' … (więcej w mailu)').width>kol-28)o=o.slice(0,-1);ll[D.maxU-1]=o.replace(/\s+\S*$/,'')+' … (więcej w mailu)';}
           const hb=D.pd+ll.length*D.lh+(D.fl+8);
-          if(rys){g.fillStyle='#fff';g.fillRect(M,yL,kol,hb);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yL+1,kol-2,hb-2);
+          if(rys){if(EST){g.fillStyle=JASNY;g.fillRect(M,yL,kol,hb);}else{g.fillStyle='#fff';g.fillRect(M,yL,kol,hb);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yL+1,kol-2,hb-2);}
             g.fillStyle=SZARY;g.font='bold '+(D.fl-2)+'px Arial';g.fillText('Prace dodatkowe / uwagi',M+14,yL+Math.round(D.pd/2)+D.fl);
             g.fillStyle=CIEMNY;g.font=fu;ll.forEach((t,k)=>g.fillText(t,M+14,yL+Math.round(D.pd/2)+D.fl+8+(k+1)*D.lh-4));}
           yL+=hb+D.gb;}
@@ -1732,9 +1737,9 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       let rh=Math.min(50,Math.floor(((H-80)-y-52-16-100-62-74)/Math.max(1,A.poz.length)));
       if(rh<34){g=nowa();g.textBaseline='alphabetic';naglowek(g,'WYCENA',M,190);y=250;rh=50;}
       const cx=[M,M+500,M+620,M+740,M+890], cw=W-2*M; /* Artur 20.10 22:43: kolumna "Do uzg." */
-      g.fillStyle=ZYWY;g.fillRect(M,y,cw,52);g.fillStyle='#fff';g.font='bold 23px Arial';
+      g.fillStyle=EST?JASNY2:ZYWY;g.fillRect(M,y,cw,52);g.fillStyle=EST?NAGL:'#fff';g.font='bold 23px Arial';
       ['Zakres prac','Do uzg.','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
-      const yT=y;A.poz.forEach((p,i)=>{g.fillStyle='#fff';g.fillRect(M,y,cw,rh);g.fillStyle=RAMKA;g.fillRect(M,y+rh-1,cw,1.5);const ty=y+Math.round(rh/2)+8;g.fillStyle=CIEMNY;g.font='italic 22px Arial';
+      const yT=y;A.poz.forEach((p,i)=>{g.fillStyle=(EST&&i%2)?JASNY:'#fff';g.fillRect(M,y,cw,rh);if(!EST){g.fillStyle=RAMKA;g.fillRect(M,y+rh-1,cw,1.5);}const ty=y+Math.round(rh/2)+8;g.fillStyle=CIEMNY;g.font='italic 22px Arial';
         const ile=typeof p[1]==='number'?p[1]:p[1];const laczna=typeof p[1]==='number'&&p[2]?p[1]*p[2]:null;
         {/* Artur 20.10 22:10: zakres prac drukowanymi, numerowany, "- DO UZGODNIENIA" przy pozycjach do uzgodnienia; dlugie w 2 liniach */
          let t=(i+1)+'. '+String(p[0]).toUpperCase();
@@ -1750,8 +1755,9 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
          g.restore();g.font='italic 22px Arial';g.fillStyle=CIEMNY;}
         g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','do uzg.'),cx[2]+12,ty);
         g.fillText(p[2]==null?'do uzg.':zl(p[2]),cx[3]+12,ty);g.fillText(laczna?zl(laczna):'-',cx[4]+12,ty);y+=rh;});
-      g.fillStyle=RAMKA;g.fillRect(cx[1],yT,1.5,y-yT);g.fillRect(cx[2],yT,1.5,y-yT);g.strokeStyle=POM;g.lineWidth=3;g.strokeRect(M+1.5,yT-52+1.5,cw-3,y-yT+52-3);y+=16;g.fillStyle='#fff';g.fillRect(M,y,cw,70);g.strokeStyle=POM;g.lineWidth=4;g.strokeRect(M+2,y+2,cw-4,66);g.fillStyle=CIEMNY;g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);g.fillStyle=POM;
-      g.textAlign='right';g.fillText(zl(A.suma),W-M-20,y+46);g.textAlign='left';y+=84;{/* Artur 28.10 22:27: pod netto pasek brutto; stawka VAT z przelacznika w analizatorze (domyslnie 8% - remont lokalu mieszkalnego) */const st=window.spVat?window.spVat():8,br=A.suma>0?Math.round(A.suma*(100+st))/100:0;g.fillStyle='#fff';g.fillRect(M,y,cw,60);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,y+1,cw-2,58);g.fillStyle=CIEMNY;g.font='bold 26px Arial';g.fillText('Kwota brutto (VAT '+st+'%)',M+20,y+40);g.textAlign='right';g.fillText(br?zl(br):'-',W-M-20,y+40);g.textAlign='left';}y+=90;
+      if(EST){g.fillStyle=JASNY2;g.fillRect(M,y-2,cw,2);y+=16;g.fillStyle=ZYWY;g.fillRect(M,y,cw,70);g.fillStyle='#fff';g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);}
+      else{g.fillStyle=RAMKA;g.fillRect(cx[1],yT,1.5,y-yT);g.fillRect(cx[2],yT,1.5,y-yT);g.strokeStyle=POM;g.lineWidth=3;g.strokeRect(M+1.5,yT-52+1.5,cw-3,y-yT+52-3);y+=16;g.fillStyle='#fff';g.fillRect(M,y,cw,70);g.strokeStyle=POM;g.lineWidth=4;g.strokeRect(M+2,y+2,cw-4,66);g.fillStyle=CIEMNY;g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);g.fillStyle=POM;}
+      g.textAlign='right';g.fillText(zl(A.suma),W-M-20,y+46);g.textAlign='left';y+=84;{/* Artur 28.10 22:27: pod netto pasek brutto; stawka VAT z przelacznika w analizatorze (domyslnie 8% - remont lokalu mieszkalnego) */const st=window.spVat?window.spVat():8,br=A.suma>0?Math.round(A.suma*(100+st))/100:0;if(EST){g.fillStyle=JASNY;g.fillRect(M,y,cw,60);}else{g.fillStyle='#fff';g.fillRect(M,y,cw,60);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,y+1,cw-2,58);}g.fillStyle=CIEMNY;g.font='bold 26px Arial';g.fillText('Kwota brutto (VAT '+st+'%)',M+20,y+40);g.textAlign='right';g.fillText(br?zl(br):'-',W-M-20,y+40);g.textAlign='left';}y+=90;
       g.fillStyle=SZARY;g.font='italic 20px Arial';
       y=zawin(g,'Pracownik jest upoważniony do przyjęcia płatności gotówką (kwota netto). Faktura wystawiana na życzenie klienta. Wycena wstępna, przygotowana na podstawie danych i zdjęć od klienta; ostateczną cenę potwierdza SMARTPARKIET.',M,y,W-2*M,28);
       // zdjecia, 6 na strone, bez pustych ramek
@@ -1789,13 +1795,13 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         const linie=[];{const sl=Z[i].split(' ');let l='';for(const s of sl){const n=l?l+' '+s:s;if(g.measureText(n).width>W-2*M-80&&l){linie.push(l);l=s;}else l=n;}if(l)linie.push(l);}
         const h=linie.length*25+22;
         if(yz+h>H-80){g=nowa();g.textBaseline='alphabetic';naglowek(g,'ZASADY RENOWACJI (cd.)',M,190);yz=260;}
-        g.fillStyle='#fff';g.fillRect(M,yz-24,W-2*M,h);g.fillStyle=POM;g.fillRect(M,yz-24,4,h-6);
+        if(EST){g.fillStyle=i%2?'#fff':JASNY;g.fillRect(M,yz-24,W-2*M,h);}else{g.fillStyle='#fff';g.fillRect(M,yz-24,W-2*M,h);g.fillStyle=POM;g.fillRect(M,yz-24,4,h-6);}
         g.fillStyle=POM;g.font='bold 22px Arial';g.fillText(String(i+1)+'.',M+14,yz+2);
         g.fillStyle=CIEMNY;g.font='19px Arial';linie.forEach((l,j)=>g.fillText(l,M+60,yz+2+j*25));
         yz+=h+10;
       }
       // stopki
-      strony.forEach((c,i)=>{const gg=c.getContext('2d');gg.textBaseline='alphabetic';gg.fillStyle='#fff';gg.font='bold 19px Arial';gg.textAlign='center';
+      strony.forEach((c,i)=>{const gg=c.getContext('2d');gg.textBaseline='alphabetic';gg.fillStyle=EST?SZARY:'#fff';gg.font=(EST?'':'bold ')+'19px Arial';gg.textAlign='center';
         gg.fillText('SMARTPARKIET · Cyklinowanie SMART™ · tel. 602 242 815 · strona '+(i+1)+' z '+strony.length,W/2,H-28);gg.textAlign='left';});
       const pdf=new window.jspdf.jsPDF({unit:'mm',format:'a4',compress:true});
       strony.forEach((c,i)=>{if(i)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.82),'JPEG',0,0,210,297);});
