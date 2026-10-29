@@ -38,7 +38,7 @@ m = re.search(r'<meta name="viewport"[^>]*>', s)
 s = s[:m.end()] + NL + '<script>window.SP_ZAMOWIENIE=1;</script>' + s[m.end():]
 
 # menu: aktywna nowa zakladka
-zamien('<a href="wycena.html" class="akt">Kalkulator online</a>', '<a href="wycena.html">Kalkulator online</a>')
+zamien('<a href="wycena.html" class="akt">KALKULATOR - samodzielny</a>', '<a href="wycena.html">KALKULATOR - samodzielny</a>')
 zamien('<a href="zamow-online.html#koszyk" class="nav-zam">', '<a href="zamow-online.html#koszyk" class="nav-zam akt">')
 
 # lewa kolumna: opis programu + 5 krokow
