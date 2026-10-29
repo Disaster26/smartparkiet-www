@@ -209,7 +209,8 @@ function mailHtml(akapity) {
     '</td></tr></table></div>';
 }
 
-/* 27.10 02:36-02:44 Artur: tresc maila do klienta po wycenie / zamowieniu online - dokladnie jego slowa.
+/* 29.10 17:42 Artur: zdanie 'Zapraszamy do kontaktu...' przed podziekowaniem (oba warianty).
+   27.10 02:36-02:44 Artur: tresc maila do klienta po wycenie / zamowieniu online - dokladnie jego slowa.
    zamowienie=true: zamow-online.html albo zaznaczone "Chce skorzystac z wykonania uslugi" w wycena.html. */
 function mailPotwierdzenie(zamowienie, numer) {
   const B = t => '<b>' + t + '</b>';
@@ -220,10 +221,12 @@ function mailPotwierdzenie(zamowienie, numer) {
     'Wkrótce skontaktujemy się z Państwem w celu ' + B('potwierdzenia dostępności wybranego terminu oraz uzgodnienia szczegółów realizacji') + '.',
     B('Ważne:') + ' Złożenie zamówienia nie oznacza jeszcze rezerwacji terminu. Termin zostanie ostatecznie potwierdzony przez nasze biuro.',
     '%STATUS%',
+    'Zapraszamy do kontaktu - chętnie omówimy szczegóły realizacji, odpowiemy na pytania i pomożemy wybrać dogodny termin!',
     'Dziękujemy za zaufanie!'
   ] : [
     'Dziękujemy za skorzystanie z wyceny online usługi ' + B('CYKLINOWANIE SMART&trade;') + '.',
     'W załączniku przesyłamy wstępną kalkulację.',
+    'Zapraszamy do kontaktu - chętnie omówimy szczegóły realizacji, odpowiemy na pytania i pomożemy wybrać dogodny termin!',
     'Dziękujemy za zaufanie!'
   ];
   if (zamowienie && numer) ak.splice(1, 0, 'Numer zamówienia: ' + B(numer));
