@@ -966,8 +966,8 @@ figure{margin:0}
     <a class="brand" href="index.html"><img src="img/logo-znak.png" alt="SMARTPARKIET"><span class="brand-t">SMARTPARKIET</span></a>
     <nav>
       <a href="zamow-online.html#koszyk" class="nav-zam"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H7"/><circle cx="10" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>Zamów online</a>
-      <a href="zamow-online.html#jak-to-dziala" class="nav-zam-opis">ZAMAWIANIE - jak działa</a>
-      <a href="wycena.html" class="akt">KALKULATOR - samodzielny</a>
+      <a href="zamow-online.html#jak-to-dziala" class="nav-zam-opis">ZAMÓW ONLINE - jak to działa</a>
+      <a href="wycena.html" class="akt">KALKULATOR - wyceń samodzielnie</a>
       <a href="o-nas.html">O firmie</a>
       <a href="metoda.html"><span class="nm-m">Nasza metoda SMART</span><span class="nm-d">Metoda SMART</span></a>
       <a href="cennik.html">Cennik</a>
@@ -3292,10 +3292,12 @@ html.zp-otw,html.zp-otw body{overflow:hidden}
       pz.querySelector('#zpLista').innerHTML=w.map(function(r){return '<div><dt>'+r[0]+'</dt><dd>'+r[1]+'</dd></div>';}).join('');
       pz.hidden=false;document.documentElement.classList.add('zp-otw');setTimeout(function(){pz.querySelector('#zpWys').focus();},50);}
     function zamknij(){pz.hidden=true;document.documentElement.classList.remove('zp-otw');}
-    pz.querySelector('#zpPop').onclick=function(){zamknij();bw.scrollIntoView({block:'center'});};
+    var zPlyw=false;window.spZamPokaz=function(){zPlyw=true;pokaz();}; /* plywajacy przycisk "Podgląd" - podsumowanie koszyka w kazdej chwili (bez wysylki) */
+    pz.querySelector('#zpPop').onclick=function(){zamknij();if(zPlyw){zPlyw=false;return;}bw.scrollIntoView({block:'center'});};
     pz.addEventListener('click',function(e){if(e.target===pz)zamknij();});
     document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!pz.hidden)zamknij();});
-    pz.querySelector('#zpWys').onclick=function(){zamknij();potw=true;bw.click();};
+    /* z plywajacego przycisku najpierw pelna kontrola pol (metraz, adres, termin) - dopiero poprawne podsumowanie wysyla */
+    pz.querySelector('#zpWys').onclick=function(){zamknij();if(zPlyw){zPlyw=false;bw.click();return;}potw=true;bw.click();};
     bw.addEventListener('click',function(e){if(potw){potw=false;return;}if(bw.disabled||bw.classList.contains('wyslane'))return;
       if(!tk.value.trim())return; /* komunikat o terminie daje blok wyzej */
       if(v('mailKl').length<5&&v('telKl').replace(/\D/g,'').length<9)return; /* brak kontaktu - komunikat glownego formularza */
@@ -3447,16 +3449,19 @@ html body #naprBlok .napr-w input{width:100%;box-sizing:border-box;min-height:44
     Podglad tabeli = "Podglad oferty przed wyslaniem" (PDF z tabela pozycji i suma) na samym dole formularza. Przycisk otwiera go od razu
     z dowolnego miejsca formularza; "Popraw" w podgladzie zamyka go i zostajemy dokladnie tam, gdzie bylismy (nie trzeba wracac w gore).
     Prawy dolny rog nad dolnym paskiem; gdy w trybie aplikacji jest tam "Udostepnij", przycisk staje nad nim. */
- var on=false;try{on=!!window.SP_ANALIZATOR||/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
- if(!on||window.SP_ZAMOWIENIE)return;
+ /* Artur 29.10 22:15: w zamowieniu online klient tez ma ten przycisk (podglad koszyka w kazdej chwili), napis "Podglad" zamiast "Tabela" */
+ var on=!!window.SP_ZAMOWIENIE;try{on=on||!!window.SP_ANALIZATOR||/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
+ if(!on)return;
  function start(){var form=document.querySelector('#wycena .ai-form');if(!form||document.getElementById('spTabBtn'))return;
-  var b=document.createElement('button');b.type='button';b.id='spTabBtn';b.innerHTML='<span aria-hidden="true">&#9638;</span> Tabela';b.setAttribute('aria-label','Podgląd tabeli oferty');document.body.appendChild(b);
-  function stan(){var r=form.getBoundingClientRect(),u=document.getElementById('spUdost'),pd=document.getElementById('podgladOferty');
+  var b=document.createElement('button');b.type='button';b.id='spTabBtn';b.innerHTML='<span aria-hidden="true">&#9638;</span> Podgląd';b.setAttribute('aria-label',window.SP_ZAMOWIENIE?'Podgląd koszyka':'Podgląd tabeli oferty');document.body.appendChild(b);
+  /* w zamowieniu klient nie ma podgladu oferty - przycisk otwiera podsumowanie koszyka (spZamPokaz), chowa sie przy "Sprawdź swoje zamówienie" */
+  function cel(){return document.getElementById('podgladOferty')||(window.spZamPokaz?document.getElementById('wyslij'):null);}
+  function stan(){var r=form.getBoundingClientRect(),u=document.getElementById('spUdost'),pd=cel();
    b.style.bottom=u?((innerHeight-u.getBoundingClientRect().top+10)+'px'):'';
    var pr=pd&&pd.getBoundingClientRect();
    /* widoczny tylko przy formularzu; chowa sie, gdy przycisk podgladu jest juz na ekranie albo otwarte menu */
-   b.hidden=!pd||r.bottom<120||r.top>innerHeight-80||(pr&&pr.top<innerHeight&&pr.bottom>0)||!!document.querySelector('header.nav.open');}
-  b.onclick=function(){var pd=document.getElementById('podgladOferty');if(pd&&!pd.disabled)pd.click();};
+   b.hidden=!pd||r.bottom<120||r.top>innerHeight-80||(pr&&pr.top<innerHeight&&pr.bottom>0)||!!document.querySelector('header.nav.open')||document.documentElement.classList.contains('zp-otw');}
+  b.onclick=function(){var pd=document.getElementById('podgladOferty');if(pd&&!pd.disabled)pd.click();else if(window.spZamPokaz)window.spZamPokaz();};
   addEventListener('scroll',stan,{passive:true});addEventListener('resize',stan);setInterval(stan,1000);stan();}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();</script>
