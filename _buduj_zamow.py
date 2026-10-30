@@ -68,7 +68,7 @@ TEKST = """<section class="zam-tekst" id="jak-to-dziala">
     <p><b>Potrzebujesz szybkiego startu?</b> W koszyku zaznacz tryb ekspres 48h (start w 24-48 h, do 40 m²).</p>
     <p><b>Złóż zamówienie online!</b> W ciągu 2 godzin roboczych potwierdzimy dostępność wybranego terminu i szczegóły realizacji.</p>
     <p class="zt-haslo"><i>Twój parkiet. Twój termin. Twoja wycena.<br>My tylko robimy robotę!</i></p>
-    <p><a class="btn btn-amber" href="#koszyk">Przejdź do Koszyka SMART</a></p>
+    <p><a class="btn btn-amber btn-kosz" href="#koszyk"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H7"/><circle cx="10" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>Przejdź do Koszyka SMART</a></p>
   </div>
 </section>
 """
@@ -76,6 +76,9 @@ i = s.index('id="wycena">'); j = s.index('</section>', i) + len('</section>')
 s = s[:j] + NL + TEKST.replace('\n', NL) + s[j:]
 
 CSS = '''<style id="zamow-strona">/* zamow-online.html: kroki i tytul koszyka */
+html body a.btn.btn-kosz,html body a.btn.btn-kosz:visited{display:inline-flex!important;align-items:center;gap:8px;background:#FF6A13!important;color:#fff!important;border-radius:999px!important;font-weight:800!important;text-decoration:none!important} /* Artur 30.10 01:38: bialy napis + koszyk jak "Zamow online" */
+html body a.btn.btn-kosz:hover{background:#F25F0C!important;color:#fff!important}
+html body a.btn.btn-kosz svg{width:20px;height:20px;flex:0 0 auto}
 html body .zam-kroki{list-style:none;counter-reset:zk;margin:14px 0 0;padding:0;display:grid;gap:7px}
 html body .zam-kroki li{counter-increment:zk;position:relative;padding:1px 0 1px 36px;min-height:26px;font-size:.92rem;line-height:1.35;color:#fff}
 html body .zam-kroki li::before{content:counter(zk);position:absolute;left:0;top:0;width:26px;height:26px;font-size:.85rem!important;border-radius:50%;background:#fff;color:#FF6A13;font-weight:900;display:grid;place-items:center;font-size:1rem}

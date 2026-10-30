@@ -7,8 +7,8 @@ Skrypt podmienia liczby we wszystkich plikach .html (poza index-biale.html - zap
 """
 import os, re, glob
 
-OPINIE = 252        # 22.10.2026: Suflerska 216 + Belwederska 23 + Grojecka 12 + Turmoncka 1
-SUFLERSKA = 216     # oddzialy.html, karta Rembertow
+OPINIE = 257        # 30.10.2026: Suflerska 218 + Belwederska 23 + Grojecka 15 + Turmoncka 1
+SUFLERSKA = 218     # oddzialy.html, karta Rembertow
 
 TU = os.path.dirname(os.path.abspath(__file__))
 WZORY = [
