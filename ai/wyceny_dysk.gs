@@ -196,7 +196,8 @@ function mailHtml(akapity) {
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;border-collapse:collapse">' +
     '<tr><td style="background:#14110E;padding:18px 24px;border-bottom:3px solid #FE6500">' +
       '<img src="https://smartparkiet.com.pl/img/logo-znak.png" width="30" height="30" alt="" style="vertical-align:middle;border:0">' +
-      '<span style="vertical-align:middle;margin-left:10px;color:#fff;font-size:18px;font-weight:800;letter-spacing:.06em">SMART<span style="color:#FE6500">PARKIET</span></span></td></tr>' +
+      '<span style="vertical-align:middle;margin-left:10px;color:#fff;font-size:18px;font-weight:800;letter-spacing:.06em">SMART<span style="color:#FE6500">PARKIET</span>&trade;</span>' +
+      '<span style="vertical-align:middle;margin-left:8px;color:#B9B0A6;font-size:12px;font-weight:700;letter-spacing:.06em">| TWÓJ PARKIET W DOBRYCH RĘKACH</span></td></tr>' + /* Artur 30.10 03:24 */
     '<tr><td style="background:#ffffff;padding:26px 24px 12px;color:#1F2328;font-size:15px;line-height:1.6">' +
       '<p style="margin:0 0 14px">Dzień dobry,</p>' + p +
       '<p style="margin:18px 0 0">Pozdrawiamy</p></td></tr>' +
@@ -217,15 +218,16 @@ function mailPotwierdzenie(zamowienie, numer) {
   const tel = '<a href="tel:+48602242815" style="color:#FE6500;font-weight:700;text-decoration:none">602 242 815</a>';
   const ak = zamowienie ? [
     'Dziękujemy za złożenie zamówienia online na usługę ' + B('CYKLINOWANIE SMART&trade;') + '.',
-    'W załączniku przesyłamy wstępną kalkulację.',
+    B('Twoja wstępna wycena CYKLINOWANIA SMART&trade; jest już gotowa! Znajdziesz ją w załączniku.'), /* Artur 30.10 03:22 */
     'Wkrótce skontaktujemy się z Państwem w celu ' + B('potwierdzenia dostępności wybranego terminu oraz uzgodnienia szczegółów realizacji') + '.',
     B('Ważne:') + ' Złożenie zamówienia nie oznacza jeszcze rezerwacji terminu. Termin zostanie ostatecznie potwierdzony przez nasze biuro.',
     '%STATUS%',
     'Zapraszamy do kontaktu - chętnie omówimy szczegóły realizacji, odpowiemy na pytania i pomożemy wybrać dogodny termin!',
     'Dziękujemy za zaufanie!'
   ] : [
+    '%GOTOWA%',
     'Dziękujemy za skorzystanie z wyceny online usługi ' + B('CYKLINOWANIE SMART&trade;') + '.',
-    'W załączniku przesyłamy wstępną kalkulację.',
+    B('Twoja wstępna wycena CYKLINOWANIA SMART&trade; jest już gotowa! Znajdziesz ją w załączniku.'), /* Artur 30.10 03:22 */
     'Zapraszamy do kontaktu - chętnie omówimy szczegóły realizacji, odpowiemy na pytania i pomożemy wybrać dogodny termin!',
     'Dziękujemy za zaufanie!'
   ];
@@ -236,12 +238,15 @@ function mailPotwierdzenie(zamowienie, numer) {
     '<td style="padding:10px 12px 10px 0;font-size:14px;line-height:1.4"><b style="color:#C2410C">ZAMÓWIENIE PRZYJĘTE</b><br>Oczekuje na potwierdzenie biura.</td></tr>' +
     '<tr><td style="padding:0 12px 10px;vertical-align:top"><div style="width:26px;height:26px;border-radius:13px;background:#E7DED3;color:#8A8078;text-align:center;line-height:26px;font-size:15px">&#10003;</div></td>' +
     '<td style="padding:0 12px 10px 0;font-size:14px;line-height:1.4;color:#8A8078"><b>ZAMÓWIENIE POTWIERDZONE</b><br>Termin i zakres prac zostały zatwierdzone.</td></tr></table>';
-  const p = ak.map(t => t === '%STATUS%' ? status : '<p style="margin:0 0 14px">' + t + '</p>').join('');
+  /* Artur 30.10 03:24: pod naglowkiem status WYCENA ONLINE GOTOWA (zwykla wycena) */
+  const gotowa = '<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:0 0 16px"><tr><td style="background:#FE6500;color:#fff;font-size:13px;font-weight:800;letter-spacing:.08em;padding:7px 12px;border-radius:4px">&#10003; WYCENA ONLINE GOTOWA</td></tr></table>';
+  const p = ak.map(t => t === '%STATUS%' ? status : t === '%GOTOWA%' ? gotowa : '<p style="margin:0 0 14px">' + t + '</p>').join('');
   const html = '<div style="background:#F4EFE9;padding:24px 12px;font-family:Arial,Helvetica,sans-serif">' +
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;border-collapse:collapse">' +
     '<tr><td style="background:#14110E;padding:18px 24px;border-bottom:3px solid #FE6500">' +
       '<img src="https://smartparkiet.com.pl/img/logo-znak.png" width="30" height="30" alt="" style="vertical-align:middle;border:0">' +
-      '<span style="vertical-align:middle;margin-left:10px;color:#fff;font-size:18px;font-weight:800;letter-spacing:.06em">SMART<span style="color:#FE6500">PARKIET</span></span></td></tr>' +
+      '<span style="vertical-align:middle;margin-left:10px;color:#fff;font-size:18px;font-weight:800;letter-spacing:.06em">SMART<span style="color:#FE6500">PARKIET</span>&trade;</span>' +
+      '<span style="vertical-align:middle;margin-left:8px;color:#B9B0A6;font-size:12px;font-weight:700;letter-spacing:.06em">| TWÓJ PARKIET W DOBRYCH RĘKACH</span></td></tr>' + /* Artur 30.10 03:24 */
     '<tr><td style="background:#ffffff;padding:26px 24px 24px;color:#1F2328;font-size:15px;line-height:1.6">' +
       '<p style="margin:0 0 14px">Dzień dobry!</p>' + p +
       '<p style="margin:18px 0 0"><b>SMARTPARKIET&trade;</b><br>&#128222; ' + tel + '</p>' +
@@ -251,7 +256,7 @@ function mailPotwierdzenie(zamowienie, numer) {
     '<tr><td style="padding:14px 24px;color:#6B5E52;font-size:12px;text-align:center"><a href="https://smartparkiet.com.pl" style="color:#6B5E52;text-decoration:none">smartparkiet.com.pl</a> &middot; Cyklinowanie SMART&trade;</td></tr>' +
     '</table></div>';
   const txt = t => t.replace(/<[^>]+>/g, '').replace(/&trade;/g, '™');
-  const text = 'Dzień dobry!\n\n' + ak.map(t => t === '%STATUS%' ? 'Status: ZAMÓWIENIE PRZYJĘTE - oczekuje na potwierdzenie biura.\nNastępny krok: ZAMÓWIENIE POTWIERDZONE - termin i zakres prac zostaną zatwierdzone.' : txt(t)).join('\n\n') + '\n\nSMARTPARKIET™\n📞 602 242 815\n\nTwój parkiet. Twój termin. Twoja wycena.\nMy tylko robimy robotę!';
+  const text = 'SMARTPARKIET™ | TWÓJ PARKIET W DOBRYCH RĘKACH\n\n' + (zamowienie ? '' : 'WYCENA ONLINE GOTOWA\n\n') + 'Dzień dobry!\n\n' + ak.filter(t => t !== '%GOTOWA%').map(t => t === '%STATUS%' ? 'Status: ZAMÓWIENIE PRZYJĘTE - oczekuje na potwierdzenie biura.\nNastępny krok: ZAMÓWIENIE POTWIERDZONE - termin i zakres prac zostaną zatwierdzone.' : txt(t)).join('\n\n') + '\n\nSMARTPARKIET™\n📞 602 242 815\n\nTwój parkiet. Twój termin. Twoja wycena.\nMy tylko robimy robotę!';
   return { html: html, text: text };
 }
 
