@@ -959,7 +959,7 @@ figure{margin:0}
       <a href="metoda.html"><span class="nm-m">Nasza metoda SMART</span><span class="nm-d">Metoda SMART</span></a>
       <a href="cennik.html">Cennik</a>
       <a href="programy.html"><span class="nm-m">Nasze programy</span><span class="nm-d">Programy</span></a>
-      <a href="realizacje.html">Realizacje</a>
+      <a href="realizacje.html">Realizacje</a>
       <a href="ekspertyza.html">Ekspertyza online</a>
       <a href="oddzialy.html">Oddziały</a>
       <a href="smart-partner.html">Nasi partnerzy</a>
@@ -1472,6 +1472,10 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
   const pln=n=>(Math.round(n/10)*10).toLocaleString('pl-PL').replace(/ /g,' ');
   /* ceny dodatkow (Artur 13.10): listwy 50 zl/mb, zastrzyki stabilizujace 70 zl/m2, koloryzacja 70 zl/m2, naprawy do uzgodnienia */
   const CENY={listwy:50,stab:70,kolor:70};
+  /* Artur 30.10 14:02-14:09 ("klienci sie targuja, czasem musze zejsc ze 130 na 120"): w trybie parkieciarza przy pozycji
+     pole "cena jedn." / "upust" (blok ceny-3010 na koncu pliku). C(klucz, cena katalogowa) = cena wpisana przez parkieciarza albo katalogowa.
+     Publicznie pol nie ma, wiec zawsze cena katalogowa. */
+  const C=(k,v)=>window.spCena?window.spCena(k,v):v;
   /* ZASADY WYCENY MALYCH METRAZY - SMART (Artur 26.10 11:42; zastepuja wczesniejsze 25 zl / 30 zl do 20 m2 - latwo zmienic tutaj):
      ponizej RYCZALT_DO m2 = ryczalt RYCZALT zl na gotowo (zamiast stawki za m2, bez doplaty),
      od RYCZALT_DO do DOPLATA_DO m2 wlacznie = doplata DOPLATA zl/m2 do standardowej stawki, powyzej DOPLATA_DO = bez doplaty. */
@@ -1482,28 +1486,31 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     const a=Math.max(0,+m2.value||0),k=+typ.value,wt=wyk.options[wyk.selectedIndex].text,w={'Olej':8,'Twardy wosk':12}[wt]||0;
     const mb=(zaznaczone('listwy')&&zaznaczone('listwy')!=='nie'&&zaznaczone('listwy')!=='do uzgodnienia')?Math.max(0,+(document.getElementById('listwyMb')||{}).value||0):0;
     const sm=zaznaczone('stab')==='tak'?Math.max(0,+(document.getElementById('stabM2')||{}).value||0):0;
-    const kol=wt==='Kolor'?a*CENY.kolor:0;
+    const cK=C('kolor',CENY.kolor),cL=C('listwy',CENY.listwy),cS=C('stab',CENY.stab),cD=C('dopl',MALY.DOPLATA),cR=C('rycz',MALY.RYCZALT),cRen=C('ren',-1);
+    const kol=wt==='Kolor'?a*cK:0;
     const ext=(window.spDodatkowe?window.spDodatkowe():[]),extS=ext.reduce((s,x)=>s+x.i*x.c,0);
-    const tm=malyTryb(a), dopM=tm==='doplata'?a*MALY.DOPLATA:0; /* Artur 26.10: male metraze widoczne od razu w widelkach */
+    const tm=malyTryb(a), dopM=tm==='doplata'?a*cD:0; /* Artur 26.10: male metraze widoczne od razu w widelkach */
     const mkw=parseFloat(String((document.getElementById('mebleKw')||{}).value||'').replace(',','.')),mebZl=(isFinite(mkw)&&mkw>0)?mkw:(zaznaczone('meble')==='nie'?300:0); /* 26.10: jedna pozycja za meble, jak w PDF */
     const nap=window.spNaprawa?window.spNaprawa():null,napZl=nap?nap.i*nap.c:0; /* Artur 28.10: kwota naprawy z ramki pod pytaniem */
-    const dod=mb*CENY.listwy+sm*CENY.stab+kol+extS+dopM+mebZl+napZl;
-    const lo=(tm==='ryczalt'?MALY.RYCZALT:(120+w)*a)+dod,hi=(tm==='ryczalt'?MALY.RYCZALT:(140+w)*a)+dod;
+    const dod=mb*cL+sm*cS+kol+extS+dopM+mebZl+napZl;
+    /* 30.10: cena za m2 wpisana przez parkieciarza = jedna kwota zamiast widelek */
+    const lo=(tm==='ryczalt'?cR:(cRen>0?cRen:120+w)*a)+dod,hi=(tm==='ryczalt'?cR:(cRen>0?cRen:140+w)*a)+dod;
     const days=a<=40?'1-2 dni':a<=90?'2 dni':a<=160?'3 dni':'4-5 dni';
     oN.textContent=(lo||hi)?(lo===hi?pln(lo):pln(lo)+'-'+pln(hi))+' zł':'0 zł'; /* Artur 21.10 11:33: metraz domyslnie 0 */
     const czesci=[];
-    if(tm==='ryczalt')czesci.push('ryczałt SMART poniżej '+MALY.RYCZALT_DO+' m² '+MALY.RYCZALT+' zł');
-    if(dopM)czesci.push('dopłata do małego metrażu '+a+' m² × '+MALY.DOPLATA+' zł');
-    if(mb)czesci.push('listwy '+mb+' mb × 50 zł');else if(zaznaczone('listwy')==='do uzgodnienia')czesci.push('listwy do uzgodnienia');
-    if(sm)czesci.push('stabilizacja '+sm+' m² × 70 zł');else if(zaznaczone('stab')==='tak')czesci.push('stabilizacja: podaj m²');else if(zaznaczone('stab')==='do uzgodnienia'||zaznaczone('stab')==='nie wiem')czesci.push('stabilizacja do uzgodnienia');
-    if(kol)czesci.push('koloryzacja '+a+' m² × 70 zł');
+    if(tm==='ryczalt')czesci.push('ryczałt SMART poniżej '+MALY.RYCZALT_DO+' m² '+cR+' zł');
+    if(dopM)czesci.push('dopłata do małego metrażu '+a+' m² × '+cD+' zł');
+    if(mb)czesci.push('listwy '+mb+' mb × '+cL+' zł');else if(zaznaczone('listwy')==='do uzgodnienia')czesci.push('listwy do uzgodnienia');
+    if(sm)czesci.push('stabilizacja '+sm+' m² × '+cS+' zł');else if(zaznaczone('stab')==='tak')czesci.push('stabilizacja: podaj m²');else if(zaznaczone('stab')==='do uzgodnienia'||zaznaczone('stab')==='nie wiem')czesci.push('stabilizacja do uzgodnienia');
+    if(kol)czesci.push('koloryzacja '+a+' m² × '+cK+' zł');
     if(nap)czesci.push('naprawa '+nap.i+' '+nap.j+' × '+nap.c+' zł');else if(zaznaczone('napr')==='tak'||zaznaczone('napr')==='nie wiem')czesci.push('naprawy do uzgodnienia');
     if(mebZl)czesci.push('pomoc z meblami '+mebZl+' zł');
     ext.forEach(x=>czesci.push(x.o+' '+x.i+' '+x.j+' × '+x.c+' zł'));
     oT.textContent=a+' m² · '+typ.options[typ.selectedIndex].text.toLowerCase()+' · '+wt.toLowerCase()+(czesci.length?' · w tym: '+czesci.join(', '):'')+' · ok. '+days+' · netto, orientacyjnie';
   }
   [m2,typ,wyk].forEach(e=>e.addEventListener('input',est));
-  document.addEventListener('input',e=>{if(e.target&&(/^(listwyMb|stabM2|mebleKw|naprIl|naprJm|naprCena)$/.test(e.target.id)||(e.target.closest&&e.target.closest('#dodLista'))))est();});
+  window.spEst=est; /* 30.10: przeliczenie po zmianie ceny jednostkowej (blok ceny-3010) */
+  document.addEventListener('input',e=>{if(e.target&&(/^(listwyMb|stabM2|mebleKw|naprIl|naprJm|naprCena|cena_\w+|upust_\w+)$/.test(e.target.id)||(e.target.closest&&e.target.closest('#dodLista'))))est();});
   document.addEventListener('change',e=>{if(e.target&&/^(listwy|stab|napr|meble)$/.test(e.target.name))est();});
   est();
 
@@ -1543,9 +1550,10 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         ...(window.spOpcje?[['Tryb ekspres 48h',window.spOpcje().ekspres?'TAK - start w 24-48 h, do 40 m² (dostępność i ewentualną dopłatę potwierdza biuro)':'nie'],['Wykończenie ścian (CYKLINOWANIE SMART PLUS | ŚCIANY™)',window.spOpcje().sciany?'TAK - klient chce rozszerzyć zakres o wykończenie ścian; osobna kalkulacja biura po potwierdzeniu zamówienia':'nie']]:[]), /* Artur 28.10 13:20-14:16 */
         ['Uwagi',pole('uwagiKl')||'brak'],
         ...((window.spDodatkowe?window.spDodatkowe():[]).length?[['Prace dodatkowe',window.spDodatkowe().map(x=>x.o+': '+x.i+' '+x.j+' × '+zl(x.c)+' = '+zl(x.i*x.c)).join('; ')]]:[]),
-        ...(arkusz().doplata?[['Dopłata do małego metrażu',arkusz().a+' m² × '+MALY.DOPLATA+' zł = '+zl(arkusz().doplata)+' (metraż '+MALY.RYCZALT_DO+'-'+MALY.DOPLATA_DO+' m², wliczona w ofertę)']]:[]),
+        ...(arkusz().doplata?[['Dopłata do małego metrażu',arkusz().a+' m² × '+arkusz().cenaDop+' zł = '+zl(arkusz().doplata)+' (metraż '+MALY.RYCZALT_DO+'-'+MALY.DOPLATA_DO+' m², wliczona w ofertę)']]:[]),
         ...(arkusz().ryczalt?[['Ryczałt SMART','metraż poniżej '+MALY.RYCZALT_DO+' m²: '+zl(MALY.RYCZALT)+' na gotowo zamiast stawki za m²']]:[]),
         ...(window.__nrZam?[['Nr zamówienia',window.__nrZam]]:[]),
+        ...(arkusz().rabat?[['Upust od cen katalogowych','-'+zl(arkusz().rabat)+' (uwzględniony w kwocie)']]:[]), /* Artur 30.10 */
         ['Wstępna oferta',zl(arkusz().suma)+' netto (szczegóły w załączonym PDF)'],
         ['Zdjęcia',zdj+' i oferta PDF w załącznikach']
       ];
@@ -1583,26 +1591,29 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
          zastepuje domyslne 300 zl; bez kwoty i gdy meble przesuwa ekipa - 300 zl. */
       const mebleKw=parseFloat(String(pole('mebleKw')).replace(',','.')), mebleCena=isFinite(mebleKw)&&mebleKw>0?mebleKw:300;
       const meble=zn('meble')==='nie'||(isFinite(mebleKw)&&mebleKw>0);
-      const cena=Math.round((130+dop)*100)/100; /* Artur 14.10: 130 zl/m2 niezaleznie od rodzaju podlogi */
+      const kat=Math.round((130+dop)*100)/100, cena=C('ren',kat); /* Artur 14.10: 130 zl/m2 niezaleznie od rodzaju podlogi; 30.10: cena moze zmienic parkieciarz */
       const tm=malyTryb(a), ryczalt=tm==='ryczalt';
+      /* 30.10: 5. element pozycji = cena katalogowa (PDF przekresla ja, gdy parkieciarz dal nizsza cene; arkusz Google ma kolumne "Cena katalogowa") */
       const baza=[
-        ryczalt?['Renowacja parkietu - ryczałt SMART (poniżej '+MALY.RYCZALT_DO+' m²)',1,MALY.RYCZALT]:['Renowacja parkietu (m²)',a,cena],
-        ['Wymiana listew przypodłogowych'+(lz==='MDF'?' MDF':'')+' (mb)',listwyUzg?'do uzgodnienia':mb,listwyUzg?null:50], /* Artur 25.10: listwy 'do uzgodnienia' */
-        ['Stabilizacja parkietu metodą iniekcji (m²)',zn('stab')==='tak'?(Math.max(0,+pole('stabM2')||0)||'do ustalenia'):(stabUzg?'do uzgodnienia':0),stabUzg?null:70], /* Artur 20.10 16:15-16:26: opcja 'do uzgodnienia' */
+        ryczalt?['Renowacja parkietu - ryczałt SMART (poniżej '+MALY.RYCZALT_DO+' m²)',1,C('rycz',MALY.RYCZALT),0,MALY.RYCZALT]:['Renowacja parkietu (m²)',a,cena,0,kat],
+        ['Wymiana listew przypodłogowych'+(lz==='MDF'?' MDF':'')+' (mb)',listwyUzg?'do uzgodnienia':mb,listwyUzg?null:C('listwy',50),0,50], /* Artur 25.10: listwy 'do uzgodnienia' */
+        ['Stabilizacja parkietu metodą iniekcji (m²)',zn('stab')==='tak'?(Math.max(0,+pole('stabM2')||0)||'do ustalenia'):(stabUzg?'do uzgodnienia':0),stabUzg?null:C('stab',70),0,70], /* Artur 20.10 16:15-16:26: opcja 'do uzgodnienia' */
         (window.spNaprawa&&window.spNaprawa())?['Naprawy parkietu ('+window.spNaprawa().j+')',window.spNaprawa().i,window.spNaprawa().c]: /* Artur 28.10: kwota z ramki naprawy, bez dubla w pracach dodatkowych */
         ['Naprawy parkietu (kpl.)',(zn('napr')==='tak'||zn('napr')==='nie wiem')?'do uzgodnienia':0,null], /* Artur 20.10 16:28: 'nie wiem' = do uzgodnienia */
-        ['Koloryzacja parkietu (m²)',kolor?a:0,70],
+        ['Koloryzacja parkietu (m²)',kolor?a:0,C('kolor',70),0,70],
         ['Pomoc z meblami / przesunięcie mebli (usł.)',meble?1:0,mebleCena]
       ].map((q,k)=>{const cb=document.getElementById('uzg'+k);q[3]=!!(cb&&cb.checked)||((q[1]==='do uzgodnienia'||q[2]==null)&&q[1]!==0);return q;})
 ;
       /* Artur 26.10 11:42: przy metrazu 10-22 m2 automatycznie 2. pozycja "* Doplata do malego metrazu (10-22 m2)" (stawka MALY.DOPLATA),
          ponizej 10 m2 pozycja 1 to ryczalt, powyzej 22 m2 doplaty nie ma. Kratki uzg0..uzg5 zostaja przy swoich pozycjach. */
-      const doplata=tm==='doplata'?a*MALY.DOPLATA:0;
-      const poz=baza.slice(0,1).concat(doplata?[['* Dopłata do małego metrażu ('+MALY.RYCZALT_DO+'-'+MALY.DOPLATA_DO+' m²)',a,MALY.DOPLATA,false]]:[],baza.slice(1))
+      const cenaDop=C('dopl',MALY.DOPLATA), doplata=tm==='doplata'?a*cenaDop:0;
+      const poz=baza.slice(0,1).concat(doplata?[['* Dopłata do małego metrażu ('+MALY.RYCZALT_DO+'-'+MALY.DOPLATA_DO+' m²)',a,cenaDop,false,MALY.DOPLATA]]:[],baza.slice(1))
        .concat((window.spDodatkowe?window.spDodatkowe():[]).map(x=>[x.o+' ('+x.j+')',x.i,x.c,!!x.u]));
       const suma=poz.reduce((s,p)=>s+(typeof p[1]==='number'&&p[2]?p[1]*p[2]:0),0);
       const p=pole('pietroKl'), winda=zn('winda');
-      return {pole,zn,a,wykT,kolor,mb,listwy,listwyUzg,stabUzg,doplata,ryczalt,meble,mebleCena,poz,suma,
+      /* 30.10: laczny upust (cena katalogowa - cena parkieciarza) x ilosc, tylko pozycje z liczba */
+      const rabat=Math.round(poz.reduce((s,p)=>s+(typeof p[1]==='number'&&p[2]!=null&&p[4]!=null&&p[4]>p[2]?p[1]*(p[4]-p[2]):0),0)*100)/100;
+      return {pole,zn,a,wykT,kolor,mb,listwy,listwyUzg,stabUzg,doplata,cenaDop,ryczalt,meble,mebleCena,poz,suma,rabat,
         adres:[[pole('ulicaKl'),pole('dzielKl')].filter(Boolean).join(' '),[pole('kodKl'),pole('miastoKl')].filter(Boolean).join(' ')].filter(Boolean).join(', '),
         ulica:pole('ulicaKl'),
         obiekt:pole('obiektKl')+(p===''?'':(p==='0'?', parter':', '+p+'. piętro'+(winda==='tak'?', winda':', bez windy'))),
@@ -1611,6 +1622,12 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         technika:/^Lakier/.test(wykT)?(wykT+' Berger-Seidle®'):(kolor?'Koloryzacja + lakier Berger-Seidle®':wykT+' Berger-Seidle®')};
     }
     const zl=v=>{const [c,u]=(Math.round(v*100)/100).toFixed(2).split('.');return c.replace(/\B(?=(\d{3})+(?!\d))/g,' ')+','+u+' zł';};
+    /* Artur 30.10 16:39-16:40: pozycje "do realizacji" (wpisana ilosc > 0) na gorze tabeli w PDF i w arkuszu Google,
+       potem "do uzgodnienia / do ustalenia", na koncu pozycje z zerem. Kolejnosc w formularzu bez zmian. */
+    const doReal=p=>typeof p[1]==='number'&&p[1]>0;
+    const sortPoz=P=>P.filter(doReal).concat(P.filter(p=>!doReal(p)&&p[1]!==0&&p[1]!=='0'),P.filter(p=>p[1]===0||p[1]==='0'));
+    const zmCena=p=>p[2]!=null&&p[4]!=null&&Math.abs(p[2]-p[4])>.004; /* parkieciarz zmienil cene jednostkowa */
+    window.spArkusz=arkusz; /* 30.10: podglad kwoty netto/brutto przy cenach w trybie parkieciarza (blok ceny-3010) */
     /* PDF w ukladzie arkusza Artura (A4, 1240x1754 px na strone) */
     async function ofertaPdf(zdj){
       if(!window.jspdf||!window.jspdf.jsPDF)return null;
@@ -1719,7 +1736,9 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       const cx=[M,M+500,M+620,M+740,M+890], cw=W-2*M; /* Artur 20.10 22:43: kolumna "Do uzg." */
       g.fillStyle=EST?JASNY2:ZYWY;g.fillRect(M,y,cw,52);g.fillStyle=EST?NAGL:'#fff';g.font='bold 23px Arial';
       ['Zakres prac','Do uzg.','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
-      const yT=y;A.poz.forEach((p,i)=>{g.fillStyle=(EST&&i%2)?JASNY:'#fff';g.fillRect(M,y,cw,rh);if(!EST){g.fillStyle=RAMKA;g.fillRect(M,y+rh-1,cw,1.5);}const ty=y+Math.round(rh/2)+8;g.fillStyle=CIEMNY;g.font='italic 22px Arial';
+      /* Artur 30.10 16:39: pozycje do realizacji (ilosc > 0) na gorze i na ciemniejszym pomaranczowym pasku z kreska #FF6A13 z lewej */
+      const REAL='#FFCFAD', REAL2='#FFDCC2';
+      const yT=y;sortPoz(A.poz).forEach((p,i)=>{const re=doReal(p);g.fillStyle=re?(i%2?REAL2:REAL):((EST&&i%2)?JASNY:'#fff');g.fillRect(M,y,cw,rh);if(re){g.fillStyle=ZYWY;g.fillRect(M,y,6,rh);}if(!EST){g.fillStyle=RAMKA;g.fillRect(M,y+rh-1,cw,1.5);}const ty=y+Math.round(rh/2)+8;g.fillStyle=CIEMNY;g.font='italic 22px Arial';
         const ile=typeof p[1]==='number'?p[1]:p[1];const laczna=typeof p[1]==='number'&&p[2]?p[1]*p[2]:null;
         {/* Artur 20.10 22:10: zakres prac drukowanymi, numerowany, "- DO UZGODNIENIA" przy pozycjach do uzgodnienia; dlugie w 2 liniach */
          let t=(i+1)+'. '+String(p[0]).toUpperCase();
@@ -1734,8 +1753,13 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
          if(p[3]){g.strokeStyle=POM;g.lineWidth=4;g.lineCap='round';g.lineJoin='round';g.beginPath();g.moveTo(bx+5,by+13);g.lineTo(bx+11,by+20);g.lineTo(bx+22,by+6);g.stroke();}
          g.restore();g.font='italic 22px Arial';g.fillStyle=CIEMNY;}
         g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','do uzg.'),cx[2]+12,ty);
-        g.fillText(p[2]==null?'do uzg.':zl(p[2]),cx[3]+12,ty);g.fillText(laczna?zl(laczna):'-',cx[4]+12,ty);y+=rh;});
-      if(EST){g.fillStyle=JASNY2;g.fillRect(M,y-2,cw,2);y+=16;g.fillStyle=ZYWY;g.fillRect(M,y,cw,70);g.fillStyle='#fff';g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);}
+        /* Artur 30.10 14:02: cena obnizona przez parkieciarza - nad nia mala przekreslona cena katalogowa */
+        if(zmCena(p)&&p[2]<p[4]&&rh>=38){g.save();g.font='17px Arial';g.fillStyle=SZARY;const tk=zl(p[4]),wk=g.measureText(tk).width;g.fillText(tk,cx[3]+12,y+16);g.fillRect(cx[3]+11,y+10,wk+2,1.8);g.restore();
+          g.font='bold italic 22px Arial';g.fillStyle=CIEMNY;g.fillText(zl(p[2]),cx[3]+12,ty+4);g.font='italic 22px Arial';}
+        else g.fillText(p[2]==null?'do uzg.':zl(p[2]),cx[3]+12,ty);
+        g.fillText(laczna?zl(laczna):'-',cx[4]+12,ty);y+=rh;});
+      if(EST){g.fillStyle=JASNY2;g.fillRect(M,y-2,cw,2);y+=16;g.fillStyle=ZYWY;g.fillRect(M,y,cw,70);g.fillStyle='#fff';g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);
+        if(A.rabat>0){const wn=g.measureText('Kwota netto').width;g.font='22px Arial';g.fillText('· w tym upust -'+zl(A.rabat),M+20+wn+14,y+45);g.font='bold 30px Arial';}} /* Artur 30.10: "zeby sie bilansowalo" */
       else{g.fillStyle=RAMKA;g.fillRect(cx[1],yT,1.5,y-yT);g.fillRect(cx[2],yT,1.5,y-yT);g.strokeStyle=POM;g.lineWidth=3;g.strokeRect(M+1.5,yT-52+1.5,cw-3,y-yT+52-3);y+=16;g.fillStyle='#fff';g.fillRect(M,y,cw,70);g.strokeStyle=POM;g.lineWidth=4;g.strokeRect(M+2,y+2,cw-4,66);g.fillStyle=CIEMNY;g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);g.fillStyle=POM;}
       g.textAlign='right';g.fillText(zl(A.suma),W-M-20,y+46);g.textAlign='left';y+=84;{/* Artur 28.10 22:27: pod netto pasek brutto; stawka VAT z przelacznika w analizatorze (domyslnie 8% - remont lokalu mieszkalnego) */const st=window.spVat?window.spVat():8,br=A.suma>0?Math.round(A.suma*(100+st))/100:0;if(EST){g.fillStyle=JASNY;g.fillRect(M,y,cw,60);}else{g.fillStyle='#fff';g.fillRect(M,y,cw,60);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,y+1,cw-2,58);}g.fillStyle=CIEMNY;g.font='bold 26px Arial';g.fillText('Kwota brutto (VAT '+st+'%)',M+20,y+40);g.textAlign='right';g.fillText(br?zl(br):'-',W-M-20,y+40);g.textAlign='left';}y+=90;
       g.fillStyle=SZARY;g.font='italic 20px Arial';
@@ -1884,7 +1908,8 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       let ark=null;
       try{const A=arkusz();ark={imie:pole('imieKl'),tel:pole('telKl'),mail:mail||pole('mailKl'),adres:A.adres,ulica:A.ulica,
         obiekt:A.obiekt,rodzaj:A.rodzaj,technika:A.technika,termin:pole('terminKl')+((window.spOpcje&&window.spOpcje().ekspres)?' | EKSPRES 48H':''),m2:A.a,uwagi:[window.spOpcjeTekst?window.spOpcjeTekst():'',pole('uwagiKl')].filter(Boolean).join(' | '),
-        poz:A.poz.map(p=>[p[0],p[1],p[2]]),suma:A.suma};}catch(e){}
+        /* 30.10: pozycje do realizacji na gorze; 4. pole = cena katalogowa, gdy parkieciarz zmienil cene (Apps Script od wersji 30.10 pokazuje ja w kolumnie E) */
+        poz:sortPoz(A.poz).map(p=>[p[0],p[1],p[2],zmCena(p)?p[4]:null]),suma:A.suma,rabat:A.rabat||0};}catch(e){}
       /* Artur 22.10: komplet pol i zdjec trafia do folderu "Oferty do poprawki" - mozna je potem
          wczytac w analizatorze, zmienic kwote i wyslac klientowi poprawiona oferte */
       let stan=null;try{stan=window.spZrzut?window.spZrzut():null;if(stan)stan.podpisy=(window.__podpisy||[]).slice();}catch(e){}
@@ -3470,3 +3495,101 @@ html body #naprBlok .napr-w input{width:100%;box-sizing:border-box;min-height:44
   addEventListener('scroll',stan,{passive:true});addEventListener('resize',stan);setInterval(stan,1000);stan();}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();</script>
+<!-- ceny i paski 30.10: START -->
+<style id="ceny-3010">/* Artur 30.10 14:02-14:09: cena jednostkowa / upust przy pozycji (tylko tryb parkieciarza i analizator) */
+html body #wycena .ai-form .cena-w{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 8px;align-items:end;margin:8px 0 0;padding:8px 10px;border:1.5px dashed #F3C9A8;border-radius:10px;background:#FFF8F2}
+html body #wycena .ai-form .cena-w[hidden]{display:none}
+html body #wycena .ai-form .cena-w .cena-t{grid-column:1/-1;font-size:.8rem;line-height:1.3;font-weight:700;color:#3A3F45;text-transform:none;letter-spacing:0}
+html body #wycena .ai-form .cena-w .cena-t small{display:inline;margin-left:6px;font-weight:400;color:#6B5E52;font-size:.74rem}
+html body #wycena .ai-form .cena-w label{display:block;margin:0!important;padding:0!important;background:none!important;box-shadow:none!important;font-size:.7rem!important;font-weight:600!important;line-height:1.2;color:#4A5058!important;text-transform:none!important;letter-spacing:0!important}
+html body #wycena .ai-form .cena-w input{display:block;width:100%;min-width:0;box-sizing:border-box;min-height:42px;margin-top:3px;padding:6px 8px}
+html body #wycena .ai-form .cena-w.zm{border-style:solid;border-color:#FF6A13;background:#FFF1E6}
+html body #wycena .ai-form .cena-w.zm .cena-t small{color:#B03C0A;font-weight:700}
+#oNetto{display:block;margin-top:6px;font-size:.82rem;font-weight:700;color:#3A3F45;font-style:normal}
+#oNetto[hidden]{display:none}
+/* Artur 30.10 16:39-16:40: pozycja z wpisana iloscia (m2, mb, szt.) = ciemniejszy pomaranczowy pasek etykiety (wszystkie tryby) */
+html body #wycena .ai-form > div.ma-il > label:first-child,html body #wycena .ai-form .pyt.ma-il > span,html body #wycena #naprBlok.ma-il > label{background:#FFC9A3!important;color:#6E2400!important;box-shadow:inset 5px 0 0 #FF6A13;transition:background-color .2s ease}
+html body #wycena .ai-form .dod-w.ma-il{background:#FFDCC2;border-radius:10px;padding:8px 8px 10px;box-shadow:inset 5px 0 0 #FF6A13;border-bottom-color:transparent}
+@media(prefers-reduced-motion:reduce){html body #wycena .ai-form > div.ma-il > label:first-child,html body #wycena .ai-form .pyt.ma-il > span{transition:none}}
+</style>
+<script id="ceny-3010-js">
+(function(){
+  var f=document.querySelector('form.ai-form');if(!f)return;
+  var $=function(id){return document.getElementById(id);};
+  var zn=function(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:'';};
+  var liczba=function(v){var x=parseFloat(String(v==null?'':v).replace(',','.'));return isFinite(x)?x:NaN;};
+  function blok(e){if(typeof e==='string')e=$(e)||document.querySelector('input[name="'+e+'"]');if(!e)return null;while(e.parentElement&&e.parentElement!==f)e=e.parentElement;return e.parentElement===f?e:null;}
+  function m2(){return Math.max(0,liczba(($('m2')||{}).value)||0);}
+  function wykT(){var w=$('wyk');return w&&w.options[w.selectedIndex]?w.options[w.selectedIndex].text:'';}
+
+  /* ---- 2) paski pozycji do realizacji (wszystkie tryby) ---- */
+  var oznaczone=[];
+  function paski(){
+    var on=[],a=m2();
+    var dodaj=function(){[].forEach.call(arguments,function(x){var b=(x&&x.nodeType)?x:blok(x);if(b&&on.indexOf(b)<0)on.push(b);});};
+    if(a>0)dodaj('m2');
+    if(a>0&&wykT()==='Kolor')dodaj('wyk');
+    var lz=zn('listwy'),mb=liczba(($('listwyMb')||{}).value);if(lz&&lz!=='nie'&&lz!=='do uzgodnienia'&&mb>0)dodaj('listwy','listwyMb');
+    var sm=liczba(($('stabM2')||{}).value);if(zn('stab')==='tak'&&sm>0)dodaj('stab','stabM2');
+    if(window.spNaprawa&&window.spNaprawa()){dodaj('napr');var nb=$('naprBlok');if(nb)dodaj(nb);}
+    var mk=liczba(($('mebleKw')||{}).value);if(zn('meble')==='nie'||mk>0){dodaj('meble');if(mk>0)dodaj('mebleKw');}
+    [].forEach.call(document.querySelectorAll('#dodLista .dod-w'),function(w){var o=w.querySelector('.dod-o'),c=w.querySelector('.dod-c');
+      var tak=!!(o&&o.value.trim()&&c&&liczba(c.value)>0);w.classList.toggle('ma-il',tak);});
+    oznaczone.forEach(function(b){if(on.indexOf(b)<0)b.classList.remove('ma-il');});
+    on.forEach(function(b){b.classList.add('ma-il');});oznaczone=on;
+  }
+
+  /* ---- 1) ceny jednostkowe / upust - tylko parkieciarz i analizator ---- */
+  var park=false;try{park=!!window.SP_ANALIZATOR||/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
+  if(window.SP_ZAMOWIENIE)park=false; /* Koszyk SMART = klient, bez zmiany cen */
+  /* ceny katalogowe - te same co w kalkulatorze (CENY, MALY, 130 zl/m2 + doplata za olej/wosk) */
+  var POZ=[
+    {k:'ren',gdzie:'m2',t:'Renowacja parkietu',jm:'zł/m²',kat:function(){return 130+({'Olej':8,'Twardy wosk':12}[wykT()]||0);},jest:function(){return m2()>=10;}},
+    {k:'rycz',gdzie:'m2',t:'Ryczałt SMART (poniżej 10 m²)',jm:'zł',kat:function(){return 1500;},jest:function(){var a=m2();return a>0&&a<10;}},
+    {k:'dopl',gdzie:'m2',t:'Dopłata do małego metrażu',jm:'zł/m²',kat:function(){return 30;},jest:function(){var a=m2();return a>=10&&a<=22;}},
+    {k:'kolor',gdzie:'wyk',t:'Koloryzacja',jm:'zł/m²',kat:function(){return 70;},jest:function(){return wykT()==='Kolor';}},
+    {k:'listwy',gdzie:'listwyMb',t:'Wymiana listew',jm:'zł/mb',kat:function(){return 50;},jest:function(){var l=zn('listwy');return !!l&&l!=='nie'&&l!=='do uzgodnienia';}},
+    {k:'stab',gdzie:'stabM2',t:'Stabilizacja (iniekcja)',jm:'zł/m²',kat:function(){return 70;},jest:function(){return zn('stab')==='tak';}}];
+  var zl=function(n){n=Math.round(n*100)/100;return n.toLocaleString('pl-PL',{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2}).replace(/ /g,' ');};
+  function nowaCena(k){var e=$('cena_'+k),v=e?liczba(e.value):NaN;return v>0?v:NaN;}
+  window.spCena=function(k,kat){if(!park)return kat;var v=nowaCena(k);return v>0?v:kat;};
+  function opis(p){var w=$('cw_'+p.k);if(!w)return;var kat=p.kat(),v=nowaCena(p.k),zm=v>0&&Math.abs(v-kat)>.004;
+    w.classList.toggle('zm',zm);
+    var s=w.querySelector('.cena-t small');
+    s.textContent=zm?(v<kat?'upust -'+zl(kat-v)+' '+p.jm+' · katalog '+zl(kat):'katalog '+zl(kat)+' '+p.jm+' · cena wyższa'):'cena katalogowa '+zl(kat)+' '+p.jm;
+    var c=$('cena_'+p.k);if(c)c.placeholder=zl(kat).replace(/\s/g,'');}
+  function zbuduj(){
+    POZ.forEach(function(p){if($('cw_'+p.k))return;var b=blok(p.gdzie);if(!b)return;
+      var w=document.createElement('div');w.className='cena-w';w.id='cw_'+p.k;w.hidden=true;
+      w.innerHTML='<span class="cena-t">'+p.t+' - cena jedn.<small></small></span>'+
+        '<label for="cena_'+p.k+'">Cena '+p.jm+'<input id="cena_'+p.k+'" type="number" inputmode="decimal" min="0" step="any" autocomplete="off"></label>'+
+        '<label for="upust_'+p.k+'">Upust (minus)<input id="upust_'+p.k+'" type="number" inputmode="decimal" step="any" autocomplete="off" placeholder="np. 10"></label>';
+      b.appendChild(w);
+      var c=w.querySelector('#cena_'+p.k),u=w.querySelector('#upust_'+p.k);
+      /* cena 120 -> upust 10; upust 10 albo -10 -> cena 120 (Artur: "wpisywalbym z minusem cyferke") */
+      c.addEventListener('input',function(){var v=liczba(c.value),kat=p.kat();u.value=(v>0&&v<kat)?String(Math.round((kat-v)*100)/100):'';opis(p);});
+      u.addEventListener('input',function(){var x=Math.abs(liczba(u.value)),kat=p.kat();c.value=(x>0&&x<kat)?String(Math.round((kat-x)*100)/100):'';opis(p);});
+    });}
+  function odswiez(){
+    POZ.forEach(function(p){var w=$('cw_'+p.k);if(!w)return;w.hidden=!p.jest();opis(p);
+      /* po wczytaniu oferty z folderu albo zmianie wykonczenia: upust liczony od aktualnej ceny katalogowej */
+      var c=$('cena_'+p.k),u=$('upust_'+p.k);if(c&&u&&document.activeElement!==u){var v=liczba(c.value),kat=p.kat();u.value=(v>0&&v<kat)?String(Math.round((kat-v)*100)/100):'';}});
+    var o=$('oNetto');if(o&&window.spArkusz){try{var A=window.spArkusz(),st=window.spVat?window.spVat():8;
+      o.hidden=!(A.suma>0);o.textContent='Oferta (tabela PDF): netto '+zl(A.suma)+' zł · brutto '+zl(Math.round(A.suma*(100+st))/100)+' zł (VAT '+st+'%)'+(A.rabat>0?' · upust -'+zl(A.rabat)+' zł':'');}catch(e){}}
+  }
+  var czas=0;function wszystko(){clearTimeout(czas);czas=setTimeout(function(){if(park){odswiez();}paski();if(park&&window.spEst)window.spEst();},30);}
+  if(park){
+    zbuduj();
+    var oN=$('oN'),est=oN&&oN.closest('.est');if(est&&!$('oNetto')){var o=document.createElement('b');o.id='oNetto';o.hidden=true;est.appendChild(o);}
+    /* zapis do Folderu ofert / historii: pola cen dochodza do listy POLA (spZrzut), a przy wczytaniu starej oferty bez cen pola sie czyszcza */
+    var zr=window.spZrzut,wc=window.spWczytaj;
+    if(zr)window.spZrzut=function(){var s=zr.apply(this,arguments);s.ceny={};POZ.forEach(function(p){var e=$('cena_'+p.k);if(e&&e.value)s.ceny[p.k]=e.value;});return s;};
+    if(wc)window.spWczytaj=function(s){POZ.forEach(function(p){var e=$('cena_'+p.k),u=$('upust_'+p.k);if(e)e.value='';if(u)u.value='';});
+      var r=wc.apply(this,arguments);var cc=(s&&s.ceny)||{};Object.keys(cc).forEach(function(k){var e=$('cena_'+k);if(e){e.value=cc[k];e.dispatchEvent(new Event('input',{bubbles:true}));}});wszystko();return r;};
+  }
+  document.addEventListener('input',wszystko,true);document.addEventListener('change',wszystko,true);document.addEventListener('click',function(){setTimeout(wszystko,0);},true);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wszystko);else wszystko();
+  setTimeout(wszystko,600);
+})();
+</script>
+<!-- ceny i paski 30.10: KONIEC -->

@@ -86,19 +86,29 @@ function arkuszWyceny(folder, nazwa, a, kiedy) {
   sh.getRange(1, 1).setFontWeight('bold').setFontSize(14).setFontColor('#FE6500');
   sh.getRange(2, 1, dane.length - 1, 1).setFontWeight('bold').setFontColor('#4A5058');
   const start = dane.length + 2;
-  sh.getRange(start, 1, 1, 4).setValues([['Pozycja', 'Ilość', 'Cena jedn. (zł)', 'Wartość (zł)']])
+  /* Artur 30.10: kolumna E "Cena katalogowa" - wypelniona, gdy parkieciarz zmienil cene jednostkowa (p[3] z formularza) */
+  sh.getRange(start, 1, 1, 5).setValues([['Pozycja', 'Ilość', 'Cena jedn. (zł)', 'Wartość (zł)', 'Cena katalogowa (zł)']])
     .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
-  const poz = (a.poz || []).filter(p => p[1] !== 0 && p[1] !== '0');
+  /* Artur 30.10 16:39: pozycje do realizacji (ilosc > 0) na gorze i na ciemniejszym pomaranczowym tle, potem "do uzgodnienia" */
+  const real = p => typeof p[1] === 'number' && p[1] > 0;
+  const wszystkie = (a.poz || []).filter(p => p[1] !== 0 && p[1] !== '0');
+  const poz = wszystkie.filter(real).concat(wszystkie.filter(p => !real(p)));
   poz.forEach((p, i) => {
     const w = start + 1 + i;
     sh.getRange(w, 1, 1, 3).setValues([[p[0], p[1], p[2] === null ? '' : p[2]]]);
     sh.getRange(w, 4).setFormula('=IF(AND(ISNUMBER(B' + w + '),ISNUMBER(C' + w + ')),B' + w + '*C' + w + ',"")');
+    if (typeof p[3] === 'number') sh.getRange(w, 5).setValue(p[3]).setFontColor('#6B5E52');
+    if (real(p)) sh.getRange(w, 1, 1, 5).setBackground('#FFC9A3').setFontWeight('bold');
   });
   const wSuma = start + 1 + poz.length;
   sh.getRange(wSuma, 3).setValue('Razem netto').setFontWeight('bold');
   sh.getRange(wSuma, 4).setFormula('=SUM(D' + (start + 1) + ':D' + (wSuma - 1) + ')').setFontWeight('bold');
-  sh.getRange(start + 1, 3, poz.length + 1, 2).setNumberFormat('#,##0.00');
-  sh.setColumnWidth(1, 330); sh.setColumnWidth(2, 90); sh.setColumnWidth(3, 130); sh.setColumnWidth(4, 130);
+  if (a.rabat > 0) {
+    sh.getRange(wSuma + 1, 3).setValue('w tym upust').setFontColor('#B03C0A');
+    sh.getRange(wSuma + 1, 4).setValue(-a.rabat).setFontColor('#B03C0A').setNumberFormat('#,##0.00');
+  }
+  sh.getRange(start + 1, 3, poz.length + 1, 3).setNumberFormat('#,##0.00');
+  sh.setColumnWidth(1, 330); sh.setColumnWidth(2, 90); sh.setColumnWidth(3, 130); sh.setColumnWidth(4, 130); sh.setColumnWidth(5, 150);
   SpreadsheetApp.flush();
   DriveApp.getFileById(ss.getId()).moveTo(folder);
   return ss.getUrl();
@@ -155,6 +165,10 @@ function rejestr(a, kiedy, url, idStanu) {
   if (sh.getRange(1, 10).getValue() !== 'Nr zamówienia') sh.getRange(1, 10).setValue('Nr zamówienia')
     .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
   sh.getRange(2, 10).setValue(a.numer || '').setBackground(null).setFontColor('#1A1A1A').setFontWeight(a.numer ? 'bold' : 'normal');
+  /* Artur 30.10: kolumna K - laczny upust od cen katalogowych (puste, gdy ceny katalogowe) */
+  if (sh.getRange(1, 11).getValue() !== 'Upust (zł)') sh.getRange(1, 11).setValue('Upust (zł)')
+    .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
+  sh.getRange(2, 11).setValue(a.rabat > 0 ? -Math.round(a.rabat * 100) / 100 : '').setBackground(null).setFontColor('#B03C0A').setFontWeight('normal');
 }
 
 /* jednorazowo: poprawia stare wiersze rejestru (kolor + klikalne linki). Uruchomic recznie z edytora. */
