@@ -149,6 +149,9 @@ FOLDER_JS = r"""<style>
    var pd=(o.stan&&o.stan.podpisy)||[];setTimeout(function(){[].slice.call(document.querySelectorAll('#miniatury input.podp')).forEach(function(p,i){
     if(pd[i]){p.value=pd[i];p.dispatchEvent(new Event('input',{bubbles:true}));}});},300);}
   var ok=document.getElementById('ofertaKl');if(ok&&o.mailKlienta)ok.checked=true;
+  /* Artur 01.11 21:16 "jest tylko bez zdjec": wersje zapisane przed poprawka z 29.10 nie maja zdjec w folderze (zdjecia sa tylko w starym PDF) -
+     wyrazny komunikat, ze wystarczy dodac je raz, bo kazda kolejna wersja zachowuje zdjecia */
+  if(!(o.zdjecia||[]).length){info('Wczytana oferta z '+o.kiedy+' - ta wersja NIE MA zapisanych zdjęć (zapis sprzed poprawki z 29.10). Dodaj zdjęcia raz przyciskiem „Dodaj zdjęcia” i wyślij - każda następna wersja tej oferty będzie już je miała.');return;}
   info('Wczytana oferta z '+o.kiedy+' ('+((o.zdjecia||[]).length)+' zdj.). Popraw, co trzeba, i wyślij ponownie - klient dostanie poprawioną ofertę.');}
  /* Artur 27.10 13:22-13:24: lista ofert za dluga - pole szukania (3-4 litery ulicy, telefon albo data) filtruje na zywo */
  var WSZ=[],WSZ_T=0;
