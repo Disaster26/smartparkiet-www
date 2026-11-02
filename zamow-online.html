@@ -1936,17 +1936,30 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       const b64=f=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]||'');r.onerror=()=>ok('');r.readAsDataURL(f);});
       const wyslij=async pdf=>{let zd=[];try{zd=(await Promise.all((window.__gotowe||[]).map(b64))).filter(Boolean);}catch(e){}
         return fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!(window.SP_ZAMOWIENIE||(window.spChce&&window.spChce())),numer:window.__nrZam||'',ekspres:!!(window.spOpcje&&window.spOpcje().ekspres),sciany:!!(window.spOpcje&&window.spOpcje().sciany),terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):((window.spChce&&window.spChce()&&window.spChce().data)?window.spChce().termin:''),stan:stan,zdjecia:zd})}).catch(()=>{});};
+          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!(window.SP_ZAMOWIENIE||(window.spChce&&window.spChce())),numer:window.__nrZam||'',ekspres:!!(window.spOpcje&&window.spOpcje().ekspres),sciany:!!(window.spOpcje&&window.spOpcje().sciany),terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):((window.spChce&&window.spChce()&&window.spChce().data)?window.spChce().termin:''),stan:stan,zdjecia:zd})}).then(()=>true).catch(()=>false);};
       const pdfF=plik||window.__karta;
-      if(pdfF&&pdfF.type==='application/pdf'){
+      if(pdfF&&pdfF.type==='application/pdf')return new Promise(ok=>{
         const r=new FileReader();
-        r.onload=()=>wyslij(String(r.result).split(',')[1]||'');
+        r.onload=()=>ok(wyslij(String(r.result).split(',')[1]||''));
+        r.onerror=()=>ok(wyslij(''));
         r.readAsDataURL(pdfF);
-      }else wyslij('');
+      });
+      return wyslij('');
     }
     /* Artur 28.10 22:30: oferty wysylane z podgladu przez "Wyslij PDF na WhatsApp" / "Pobierz PDF" nie trafialy do Folderu ofert
        (zapis byl tylko przy "Wyslij" mailem). Teraz zapis raz na kazdy PDF z podgladu - bez maila do klienta (pusty mailKlienta). */
-    window.spZapiszPodglad=f=>{if(!f||window.__zapisanyPodglad===f)return;window.__zapisanyPodglad=f;try{naDysk('',f);}catch(e){}};
+    /* Artur 02.11 11:22 "Rycerska - znowu nie moze znalezc": oferta wyslana z podgladu na WhatsApp nie doszla na Dysk - zapis startowal
+       dopiero przy kliknieciu, a telefon wstrzymuje wysylanie kilku MB w tle, gdy otwiera sie WhatsApp. Teraz zapis rusza juz przy
+       otwarciu podgladu (tylko gdy oferta sie zmienila od ostatniego zapisu) i pasek podgladu pokazuje, czy sie udal. */
+    window.spZapiszPodglad=f=>{if(!f||window.__zapisanyPodglad===f)return;window.__zapisanyPodglad=f;
+      const s=document.getElementById('podgladZapis');
+      let klucz='';try{klucz=JSON.stringify(window.spZrzut?window.spZrzut():'')+'|'+(window.__gotowe||[]).map(x=>x.size).join(',');}catch(e){}
+      if(klucz&&klucz===window.__zapisanyKlucz){if(s&&window.__zapisOk)s.textContent='Zapisano w Folderze ofert ✓';return;}
+      window.__zapisanyKlucz=klucz;window.__zapisOk=false;
+      if(s){s.textContent='Zapisuję w Folderze ofert…';s.style.color='#B9BDC3';}
+      let p;try{p=naDysk('',f);}catch(e){}
+      Promise.resolve(p).then(ok=>{if(ok===false){window.__zapisanyKlucz='';}else window.__zapisOk=true;
+        if(s){s.textContent=ok===false?'Nie zapisano w Folderze ofert - sprawdź internet i otwórz podgląd ponownie':'Zapisano w Folderze ofert ✓';s.style.color=ok===false?'#FF9B9B':'#9BE29B';}});};
     /* Artur 10.10 22:32: zdjecie ma dojsc jako ZALACZNIK do maila.
        Koncowka /ajax w FormSubmit przyjmuje tylko tekst, pliki idą wyłącznie
        zwyklym formularzem multipart. Dlatego skladamy ukryty formularz
@@ -2092,7 +2105,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     bWys.parentNode.insertBefore(b,bWys);
     const ov=document.createElement('div');ov.id='podgladOv';
     ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(20,22,26,.92);display:none;flex-direction:column';
-    ov.innerHTML='<div style="display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;background:#16191D;color:#fff;font:600 15px Arial"><span>Podgląd oferty (tak dostanie klient)</span><span style="display:flex;gap:8px"><button type="button" id="podgladWys" style="background:#FF6A13;color:#fff;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Wyślij</button><button type="button" id="podgladZam" style="background:#fff;color:#16191D;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Popraw</button></span></div><div id="podgladStr" style="flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px"></div><div style="display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#16191D"><button type="button" id="podgladPdf" style="flex:1;background:#4A5058;color:#fff;border:1.5px solid #8A9099;border-radius:10px;padding:12px 10px;font:700 14px Arial">Pobierz PDF</button><button type="button" id="podgladWa" style="flex:1;background:#25D366;color:#fff;border:0;border-radius:10px;padding:12px 10px;font:700 14px Arial">Wyślij PDF na WhatsApp</button><button type="button" id="podgladCzat" style="flex:1;background:#fff;color:#16191D;border:0;border-radius:10px;padding:12px 10px;font:700 14px Arial">Otwórz czat z klientem</button></div>';
+    ov.innerHTML='<div style="display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;background:#16191D;color:#fff;font:600 15px Arial"><span>Podgląd oferty (tak dostanie klient)<small id="podgladZapis" style="display:block;font-weight:400;font-size:12px;color:#B9BDC3"></small></span><span style="display:flex;gap:8px"><button type="button" id="podgladWys" style="background:#FF6A13;color:#fff;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Wyślij</button><button type="button" id="podgladZam" style="background:#fff;color:#16191D;border:0;border-radius:10px;padding:10px 14px;font:700 14px Arial">Popraw</button></span></div><div id="podgladStr" style="flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px"></div><div style="display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#16191D"><button type="button" id="podgladPdf" style="flex:1;background:#4A5058;color:#fff;border:1.5px solid #8A9099;border-radius:10px;padding:12px 10px;font:700 14px Arial">Pobierz PDF</button><button type="button" id="podgladWa" style="flex:1;background:#25D366;color:#fff;border:0;border-radius:10px;padding:12px 10px;font:700 14px Arial">Wyślij PDF na WhatsApp</button><button type="button" id="podgladCzat" style="flex:1;background:#fff;color:#16191D;border:0;border-radius:10px;padding:12px 10px;font:700 14px Arial">Otwórz czat z klientem</button></div>';
     document.body.appendChild(ov);
     const zam=()=>{ov.style.display='none';document.body.style.overflow='';};
     ov.querySelector('#podgladZam').onclick=zam;
@@ -2150,6 +2163,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
           im.style.cssText='width:100%;max-width:820px;height:auto;background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.4)';st.appendChild(im);});
         if(!st.children.length)st.innerHTML='<p style="color:#fff;font:16px Arial">Nie udało się przygotować podglądu.</p>';
         ov.style.display='flex';document.body.style.overflow='hidden';st.scrollTop=0;
+        if(window.spZapiszPodglad&&window.__pdfPodglad)window.spZapiszPodglad(window.__pdfPodglad);
       }finally{b.disabled=false;b.textContent=t0;}
     });
   })();
