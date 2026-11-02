@@ -2163,7 +2163,9 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
           im.style.cssText='width:100%;max-width:820px;height:auto;background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.4)';st.appendChild(im);});
         if(!st.children.length)st.innerHTML='<p style="color:#fff;font:16px Arial">Nie udało się przygotować podglądu.</p>';
         ov.style.display='flex';document.body.style.overflow='hidden';st.scrollTop=0;
-        if(window.spZapiszPodglad&&window.__pdfPodglad)window.spZapiszPodglad(window.__pdfPodglad);
+        /* 02.11 12:50 Artur 'nie ma podgladu, nic sie nie wysyla': zapis (kilka MB zdjec) rusza 1,5 s po pokazaniu podgladu,
+           zeby telefon najpierw narysowal strony; klikniecie WhatsApp/Pobierz wczesniej zapisuje od razu (ten sam plik = jeden zapis) */
+        {const f0=window.__pdfPodglad,zs=document.getElementById('podgladZapis');if(zs&&window.__zapisanyPodglad!==f0)zs.textContent='';setTimeout(()=>{if(window.spZapiszPodglad&&f0&&ov.style.display!=='none')window.spZapiszPodglad(f0);},1500);}
       }finally{b.disabled=false;b.textContent=t0;}
     });
   })();
