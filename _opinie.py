@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 """Liczba opinii Google na stronie - JEDNO miejsce do zmiany (aktualizowana recznie).
 
-Zmien OPINIE (suma ze wszystkich wizytowek) i ewentualnie SUFLERSKA (liczba pokazana
-przy oddziale Rembertow na oddzialy.html), potem: python _opinie.py
+Zmien OPINIE (suma ze wszystkich wizytowek), potem: python _opinie.py
+Artur 04.11: wszedzie JEDNA liczba = suma ze wszystkich wizytowek (bez liczb pojedynczych wizytowek).
 Skrypt podmienia liczby we wszystkich plikach .html (poza index-biale.html - zapis 15.10).
 """
 import os, re, glob
 
 OPINIE = 257        # 30.10.2026: Suflerska 218 + Belwederska 23 + Grojecka 15 + Turmoncka 1
-SUFLERSKA = 218     # oddzialy.html, karta Rembertow
 
 TU = os.path.dirname(os.path.abspath(__file__))
 WZORY = [
@@ -17,7 +16,6 @@ WZORY = [
     (r'(<b>)\d+( opinii</b>)', OPINIE),                   # sekcja opinii
     (r'(przy )\d+( opiniach)', OPINIE),                   # artykul o tradycji
     (r'(<span>)\d+( opinii łącznie)', OPINIE),
-    (r'(biuro\. )\d+( opinii Google\.)', SUFLERSKA),      # oddzialy.html
 ]
 zm = 0
 for p in sorted(glob.glob(os.path.join(TU, '*.html'))):
