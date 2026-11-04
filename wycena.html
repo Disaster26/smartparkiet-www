@@ -1883,15 +1883,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       w.push('E-mail klienta: '+(pole('mailKl')||'nie podano'));
       return w.join('\n');
     }
-    /* TESTY 13.10: formularz na smartparkiet.kontakt nie byl aktywowany w FormSubmit,
-       wiec glowny odbiorca to odrobimy@gmail.com (aktywuje Lukasz), biuro dostaje kopie.
-       Po potwierdzeniu, ze zdjecia dochodza, wrocic do BIURO='smartparkiet.kontakt@gmail.com'. */
-    /* 13.10 01:05: na smartparkiet.kontakt zgloszenia nie docieraly, Artur chce na prywatny adres.
-       Glowny odbiorca to aktywowany w FormSubmit adres Lukasza, Artur dostaje kopie (kopia nie wymaga
-       aktywacji). Docelowo: BIURO='artur.trembinski@gmail.com' po kliknieciu przez niego 'Activate Form'. */
-    const BIURO='odrobimy@gmail.com';
-    /* Artur 14.10 10:02 "nie mam na poczcie": kopia takze na skrzynke firmowa smartparkiet@gmail.com */
-    const KOPIA='artur.trembinski@gmail.com,smartparkiet@gmail.com';
+    /* 04.11: odbiorcy zgloszen (biuro + kopie) sa ustawione na serwerze w smartparkiet-formularz.php (wtyczka), nie w kodzie strony. */
     /* Artur 14.10: kazda oferta PDF ma sie zapisac na jego Dysku Google (konto SMARTPARKIET).
        Skrypt ai/wyceny_dysk.gs wdrozony na jego koncie; tu adres /exec. Pusty = funkcja wylaczona.
        Ten sam skrypt wysyla klientowi potwierdzenie (autoodpowiedz FormSubmit nie dochodzi). */
@@ -1940,82 +1932,57 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       let p;try{p=naDysk('',f);}catch(e){}
       Promise.resolve(p).then(ok=>{if(ok===false){window.__zapisanyKlucz='';}else window.__zapisOk=true;
         if(s){s.textContent=ok===false?'Nie zapisano w Folderze ofert - sprawdź internet i otwórz podgląd ponownie':'Zapisano w Folderze ofert ✓';s.style.color=ok===false?'#FF9B9B':'#9BE29B';}});};
-    /* Artur 10.10 22:32: zdjecie ma dojsc jako ZALACZNIK do maila.
-       Koncowka /ajax w FormSubmit przyjmuje tylko tekst, pliki idą wyłącznie
-       zwyklym formularzem multipart. Dlatego skladamy ukryty formularz
-       i wysylamy go do ukrytej ramki - strona zostaje na miejscu, a zdjecie
-       dolacza sie do wiadomosci. */
-    function zbudujFormularz(){
-      let f=document.getElementById('smartForm');
-      if(f) return f;
-      const ram=document.createElement('iframe');
-      ram.name='smartRamka'; ram.id='smartRamka'; ram.title='Wysyłka zgłoszenia';
-      ram.setAttribute('aria-hidden','true');
-      ram.style.cssText='position:absolute;width:0;height:0;border:0;left:-9999px';
-      document.body.appendChild(ram);
-      f=document.createElement('form');
-      f.id='smartForm'; f.method='POST'; f.enctype='multipart/form-data';
-      f.target='smartRamka'; f.hidden=true;
-      f.action='https://formsubmit.co/'+BIURO;
-      ['_subject','_cc','_template','_captcha','_next','_autoresponse','email'].forEach(n=>{
-        const i=document.createElement('input'); i.type='hidden'; i.name=n; f.appendChild(i);});
-      /* kolejnosc pol: oferta PDF, potem zdjecia (podglad JPG usuniety 13.10) */
-      [1,2,3,4,5,6,7,8,9,10,11,12,13,14].forEach(i=>{
-        const zal=document.createElement('input');
-        zal.type='file'; zal.name=i===1?'Oferta_PDF':'Zdjecie_'+(i-1); zal.id='smartZalacznik'+i; zal.hidden=true;
-        f.appendChild(zal);
-      });
-      document.body.appendChild(f);
-      return f;
+    /* 04.11 (wlasciciel): wysylka z WLASNEGO serwera strony zamiast formsubmit.co. Endpoint /wyslij.php obsluguje wtyczka
+       WP "SMARTPARKIET static" (plik smartparkiet-formularz.php w paczce): odbiorca i kopie sa stale na serwerze,
+       klient trafia do Reply-To. Zabezpieczenia: znacznik czasu (GET ?znacznik=1, min. 3 s, jednorazowy), pulapka _honey,
+       limity. Na podgladzie (GitHub Pages) wysylka idzie na adres produkcyjny (CORS). Apps Script (Folder ofert, mail do
+       klienta) dziala jak dotad - naDysk() bez zmian. */
+    const WYSLIJ_URL=(/(^|\.)smartparkiet\.com\.pl$/.test(location.hostname)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))?'/wyslij.php':'https://smartparkiet.com.pl/wyslij.php';
+    let znacznik=null,znacznikT=0;
+    function pobierzZnacznik(){return fetch(WYSLIJ_URL+'?znacznik=1',{cache:'no-store',headers:{'Accept':'application/json'}})
+      .then(r=>r.json()).then(j=>{if(j&&j.z){znacznik=j.z;znacznikT=Date.now();}return znacznik;}).catch(()=>null);}
+    /* znacznik pobierany od razu (formularz wypelnia sie dlugo), odswiezany gdy ma ponad 3 h */
+    ['pointerdown','input','focusin'].forEach(ev=>document.addEventListener(ev,()=>{if(!znacznik&&!znacznikT){znacznikT=1;pobierzZnacznik();}},{once:true,passive:true}));
+    async function swiezyZnacznik(){
+      if(!znacznik||Date.now()-znacznikT>3*3600*1000)await pobierzZnacznik();
+      const czekaj=3500-(Date.now()-znacznikT); if(czekaj>0)await new Promise(r=>setTimeout(r,czekaj));
+      return znacznik;
     }
     function doBiura(t,mail){
       const stan=document.getElementById('stanWys');
       if(stan)stan.textContent='Wysyłam...';
-      const f=zbudujFormularz();
-      const ust=(n,v)=>{const e=f.querySelector('[name="'+n+'"]'); if(e)e.value=v||'';};
       const pole=id=>((document.getElementById(id)||{}).value||'').trim();
-      ust('_subject',window.spTemat(window.__korekta?'Korekta wyceny SMARTPARKIET':'Nowa wycena SMARTPARKIET')); /* Artur 26.10 21:57: temat zaczyna sie od adresu; fraza "Nowa wycena"/"Korekta wyceny" zostaje dla filtra Gmaila */
-      /* Artur 14.10: oferta z cenami tylko do nas, klient dostaje samo potwierdzenie (autoodpowiedz FormSubmit) */
-      ust('_cc',KOPIA);
       /* Artur 20.10 02:28: drugie pole - czasem wysyla najpierw do siebie, zanim klient dostanie potwierdzenie */
       const kop=pole('mailKopia'), kopOk=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(kop);
       if(kopOk) mail=kop;
       const mailOk=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail||'');
-      ust('email',mailOk?mail:'');
-      ust('_autoresponse',mailOk&&window.SP_ZAMOWIENIE?'Dzień dobry, dziękujemy za zamówienie usługi SMARTPARKIET. Preferowany termin przekazaliśmy do biura - potwierdzimy jego dostępność SMS-em lub e-mailem w ciągu maksymalnie 2 godzin roboczych. Termin staje się wiążący dopiero po potwierdzeniu. W razie pytań: 602 242 815. Pozdrawiamy, SMARTPARKIET':mailOk?'Dzień dobry, dziękujemy za przesłanie zgłoszenia do bezpłatnej wyceny SMARTPARKIET. Parkieciarz obejrzy zdjęcia i odezwie się z wyceną w ciągu dwóch godzin roboczych. W razie pytań: 602 242 815. Pozdrawiamy, SMARTPARKIET':'');
-      ust('_template','box');
-      ust('_captcha','false');
-      ust('_next',location.origin+location.pathname.replace(/[^/]*$/,'')+'wyslane.html');
-      f.querySelectorAll('input[data-pole]').forEach(e=>e.remove());
-      mailPola().forEach(([k,v],i)=>{const e=document.createElement('input');e.type='hidden';e.dataset.pole='1';
-        e.name=k;e.value=v;f.insertBefore(e,f.querySelector('input[type=file]'));});
+      const fd=new FormData();
+      fd.append('_subject',window.spTemat(window.__korekta?'Korekta wyceny SMARTPARKIET':'Nowa wycena SMARTPARKIET')); /* Artur 26.10 21:57: temat zaczyna sie od adresu; fraza "Nowa wycena"/"Korekta wyceny" zostaje dla filtra Gmaila */
+      fd.append('_honey','');
+      fd.append('email',mailOk?mail:'');
+      fd.append('_pola',JSON.stringify(mailPola()));
+      /* kolejnosc zalacznikow: oferta PDF, potem zdjecia */
       let zalaczono=0;
-      try{
-        const pk=(window.__karta?[window.__karta]:[]).concat(window.__gotowe||[]);
-        for(let i=1;i<=14;i++){
-          const inp=document.getElementById('smartZalacznik'+i);
-          if(!inp||!window.DataTransfer)continue;
-          const dt=new DataTransfer();
-          if(pk[i-1]){dt.items.add(pk[i-1]);if(pk[i-1]!==window.__karta&&pk[i-1]!==window.__podglad)zalaczono++;}
-          inp.files=dt.files;
-        }
-      }catch(e){}
-      const ram=document.getElementById('smartRamka');
+      const pk=(window.__karta?[window.__karta]:[]).concat(window.__gotowe||[]);
+      pk.slice(0,16).forEach(p=>{if(!p)return;fd.append('zalaczniki[]',p,p.name||'plik');if(p!==window.__karta&&p!==window.__podglad)zalaczono++;});
       let gotowe=false;
       const koniec=ok=>{
         if(gotowe)return; gotowe=true;
         if(!stan)return;
+        /* 04.11: klient dostaje maila (potwierdzenie albo oferta PDF z Apps Script) - przypomnienie o folderze SPAM */
+        const spam=mailOk?' Wysłaliśmy wiadomość na podany adres - jeśli jej nie widać, sprawdź też folder SPAM.':'';
         stan.textContent = ok
           ? ('Wysłane do naszego biura.'
-             + (zalaczono?(' Oferta PDF i zdjęcia w załącznikach: '+zalaczono+'.'):' Zdjęcia prosimy dosłać w odpowiedzi.'))
-          : 'Nie udało się wysłać automatycznie. Proszę skorzystać z przycisków niżej i dołączyć zdjęcia ręcznie.';
+             + (zalaczono?(' Oferta PDF i zdjęcia w załącznikach: '+zalaczono+'.'):' Zdjęcia prosimy dosłać w odpowiedzi.')+spam)
+          : 'Nie udało się wysłać automatycznie. Proszę zadzwonić do biura: 602 242 815 albo skorzystać z przycisków niżej i dołączyć zdjęcia ręcznie.';
         const dr=document.querySelector('#wyslano .drogi'); if(dr&&!ok)dr.hidden=false;
         /* Artur 13.10 21:45: wyrazny komunikat WYSLANE! przy przycisku */
         if(ok){
+          window.__spamInfo=!!mailOk;
           const bw=document.getElementById('wyslij');
           /* Artur 14.10 10:06: jeden klawisz z ptaszkiem i informacja, ze wycena dotrze na maila - bez drugiej ramki */
           if(bw){bw.classList.add('wyslane');bw.disabled=true;bw.style.cssText+=';height:auto!important;padding:16px 18px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:0!important';
-            bw.innerHTML='<span style="display:block;font-size:1.1em;color:#fff">✓ WYSŁANE!</span><small style="display:block;color:#fff!important;opacity:.95;font-weight:500;font-size:.78em;text-transform:none;letter-spacing:0;margin-top:6px;line-height:1.35;white-space:normal">Wycena przyjdzie na Państwa e-mail. Odezwiemy się w ciągu dwóch godzin roboczych.</small>';}
+            bw.innerHTML='<span style="display:block;font-size:1.1em;color:#fff">✓ WYSŁANE!</span><small style="display:block;color:#fff!important;opacity:.95;font-weight:500;font-size:.78em;text-transform:none;letter-spacing:0;margin-top:6px;line-height:1.35;white-space:normal">Wycena przyjdzie na Państwa e-mail. Odezwiemy się w ciągu dwóch godzin roboczych.'+(mailOk?' Jeśli wiadomości nie widać, prosimy sprawdzić też folder SPAM.':'')+'</small>';}
           {const k=document.getElementById('komWyslane'); if(k)k.remove();}
           {const wb=document.getElementById('wyslano'); if(wb)wb.hidden=true;}
           bw&&bw.scrollIntoView({behavior:'smooth',block:'center'});
@@ -2023,14 +1990,24 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
           if(window.spPokazPopraw)window.spPokazPopraw(); if(window.spZapiszWycene)window.spZapiszWycene();
         }
       };
-      ram.onload=()=>koniec(true);
       /* 14.10: przy 12 zdjeciach i slabym zasiegu przesylanie trwa dluzej niz 25 s - wczesniej pokazywalo blad, choc mail dochodzil */
       setTimeout(()=>{if(!gotowe&&stan)stan.textContent='Wysyłam zdjęcia, to może potrwać do minuty. Proszę nie zamykać strony...';},8000);
       setTimeout(()=>koniec(false),120000);
-      f.submit();
+      const wyslij=async(proba)=>{
+        const z=await swiezyZnacznik();
+        if(!z)return false;
+        fd.set('_z',z); znacznik=null; /* znacznik jednorazowy */
+        let r,j={};
+        try{r=await fetch(WYSLIJ_URL,{method:'POST',body:fd,headers:{'Accept':'application/json'}});j=await r.json().catch(()=>({}));}catch(e){return false;}
+        if(r.ok&&j.success)return true;
+        /* zmiana sieci (Wi-Fi -> LTE) albo wygasly znacznik: nowy znacznik i jedna powtorka */
+        if(r.status===403&&proba<1&&(j.blad==='znacznik'||j.blad==='szybko')){await pobierzZnacznik();return wyslij(proba+1);}
+        return false;
+      };
+      wyslij(0).then(ok=>{koniec(!!ok);pobierzZnacznik();},()=>koniec(false));
     }
     const bl=document.getElementById('bladForm');
-    /* zdjecia z telefonu maja po 3-5 MB, a FormSubmit przyjmuje razem ok. 5 MB,
+    /* zdjecia z telefonu maja po 3-5 MB (dawniej limit FormSubmit ok. 5 MB, dzis /wyslij.php 25 MB, ale mail ma byc lekki),
        wiec przed wysylka kazde zmniejszamy do 1600 px (JPEG ok. 300 kB) */
     function zmniejsz(f){return new Promise(ok=>{
       const img=new Image(); const u=URL.createObjectURL(f);
@@ -3424,6 +3401,7 @@ window.spZamPanel=function(terminy){
     '<ol class="zam-os"><li class="on"><span class="zo-ik" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><b>Zamówienie przyjęte</b><span>Oczekuje na potwierdzenie biura.</span></div></li>'+
     '<li><span class="zo-ik" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><div><b>Zamówienie potwierdzone</b><span>Termin i zakres prac zostały zatwierdzone.</span></div></li></ol>'+
     '<p class="zam-dr">Termin staje się wiążący dopiero po potwierdzeniu przez biuro SMARTPARKIET&trade;.</p>'+
+    (window.__spamInfo?'<p class="zam-dr">Wysłaliśmy wiadomość na podany adres - jeśli jej nie widać, sprawdź też folder SPAM.</p>':'')+
     '<p class="zam-dr">'+(window.SP_ZAMOWIENIE?'Wybrane terminy: ':'Termin: ')+String(terminy||'-').replace(/[<>&]/g,'')+'</p>';
   bw.style.display='none';
   var pp=document.querySelector('form.ai-form .pod-przyc');if(pp)pp.style.display='none';

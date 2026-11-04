@@ -323,21 +323,34 @@ def main():
 
 
 def ld_oddzialu(o):
-    """Dane strukturalne podstrony; bez wizytowki (cid None) bez sameAs, z geo jesli jest."""
-    d = ('{"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"SMARTPARKIET %s",'
-         '"description":"Cyklinowanie bezpyłowe i renowacja parkietu, oddział %s.",'
-         '"url":"%s/%s","telephone":"+48602242815","email":"smartparkiet@gmail.com",'
-         '"image":"%s/img/og-smartparkiet-artur.jpg",'
-         '"address":{"@type":"PostalAddress","streetAddress":"%s","addressLocality":"Warszawa",'
-         '"postalCode":"%s","addressCountry":"PL"},"areaServed":[%s]'
-         % (o['dz'], o['dz'], BAZA, o['plik'], BAZA, o['ulica'].replace('ul. ', ''), o['kod'],
-            ','.join('{"@type":"Place","name":"%s"}' % x for x in o['obszar'])))
+    """Dane strukturalne podstrony oddzialu (04.11 audyt K5): @id oddzialu, powiazanie z firma (#firma),
+    logo, geo tylko gdy pewne (pole 'geo'), sameAs/hasMap z wizytowki (cid). BEZ godzin otwarcia - czekaja
+    na ujednolicenie przez Artura (strona podaje dwie rozne wersje)."""
+    import json
+    url = BAZA + '/' + o['plik']
+    d = {
+        "@context": "https://schema.org",
+        "@type": "HomeAndConstructionBusiness",
+        "@id": url + "#oddzial",
+        "name": "SMARTPARKIET " + o['dz'],
+        "description": "Cyklinowanie bezpyłowe i renowacja parkietu, oddział " + o['dz'] + ". " + o['rola'],
+        "url": url,
+        "telephone": "+48602242815",
+        "email": "smartparkiet@gmail.com",
+        "image": BAZA + "/img/og-smartparkiet-artur.jpg",
+        "logo": BAZA + "/img/ikona-512.png",
+        "priceRange": "120-140 zł/m² netto",
+        "address": {"@type": "PostalAddress", "streetAddress": o['ulica'].replace('ul. ', ''), "postalCode": o['kod'],
+                    "addressLocality": "Warszawa", "addressRegion": "mazowieckie", "addressCountry": "PL"},
+        "areaServed": [{"@type": "Place", "name": x} for x in o['obszar']],
+        "parentOrganization": {"@type": "HomeAndConstructionBusiness", "@id": BAZA + "/#firma", "name": "SMARTPARKIET | Trembiński"},
+    }
     if o.get('geo'):
-        d += ',"geo":{"@type":"GeoCoordinates","latitude":%s,"longitude":%s}' % o['geo']
+        d["geo"] = {"@type": "GeoCoordinates", "latitude": o['geo'][0], "longitude": o['geo'][1]}
     if o.get('cid'):
-        d += ',"sameAs":["https://maps.google.com/?cid=%s"]' % o['cid']
-    d += ',"priceRange":"$$","parentOrganization":{"@type":"Organization","name":"SMARTPARKIET Trembiński"}}'
-    return '<script type="application/ld+json">' + d + '</script>'
+        d["hasMap"] = "https://maps.google.com/?cid=%s" % o['cid']
+        d["sameAs"] = ["https://maps.google.com/?cid=%s" % o['cid']]
+    return '<script type="application/ld+json">' + json.dumps(d, ensure_ascii=False) + '</script>'
 
 
 def nowy(plik):

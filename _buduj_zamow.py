@@ -22,8 +22,8 @@ def zamien(stare, nowe, n=1):
         raise SystemExit('Nie znaleziono: ' + stare[:80])
     s = s.replace(stare, nowe, n)
 
-TYT = 'Zamów usługę SMART online - cyklinowanie parkietu Warszawa | SMARTPARKIET'
-OPIS = 'ZAMÓW USŁUGĘ SMART ONLINE™: podaj metraż i zdjęcia, zobacz cenę z kalkulatora, wybierz preferowany termin i wyślij do potwierdzenia. Biuro SMARTPARKIET potwierdza termin SMS-em lub e-mailem.'
+TYT = 'Zamów cyklinowanie online - Warszawa | SMARTPARKIET'  # 04.11 audyt W5: tytul do 60 znakow
+OPIS = 'Zamów cyklinowanie online: metraż i zdjęcia, cena z kalkulatora, preferowany termin. Biuro SMARTPARKIET potwierdza SMS-em lub e-mailem. Warszawa.'  # 04.11 audyt W5: opis do 160 znakow
 s = re.sub(r'<title>.*?</title>', '<title>' + TYT + '</title>', s, count=1, flags=re.S)
 s = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="' + OPIS + '">', s, count=1)
 s = s.replace('smartparkiet-www/wycena.html"', 'smartparkiet-www/zamow-online.html"').replace('smartparkiet.com.pl/wycena.html"', 'smartparkiet.com.pl/zamow-online.html"')
@@ -31,7 +31,11 @@ s = re.sub(r'(<meta (?:property="og:title"|name="twitter:title") content=")[^"]*
 s = re.sub(r'(<meta (?:property="og:description"|name="twitter:description") content=")[^"]*"', r'\1' + OPIS + '"', s)
 s = re.sub(r'(<meta property="og:image:alt" content=")[^"]*"', r'\1ZAMÓW USŁUGĘ SMART ONLINE"', s)
 s = s.replace('/og/wycena.jpg?v=2', '/img/og-smartparkiet-artur.jpg?v=2')
-s = re.sub(r'<script type="application/ld\+json" id="ld-okruszki">.*?</script>\s*', '', s, flags=re.S)
+# 04.11 audyt: okruszki wlasne (zamiast usuwania)
+OKR = ('<script type="application/ld+json" id="ld-okruszki">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": ['
+       '{"@type": "ListItem", "position": 1, "name": "SMARTPARKIET", "item": "https://smartparkiet.com.pl/"}, '
+       '{"@type": "ListItem", "position": 2, "name": "Zamów usługę online", "item": "https://smartparkiet.com.pl/zamow-online.html"}]}</script>')
+s = re.sub(r'<script type="application/ld\+json" id="ld-okruszki">.*?</script>', lambda m: OKR, s, count=1, flags=re.S)
 
 # tryb zamowienia - zanim wystartuja skrypty strony
 m = re.search(r'<meta name="viewport"[^>]*>', s)
