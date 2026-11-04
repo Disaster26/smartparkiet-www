@@ -197,7 +197,7 @@ def tresc(o, inne):
       <div><dt>Adres oddziału</dt><dd>%(ulica)s<br>%(kod)s Warszawa</dd></div>
       <div><dt>Telefon</dt><dd><a href="tel:+48602242815">602 242 815</a><br>
         <span style="font-weight:400;color:var(--mut);font-size:.88rem">jeden numer do wszystkich oddziałów</span></dd></div>
-      <div><dt>Godziny kontaktu</dt><dd>pon-pt 7:00-19:00<br>sob 8:00-15:00</dd></div>
+      <div><dt>Godziny kontaktu</dt><dd>pn-pt 9:00-19:00<br>sob 10:00-15:00</dd></div>
       <div><dt>Dojazd do Państwa</dt><dd>%(eta)s</dd></div>
     </div>
 
@@ -271,7 +271,7 @@ def main():
         % (o['plik'], o['dz'], o['ulica'], ', '.join(o['obszar'][:4])) for o in ODDZIALY)
     blok = (S + '\n<section class="oddzialy-home"><div class="wrap">'
             '<p class="oczko"><span></span>Nasze oddziały w Warszawie</p>'
-            '<h2>Cztery punkty obsługi klienta, cztery ekipy, jeden numer telefonu i jeden system</h2>'
+            '<h2>Pięć punktów obsługi klienta, cztery ekipy, jeden numer telefonu i jeden system</h2>'
             '<p class="lead">Każdy oddział ma swoją stronę z adresem, obszarem dojazdu '
             'i opiniami z własnej wizytówki Google. Proszę wybrać ten najbliżej Państwa.</p>'
             '<div class="odz-siatka">' + kafle + '</div></div></section>\n' + K)
@@ -322,10 +322,17 @@ def main():
     print('oddzialy.html: odnosniki do podstron')
 
 
+# Artur 04.11: godziny kontaktu wszystkich oddzialow (tak samo na stronie i w JSON-LD)
+GODZINY = [
+    {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "09:00", "closes": "19:00"},
+    {"@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "10:00", "closes": "15:00"},
+]
+
+
 def ld_oddzialu(o):
     """Dane strukturalne podstrony oddzialu (04.11 audyt K5): @id oddzialu, powiazanie z firma (#firma),
-    logo, geo tylko gdy pewne (pole 'geo'), sameAs/hasMap z wizytowki (cid). BEZ godzin otwarcia - czekaja
-    na ujednolicenie przez Artura (strona podaje dwie rozne wersje)."""
+    logo, geo tylko gdy pewne (pole 'geo'), sameAs/hasMap z wizytowki (cid). Godziny wg Artura 04.11:
+    pn-pt 9:00-19:00, sob 10:00-15:00, niedziela nieczynne (GODZINY)."""
     import json
     url = BAZA + '/' + o['plik']
     d = {
@@ -342,6 +349,7 @@ def ld_oddzialu(o):
         "priceRange": "120-140 zł/m² netto",
         "address": {"@type": "PostalAddress", "streetAddress": o['ulica'].replace('ul. ', ''), "postalCode": o['kod'],
                     "addressLocality": "Warszawa", "addressRegion": "mazowieckie", "addressCountry": "PL"},
+        "openingHoursSpecification": GODZINY,
         "areaServed": [{"@type": "Place", "name": x} for x in o['obszar']],
         "parentOrganization": {"@type": "HomeAndConstructionBusiness", "@id": BAZA + "/#firma", "name": "SMARTPARKIET | Trembiński"},
     }
@@ -407,7 +415,7 @@ def nowy(plik):
         raise SystemExit('w tresci zostala nazwa siostry: sprawdzic wzor')
 
     # 3. dol: dane strukturalne oddzialu
-    dol, n = re.subn(r'<script type="application/ld\+json">\{"@context":"https://schema.org","@type":"HomeAndConstructionBusiness".*?</script>',
+    dol, n = re.subn(r'<script type="application/ld\+json">\{"@context":\s*"https://schema.org",\s*"@type":\s*"HomeAndConstructionBusiness".*?</script>',
                      lambda m: ld_oddzialu(o), dol, count=1, flags=re.S)
     if n != 1:
         raise SystemExit('nie znalazlem danych strukturalnych')
