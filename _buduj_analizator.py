@@ -25,6 +25,9 @@ def zamien(stare, nowe, n=1):
         raise SystemExit('Nie znaleziono: ' + stare[:80])
     s = s.replace(stare, nowe) if n == 0 else s.replace(stare, nowe, n)
 
+# 0. zdjecie tematyczne kalkulatora (Artur 04.11) tylko w wycena.html - narzedzie parkieciarza bez zdjecia
+s = re.sub(r'<!-- kalk-foto: START.*?<!-- kalk-foto: KONIEC -->', '', s, count=1, flags=re.S)
+
 # 1. tytul, robots, ikony, manifest
 s = re.sub(r'<title>.*?</title>', '<title>SMARTPARKIET Analizator</title>', s, count=1, flags=re.S)
 s = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="robots" content="noindex, nofollow">', s, count=1)

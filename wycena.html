@@ -974,7 +974,7 @@ figure{margin:0}
     <div class="sticky">
       <p class="oczko"><span></span>Kalkulator online</p>
       <h2>Kalkulator bezpłatnej wyceny</h2>
-      <p class="lead se-lead">Prosty formularz mobilny - wypełnienie zajmuje ok. 2&nbsp;minuty.</p><p class="lead" style="margin-top:14px;font-style:italic">Dodaj 4-6 zdjęć podłogi (przy naprawach do 12), uwzględniając miejsca uszkodzeń.</p><p class="lead" style="margin-top:14px"><b>System automatycznie obliczy orientacyjne widełki cenowe.</b> <i>Specjalista oceni zdjęcia i przekaże indywidualną wycenę w ciągu 2 godzin roboczych.</i></p>
+      <p class="lead se-lead">Prosty formularz mobilny - wypełnienie zajmuje ok. 2&nbsp;minuty.</p><!-- kalk-foto: START (Artur 04.11) --><figure class="kalk-foto"><img src="img/kalkulator-cyklinowania-pomiar-parkietu-900.webp" srcset="img/kalkulator-cyklinowania-pomiar-parkietu-480.webp 480w, img/kalkulator-cyklinowania-pomiar-parkietu-900.webp 900w, img/kalkulator-cyklinowania-pomiar-parkietu-1200.webp 1200w" sizes="(max-width:900px) calc(100vw - 32px), 520px" width="1200" height="800" fetchpriority="high" decoding="async" alt="Pomiar parkietu w jodełkę miarką przed wyceną cyklinowania w kalkulatorze online SMARTPARKIET"></figure><!-- kalk-foto: KONIEC --><p class="lead" style="margin-top:14px;font-style:italic">Dodaj 4-6 zdjęć podłogi (przy naprawach do 12), uwzględniając miejsca uszkodzeń.</p><p class="lead" style="margin-top:14px"><b>System automatycznie obliczy orientacyjne widełki cenowe.</b> <i>Specjalista oceni zdjęcia i przekaże indywidualną wycenę w ciągu 2 godzin roboczych.</i></p>
     </div>
     <div class="ai">
       <label class="drop" id="drop" for="file"><span><b>Zdjęcia podłogi: 4-6 (przy naprawach do 12)</b></span><span class="btn btn-ghost" style="pointer-events:none">Dodaj zdjęcia</span><input id="file" type="file" accept="image/*" multiple hidden></label>
@@ -3609,3 +3609,8 @@ html body #wycena .ai-form .dod-w.ma-il{background:#FFDCC2;border-radius:10px;pa
 })();
 </script>
 <!-- ceny i paski 30.10: KONIEC -->
+<style id="kalk-foto-0411">/* Artur 04.11: zdjecie tematyczne kalkulatora */
+html body .kalk-foto{margin:16px 0 4px;border-radius:14px;overflow:hidden;aspect-ratio:3/2;background:#E9E2D6;box-shadow:0 8px 24px rgba(20,17,14,.12)}
+html body .kalk-foto img{display:block;width:100%;height:100%;object-fit:cover}
+@media(max-width:900px){html body .kalk-foto{aspect-ratio:16/9;margin:12px 0 2px}}
+</style>
