@@ -1356,10 +1356,12 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     s.idx={};POLA.forEach(function(id){var e=document.getElementById(id);if(e){s.pola[id]=e.value;if(e.tagName==='SELECT')s.idx[id]=e.selectedIndex;}});
     RADIA.forEach(function(n){var e=document.querySelector('input[name="'+n+'"]:checked');if(e)s.radia[n]=e.value;});
     [].slice.call(document.querySelectorAll('#dodLista .dod-w')).forEach(function(w){s.dod.push([w.querySelector('.dod-o').value,w.querySelector('.dod-i').value,w.querySelector('.dod-j').value,w.querySelector('.dod-c').value]);});
-    s.uzg=[].slice.call(document.querySelectorAll('input[id^="uzg"]:checked')).map(function(e){return e.id;});
+    /* Artur 04.11: kratki = W ZAKRESIE (robimy). Zapis pod nowym kluczem "zakres", zeby stare zapisy "uzg" (kratka = do uzgodnienia) dalo sie odroznic */
+    s.zakres=[].slice.call(document.querySelectorAll('input[id^="uzg"]:checked')).map(function(e){return e.id;});s.wer=20261104;
     return s;}
   function wczytaj(s){
-    if(s.uzg)[].slice.call(document.querySelectorAll('input[id^="uzg"]')).forEach(function(e){var c=s.uzg.indexOf(e.id)>=0;if(e.checked!==c){e.checked=c;e.dispatchEvent(new Event('change',{bubbles:true}));}});
+    function kratki(f){[].slice.call(document.querySelectorAll('input[id^="uzg"]')).forEach(function(e,k){var c=!!f(e,k);if(e.checked!==c){e.checked=c;e.dispatchEvent(new Event('change',{bubbles:true}));}});}
+    if(s.zakres)kratki(function(e){return s.zakres.indexOf(e.id)>=0;});
     Object.keys(s.pola||{}).forEach(function(id){var e=document.getElementById(id);if(e){e.value=s.pola[id];if(s.idx&&s.idx[id]!=null&&e.tagName==='SELECT')e.selectedIndex=s.idx[id];e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));}});
     Object.keys(s.radia||{}).forEach(function(n){var e=document.querySelector('input[name="'+n+'"][value="'+s.radia[n]+'"]');if(e){e.checked=true;e.dispatchEvent(new Event('change',{bubbles:true}));}});
     var li=document.getElementById('dodLista'),plus=document.getElementById('dodPlus');
@@ -1367,6 +1369,8 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       (s.dod.length?s.dod:[['','1','szt.','']]).forEach(function(r){plus.click();var w=[].slice.call(li.querySelectorAll('.dod-w')).pop();
         w.querySelector('.dod-o').value=r[0];w.querySelector('.dod-i').value=r[1];w.querySelector('.dod-j').value=r[2];w.querySelector('.dod-c').value=r[3];
         w.querySelector('.dod-c').dispatchEvent(new Event('input',{bubbles:true}));});}
+    /* stary zapis (sprzed 04.11): kratka znaczyla "do uzgodnienia" - odwracamy; pozycje, ktore byly "do uzgodnienia" z samej ilosci/ceny, zostaja bez kratki */
+    if(!s.zakres&&s.uzg){var au=[];try{au=window.spArkusz?window.spArkusz().uzgAuto:[];}catch(e){}kratki(function(e,k){return s.uzg.indexOf(e.id)<0&&!au[k];});}
     window.__korekta=true;}
   window.spZrzut=zrzut; window.spWczytaj=wczytaj;
   function hist(){try{return JSON.parse(localStorage.getItem('spWyceny')||'[]');}catch(e){return [];}}
@@ -1560,6 +1564,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         ...(window.SP_ZAMOWIENIE?[['ZAMÓWIENIE ONLINE','Klient zamawia usługę i prosi o potwierdzenie terminu. Status: DO POTWIERDZENIA przez biuro (SMS lub e-mail do 2 godzin roboczych).']]:[]),
         [window.SP_ZAMOWIENIE?'Preferowane terminy':'Termin',termin||'klient nie podał'],
         ...(window.spOpcje?[['Tryb ekspres 48h',window.spOpcje().ekspres?'TAK - start w 24-48 h, do 40 m² (dostępność i ewentualną dopłatę potwierdza biuro)':'nie'],['Wykończenie ścian (CYKLINOWANIE SMART PLUS | ŚCIANY™)',window.spOpcje().sciany?'TAK - klient chce rozszerzyć zakres o wykończenie ścian; osobna kalkulacja biura po potwierdzeniu zamówienia':'nie']]:[]), /* Artur 28.10 13:20-14:16 */
+        ...(arkusz().zakres.panel?[['W zakresie (robimy)',arkusz().zakres.tak.join(', ')||'-'],['Do uzgodnienia (wizja lokalna)',arkusz().zakres.uzg.join(', ')||'-']]:[]), /* Artur 04.11 14:15 */
         ['Uwagi',pole('uwagiKl')||'brak'],
         ...((window.spDodatkowe?window.spDodatkowe():[]).length?[['Prace dodatkowe',window.spDodatkowe().map(x=>x.o+': '+x.i+' '+x.j+' × '+zl(x.c)+' = '+zl(x.i*x.c)).join('; ')]]:[]),
         ...(arkusz().doplata?[['Dopłata do małego metrażu',arkusz().a+' m² × '+arkusz().cenaDop+' zł = '+zl(arkusz().doplata)+' (metraż '+MALY.RYCZALT_DO+'-'+MALY.DOPLATA_DO+' m², wliczona w ofertę)']]:[]),
@@ -1614,18 +1619,25 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         ['Naprawy parkietu (kpl.)',(zn('napr')==='tak'||zn('napr')==='nie wiem')?'do uzgodnienia':0,null], /* Artur 20.10 16:28: 'nie wiem' = do uzgodnienia */
         ['Koloryzacja parkietu (m²)',kolor?a:0,C('kolor',70),0,70],
         ['Pomoc z meblami / przesunięcie mebli (usł.)',meble?1:0,mebleCena]
-      ].map((q,k)=>{const cb=document.getElementById('uzg'+k);q[3]=!!(cb&&cb.checked)||((q[1]==='do uzgodnienia'||q[2]==null)&&q[1]!==0);return q;})
+      ].map((q,k)=>{const cb=document.getElementById('uzg'+k);q[6]=['Renowacja parkietu','Wymiana listew','Stabilizacja','Naprawy','Koloryzacja','Przesunięcie mebli'][k];q[5]=(q[1]==='do uzgodnienia'||q[2]==null)&&q[1]!==0;
+        /* Artur 04.11 14:15 "odwrocimy role": kratka = pozycja W ZAKRESIE (robimy), bez kratki = do uzgodnienia na wizji lokalnej.
+           Bez panelu (klient na stronie / koszyk) w zakresie jest to, co ma wpisana ilosc. */
+        q[3]=document.getElementById('uzgPanel')?!!(cb&&cb.checked):(typeof q[1]==='number'&&q[1]>0);return q;})
 ;
       /* Artur 26.10 11:42: przy metrazu 10-22 m2 automatycznie 2. pozycja "* Doplata do malego metrazu (10-22 m2)" (stawka MALY.DOPLATA),
          ponizej 10 m2 pozycja 1 to ryczalt, powyzej 22 m2 doplaty nie ma. Kratki uzg0..uzg5 zostaja przy swoich pozycjach. */
       const cenaDop=C('dopl',MALY.DOPLATA), doplata=tm==='doplata'?a*cenaDop:0;
-      const poz=baza.slice(0,1).concat(doplata?[['* Dopłata do małego metrażu ('+MALY.RYCZALT_DO+'-'+MALY.DOPLATA_DO+' m²)',a,cenaDop,false,MALY.DOPLATA]]:[],baza.slice(1))
+      const poz=baza.slice(0,1).concat(doplata?[['* Dopłata do małego metrażu ('+MALY.RYCZALT_DO+'-'+MALY.DOPLATA_DO+' m²)',a,cenaDop,baza[0][3],MALY.DOPLATA]]:[],baza.slice(1))
        .concat((window.spDodatkowe?window.spDodatkowe():[]).map(x=>[x.o+' ('+x.j+')',x.i,x.c,!!x.u]));
       const suma=poz.reduce((s,p)=>s+(typeof p[1]==='number'&&p[2]?p[1]*p[2]:0),0);
       const p=pole('pietroKl'), winda=zn('winda');
       /* 30.10: laczny upust (cena katalogowa - cena parkieciarza) x ilosc, tylko pozycje z liczba */
       const rabat=Math.round(poz.reduce((s,p)=>s+(typeof p[1]==='number'&&p[2]!=null&&p[4]!=null&&p[4]>p[2]?p[1]*(p[4]-p[2]):0),0)*100)/100;
-      return {pole,zn,a,wykT,kolor,mb,listwy,listwyUzg,stabUzg,doplata,cenaDop,ryczalt,meble,mebleCena,poz,suma,rabat,
+      /* Artur 04.11: "W zakresie: ..." / "Do uzgodnienia: ..." (pozycje z zerem pomijamy, doplata idzie razem z renowacja) */
+      const nazwaZ=p=>p[6]||String(p[0]).replace(/\s*\([^()]*\)\s*$/,'').replace(/ \/ przesunięcie mebli$/,'');
+      const wZak=poz.filter(p=>p[1]!==0&&p[1]!=='0'&&!/^\*/.test(p[0]));
+      const zakres={panel:!!document.getElementById('uzgPanel'),tak:wZak.filter(p=>p[3]).map(nazwaZ),uzg:wZak.filter(p=>!p[3]).map(nazwaZ)};
+      return {pole,zn,a,wykT,kolor,mb,listwy,listwyUzg,stabUzg,doplata,cenaDop,ryczalt,meble,mebleCena,poz,suma,rabat,zakres,uzgAuto:baza.map(q=>!!q[5]),
         adres:[[pole('ulicaKl'),pole('dzielKl')].filter(Boolean).join(' '),[pole('kodKl'),pole('miastoKl')].filter(Boolean).join(' ')].filter(Boolean).join(', '),
         ulica:pole('ulicaKl'),
         obiekt:pole('obiektKl')+(p===''?'':(p==='0'?', parter':', '+p+'. piętro'+(winda==='tak'?', winda':', bez windy'))),
@@ -1735,7 +1747,8 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
           yL+=D.lh;if(rys){g.fillStyle=SZARY;g.font=ft;ll.forEach((t,k)=>g.fillText(t,M+2,yL+k*D.lh));}yL+=(ll.length-1)*D.lh;}
         yRt=yL;yL=yLL;}
         return Math.max(yL,yRt);};
-      const miejsce=yy=>Math.floor(((H-80)-(yy+34)-52-16-100-62-74)/Math.max(1,A.poz.length)); /* 28.10: -74 = pasek Kwota brutto */
+      const ZAKR=A.zakres.panel?84:0; /* Artur 04.11: dwie linie "W zakresie / Do uzgodnienia" pod kwota brutto */
+      const miejsce=yy=>Math.floor(((H-80)-(yy+34)-52-16-100-62-74-ZAKR)/Math.max(1,A.poz.length)); /* 28.10: -74 = pasek Kwota brutto */
       /* dla danej gestosci: ile pozycji zakresu prac przeniesc na prawo, zeby strona byla najkrotsza (przy remisie - mniej przenosin) */
       const kNaj=d=>{let kb=0,hb=Infinity;for(let k=0;k<=zak.length;k++){const h=uklad(d,false,k);if(h<hb-0.5){hb=h;kb=k;}}return kb;};
       let D=GEST[GEST.length-1],K=kNaj(D);for(const d of GEST){const k=kNaj(d);if(miejsce(uklad(d,false,k))>=40){D=d;K=k;break;}}
@@ -1743,11 +1756,11 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       y+=24;
       // tabela cen (gdy sie nie zmiesci przed stopka, idzie na nastepna strone)
       /* wysokosc wiersza tabeli dopasowana do miejsca na stronie (50 px, w razie potrzeby do 36 px); nowa strona dopiero, gdy i tak sie nie zmiesci */
-      let rh=Math.min(50,Math.floor(((H-80)-y-52-16-100-62-74)/Math.max(1,A.poz.length)));
+      let rh=Math.min(50,Math.floor(((H-80)-y-52-16-100-62-74-ZAKR)/Math.max(1,A.poz.length)));
       if(rh<34){g=nowa();g.textBaseline='alphabetic';naglowek(g,'WYCENA',M,190);y=250;rh=50;}
       const cx=[M,M+500,M+620,M+740,M+890], cw=W-2*M; /* Artur 20.10 22:43: kolumna "Do uzg." */
       g.fillStyle=EST?JASNY2:ZYWY;g.fillRect(M,y,cw,52);g.fillStyle=EST?NAGL:'#fff';g.font='bold 23px Arial';
-      ['Zakres prac','Do uzg.','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
+      ['Zakres prac','Robimy','Ilość','Cena jedn.','Cena łączna'].forEach((t,i)=>g.fillText(t,cx[i]+12,y+34));y+=52;
       /* Artur 30.10 16:39: pozycje do realizacji (ilosc > 0) na gorze i na ciemniejszym pomaranczowym pasku z kreska #FF6A13 z lewej */
       const REAL='#FFCFAD', REAL2='#FFDCC2';
       const yT=y;sortPoz(A.poz).forEach((p,i)=>{const re=doReal(p);g.fillStyle=re?(i%2?REAL2:REAL):((EST&&i%2)?JASNY:'#fff');g.fillRect(M,y,cw,rh);if(re){g.fillStyle=ZYWY;g.fillRect(M,y,6,rh);}if(!EST){g.fillStyle=RAMKA;g.fillRect(M,y+rh-1,cw,1.5);}const ty=y+Math.round(rh/2)+8;g.fillStyle=CIEMNY;g.font='italic 22px Arial';
@@ -1762,7 +1775,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
            if(!l2){g.fillText(l1,cx[0]+12,ty);}else{g.fillText(l1,cx[0]+12,ty-Math.round(f*0.55));g.fillText(l2,cx[0]+12,ty+Math.round(f*0.55));}}
          g.font='italic 22px Arial';}/* Artur 20.10 23:24: w kolumnie "Do uzg." kratka do odhaczania w kazdym wierszu + pionowe linie kolumny */
         {const bx=cx[1]+60-13,by=y+Math.round(rh/2)-13;g.save();g.strokeStyle=CIEMNY;g.lineWidth=2;g.fillStyle='#fff';g.fillRect(bx,by,26,26);g.strokeRect(bx,by,26,26);
-         if(p[3]){g.strokeStyle=POM;g.lineWidth=4;g.lineCap='round';g.lineJoin='round';g.beginPath();g.moveTo(bx+5,by+13);g.lineTo(bx+11,by+20);g.lineTo(bx+22,by+6);g.stroke();}
+         if(p[3]&&p[1]!==0&&p[1]!=='0'){g.strokeStyle=POM;g.lineWidth=4;g.lineCap='round';g.lineJoin='round';g.beginPath();g.moveTo(bx+5,by+13);g.lineTo(bx+11,by+20);g.lineTo(bx+22,by+6);g.stroke();}
          g.restore();g.font='italic 22px Arial';g.fillStyle=CIEMNY;}
         g.fillText(ile===0?'-':String(ile).replace(/^(\d+)\.(\d+)$/,'$1,$2').replace('do ustalenia','do ust.').replace('do uzgodnienia','do uzg.'),cx[2]+12,ty);
         /* Artur 30.10 14:02: cena obnizona przez parkieciarza - nad nia mala przekreslona cena katalogowa */
@@ -1774,6 +1787,9 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         if(A.rabat>0){const wn=g.measureText('Kwota netto').width;g.font='22px Arial';g.fillText('· w tym upust -'+zl(A.rabat),M+20+wn+14,y+45);g.font='bold 30px Arial';}} /* Artur 30.10: "zeby sie bilansowalo" */
       else{g.fillStyle=RAMKA;g.fillRect(cx[1],yT,1.5,y-yT);g.fillRect(cx[2],yT,1.5,y-yT);g.strokeStyle=POM;g.lineWidth=3;g.strokeRect(M+1.5,yT-52+1.5,cw-3,y-yT+52-3);y+=16;g.fillStyle='#fff';g.fillRect(M,y,cw,70);g.strokeStyle=POM;g.lineWidth=4;g.strokeRect(M+2,y+2,cw-4,66);g.fillStyle=CIEMNY;g.font='bold 30px Arial';g.fillText('Kwota netto',M+20,y+46);g.fillStyle=POM;}
       g.textAlign='right';g.fillText(zl(A.suma),W-M-20,y+46);g.textAlign='left';y+=84;{/* Artur 28.10 22:27: pod netto pasek brutto; stawka VAT z przelacznika w analizatorze (domyslnie 8% - remont lokalu mieszkalnego) */const st=window.spVat?window.spVat():8,br=A.suma>0?Math.round(A.suma*(100+st))/100:0;if(EST){g.fillStyle=JASNY;g.fillRect(M,y,cw,60);}else{g.fillStyle='#fff';g.fillRect(M,y,cw,60);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,y+1,cw-2,58);}g.fillStyle=CIEMNY;g.font='bold 26px Arial';g.fillText('Kwota brutto (VAT '+st+'%)',M+20,y+40);g.textAlign='right';g.fillText(br?zl(br):'-',W-M-20,y+40);g.textAlign='left';}y+=90;
+      if(A.zakres.panel){const ln=(et,lista)=>{g.font='bold 21px Arial';g.fillStyle=CIEMNY;g.fillText(et,M,y);const wE=g.measureText(et+' ').width;
+          g.font='21px Arial';y=zawin(g,lista.join(', ')||'-',M+wE,y,W-2*M-wE,27);};
+        y+=6;ln('W zakresie (robimy):',A.zakres.tak);ln('Do uzgodnienia (wizja lokalna):',A.zakres.uzg);y+=10;}
       g.fillStyle=SZARY;g.font='italic 20px Arial';
       y=zawin(g,'Pracownik jest upoważniony do przyjęcia płatności gotówką (kwota netto). Faktura wystawiana na życzenie klienta. Wycena wstępna, przygotowana na podstawie danych i zdjęć od klienta; ostateczną cenę potwierdza SMARTPARKIET.',M,y,W-2*M,28);
       // zdjecia, 6 na strone, bez pustych ramek
@@ -3066,14 +3082,15 @@ html body .vs td.vs-tak,html body .vs .vs-tak{box-shadow:inset 5px 0 0 #FF6A13!i
     '#uzgPanel{margin:0 0 14px;padding:12px 14px;border:1.5px solid #F3C9A8;border-radius:12px;background:#FFF8F2}'+
     '#uzgPanel b{display:block;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:#FF6A13;margin-bottom:8px}'+
     '#uzgPanel .uz{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px}'+
-    '#uzgPanel label{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;text-transform:none;letter-spacing:0;color:#3A3F45;margin:0}';
+    '#uzgPanel label{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;text-transform:none;letter-spacing:0;color:#3A3F45;margin:0}'+
+    '#uzgPanel .uz-op{margin:-2px 0 10px;font-size:.8rem;line-height:1.4;color:#5A5F66}';
   document.head.appendChild(st);
   if(!document.getElementById('uzgPanel')){var pn=document.createElement('div');pn.id='uzgPanel';
-    pn.innerHTML='<b>Do uzgodnienia (kolumna w ofercie)</b><div class="uz">'+
+    pn.innerHTML='<b>Zakres prac - zaznacz, co wykonujemy</b><p class="uz-op">Zaznaczone = robimy (w zakresie). Pozostałe pozycje do uzgodnienia podczas wizji lokalnej.</p><div class="uz">'+
       ['Renowacja parkietu','Wymiana listew','Stabilizacja','Naprawy','Koloryzacja','Przesunięcie mebli'].map(function(t,k){return '<label><input type="checkbox" id="uzg'+k+'"> '+t+'</label>';}).join('')+'</div>';
     db.parentNode.insertBefore(pn,db);}
   function dodaj(){[].slice.call(li.querySelectorAll('.dod-w')).forEach(function(w){if(w.querySelector('.dod-u'))return;
-    var l=document.createElement('label');l.className='dod-uzg';l.innerHTML='<input type="checkbox" class="dod-u"> do uzgodnienia';w.appendChild(l);});}
+    var l=document.createElement('label');l.className='dod-uzg';l.innerHTML='<input type="checkbox" class="dod-u"> robimy (w zakresie)';w.appendChild(l);});}
   dodaj();new MutationObserver(dodaj).observe(li,{childList:true});
 })();
 </script>
@@ -3161,7 +3178,7 @@ html body #uzgPanel{margin:14px 0}
   function przenies(){
     var pn=document.getElementById('uzgPanel'),sb=document.querySelector('form.ai-form .sms-box');
     if(!pn||!sb)return;
-    var b=pn.querySelector('b');if(b)b.textContent='Pozycje do uzgodnienia / wizja lokalna - realizacja';
+    var b=pn.querySelector('b');if(b)b.textContent='Zakres prac - zaznacz, co wykonujemy';
     if(sb.nextElementSibling!==pn)sb.parentNode.insertBefore(pn,sb.nextSibling);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',przenies);else przenies();
@@ -3604,6 +3621,8 @@ html body .kalk-foto{margin:16px 0 4px;border-radius:14px;overflow:hidden;aspect
 html body .kalk-foto img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 25%}
 @media(max-width:900px){html body .kalk-foto{aspect-ratio:16/9;margin:12px 0 2px}}
 </style>
+<style id="bez-foto-0411">/* Artur 04.11 14:08: "to zdjecie mozesz wywalic" - okienko podgladu zdjecia ukryte, widelki na cala szerokosc */
+html body .ai-photo{display:none!important}html body .ai-body{grid-template-columns:1fr!important}</style>
 <style>/* analizator: okienko SMS wyroznione (Artur 21.10 17:27) */
 html body .sms-box{background:#3A3D42!important;border:1.5px solid #3A3D42!important;color:#F4EFE8;box-shadow:0 6px 18px rgba(20,17,14,.18)}
 html body .sms-box::before{content:"Analizator";display:block;font-size:1.15rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#FF8A4C;margin:0 0 6px}
