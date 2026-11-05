@@ -3611,3 +3611,9 @@ html body .kalk-foto img{display:block;width:100%;height:100%;object-fit:cover;o
 </style>
 <style id="bez-foto-0411">/* Artur 04.11 14:08: "to zdjecie mozesz wywalic" - okienko podgladu zdjecia ukryte, widelki na cala szerokosc */
 html body .ai-photo{display:none!important}html body .ai-body{grid-template-columns:1fr!important}</style>
+<style id="dodaj-szary-0511">/* Artur 05.11 12:48: "Dodaj zdjecia" jako szary przycisk jak pasek ANALIZATOR AI (to samo tlo #5A6068, promien 12 px, pogrubione wersaliki); bialy tekst = kontrast 6,4:1 */
+html body #drop .btn.btn-ghost{background:#5A6068!important;border:1.5px solid #5A6068!important;color:#FFFFFF!important;border-radius:12px!important;font-weight:800!important;letter-spacing:.06em!important;text-transform:uppercase;box-shadow:0 6px 18px rgba(20,17,14,.18)!important;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;-webkit-text-fill-color:#FFFFFF}
+html body #drop .btn.btn-ghost::before{content:"+";font-size:1.15em;font-weight:800;line-height:1;color:#FFB27F;-webkit-text-fill-color:#FFB27F}
+@media(max-width:560px){html body #drop .btn.btn-ghost{padding:10px 13px!important;min-height:40px!important;font-size:.78rem!important;letter-spacing:.04em!important;gap:5px}}
+html body #drop:hover .btn.btn-ghost,html body #drop.over .btn.btn-ghost{background:#4A4F56!important;border-color:#4A4F56!important}
+</style>
