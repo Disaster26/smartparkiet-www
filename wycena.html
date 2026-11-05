@@ -956,13 +956,13 @@ figure{margin:0}
       <a href="zamow-online.html#jak-to-dziala" class="nav-zam-opis">ZAMÓW ONLINE - jak to działa</a>
       <a href="wycena.html" class="akt">KALKULATOR - wyceń samodzielnie</a>
       <a href="o-nas.html">O firmie</a>
-      <a href="metoda.html"><span class="nm-m">Nasza metoda SMART</span><span class="nm-d">Metoda SMART</span></a>
+      <a href="metoda.html"><span class="nm-m">Cyklinowanie SMART - co to</span><span class="nm-d">Cyklinowanie SMART</span></a>
       <a href="cennik.html">Cennik</a>
-      <a href="programy.html"><span class="nm-m">Nasze programy</span><span class="nm-d">Programy</span></a>
-      <a href="realizacje.html">Realizacje</a>
+      <a href="programy.html"><span class="nm-m">Programy renowacji</span><span class="nm-d">Programy</span></a>
+      <a href="realizacje.html"><span class="nm-m">Nasze realizacje</span><span class="nm-d">Realizacje</span></a>
       <a href="ekspertyza.html">Ekspertyza online</a>
-      <a href="oddzialy.html">Oddziały</a>
-      <a href="smart-partner.html">Nasi partnerzy</a>
+      <a href="oddzialy.html"><span class="nm-m">Oddziały SMARTPARKIET</span><span class="nm-d">Oddziały</span></a>
+      <a href="smart-partner.html"><span class="nm-m">Platforma SMART Partners</span><span class="nm-d">SMART Partners</span></a>
       <a href="artykuly.html">Blog</a>
       <a href="kontakt.html">Kontakt</a>
     </nav>
@@ -1357,7 +1357,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         w.querySelector('.dod-o').value=r[0];w.querySelector('.dod-i').value=r[1];w.querySelector('.dod-j').value=r[2];w.querySelector('.dod-c').value=r[3];
         w.querySelector('.dod-c').dispatchEvent(new Event('input',{bubbles:true}));});}
     /* stary zapis (sprzed 04.11): kratka znaczyla "do uzgodnienia" - odwracamy; pozycje, ktore byly "do uzgodnienia" z samej ilosci/ceny, zostaja bez kratki */
-    if(!s.zakres&&s.uzg){var au=[];try{au=window.spArkusz?window.spArkusz().uzgAuto:[];}catch(e){}kratki(function(e,k){return s.uzg.indexOf(e.id)<0&&!au[k];});}
+    if(!s.zakres&&s.uzg){var au=[];try{au=window.spArkusz?window.spArkusz().uzgAuto:[];}catch(e){}kratki(function(e,k){return k<6&&s.uzg.indexOf(e.id)<0&&!au[k];}); /* 05.11: kratek 7-8 stare zapisy nie znaly */}
     window.__korekta=true;}
   window.spZrzut=zrzut; window.spWczytaj=wczytaj;
   function hist(){try{return JSON.parse(localStorage.getItem('spWyceny')||'[]');}catch(e){return [];}}
@@ -1606,14 +1606,17 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         (window.spNaprawa&&window.spNaprawa())?['Naprawy parkietu ('+window.spNaprawa().j+')',window.spNaprawa().i,window.spNaprawa().c]: /* Artur 28.10: kwota z ramki naprawy, bez dubla w pracach dodatkowych */
         ['Naprawy parkietu (kpl.)',(zn('napr')==='tak'||zn('napr')==='nie wiem')?'do uzgodnienia':0,null], /* Artur 20.10 16:28: 'nie wiem' = do uzgodnienia */
         ['Koloryzacja parkietu (m²)',kolor?a:0,C('kolor',70),0,70],
-        ['Pomoc z meblami / przesunięcie mebli (usł.)',meble?1:0,mebleCena]
-      ].map((q,k)=>{const cb=document.getElementById('uzg'+k);q[6]=['Renowacja parkietu','Wymiana listew','Stabilizacja','Naprawy','Koloryzacja','Przesunięcie mebli'][k];q[5]=(q[1]==='do uzgodnienia'||q[2]==null)&&q[1]!==0;
+        ['Pomoc z meblami / przesunięcie mebli (usł.)',meble?1:0,mebleCena],
+        /* Artur 05.11 pm: dwie nowe pozycje zakresu - bez pola ilosci; kratka = robimy (1 kpl., cena do uzgodnienia) */
+        ['Renowacja schodów (kpl.)',(document.getElementById('uzg6')||{}).checked?1:0,null],
+        ['Odświeżenie listew (kpl.)',(document.getElementById('uzg7')||{}).checked?1:0,null]
+      ].map((q,k)=>{const cb=document.getElementById('uzg'+k);q[6]=['Renowacja parkietu','Wymiana listew','Stabilizacja','Naprawy','Koloryzacja','Przesunięcie mebli','Renowacja schodów','Odświeżenie listew'][k];q[5]=(q[1]==='do uzgodnienia'||q[2]==null)&&q[1]!==0;
         /* Artur 04.11 14:15 "odwrocimy role": kratka = pozycja W ZAKRESIE (robimy), bez kratki = do uzgodnienia na wizji lokalnej.
            Bez panelu (klient na stronie / koszyk) w zakresie jest to, co ma wpisana ilosc. */
         q[3]=document.getElementById('uzgPanel')?!!(cb&&cb.checked):(typeof q[1]==='number'&&q[1]>0);return q;})
 ;
       /* Artur 26.10 11:42: przy metrazu 10-22 m2 automatycznie 2. pozycja "* Doplata do malego metrazu (10-22 m2)" (stawka MALY.DOPLATA),
-         ponizej 10 m2 pozycja 1 to ryczalt, powyzej 22 m2 doplaty nie ma. Kratki uzg0..uzg5 zostaja przy swoich pozycjach. */
+         ponizej 10 m2 pozycja 1 to ryczalt, powyzej 22 m2 doplaty nie ma. Kratki uzg0..uzg7 zostaja przy swoich pozycjach. */
       const cenaDop=C('dopl',MALY.DOPLATA), doplata=tm==='doplata'?a*cenaDop:0;
       const poz=baza.slice(0,1).concat(doplata?[['* Dopłata do małego metrażu ('+MALY.RYCZALT_DO+'-'+MALY.DOPLATA_DO+' m²)',a,cenaDop,baza[0][3],MALY.DOPLATA]]:[],baza.slice(1))
        .concat((window.spDodatkowe?window.spDodatkowe():[]).map(x=>[x.o+' ('+x.j+')',x.i,x.c,!!x.u]));
@@ -1681,6 +1684,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
           A.listwyUzg?'Wymiana listew do uzgodnienia':(A.listwy?('Listwy '+A.zn('listwy')+(A.mb?' · '+A.mb+' mb':'')):'Listwy bez wymiany'),
           A.zn('stab')==='tak'?'Stabilizacja klepek':(A.stabUzg?'Stabilizacja klepek do uzgodnienia':''),
           A.zn('napr')==='tak'?'Naprawy ubytków':(A.zn('napr')==='nie wiem'?'Naprawy do uzgodnienia':''),A.kolor?'Koloryzacja':'',A.meble?'Pomoc z meblami':'',
+          (document.getElementById('uzg6')||{}).checked?'Renowacja schodów':'',(document.getElementById('uzg7')||{}).checked?'Odświeżenie listew':'',
           /* Artur 15.10 16:37: kazda wpisana praca dodatkowa sama dopisuje sie do zakresu prac */
           ...(window.spDodatkowe?window.spDodatkowe():[]).map(x=>x.o)].filter(Boolean);
       /* Artur 26.10 21:52: "te dwie pozycje Technologia mozesz wrzucic tutaj z boku" - Technologia w prawej kolumnie pod danymi SMARTPARKIET,
@@ -1917,7 +1921,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       try{const A=arkusz();ark={imie:pole('imieKl'),tel:pole('telKl'),mail:mail||pole('mailKl'),adres:A.adres,ulica:A.ulica,
         obiekt:A.obiekt,rodzaj:A.rodzaj,technika:A.technika,termin:pole('terminKl')+((window.spOpcje&&window.spOpcje().ekspres)?' | EKSPRES 48H':''),m2:A.a,uwagi:[window.spOpcjeTekst?window.spOpcjeTekst():'',pole('uwagiKl')].filter(Boolean).join(' | '),
         /* 30.10: pozycje do realizacji na gorze; 4. pole = cena katalogowa, gdy parkieciarz zmienil cene (Apps Script od wersji 30.10 pokazuje ja w kolumnie E) */
-        poz:sortPoz(A.poz).map(p=>[p[0],p[1],p[2],zmCena(p)?p[4]:null]),suma:A.suma,rabat:A.rabat||0};}catch(e){}
+        poz:sortPoz(A.poz).map(p=>[p[0],p[1],p[2],zmCena(p)?p[4]:null]),suma:A.suma,rabat:A.rabat||0,zakres:A.zakres.tak};}catch(e){}
       /* Artur 22.10: komplet pol i zdjec trafia do folderu "Oferty do poprawki" - mozna je potem
          wczytac w analizatorze, zmienic kwote i wyslac klientowi poprawiona oferte */
       let stan=null;try{stan=window.spZrzut?window.spZrzut():null;if(stan)stan.podpisy=(window.__podpisy||[]).slice();}catch(e){}
@@ -3075,7 +3079,7 @@ html body .vs td.vs-tak,html body .vs .vs-tak{box-shadow:inset 5px 0 0 #FF6A13!i
   document.head.appendChild(st);
   if(!document.getElementById('uzgPanel')){var pn=document.createElement('div');pn.id='uzgPanel';
     pn.innerHTML='<b>Zakres prac - zaznacz, co wykonujemy</b><p class="uz-op">Zaznaczone = robimy (w zakresie). Pozostałe pozycje do uzgodnienia podczas wizji lokalnej.</p><div class="uz">'+
-      ['Renowacja parkietu','Wymiana listew','Stabilizacja','Naprawy','Koloryzacja','Przesunięcie mebli'].map(function(t,k){return '<label><input type="checkbox" id="uzg'+k+'"> '+t+'</label>';}).join('')+'</div>';
+      ['Renowacja parkietu','Wymiana listew','Stabilizacja','Naprawy','Koloryzacja','Przesunięcie mebli','Renowacja schodów','Odświeżenie listew'].map(function(t,k){return '<label><input type="checkbox" id="uzg'+k+'"> '+t+'</label>';}).join('')+'</div>';
     db.parentNode.insertBefore(pn,db);}
   function dodaj(){[].slice.call(li.querySelectorAll('.dod-w')).forEach(function(w){if(w.querySelector('.dod-u'))return;
     var l=document.createElement('label');l.className='dod-uzg';l.innerHTML='<input type="checkbox" class="dod-u"> robimy (w zakresie)';w.appendChild(l);});}
@@ -3616,4 +3620,27 @@ html body #drop .btn.btn-ghost{background:#5A6068!important;border:1.5px solid #
 html body #drop .btn.btn-ghost::before{content:"+";font-size:1.15em;font-weight:800;line-height:1;color:#FFB27F;-webkit-text-fill-color:#FFB27F}
 @media(max-width:560px){html body #drop .btn.btn-ghost{padding:10px 13px!important;min-height:40px!important;font-size:.78rem!important;letter-spacing:.04em!important;gap:5px}}
 html body #drop:hover .btn.btn-ghost,html body #drop.over .btn.btn-ghost{background:#4A4F56!important;border-color:#4A4F56!important}
+</style>
+<style id="ramki-0511">/* Artur 05.11 pm (telefon): "zwez te ramki, zeby mniej przewijac" - ramka SMS (1. adres 2. telefon...) i ramka zakresu prac
+   ciensze, szersze w srodku, nizsze; kratki zakresu w 2 zwartych kolumnach; czcionki bez zmian (>= 14 px tam, gdzie byly) */
+@media(max-width:600px){
+html body form.ai-form .sms-box,html body form.ai-form #uzgPanel{margin-left:-14px!important;margin-right:-14px!important;padding:10px 12px!important}
+html body form.ai-form .sms-box{margin-bottom:0!important}
+html body .sms-box b{margin-bottom:2px!important}
+html body .sms-box p{margin:0 0 6px!important;line-height:1.4!important}
+html body #smsWklej{min-height:196px!important;padding:8px 10px!important}
+html body .sms-box .sms-akcje{flex-wrap:nowrap!important;gap:8px!important;margin-top:8px!important}
+html body .sms-box .sms-akcje button{flex:1 1 0!important;width:auto!important;min-width:0!important;margin:0!important}
+html body #uzgPanel{margin-top:4px!important;margin-bottom:4px!important}
+html body #uzgPanel b{margin-bottom:2px!important}
+html body #uzgPanel .uz-op{margin:0 0 6px!important;line-height:1.35!important}
+html body #uzgPanel .uz{gap:2px 10px!important}
+html body #uzgPanel label{gap:7px!important;line-height:1.25!important;min-height:34px;padding:2px 0!important}
+}
+</style>
+<style id="menu-0511">/* Artur 05.11 pm: dluzsze nazwy w menu - naglowek komputera w jednym rzedzie bez wylewania (1240-2000 px) */
+@media (min-width:1240px) and (max-width:1449px){html body header.nav .wrap{padding-left:12px!important;padding-right:12px!important;gap:6px!important}html body header.nav nav{margin-left:2px!important}html body header.nav nav a,html body header.nav.open nav a{font-size:11px!important;padding:6px 2px!important}html body header.nav nav a.nav-zam{padding:6px 10px!important}}
+@media (min-width:1450px) and (max-width:1919px){html body header.nav nav{gap:3px!important}html body header.nav nav a{font-size:12px!important}}
+@media (min-width:1450px) and (max-width:1639px){html body header.nav .wrap{padding-left:16px!important;padding-right:16px!important;gap:8px!important;max-width:none!important}html body header.nav nav{gap:1px!important;margin-left:4px!important}html body header.nav nav a{font-size:11.5px!important}html body header.nav .brand-t{font-size:16px!important}html body header.nav .brand{flex:0 0 auto!important;margin-right:auto!important}}
+@media (min-width:1920px){html body header.nav nav{gap:20px!important}}
 </style>
