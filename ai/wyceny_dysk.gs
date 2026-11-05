@@ -169,6 +169,16 @@ function rejestr(a, kiedy, url, idStanu) {
   if (sh.getRange(1, 11).getValue() !== 'Upust (zł)') sh.getRange(1, 11).setValue('Upust (zł)')
     .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
   sh.getRange(2, 11).setValue(a.rabat > 0 ? -Math.round(a.rabat * 100) / 100 : '').setBackground(null).setFontColor('#B03C0A').setFontWeight('normal');
+  /* Artur 05.11 pm: stale kolumny L "Renowacja schodów" i M "Odświeżenie listew" - TAK, gdy pozycja zaznaczona w zakresie prac */
+  const wZakresie = function (nazwa) {
+    return (a.zakres || []).indexOf(nazwa) >= 0 ||
+      (a.poz || []).some(function (p) { return String(p[0]).indexOf(nazwa) === 0 && typeof p[1] === 'number' && p[1] > 0; });
+  };
+  [['Renowacja schodów', 12], ['Odświeżenie listew', 13]].forEach(function (k) {
+    if (sh.getRange(1, k[1]).getValue() !== k[0]) sh.getRange(1, k[1]).setValue(k[0])
+      .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
+    sh.getRange(2, k[1]).setValue(wZakresie(k[0]) ? 'TAK' : '').setBackground(null).setFontColor('#1A1A1A').setFontWeight('bold');
+  });
 }
 
 /* jednorazowo: poprawia stare wiersze rejestru (kolor + klikalne linki). Uruchomic recznie z edytora. */
