@@ -3670,13 +3670,13 @@ html body #uzgPanel label{gap:7px!important;line-height:1.25!important;min-heigh
 <!-- prosty-widok START -->
 <style id="prosty-widok-0711">
 html.wu-start #wycena .ai{visibility:hidden}
-html.wu #wycena .sticky>*:not(h2):not(.oczko):not(.kalk-foto):not(.se-lead){display:none!important}
+html.wu:not(.wu-kosz) #wycena .sticky>*:not(h2):not(.oczko):not(.kalk-foto):not(.se-lead){display:none!important}
 html.wu-strona.wu #wycena .sticky .se-lead{display:none!important}
-html.wu #wycena .sticky h2{margin:0!important}
+html.wu:not(.wu-kosz) #wycena .sticky h2{margin:0!important}
 html.wu #wycena .sticky .se-lead{margin:4px 0 0!important}
 html.wu #wycena .sticky .kalk-foto{margin:12px 0 0!important}
 html.wu #wycena .split{gap:14px!important}
-html.wu form.ai-form>*:not(#wu),html.wu #wycena .ai-body,html.wu #wycena .ai>.drop,html.wu #wycena .ai>.miniatury,html.wu .cta-bar,html.wu #spTabBtn,html.wu #spDok,html.wu #zapiszBtn,html.wu #szkicInfo,html.wu #podgladOferty,html.wu #wuKon #wyslij,html.wu .wu-up .maly-info{display:none!important}
+html.wu form.ai-form>*:not(#wu),html.wu #wycena .ai-body,html.wu #wycena .ai>.drop,html.wu #wycena .ai>.miniatury,html.wu .cta-bar,html.wu #spTabBtn,html.wu #spDok,html.wu #zapiszBtn,html.wu #szkicInfo,html.wu #podgladOferty,html.wu:not(.wu-kosz) #wuKon #wyslij,html.wu-strona .oferta-kl,html.wu .wu-up .maly-info{display:none!important}
 html.wu #wycena .ai-form{display:block!important;padding:14px 12px!important}
 html.wu #wycena .ai{padding:0!important;overflow:visible!important}
 html.wu body{padding-bottom:96px}
@@ -3755,6 +3755,20 @@ html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important
 /* dolny pasek */
 #wuBar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:6px;align-items:center;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:#14110E;color:#fff;box-shadow:0 -6px 20px rgba(0,0,0,.18)}
 #wuBar.pub{grid-template-columns:minmax(0,1fr) auto auto}
+#wuBar.kosz{grid-template-columns:minmax(0,1fr) auto}
+#wuBar.wew{grid-template-columns:minmax(0,1fr) auto auto}
+html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
+/* parkieciarz: trzy kafelki wysylki (Artur 07.11 22:28) */
+.wu-trzy{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 8px}
+#wycena #wu .wu-trzy button{all:unset;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:96px;padding:12px 6px;border-radius:14px;text-align:center;font:800 .88rem/1.2 Inter,system-ui,sans-serif;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#wycena #wu .wu-trzy button svg{width:26px;height:26px}
+#wycena #wu .wu-trzy .t-pod{background:#14110E}
+#wycena #wu .wu-trzy .t-pod svg{color:#FF8A4C}
+#wycena #wu .wu-trzy .t-wa{background:#1FA855}
+#wycena #wu .wu-trzy .t-mail{background:#FF6A13}
+#wycena #wu .wu-trzy button:disabled{opacity:.6}
+#podgladOv[data-tryb="wa"] #podgladWys,#podgladOv[data-tryb="wa"] #podgladPdf{display:none!important}
+#podgladOv[data-tryb="wa"] #podgladWa{flex:2!important;font-size:16px!important}
 #wuBar small{display:block;font:700 .66rem Inter,system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#B9BDC3}
 #wuBar b{display:block;font:800 1.12rem Inter,system-ui,sans-serif;color:#FF6A13;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #wuBar button{border:0;border-radius:11px;min-height:46px;padding:0 11px;font:800 .86rem Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
@@ -3795,8 +3809,9 @@ html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important
 (function(){
  var H=document.documentElement,WEW=H.classList.contains('wu-strona');
  /* klient: wycena.html (nie analizator, nie koszyk, nie ?pelny); parkieciarz: wycen-usluge.html */
- if(!WEW&&(window.SP_ANALIZATOR||window.SP_ZAMOWIENIE||/[?&]pelny\b/.test(location.search)))return;
- var PUB=!WEW;
+ if(!WEW&&(window.SP_ANALIZATOR||/[?&]pelny\b/.test(location.search)))return;
+ var PUB=!WEW,KOSZ=PUB&&!!window.SP_ZAMOWIENIE; /* KOSZ: Koszyk SMART (zamow-online.html, Artur 07.11 22:34) */
+ if(KOSZ)H.classList.add('wu-kosz');
  H.classList.add('wu-start');setTimeout(function(){H.classList.remove('wu-start');},6000);
  var SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
  var IK={
@@ -3813,6 +3828,10 @@ html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important
   fol:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
   adr:'<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
   zdj:'<path d="M4 7h3l2-2h6l2 2h3v12H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  ek:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+  sz:'<path d="M4 21V5h16v16M8 9h3M8 13h3M14 9h2M14 13h2M10 21v-4h4v4"/>',
+  wa:'<path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 9.5c.3 2.2 2.3 4.3 4.6 4.8l1.2-1.2 1.7.8"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
   oko:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'};
  /* uslugi: uz = kratka "Zakres prac" (uzgN, tylko parkieciarz), q = nazwa pozycji w arkuszu (p[6]), il = pole ilosci,
     f = pola parkieciarza, fp = pola klienta, r = radio tak/nie silnika, c = staly opis ceny (reszta z cennika silnika) */
@@ -3826,8 +3845,10 @@ html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important
   {id:'me',t:'Pomoc z meblami',j:'zł',uz:5,q:'Przesunięcie mebli',r:'meble',il:'mebleKw',f:['mebleKw'],fp:['@meble'],c:'300 zł / do uzgodnienia zakres'},
   {id:'sc',t:'Renowacja schodów',j:'kpl.',uz:6,q:'Renowacja schodów',wew:1,c:'kpl. · do uzgodnienia',info:'Pozycja 1 kpl., cena do uzgodnienia po wizji lokalnej.'},
   {id:'do',t:'Prace dodatkowe',j:'własna pozycja z ceną',dod:1,wew:1,f:['dodBlok'],c:'własna pozycja z ceną'},
+  {id:'ek',t:'Tryb ekspres 48h',kosz:1,r:'zamEkspres',fp:['zamOpcje'],c:'start w 24-48 h, do 40 m²'},
+  {id:'sz',t:'Wykończenie ścian',kosz:1,r:'zamSciany',fp:['zamSciany'],c:'SMART PLUS | ŚCIANY™ - osobna kalkulacja'},
   {id:'uw',t:'Inne prace / uwagi',j:'opisz, co jeszcze',pub:1,tekst:'uwagiKl',fp:['uwagiKl'],c:'opisz, co jeszcze trzeba zrobić'}
- ].filter(function(k){return PUB?!k.wew:!k.pub;});
+ ].filter(function(k){if(KOSZ)return ['pod','lw','ko','me','ek','sz','uw'].indexOf(k.id)>=0;return PUB?(!k.wew&&!k.kosz):(!k.pub&&!k.kosz);});
  var $=function(i){return document.getElementById(i);};
  var zl=function(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' zł';};
  var esc=function(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
@@ -3889,12 +3910,20 @@ html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important
  /* zakladki zwiniete na starcie (Artur 07.11 22:21: zdjecie, dwie zakladki, potem od razu kafelki); drugie nacisniecie zwija */
  function zakladka(t){if(t&&!$(t==='a'?'wuTA':'wuTZ').hidden)t='';[].forEach.call(document.querySelectorAll('#wu .wu-tabs button'),function(b){var on=b.dataset.t===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');});
   $('wuTA').hidden=t!=='a';$('wuTZ').hidden=t!=='z';}
- function podglad(){
-  if(!PUB){var b=$('podgladOferty');if(b&&!b.disabled)b.click();return;}
+ function podglad(tryb){
+  if(!PUB){var ov=$('podgladOv');if(ov)ov.setAttribute('data-tryb',tryb==='wa'?'wa':'');
+   var hw=$('podgladWys');if(hw)hw.textContent='Wyślij na maila';
+   var b=$('podgladOferty');if(b&&!b.disabled)b.click();return;}
   podgladPub();}
  function brakKontaktu(){return wart('mailKl').length<5&&wart('telKl').replace(/\D/g,'').length<9;}
  function otworzAdres(){if($('wuTA').hidden)zakladka('a');}
- function wyslij(){var b=$('wyslij');if(!b||b.disabled)return;if(brakKontaktu())otworzAdres();b.click();
+ /* parkieciarz: oferta PDF na e-mail klienta (dotychczasowa wysylka z kratka "Wyslij klientowi oferte PDF") */
+ function naMaila(){if(wart('mailKl').length<5||wart('mailKl').indexOf('@')<0){otworzAdres();var m=$('mailKl');if(m){m.scrollIntoView({block:'center'});try{m.focus();}catch(e){}}
+   pokazInfo('Wpisz e-mail klienta w zakładce Adres - na ten adres pójdzie oferta PDF.','lok');return;}
+  var o=$('ofertaKl');if(o&&!o.checked){o.checked=true;ev(o,'change');}wyslij();}
+ function wyslij(){var b=$('wyslij');if(!b||b.disabled)return;if(brakKontaktu()||(KOSZ&&!wart('ulicaKl')))otworzAdres();
+  if(KOSZ&&!(parseFloat(wart('m2').replace(',','.'))>0)){var pd=$('wu_pod');if(pd&&!pd.classList.contains('otw'))pd.querySelector('.wu-ut').click();}
+  b.click();
   var bl=$('bladForm');setTimeout(function(){if(bl&&!bl.hidden)bl.scrollIntoView({block:'center',behavior:'smooth'});},60);}
  /* PODGLAD ZGLOSZENIA (klient): to, co trafi do biura - uslugi, orientacyjna kwota, dane, zdjecia; Wyslij / Popraw */
  var pod=null;
@@ -3929,7 +3958,7 @@ html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important
   pod.classList.add('otw');document.body.style.overflow='hidden';pod.querySelector('.pg-s').scrollTop=0;}
  function zbuduj(){
   var form=document.querySelector('form.ai-form');if(!form||$('wu'))return;
-  kopiujCss();zdjecie();
+  kopiujCss();if(!KOSZ)zdjecie();
   H.classList.add('wu');H.classList.remove('wu-start');
   if(!PUB){var h=document.querySelector('#wycena .sticky h2');if(h)h.textContent='Wyceń usługę';
    var oc=document.querySelector('#wycena .sticky .oczko');if(oc&&oc.lastChild)oc.lastChild.textContent='SMARTPARKIET · narzędzie parkieciarza';}
@@ -3938,7 +3967,8 @@ html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important
    '<div class="wu-tabs" role="tablist"><button type="button" role="tab" data-t="a" aria-selected="false">'+SVG+IK.adr+'</svg>Adres</button><button type="button" role="tab" data-t="z" aria-selected="false">'+SVG+IK.zdj+'</svg>Wklej zdjęcia<i id="wuZn"></i></button></div>'+
    '<div class="wu-tabp" id="wuTA" role="tabpanel" hidden></div><div class="wu-tabp" id="wuTZ" role="tabpanel" hidden><p class="wu-info">'+(PUB?'Dodaj 4-6 zdjęć podłogi (przy naprawach do 12), także miejsca uszkodzeń.':'Zdjęcia podłogi klienta - trafią do PDF i do Folderu ofert.')+'</p></div>'+
    '<p class="wu-h">Usługi <small>'+(PUB?'naciśnij, co mamy zrobić':'naciśnij i wpisz ilość')+'</small></p><div id="wuL"></div>'+
-   '<details class="wu-wiecej" id="wuW"><summary><span>Termin i szczegóły<small>'+(PUB?'termin, piętro, kod pocztowy - opcjonalnie':'termin, piętro, VAT, kopia - opcjonalnie')+'</small></span></summary><div class="wu-wiecej-in" id="wuWi"></div></details>'+
+   (KOSZ?'<p class="wu-h">Preferowany termin <small>wymagany, 1-3 dni</small></p><div class="wu-tabp" id="wuTerm"></div>':'')+
+   '<details class="wu-wiecej" id="wuW"><summary><span>'+(KOSZ?'Szczegóły':'Termin i szczegóły')+'<small>'+(KOSZ?'miejscowość, piętro, imię - opcjonalnie':PUB?'termin, piętro, kod pocztowy - opcjonalnie':'termin, piętro, VAT, kopia - opcjonalnie')+'</small></span></summary><div class="wu-wiecej-in" id="wuWi"></div></details>'+
    '<div class="wu-koniec" id="wuKon"></div>';
   form.insertBefore(wu,form.firstChild);
   [].forEach.call(wu.querySelectorAll('.wu-tabs button'),function(b){b.onclick=function(){zakladka(b.dataset.t);};});
@@ -3948,7 +3978,7 @@ html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important
     if(o){var s=$('folSzuk');if(s)ev(s,'focus');}};}
   /* zakladka Adres: adres, telefon, e-mail (Artur 06.11 16:0x); Wklej zdjecia: dodawanie zdjec */
   var TA=$('wuTA');['ulicaKl','telKl','mailKl'].forEach(function(f){var b=blok(f);if(b)TA.appendChild(b);});
-  etykieta('ulicaKl',PUB?'Adres realizacji (ulica i numer)':'Adres (ulica i numer)');etykieta('telKl','Telefon');etykieta('mailKl',PUB?'E-mail (tu wyślemy wycenę)':'E-mail');
+  etykieta('ulicaKl',PUB?'Adres realizacji (ulica i numer)':'Adres (ulica i numer)');etykieta('telKl','Telefon');etykieta('mailKl',PUB?'E-mail (tu wyślemy wycenę)':'E-mail klienta (oferta PDF)');
   if(PUB){var pi=document.createElement('p');pi.className='wu-info';pi.textContent='Wystarczy telefon albo e-mail.';TA.appendChild(pi);}
   var TZ=$('wuTZ');['drop','miniatury'].forEach(function(f){var b=blok(f);if(b)TZ.appendChild(b);});
   /* uslugi */
@@ -3984,21 +4014,29 @@ html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important
      if(q&&!q.disabled&&!String(q.value||'').trim()&&d.contains(q)){try{q.focus({preventScroll:true});}catch(e){}}},80);};
    k.el=d;L.appendChild(d);});
   /* termin i szczegoly */
-  var W=$('wuWi');(PUB?['terminKl','chceBlok','kodKl','miastoKl','dzielKl','pietroKl','@winda','obiektKl','imieKl','gatKl','montazKl']
+  if(KOSZ){var tb=$('terminyBlok');if(tb)$('wuTerm').appendChild(tb);}
+  var W=$('wuWi');(KOSZ?['miastoKl','pietroKl','@winda','imieKl']:PUB?['terminKl','chceBlok','kodKl','miastoKl','dzielKl','pietroKl','@winda','obiektKl','imieKl','gatKl','montazKl']
    :['terminKl','kodKl','miastoKl','dzielKl','pietroKl','@winda','imieKl','obiektKl','gatKl','montazKl','vatBlok','kopiaBlok']).forEach(function(f){var b=blok(f);if(b)W.appendChild(b);});
   /* koniec: blad, Turnstile, Podglad (JEDEN przycisk wysylki jest na dolnym pasku i w podgladzie), potwierdzenie wyslania */
   var kon=$('wuKon');
   var pg=document.createElement('button');pg.type='button';pg.className='wu-podg';pg.innerHTML=SVG+IK.oko+'</svg>'+(PUB?'Podgląd zgłoszenia':'Podgląd oferty (PDF)');pg.onclick=podglad;
   var po=document.createElement('p');po.className='wu-podg-o';po.textContent=PUB?'Zobacz, co do nas trafi, i wyślij z podglądu albo przyciskiem Wyślij na dole.':'Tak zobaczy ją klient. Z podglądu: Wyślij albo Popraw.';
   ['bladForm','ts'].forEach(function(f){var e=$(f);if(e)kon.appendChild(e);});
-  kon.appendChild(pg);kon.appendChild(po);
+  /* Artur 07.11 22:28 "trzy kafelki: Podglad, Wyslij na WhatsApp, Wyslij na maila" (zamiast kratki "Wyslij klientowi oferte PDF" i jednego Wyslij) */
+  if(!PUB){var tr=document.createElement('div');tr.className='wu-trzy';
+   tr.innerHTML='<button type="button" class="t-pod">'+SVG+IK.oko+'</svg>Podgląd</button><button type="button" class="t-wa">'+SVG+IK.wa+'</svg>Wyślij na WhatsApp</button><button type="button" class="t-mail">'+SVG+IK.mail+'</svg>Wyślij na maila</button>';
+   tr.querySelector('.t-pod').onclick=function(){podglad('');};tr.querySelector('.t-wa').onclick=function(){podglad('wa');};tr.querySelector('.t-mail').onclick=naMaila;
+   kon.appendChild(tr);po.textContent='Podgląd = PDF tak, jak zobaczy go klient. WhatsApp: w podglądzie zielony przycisk wysyła PDF klientowi. Mail: oferta PDF idzie na e-mail klienta.';kon.appendChild(po);}
+  else if(!KOSZ){kon.appendChild(pg);kon.appendChild(po);}
   ['wyslij','wyslano'].forEach(function(f){var e=$(f);if(e)kon.appendChild(e);});
+  if(KOSZ){var pp=form.querySelector('.pod-przyc');if(pp)kon.appendChild(pp);}
   var bw=$('wyslij');if(bw){bw.dataset.oryg=bw.innerHTML;}
   if(PUB){var da=form.querySelector('.do-analizatora');if(da)kon.appendChild(da);}
   else{var a=document.createElement('a');a.className='wu-maly';a.href='analizator.html?pelny';a.textContent='Pełny arkusz (wszystkie pola) ›';kon.appendChild(a);}
   /* dolny pasek */
-  var bar=document.createElement('div');bar.id='wuBar';if(PUB)bar.className='pub';
-  bar.innerHTML='<div style="min-width:0"><small>'+(PUB?'Orientacyjnie':'Netto')+'</small><b id="wuSum">'+(PUB?'-':'0 zł')+'</b></div>'+(PUB?'':'<button type="button" class="zap">Zapisz</button>')+'<button type="button" class="pdf">Podgląd</button><button type="button" class="wys">Wyślij</button>';
+  var bar=document.createElement('div');bar.id='wuBar';bar.className=KOSZ?'kosz':(PUB?'pub':'wew');
+  bar.innerHTML='<div style="min-width:0"><small>'+(PUB?'Orientacyjnie':'Netto')+'</small><b id="wuSum">'+(PUB?'-':'0 zł')+'</b></div>'+(PUB?'':'<button type="button" class="zap">Zapisz</button>')+
+   (KOSZ?'<button type="button" class="wys">Sprawdź zamówienie</button>':'<button type="button" class="pdf">Podgląd</button>'+(PUB?'<button type="button" class="wys">Wyślij</button>':''));
   document.body.appendChild(bar);
   info=document.createElement('div');info.id='wuInfo';info.hidden=true;info.setAttribute('role','status');document.body.appendChild(info);
   info.onclick=function(){info.hidden=true;};
@@ -4008,8 +4046,8 @@ html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important
    /* Artur 07.11 22:24: po otwarciu zapisanej wyceny od razu widac, gdzie jest podglad */
    var sw=window.spWczytaj;if(sw&&!sw.__wu){var nw=function(){var r=sw.apply(this,arguments);var p=$('wuFolP');if(p&&p.classList.contains('otw'))$('wuFolB').click();
      setTimeout(function(){odswiez();pokazInfo('Wycena wczytana. Sprawdź usługi i zobacz, jak wygląda dla klienta.','ok',['Zobacz podgląd oferty',podglad]);},400);return r;};nw.__wu=1;window.spWczytaj=nw;}}
-  bar.querySelector('.pdf').onclick=podglad;
-  bar.querySelector('.wys').onclick=wyslij;
+  var bp=bar.querySelector('.pdf');if(bp)bp.onclick=function(){podglad('');};
+  var bs=bar.querySelector('.wys');if(bs)bs.onclick=wyslij;
   odswiez();setInterval(odswiez,800);}
  var bylWys=false;
  function odswiez(){var A=ark();
@@ -4023,7 +4061,8 @@ html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important
   var pl=window.__pliki?window.__pliki().length:0,zn=$('wuZn');if(zn)zn.textContent=pl?String(pl):'';
   var ta=document.querySelector('#wu .wu-tabs [data-t="a"]');if(ta)ta.classList.toggle('ok',!!wart('ulicaKl')&&!brakKontaktu());
   /* jeden przycisk Wyslij: stan glownego przycisku silnika na pasku */
-  var bw=$('wyslij'),bb=document.querySelector('#wuBar .wys');if(bw&&bb){var wy=bw.classList.contains('wyslane');bb.disabled=!!bw.disabled;var tx=wy?'Wysłane ✓':(bw.disabled?'Wysyłam…':'Wyślij');if(bb.textContent!==tx)bb.textContent=tx;}
+  var bw=$('wyslij'),bb=document.querySelector('#wuBar .wys');if(bw&&bb){var wy=bw.classList.contains('wyslane');bb.disabled=!!bw.disabled;var tx=wy?'Wysłane ✓':(bw.disabled?'Wysyłam…':(KOSZ?'Sprawdź zamówienie':'Wyślij'));if(bb.textContent!==tx)bb.textContent=tx;}
+  [].forEach.call(document.querySelectorAll('#wu .wu-trzy .t-mail'),function(t){if(bw)t.disabled=!!bw.disabled&&!bw.classList.contains('wyslane');});
   var ws=bw&&bw.classList.contains('wyslane')?bw:$('wyslano');if(ws){var vis=ws===bw||!ws.hidden;if(vis&&!bylWys)setTimeout(function(){ws.scrollIntoView({block:'center',behavior:'smooth'});},100);bylWys=vis;}}
  window.spWuOdswiez=odswiez;
  function start(){setTimeout(zbuduj,700);}
