@@ -1950,7 +1950,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       const b64=f=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]||'');r.onerror=()=>ok('');r.readAsDataURL(f);});
       const wyslij=async pdf=>{let zd=[];try{zd=(await Promise.all((window.__gotowe||[]).map(b64))).filter(Boolean);}catch(e){}
         return fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!(window.SP_ZAMOWIENIE||(window.spChce&&window.spChce())),numer:window.__nrZam||'',ekspres:!!(window.spOpcje&&window.spOpcje().ekspres),sciany:!!(window.spOpcje&&window.spOpcje().sciany),terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):((window.spChce&&window.spChce()&&window.spChce().data)?window.spChce().termin:''),stan:stan,zdjecia:zd})}).then(()=>true).catch(()=>false);};
+          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!(window.SP_ZAMOWIENIE||(window.spChce&&window.spChce())),numer:window.__nrZam||'',ekspres:!!(window.spOpcje&&window.spOpcje().ekspres),sciany:!!(window.spOpcje&&window.spOpcje().sciany),terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):((window.spChce&&window.spChce()&&window.spChce().data)?window.spChce().termin:''),stan:stan,zdjecia:zd,szkicUsun:window.spSzkicDoUsuniecia?window.spSzkicDoUsuniecia():''})}).then(()=>true).catch(()=>false);};
       const pdfF=plik||window.__karta;
       if(pdfF&&pdfF.type==='application/pdf')return new Promise(ok=>{
         const r=new FileReader();
@@ -2085,7 +2085,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       const t=tresc();
       podsum.textContent=t;
       doBiura(t,(document.getElementById('mailKl')||{}).value||'');
-      naDysk((document.getElementById('mailKl')||{}).value||'');
+      window.__wysWlasciwa=1;naDysk((document.getElementById('mailKl')||{}).value||'');
       waL.href='https://wa.me/48602242815?text='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi doślę w odpowiedzi.');
       mailL.href='mailto:smartparkiet.kontakt@gmail.com?subject='+encodeURIComponent(window.spTemat('Nowa wycena SMARTPARKIET'))+'&body='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi dołączam do tej wiadomości.');
       {const dr=document.querySelector('#wyslano .drogi'); if(dr)dr.hidden=true;}
@@ -3700,6 +3700,9 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
 #folWyn .fw-k i{font-style:normal;font-size:.68rem;letter-spacing:.06em;padding:2px 7px;border-radius:999px}
 #folWyn .fw-n{background:#FF6A13;color:#fff}#folWyn .fw-s{background:#D5D8DC;color:#3A3F45}
 #folWyn button.fw-old{background:#F1F2F4;color:#4A5058}
+#folWyn .fw-z{background:#1F7A4D;color:#fff}#folWyn .fw-t{background:#7A5A00}
+#folWyn button.fw-sz{border-left:5px solid #1F7A4D}
+#folWyn .fw-zh{display:block;color:#9BE2B8;font-weight:800;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;margin:2px 0 0}
 #folInfo{margin:6px 0 0;font-size:.85rem;color:#E9E4DD!important;min-height:1em}
 #wycHist{display:none!important}
 </style>
@@ -3725,9 +3728,14 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
   return new File([a],'Zdjecie_'+String(i+1).padStart(2,'0')+'.jpg',{type:'image/jpeg'});}
  async function lista(){info('Pobieram listę ofert...');var j;try{j=await api('a=lista');}catch(e){}
   if(!j)return;if(!j.ok){info(j.blad||'Nie udało się pobrać listy.');if(j.blad==='Brak dostępu')pokazPin();return;}
-  WSZ=(j.lista||[]).slice().sort(function(x,y){return (y.t||0)-(x.t||0);});WSZ_T=Date.now();window.spFolderNieaktualny=false;pokazListe();
+  WSZ0=(j.lista||[]).slice().sort(function(x,y){return (y.t||0)-(x.t||0);});WSZ_T=Date.now();window.spFolderNieaktualny=false;pokazListe();
   info(j.lista.length?'Wpisz kilka liter ulicy albo wybierz z listy. Oferty od 22.10 wczytują się ze zdjęciami, starsze (szare) - same dane klienta.':'Folder jest pusty.');}
- async function wczytaj(id){info('Wczytuję ofertę...');var j;try{j=await api('a=wczytaj&id='+encodeURIComponent(id));}catch(e){}
+ async function wczytaj(id){info('Wczytuję ofertę...');var j;
+  /* 06.11: wycena zapisana tylko w tym telefonie (brak internetu przy Zapisz) - bez serwera */
+  if(/^lok_/.test(id)){var L=window.spSzkicLokalny?window.spSzkicLokalny(id.slice(4)):null;if(!L){info('Nie ma już tej wyceny na telefonie.');return;}
+   var pp=document.getElementById('poprawBtn');if(pp)pp.click();window.spWczytaj(L.stan||{});
+   info('Wczytana wycena zapisana na tym telefonie ('+new Date(L.t).toLocaleString('pl-PL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'). Zdjęcia nie były zapisane - dodaj je i naciśnij Zapisz albo Wyślij.');return;}
+  try{j=await api('a=wczytaj&id='+encodeURIComponent(id));}catch(e){}
   if(!j)return;if(!j.ok){info('Nie udało się wczytać oferty.');return;}
   if(j.stara){var sm=document.getElementById('smsWklej'),bt=document.getElementById('smsRozrzuc');
    if(sm&&bt){sm.value=j.tekst||'';bt.click();}
@@ -3743,47 +3751,62 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
    var pd=(o.stan&&o.stan.podpisy)||[];setTimeout(function(){[].slice.call(document.querySelectorAll('#miniatury input.podp')).forEach(function(p,i){
     if(pd[i]){p.value=pd[i];p.dispatchEvent(new Event('input',{bubbles:true}));}});},300);}
   var ok=document.getElementById('ofertaKl');if(ok&&o.mailKlienta)ok.checked=true;
+  if(o.szkic||(o.stan&&o.stan.szkic)){info('Wczytana zapisana wycena z '+o.kiedy+((o.zdjecia||[]).length?' ('+o.zdjecia.length+' zdj.)':'')+'. Uzupełnij, co trzeba, i naciśnij Wyślij - albo Zapisz, żeby wrócić do niej później.');return;}
   /* Artur 01.11 21:16 "jest tylko bez zdjec": wersje zapisane przed poprawka z 29.10 nie maja zdjec w folderze (zdjecia sa tylko w starym PDF) -
      wyrazny komunikat, ze wystarczy dodac je raz, bo kazda kolejna wersja zachowuje zdjecia */
   if(!(o.zdjecia||[]).length){info('Wczytana oferta z '+o.kiedy+' - ta wersja NIE MA zapisanych zdjęć (zapis sprzed poprawki z 29.10). Dodaj zdjęcia raz przyciskiem „Dodaj zdjęcia” i wyślij - każda następna wersja tej oferty będzie już je miała.');return;}
   info('Wczytana oferta z '+o.kiedy+' ('+((o.zdjecia||[]).length)+' zdj.). Popraw, co trzeba, i wyślij ponownie - klient dostanie poprawioną ofertę.');}
  /* Artur 27.10 13:22-13:24: lista ofert za dluga - pole szukania (3-4 litery ulicy, telefon albo data) filtruje na zywo */
- var WSZ=[],WSZ_T=0;
+ var WSZ0=[],WSZ_T=0;
  /* Artur 28.10 22:24: po korekcie i wysylce wyszukiwarka pokazywala STARA wersje - lista byla pobrana raz przy otwarciu strony
     i nigdy odswiezana (nowy zapis w Dysku byl, ale nie na liscie w telefonie). Teraz: pobieranie przy kazdym wejsciu w pole szukania
     (najwyzej co 15 s) i zawsze po wyslaniu oferty; wersje tego samego klienta oznaczone, najnowsza na gorze. */
  var LAD=null;function odswiez(){if(!LAD)LAD=lista().finally(function(){LAD=null;});return LAD;}
- function swieza(){return WSZ.length&&!window.spFolderNieaktualny&&Date.now()-WSZ_T<15000;}
+ function swieza(){return WSZ0.length&&!window.spFolderNieaktualny&&Date.now()-WSZ_T<15000;}
  function rozbierz(o){var op=String(o.opis||''),m=op.match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2})[-:](\d{2})\s*/),kiedy='',reszta=op;
   if(m){kiedy=m[3]+'.'+m[2]+' '+m[4]+':'+m[5];reszta=op.slice(m[0].length);}
   else if(o.t){var d=new Date(o.t);kiedy=('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
   var nt=(reszta.match(/netto (\d+) zł/)||[])[1],nr=(reszta.match(/nr (\d{8}-\d{3,5})/)||[])[1];
-  reszta=reszta.replace(/netto \d+ zł\s*/,'').replace(/nr \d{8}-\d{3,5}\s*/,'').trim();
+  reszta=reszta.replace(/\bZAPISANA\b\s*/,'').replace(/#\w{6,}\s*/,'').replace(/netto \d+ zł\s*/,'').replace(/nr \d{8}-\d{3,5}\s*/,'').trim();
   var tel=(reszta.replace(/[\s-]/g,'').match(/(\+?48)?(\d{9})(?!.*\d{9})/)||[])[2]||'';
   var klucz=tel||bezOg(reszta).replace(/^\d+([.,]\d+)?\s*m2?\s*/,'').replace(/[^a-z0-9]/g,'').slice(0,24);
   return {kiedy:kiedy,netto:nt?(+nt).toLocaleString('pl-PL').replace(/\u00a0/g,' ')+' zł':'',nr:nr||'',reszta:reszta.replace(/</g,''),klucz:klucz};}
  function bezOg(t){return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l');}
+ /* Artur 06.11 16:2x: wyceny ZAPISANE przyciskiem "Zapisz" (bez wysylki) - zawsze na gorze listy, oznaczone "ZAPISANA".
+    W opisie pliku: slowo ZAPISANA i znacznik #id szkicu. Przed wdrozeniem nowej wersji Apps Script kazde Zapisz tworzy
+    na serwerze nowa kopie - pokazujemy tylko najnowsza kopie danego szkicu (ten sam #id). Kopie zapisane tylko w telefonie
+    (brak internetu) dochodza z localStorage z dopiskiem "NA TELEFONIE". */
+ function czySzkic(o){return !!(o.szkic||o.lok||/\bZAPISANA\b/.test(String(o.opis||'')));}
+ function tagSzkicu(o){return o.szkicId||((String(o.opis||'').match(/#(\w{6,})/)||[])[1])||'';}
+ function zLokalnymi(L){var lok=[];try{lok=window.spSzkiceLokalne?window.spSzkiceLokalne():[];}catch(e){}
+  var bylo={},out=[];L.concat(lok).sort(function(x,y){return (y.t||0)-(x.t||0);}).forEach(function(o){
+   if(czySzkic(o)){var t=tagSzkicu(o);if(t){if(bylo[t])return;bylo[t]=1;}}out.push(o);});
+  return out.filter(czySzkic).concat(out.filter(function(o){return !czySzkic(o);}));}
+ window.spFolderOdswiez=function(){window.spFolderNieaktualny=true;if(k())odswiez();else pokazListe();};
  function pokazListe(){var sel=document.getElementById('folSel'),q=bezOg((document.getElementById('folSzuk')||{}).value||'').trim();
+  var WSZ=zLokalnymi(WSZ0);
   /* Artur 28.10 wieczor: "AL.Jana" nie znajdowalo "AL. JANA PAWLA II 61/36". Kropki, przecinki, podkreslenia, ukosniki = spacje;
      kazde slowo zapytania musi byc fragmentem tekstu oferty (adres, nazwa pliku, klient, telefon, data), w dowolnej kolejnosci */
   var tnij=function(t){return bezOg(t).replace(/[.,_\/\\;:·()\-]+/g,' ').replace(/\s+/g,' ').trim();};
   var qn=tnij(q),qw=qn?qn.split(' '):[],qs=qn.replace(/\s+/g,'');
   var lis=WSZ.filter(function(o){if(!q)return true;var t=tnij(o.opis+' '+(o.plik||'')),tz=t.replace(/\s+/g,'');
    return (qw.length&&qw.every(function(w){return t.indexOf(w)>=0;}))||(qs.length>2&&tz.indexOf(qs)>=0);});
-  var ile={},bylo={};lis.forEach(function(o){var r=rozbierz(o);o._r=r;ile[r.klucz]=(ile[r.klucz]||0)+1;});
-  lis.forEach(function(o){var r=o._r;r.wersja=ile[r.klucz]>1?(bylo[r.klucz]?'starsza wersja':'NAJNOWSZA'):'';bylo[r.klucz]=1;});
+  var ile={},bylo={};lis.forEach(function(o){var r=rozbierz(o);o._r=r;if(czySzkic(o))return;ile[r.klucz]=(ile[r.klucz]||0)+1;});
+  lis.forEach(function(o){var r=o._r;if(czySzkic(o)){r.wersja=o.lok?'NA TELEFONIE':'ZAPISANA';return;}r.wersja=ile[r.klucz]>1?(bylo[r.klucz]?'starsza wersja':'NAJNOWSZA'):'';bylo[r.klucz]=1;});
   sel.innerHTML='<option value="">'+(q?('Znaleziono: '+lis.length+' - wybierz ofertę…'):('Wybierz ofertę do poprawki ('+WSZ.length+')…'))+'</option>'+lis.map(function(o){var r=o._r;
    return '<option value="'+o.id+'">'+[r.kiedy,r.wersja,r.netto,r.reszta].filter(Boolean).join(' · ')+'</option>';}).join('');
   var wyn=document.getElementById('folWyn');if(!wyn)return;
-  if(!q){wyn.innerHTML='';return;}
-  wyn.innerHTML=lis.length?lis.slice(0,8).map(function(o){var r=o._r,t=String(o.opis).replace(/</g,'').split(' · ');
-   var gl=o.stara?t.slice(1,3).join(' · '):r.reszta;
-   var znak=r.wersja==='NAJNOWSZA'?'<i class="fw-n">NAJNOWSZA</i>':(r.wersja?'<i class="fw-s">starsza wersja</i>':'');
-   return '<button type="button" data-id="'+o.id+'"'+(o.stara?' class="st"':(r.wersja==='starsza wersja'?' class="fw-old"':''))+'><span class="fw-k">'+r.kiedy+znak+'</span>'+gl+'<small>'+[r.netto?('netto '+r.netto):'',r.nr?('nr '+r.nr):'',o.stara?'stara oferta':''].filter(Boolean).join(' · ')+'</small></button>';}).join('')
+  /* 06.11: bez wpisanego tekstu - same ZAPISANE wyceny (szkice), zeby od razu bylo widac, do czego wrocic */
+  if(!q){var sz=lis.filter(czySzkic);wyn.innerHTML=sz.length?'<small class="fw-zh">Zapisane wyceny ('+sz.length+')</small>'+sz.slice(0,8).map(przycisk).join('')+(sz.length>8?'<small style="color:#E9E4DD">i jeszcze '+(sz.length-8)+' - wpisz kilka liter</small>':''):'';return;}
+  wyn.innerHTML=lis.length?lis.slice(0,8).map(przycisk).join('')
    +(lis.length>8?'<small style="color:#E9E4DD">i jeszcze '+(lis.length-8)+' - wpisz więcej liter</small>':''):'<small style="color:#E9E4DD">Nic nie znaleziono - spróbuj inaczej: 3-4 litery ulicy, końcówka telefonu albo data (np. 21.10).</small>';}
+ function przycisk(o){var r=o._r,t=String(o.opis).replace(/</g,'').split(' · ');
+   var gl=o.stara?t.slice(1,3).join(' · '):r.reszta;
+   var znak=r.wersja==='NAJNOWSZA'?'<i class="fw-n">NAJNOWSZA</i>':(r.wersja==='ZAPISANA'?'<i class="fw-z">ZAPISANA</i>':(r.wersja==='NA TELEFONIE'?'<i class="fw-z fw-t">ZAPISANA NA TELEFONIE</i>':(r.wersja?'<i class="fw-s">starsza wersja</i>':'')));
+   return '<button type="button" data-id="'+o.id+'"'+(o.stara?' class="st"':(czySzkic(o)?' class="fw-sz"':(r.wersja==='starsza wersja'?' class="fw-old"':'')))+'><span class="fw-k">'+r.kiedy+znak+'</span>'+gl+'<small>'+[r.netto?('netto '+r.netto):'',r.nr?('nr '+r.nr):'',o.stara?'stara oferta':'',czySzkic(o)?'niewysłana - otwórz i wyślij':''].filter(Boolean).join(' · ')+'</small></button>';}
  function start(){var box=document.querySelector('.sms-box');if(document.getElementById('folOf')){if(k())lista();return;}if(!box)return;
   var w=document.createElement('div');w.id='folOf';
-  w.innerHTML='<b>Folder ofert <small style="float:right;font-weight:400;color:#B9BDC3;font-size:.72rem;letter-spacing:0">wersja 02.11 13:30</small></b><input id="folSzuk" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Szukaj: 3-4 litery ulicy, telefon lub data" aria-label="Szukaj oferty" style="width:100%;min-height:44px;font-size:16px;margin:0 0 8px;padding:8px 12px;border:1.5px solid #3A3F45;border-radius:10px;box-sizing:border-box"><div id="folWyn"></div><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
+  w.innerHTML='<b>Folder ofert <small style="float:right;font-weight:400;color:#B9BDC3;font-size:.72rem;letter-spacing:0">wersja 07.11</small></b><input id="folSzuk" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Szukaj: 3-4 litery ulicy, telefon lub data" aria-label="Szukaj oferty" style="width:100%;min-height:44px;font-size:16px;margin:0 0 8px;padding:8px 12px;border:1.5px solid #3A3F45;border-radius:10px;box-sizing:border-box"><div id="folWyn"></div><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
   box.insertBefore(w,box.firstChild);
   var sel=document.getElementById('folSel');
   sel.addEventListener('pointerdown',function(){if(sel.options.length<2)lista();},{once:true});
@@ -3797,8 +3820,78 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
   sel.addEventListener('focus',function(){if(!swieza())odswiez();});
   document.addEventListener('visibilitychange',function(){if(!document.hidden)window.spFolderNieaktualny=true;});
   sz.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();sz.blur();}});
+  pokazListe();
   var m=location.hash.match(/oferta=([\w-]+)/);if(m)wczytaj(m[1]);else if(k())lista();else pokazPin();}
  window.spFolderStart=start;
  if(document.readyState!=='loading')start();else document.addEventListener('DOMContentLoaded',start);
+})();
+</script>
+<style>
+#zapiszBtn{width:100%;margin:0 0 10px;border:2px solid #14110E;background:#fff;color:#14110E;font-weight:800;border-radius:10px;padding:13px 16px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+#zapiszBtn:disabled{opacity:.6}
+#szkicInfo{margin:-4px 0 10px;font-size:.88rem;line-height:1.4;font-weight:700;min-height:0}
+#szkicInfo:empty{display:none}
+#szkicInfo.ok{color:#1F7A4D}#szkicInfo.lok{color:#8A5A00}#szkicInfo.trwa{color:#4A5058}
+.an-przel{display:inline-flex;align-items:center;gap:6px;margin:10px 0 0;padding:9px 14px;border-radius:999px;background:#fff;color:#14110E!important;font:800 .9rem Inter,system-ui,sans-serif;text-decoration:none;box-shadow:0 4px 14px rgba(20,17,14,.18)}
+</style>
+<script>
+(function(){
+ var U='https://script.google.com/macros/s/AKfycbxC1j9MytYHxqD-ONdcd8Bar5SxnAVnmr8pxP1_pdEEIZzB1hbh9AXRDtXEg5hX0QXzDA/exec';
+ function $(i){return document.getElementById(i);}
+ function pole(i){return (($(i)||{}).value||'').trim();}
+ function lok(){try{return JSON.parse(localStorage.getItem('spSzkice')||'{}')||{};}catch(e){return {};}}
+ function lokZapisz(o){try{localStorage.setItem('spSzkice',JSON.stringify(o));return true;}catch(e){return false;}}
+ function lokUsun(id){var L=lok();if(L[id]){delete L[id];lokZapisz(L);}}
+ window.spSzkiceLokalne=function(){var L=lok();return Object.keys(L).map(function(id){return {id:'lok_'+id,szkicId:id,t:L[id].t,opis:L[id].opis,lok:true};});};
+ window.spSzkicLokalny=function(id){return lok()[id]||null;};
+ /* po prawdziwej wysylce: szkic do usuniecia na serwerze, w telefonie i zapomniany (kolejne Zapisz = nowa wycena) */
+ window.spSzkicDoUsuniecia=function(){if(!window.__wysWlasciwa)return '';window.__wysWlasciwa=0;var id=window.__szkicId||'';
+  if(id){lokUsun(id);window.__szkicId='';setTimeout(function(){window.spFolderOdswiez&&window.spFolderOdswiez();},4000);}return id;};
+ function info(t,kl){var e=$('szkicInfo');if(e){e.textContent=t;e.className=kl||'';}if(window.spSzkicInfo)window.spSzkicInfo(t,kl);}
+ function zmniejsz(f){return new Promise(function(ok){var img=new Image(),u=URL.createObjectURL(f);
+  img.onload=function(){var m=(window.__pliki&&window.__pliki().length>6)?1280:1600,k=Math.min(1,m/Math.max(img.width,img.height));
+   var c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+   c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(function(b){ok(b||f);},'image/jpeg',.78);};
+  img.onerror=function(){URL.revokeObjectURL(u);ok(f);};img.src=u;});}
+ function b64(b){return new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(String(r.result).split(',')[1]||'');};r.onerror=function(){ok('');};r.readAsDataURL(b);});}
+ function opis(id){var A=null;try{A=window.spArkusz&&window.spArkusz();}catch(e){}
+  return ['ZAPISANA','#'+id,pole('ulicaKl')||'bez adresu',pole('telKl'),(parseFloat(String(pole('m2')).replace(',','.'))||0)+' m2',A&&A.suma?('netto '+Math.round(A.suma)+' zł'):'',pole('mailKl'),pole('imieKl')].filter(Boolean).join(' ');}
+ var trwa=null;
+ window.spZapiszSzkic=function(){if(trwa)return trwa;
+  if(!pole('ulicaKl')&&!pole('telKl')&&!pole('mailKl')){info('Wpisz adres albo telefon klienta - po nich znajdziesz potem tę wycenę.','lok');var u=$('ulicaKl');if(u){u.scrollIntoView({block:'center'});u.focus();}return Promise.resolve(false);}
+  trwa=(async function(){
+   var b=$('zapiszBtn');if(b)b.disabled=true;info('Zapisuję w Folderze ofert…','trwa');
+   if(!window.__szkicId)window.__szkicId=Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+   var id=window.__szkicId,stan={};
+   try{stan=window.spZrzut();stan.podpisy=(window.__podpisy||[]).slice();}catch(e){}
+   stan.szkic=1;stan.szkicId=id;
+   var op=opis(id),pl=window.__pliki?window.__pliki():[],zd=[];
+   /* kopia pol w telefonie od razu (bez zdjec - za duze), usuwana po udanym zapisie na serwerze */
+   var L=lok();L[id]={t:Date.now(),opis:op,stan:stan};lokZapisz(L);
+   for(var i=0;i<pl.length;i++){try{zd.push(await b64(await zmniejsz(pl[i])));}catch(e){}}
+   var j=null;
+   try{var ac=new AbortController(),to=setTimeout(function(){ac.abort();},90000);
+    var r=await fetch(U,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},signal:ac.signal,
+     body:JSON.stringify({tryb:'szkic',szkicId:id,opis:op,mailKlienta:'',stan:stan,zdjecia:zd})});
+    clearTimeout(to);j=await r.json();}catch(e){}
+   if(b)b.disabled=false;
+   if(j&&j.ok){lokUsun(id);window.__zapisNaSerwerze=j.szkic?'nowy':'stary';
+    info('✓ Zapisano w Folderze ofert'+(zd.length?' ('+zd.length+' zdj.)':'')+'. Nic nie poszło do klienta. Znajdziesz ją w Folderze ofert jako ZAPISANA.','ok');}
+   else info('Brak połączenia z serwerem - wycena zapisana tylko na tym telefonie (bez zdjęć). Naciśnij Zapisz jeszcze raz, gdy będzie internet.','lok');
+   window.spFolderOdswiez&&window.spFolderOdswiez();
+   return !!(j&&j.ok);})().finally(function(){trwa=null;});
+  return trwa;};
+ /* wczytanie: zapisana wycena (szkic) zachowuje swoj identyfikator - ponowne Zapisz nadpisuje ja; wyslana oferta = nowy szkic */
+ function owin(){var w=window.spWczytaj;if(!w||w.__sz)return;var nw=function(s){var r=w.apply(this,arguments);
+   window.__szkicId=(s&&s.szkic&&s.szkicId)?s.szkicId:'';if(s&&s.szkic)window.__korekta=false;return r;};nw.__sz=1;window.spWczytaj=nw;}
+ function start(){owin();setTimeout(owin,1500);
+  var bw=$('wyslij');if(bw&&!$('zapiszBtn')){var b=document.createElement('button');b.type='button';b.id='zapiszBtn';
+   b.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Zapisz (bez wysyłania)';
+   b.onclick=function(){window.spZapiszSzkic();};var p=document.createElement('p');p.id='szkicInfo';p.setAttribute('role','status');
+   var pg=$('podgladOferty')||bw;pg.parentNode.insertBefore(b,pg);pg.parentNode.insertBefore(p,pg);}
+  /* przelacznik do uproszczonego widoku "Wycen usluge" (Artur 06.11) */
+  var st=document.querySelector('#wycena .sticky');if(st&&!document.querySelector('.an-przel')&&!document.documentElement.classList.contains('wu-strona')){
+   var a=document.createElement('a');a.className='an-przel';a.href='wycen-usluge.html';a.textContent='Prosty widok: Wyceń usługę ›';st.appendChild(a);}}
+ if(document.readyState==='complete')start();else window.addEventListener('load',function(){setTimeout(start,300);});
 })();
 </script>

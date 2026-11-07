@@ -1,86 +1,117 @@
 # -*- coding: utf-8 -*-
-"""wycen-usluge.html = PROJEKT do akceptacji Artura (06.11): uproszczony widok analizatora "Wyceń usługę".
+"""wycen-usluge.html = "Wyceń usługę" - uproszczone narzedzie wewnetrzne parkieciarza (Artur 06.11 15:44-16:28, 07.11).
 
-Budowany z analizator.html (ten sam silnik wycena.html: PIN, PDF, Folder ofert, mail /wyslij.php, Apps Script).
-Skorka NIE zmienia logiki - przenosi istniejace pola (te same id) do kafelkow-uslug, ktore rozwijaja sie po
-nacisnieciu, i dodaje widok "Usluga z cennika" (lista z cena i przyciskiem Dodaj) oraz dolny pasek z kwota netto.
-Kafelek "w wycenie" = kratka uzgN z panelu "Zakres prac" (zaznaczone = robimy), wiec PDF, mail, arkusz i Folder
-ofert dostaja dokladnie te same pola co z analizatora.
+Budowany z analizator.html (ten sam silnik wycena.html: bramka PIN z serwera, PDF, Folder ofert, Zapisz, mail /wyslij.php,
+Apps Script). Skorka NIE zmienia logiki - przenosi istniejace pola (te same id) do:
+  1. listy uslug: przycisk z nazwa uslugi, po nacisnieciu rozwija sie pole ilosci (m2, mb, kwota) - "robimy" = kratka uzgN
+     z panelu "Zakres prac", wiec PDF, mail, arkusz i Folder ofert dostaja dokladnie te same pola co z analizatora,
+  2. prostej sekcji "Dane klienta: adres, telefon, e-mail" (reszta pol w zwinietym "Zdjecia, termin, szczegoly"),
+  3. dolnego paska: kwota netto + Zapisz + PDF + Wyslij.
+Wersja 06.11 (kafelki z przelacznikami i zakladka "Usluga z cennika") zastapiona 07.11 - Artur: "za duzo zawijasow".
 
-Tylko podglad na GitHub Pages - build.py pomija ten plik (nie trafia na smartparkiet.com.pl).
-Uruchomienie: python _buduj_wycen_usluge.py (po _buduj_analizator.py)."""
+Od 07.11 w paczce produkcyjnej (build.py: noindex, poza sitemap). Uruchomienie: python _buduj_wycen_usluge.py
+(po _buduj_analizator.py; build.py wywoluje oba)."""
 import os, re
 TU = os.path.dirname(os.path.abspath(__file__))
 s = open(os.path.join(TU, 'analizator.html'), encoding='utf-8', newline='').read()
 NL = '\r\n' if '\r\n' in s else '\n'
-s = s.replace('<title>SMARTPARKIET Analizator</title>', '<title>Wyceń usługę | SMARTPARKIET</title><meta name="robots" content="noindex,nofollow">', 1)
+
+
+def zamien(stare, nowe):
+    global s
+    if stare not in s:
+        raise SystemExit('Nie znaleziono: ' + stare[:80])
+    s = s.replace(stare, nowe, 1)
+
+
+zamien('<title>SMARTPARKIET Analizator</title>', '<title>Wyceń usługę | SMARTPARKIET</title>')
+zamien('<meta name="apple-mobile-web-app-title" content="Analizator">', '<meta name="apple-mobile-web-app-title" content="Wyceń usługę">')
+# klasa od razu (przed skryptami analizatora) - analizator nie dokleja wtedy linku "Prosty widok" do samego siebie
+m = re.search(r'<meta name="viewport"[^>]*>', s)
+s = s[:m.end()] + NL + "<script>document.documentElement.classList.add('wu-strona')</script>" + s[m.end():]
 
 SKORKA = r'''<!-- wycen-usluge START -->
-<style id="wycen-usluge-0611">
-html.wu #wycena .sticky>*:not(h2):not(.oczko){display:none!important}
-html.wu #wycena .sticky h2{margin:0 0 4px!important}
-html.wu #wycena .ai-out,html.wu #uzgPanel,html.wu form.ai-form>.est,html.wu form.ai-form>.sekcja-form,html.wu .cta-bar,html.wu #spTabBtn,html.wu #spDok,html.wu p.pod-przyc{display:none!important}
-html.wu body{padding-bottom:84px}
-#wu{margin:0 0 18px}
-.wu-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:#EEF0F2;border-radius:14px;margin:0 0 14px}
-.wu-seg button{border:0;border-radius:11px;padding:12px 6px;font:800 .95rem/1.15 Inter,system-ui,sans-serif;color:#3A3F45;background:transparent;cursor:pointer}
-.wu-seg button.on{background:#fff;color:#14110E;box-shadow:0 2px 8px rgba(20,17,14,.12)}
-.wu-h{font:800 .78rem/1.2 Inter,system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#4A5058;margin:4px 2px 10px}
-.wu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;grid-auto-flow:row dense}
-.wu-k{position:relative;border:1.5px solid #E1E3E6;border-radius:16px;background:#fff;min-width:0;scroll-margin-top:96px}
-.wu-k>button.wu-t{all:unset;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;min-height:118px;padding:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.wu-ik{width:44px;height:44px;border-radius:12px;background:#FFF1E6;color:#FF6A13;display:grid;place-items:center;margin-bottom:4px}
-.wu-n{overflow-wrap:anywhere;hyphens:auto}
-.wu-ik svg{width:26px;height:26px}
-.wu-n{font:800 .95rem/1.2 Inter,system-ui,sans-serif;color:#14110E}
-.wu-s{font:600 .78rem/1.25 Manrope,system-ui,sans-serif;color:#6B7076}
-.wu-k.tak{border-color:#FF6A13;background:#FFF8F2}
-.wu-k.tak .wu-ik{background:#FF6A13;color:#fff}
-.wu-k.tak .wu-s{color:#B03C0A;font-weight:800}
-.wu-k.otw{grid-column:1/-1;border-color:#FF6A13;box-shadow:0 8px 24px rgba(255,106,19,.14)}
-.wu-k.wu-szer{grid-column:1/-1}
-.wu-k.wu-szer>button.wu-t{min-height:64px;display:grid;grid-template-columns:44px 1fr;align-items:center;gap:2px 12px}
-.wu-k.wu-szer .wu-ik{grid-row:span 2;margin:0}
-.wu-k.otw>button.wu-t{min-height:0;display:grid;grid-template-columns:44px 1fr;align-items:center;gap:2px 12px}
-.wu-k.otw .wu-ik{grid-row:span 2;margin:0}
-.wu-k.wu-szer .wu-ik{background:#14110E;color:#fff}
-.wu-p{display:none;padding:0 12px 14px}
-.wu-k.otw .wu-p{display:block}
-.wu-p>div,.wu-p>label.drop,.wu-p>.miniatury{margin-bottom:10px}
-#wycena .wu-p label.wu-sw span{font:800 .95rem Inter,system-ui,sans-serif!important;color:#fff!important;text-transform:none!important;letter-spacing:0!important}
-#wycena .wu-p label.wu-sw{margin:0 0 12px!important}
-.wu-sw{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px;padding:12px 14px;border-radius:12px;background:#14110E;color:#fff;font:800 .95rem Inter,system-ui,sans-serif;cursor:pointer}
-.wu-sw input{appearance:none;-webkit-appearance:none;width:52px;height:30px;border-radius:30px;background:#5A5F66;position:relative;flex:none;margin:0;cursor:pointer;transition:background .2s}
-.wu-sw input::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s}
-.wu-sw input:checked{background:#FF6A13}
-.wu-sw input:checked::after{transform:translateX(22px)}
-.wu-info{font:600 .85rem/1.45 Manrope,system-ui,sans-serif;color:#4A5058;margin:0 0 10px}
-.wu-zamk{display:block;width:100%;margin-top:4px;border:0;border-radius:12px;padding:12px;background:#EEF0F2;font:800 .9rem Inter,system-ui,sans-serif;color:#14110E;cursor:pointer}
-.wu-szuk{width:100%;box-sizing:border-box;padding:13px 14px;border:1.5px solid #C9CDD2;border-radius:12px;font:600 1rem Manrope,system-ui,sans-serif;margin:0 0 10px}
-.wu-chips{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px;scrollbar-width:none}
-.wu-chips::-webkit-scrollbar{display:none}
-#wycena #wu .wu-chips button,#wycena #wu .wu-r button,#wycena #wu .wu-seg button{width:auto;min-height:0;margin:0}
-#wycena #wu .wu-seg button{width:100%}
-.wu-chips button{flex:none;border:1.5px solid #E1E3E6;background:#fff;border-radius:999px;padding:8px 14px;font:700 .85rem Inter,system-ui,sans-serif;color:#3A3F45;cursor:pointer}
-.wu-chips button.on{background:#14110E;border-color:#14110E;color:#fff}
-.wu-kat{border:1.5px solid #E1E3E6;border-radius:16px;background:#fff;margin:0 0 10px;overflow:hidden}
-.wu-kat>b{display:block;padding:12px 14px;font:800 .95rem Inter,system-ui,sans-serif;color:#14110E;background:#F6F7F8}
-.wu-r{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;padding:12px 14px;border-top:1px solid #EEF0F2}
-.wu-r .rn{font:700 .92rem/1.25 Inter,system-ui,sans-serif;color:#14110E}
-.wu-r .rd{grid-column:1;font:500 .78rem/1.3 Manrope,system-ui,sans-serif;color:#6B7076}
-.wu-r .rc{grid-column:1;font:800 .9rem Inter,system-ui,sans-serif;color:#B03C0A}
-.wu-r button{grid-column:2;grid-row:1/span 3;border:0;border-radius:10px;padding:11px 16px;background:#FF6A13;color:#fff;font:800 .88rem Inter,system-ui,sans-serif;cursor:pointer}
-.wu-r.jest button{background:#1F7A4D}
-#wuBar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#14110E;color:#fff;box-shadow:0 -6px 20px rgba(0,0,0,.18)}
-#wuBar small{display:block;font:700 .68rem Inter,system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#B9BDC3}
-#wuBar b{font:800 1.25rem Inter,system-ui,sans-serif;color:#FF6A13;white-space:nowrap}
-#wuBar button{border:0;border-radius:11px;padding:12px 12px;font:800 .86rem Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+<style id="wycen-usluge-0711">
+html.wu #wycena .sticky>*:not(h2):not(.oczko):not(.an-przel){display:none!important}
+html.wu #wycena .sticky h2{margin:0!important}
+html.wu #wycena .split{gap:14px!important}
+html.wu form.ai-form>*:not(#wu),html.wu #aiPhoto,html.wu #aiOut,html.wu #wycena .ai>.drop,html.wu #wycena .ai>.miniatury,html.wu .cta-bar,html.wu #spTabBtn,html.wu #spDok,html.wu #zapiszBtn,html.wu #szkicInfo,html.wu .wu-up .maly-info{display:none!important}
+html.wu #wycena .ai-form{display:block!important;padding:14px 12px!important}
+html.wu #wycena .ai{padding:0!important;overflow:visible!important}
+html.wu body{padding-bottom:96px}
+#wu{font-family:Inter,system-ui,sans-serif}
+#wu *{box-sizing:border-box}
+.wu-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:18px 2px 8px;font:800 1.05rem/1.2 Inter,system-ui,sans-serif;color:#14110E}
+.wu-h:first-child{margin-top:4px}
+.wu-h small{font:600 .8rem/1.2 Manrope,system-ui,sans-serif;color:#6B7076}
+/* uslugi */
+.wu-u{border:1.5px solid #E1E3E6;border-radius:14px;background:#fff;margin:0 0 8px;scroll-margin-top:84px}
+#wycena #wu button.wu-ut{all:unset;box-sizing:border-box;display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;width:100%;min-height:62px;padding:10px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wu-ik{width:40px;height:40px;border-radius:11px;background:#FFF1E6;color:#FF6A13;display:grid;place-items:center}
+.wu-ik svg{width:23px;height:23px}
+.wu-un{min-width:0;font:800 1rem/1.2 Inter,system-ui,sans-serif;color:#14110E}
+.wu-un small{display:block;margin-top:2px;font:600 .8rem/1.25 Manrope,system-ui,sans-serif;color:#6B7076}
+.wu-uk{font:800 .95rem Inter,system-ui,sans-serif;color:#14110E;white-space:nowrap;text-align:right}
+.wu-plus{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#FF6A13;color:#fff;font:700 1.4rem/1 Inter,system-ui,sans-serif}
+.wu-u.tak{border-color:#FF6A13;background:#FFF8F2}
+.wu-u.tak .wu-ik{background:#FF6A13;color:#fff}
+.wu-u.tak .wu-un small{color:#B03C0A;font-weight:800}
+.wu-u.otw{border-color:#FF6A13;box-shadow:0 6px 20px rgba(255,106,19,.14)}
+.wu-up{display:none;padding:2px 12px 12px}
+.wu-u.otw .wu-up{display:block}
+.wu-up>div,.wu-up>label.drop,.wu-up>.miniatury{margin-bottom:10px}
+.wu-up input,.wu-up select{font-size:16px!important}
+.wu-u:not(.ceny) .wu-up [id^="cw_"]{display:none!important}
+.wu-info{font:600 .88rem/1.45 Manrope,system-ui,sans-serif;color:#4A5058;margin:0 0 10px}
+.wu-wiersz{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#wycena #wu .wu-wiersz button{width:auto;min-height:44px;margin:0;border-radius:11px;padding:10px 14px;font:800 .9rem Inter,system-ui,sans-serif;cursor:pointer}
+#wycena #wu .wu-gotowe{flex:1;border:0;background:#14110E;color:#fff}
+#wycena #wu .wu-usun{border:1.5px solid #E1E3E6;background:#fff;color:#B23B1E}
+#wycena #wu .wu-dodaj{flex:1;border:0;background:#FF6A13;color:#fff}
+#wycena #wu .wu-cena{border:0;background:none;color:#4A5058;text-decoration:underline;padding:10px 4px;font-weight:700}
+/* dane klienta */
+.wu-dane{border:1.5px solid #E1E3E6;border-radius:14px;background:#fff;padding:12px 12px 2px}
+.wu-dane>div{margin-bottom:10px}
+.wu-dane input{font-size:16px!important}
+details.wu-wiecej{border:1.5px dashed #C9CDD2;border-radius:14px;background:#fff;margin:8px 0 0}
+details.wu-wiecej>summary{list-style:none;cursor:pointer;padding:14px 12px;font:800 .95rem Inter,system-ui,sans-serif;color:#14110E;display:flex;justify-content:space-between;gap:8px}
+details.wu-wiecej>summary::-webkit-details-marker{display:none}
+details.wu-wiecej>summary::after{content:"+";color:#FF6A13;font-size:1.3rem;line-height:1}
+details.wu-wiecej[open]>summary::after{content:"−"}
+details.wu-wiecej>summary small{display:block;font:600 .8rem Manrope,system-ui,sans-serif;color:#6B7076;margin-top:2px}
+.wu-wiecej-in{padding:0 12px 4px}
+.wu-wiecej-in>*{margin-bottom:10px}
+/* folder ofert */
+#wycena #wu button.wu-fol{all:unset;box-sizing:border-box;display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;width:100%;padding:10px 12px;border-radius:14px;background:#14110E;color:#fff;cursor:pointer}
+.wu-fol .wu-ik{background:#2E3136;color:#FF8A4C}
+.wu-fol b{font:800 1rem/1.2 Inter,system-ui,sans-serif}
+.wu-fol small{display:block;font:600 .8rem/1.25 Manrope,system-ui,sans-serif;color:#B9BDC3}
+.wu-fol i{font-style:normal;font:800 .78rem Inter,system-ui,sans-serif;background:#1F7A4D;color:#fff;border-radius:999px;padding:4px 9px}
+.wu-fol i:empty{display:none}
+.wu-folp{display:none;margin:8px 0 0}
+.wu-folp.otw{display:block}
+.wu-folp .sms-box{margin:0!important}
+html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important}
+.wu-koniec{margin:16px 0 0}
+.wu-koniec #wyslij{width:100%}
+/* dolny pasek */
+#wuBar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:6px;align-items:center;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:#14110E;color:#fff;box-shadow:0 -6px 20px rgba(0,0,0,.18)}
+#wuBar small{display:block;font:700 .66rem Inter,system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#B9BDC3}
+#wuBar b{display:block;font:800 1.12rem Inter,system-ui,sans-serif;color:#FF6A13;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#wuBar button{border:0;border-radius:11px;min-height:46px;padding:0 11px;font:800 .86rem Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+#wuBar .zap{background:#fff;color:#14110E}
 #wuBar .pdf{background:#3A3F45;color:#fff}
 #wuBar .wys{background:#FF6A13;color:#fff}
-@media(min-width:720px){.wu-grid{grid-template-columns:repeat(3,1fr)}#wuBar{left:50%;right:auto;transform:translateX(-50%);width:min(720px,100%);border-radius:16px 16px 0 0}}
+#wuBar button:disabled{opacity:.6}
+#wuInfo{position:fixed;left:10px;right:10px;bottom:calc(72px + env(safe-area-inset-bottom));z-index:71;padding:12px 14px;border-radius:12px;font:700 .9rem/1.4 Manrope,system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.2);background:#14110E;color:#fff}
+#wuInfo[hidden]{display:none}
+#wuInfo.ok{background:#1F7A4D}#wuInfo.lok{background:#8A5A00}
+@media(max-width:370px){#wuBar button{padding:0 8px;font-size:.8rem}#wuBar b{font-size:1rem}}
+@media(min-width:720px){#wuBar{left:50%;right:auto;transform:translateX(-50%);width:min(720px,100%);border-radius:16px 16px 0 0}#wuInfo{left:50%;right:auto;transform:translateX(-50%);width:min(700px,100%)}}
 </style>
-<script id="wycen-usluge-0611s">
+<script id="wycen-usluge-0711s">
 (function(){
+ var SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
  var IK={
   pod:'<path d="M3 17h18M3 13h18M7 13v4M12 13v4M17 13v4M3 9l9-5 9 5"/>',
   lw:'<path d="M3 18h18M3 14h18v4H3zM7 10l3-3 3 3M10 7v7"/>',
@@ -91,112 +122,127 @@ html.wu body{padding-bottom:84px}
   do:'<path d="M12 5v14M5 12h14"/>',
   me:'<path d="M4 18v-6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6M4 15h16M6 18v2M18 18v2M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/>',
   sc:'<path d="M3 20h5v-4h4v-4h4V8h5"/>',
-  kl:'<path d="M20 21a8 8 0 1 0-16 0M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>',
-  sms:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'};
- /* kafelki: uz = numer kratki "Zakres prac" (uzgN), q = nazwa pozycji w arkuszu (q[6]), f = pola przenoszone do kafelka */
+  fol:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'};
+ /* uslugi: uz = kratka "Zakres prac" (uzgN), q = nazwa pozycji w arkuszu (p[6]), il = pole ilosci (fokus po rozwinieciu),
+    f = pola przenoszone do panelu uslugi, r = radio tak/nie silnika (ustawiane samo) */
  var K=[
-  {id:'pod',t:'Odnowienie podłogi',uz:0,q:'Renowacja parkietu',f:['m2','typ','wyk','gatKl','montazKl']},
-  {id:'lw',t:'Wymiana listew',uz:1,q:'Wymiana listew',r:'listwy',f:['@listwy','listwyMb']},
-  {id:'lo',t:'Odświeżenie listew',uz:7,q:'Odświeżenie listew',info:'Pozycja 1 kpl., cena do uzgodnienia. Znasz kwotę? Dopisz ją w Pracach dodatkowych.'},
-  {id:'na',t:'Naprawa',uz:3,q:'Naprawy',r:'napr',f:['@napr','naprBlok']},
-  {id:'st',t:'Stabilizacja',uz:2,q:'Stabilizacja',r:'stab',f:['@stab','stabM2']},
-  {id:'ko',t:'Koloryzacja',uz:4,q:'Koloryzacja',kolor:1,info:'Koloryzacja liczy się od metrażu z kafelka Odnowienie podłogi.',f:['cw_kolor']},
-  {id:'do',t:'Prace dodatkowe',dod:1,f:['dodBlok']},
-  {id:'me',t:'Pomoc z meblami',uz:5,q:'Przesunięcie mebli',r:'meble',f:['@meble','mebleKw']},
-  {id:'sc',t:'Renowacja schodów',uz:6,q:'Renowacja schodów',info:'Pozycja 1 kpl., cena do uzgodnienia po wizji lokalnej.'},
-  {id:'kl',t:'Klient, adres i zdjęcia',szer:1,f:['drop','miniatury','imieKl','ulicaKl','kodKl','miastoKl','dzielKl','obiektKl','pietroKl','@winda','terminKl','telKl','mailKl','kopiaBlok','vatBlok']},
-  {id:'sms',t:'Folder ofert i SMS klienta',szer:1,sms:1}];
- var CENNIK=[
-  ['Podłoga',[['Odnowienie podłogi','cyklinowanie bezpyłowe + 3 warstwy lakieru','130 zł/m²','pod'],['Ryczałt SMART','poniżej 10 m², na gotowo - liczy się sam z metrażu','1 500 zł','pod','auto'],['Dopłata do małego metrażu','od 10 do 22 m² - liczy się sama z metrażu','+30 zł/m²','pod','auto'],['Twardy wosk zamiast lakieru','dopłata do odnowienia podłogi','+12 zł/m²','pod','wosk'],['Koloryzacja','barwienie przed lakierem','70 zł/m²','ko']]],
-  ['Listwy',[['Wymiana listew','klasyczna lub MDF, z montażem','50 zł/mb','lw'],['Odświeżenie listew','zmatowienie i lakier','do uzgodnienia','lo']]],
-  ['Naprawy',[['Stabilizacja','iniekcja luźnych, skrzypiących klepek','70 zł/m²','st'],['Naprawa ubytków','wymiana lub uzupełnienie klepek','wg wyceny','na']]],
-  ['Inne',[['Pomoc z meblami','przesunięcie mebli przez ekipę','300 zł','me'],['Renowacja schodów','po wizji lokalnej','do uzgodnienia','sc'],['Prace dodatkowe','własna pozycja z ceną','wpisujesz sam','do']]]];
+  {id:'pod',t:'Cyklinowanie / odnowienie podłogi',j:'m²',uz:0,q:'Renowacja parkietu',il:'m2',f:['m2','typ','wyk']},
+  {id:'lw',t:'Wymiana listew',j:'mb',uz:1,q:'Wymiana listew',r:'listwy',il:'listwyMb',f:['listwyMb','@listwy']},
+  {id:'lo',t:'Odświeżenie listew',j:'kpl.',uz:7,q:'Odświeżenie listew',info:'Pozycja 1 kpl., cena do uzgodnienia. Znasz kwotę? Dopisz ją w Pracach dodatkowych.'},
+  {id:'st',t:'Stabilizacja',j:'m²',uz:2,q:'Stabilizacja',r:'stab',il:'stabM2',f:['stabM2']},
+  {id:'na',t:'Naprawa',j:'ilość i kwota',uz:3,q:'Naprawy',r:'napr',il:'naprIl',f:['naprBlok']},
+  {id:'ko',t:'Koloryzacja',j:'od metrażu podłogi',uz:4,q:'Koloryzacja',kolor:1,info:'Liczy się od metrażu z pozycji Cyklinowanie.',f:['cw_kolor']},
+  {id:'me',t:'Pomoc z meblami',j:'kwota zł',uz:5,q:'Przesunięcie mebli',r:'meble',il:'mebleKw',f:['mebleKw']},
+  {id:'sc',t:'Renowacja schodów',j:'kpl.',uz:6,q:'Renowacja schodów',info:'Pozycja 1 kpl., cena do uzgodnienia po wizji lokalnej.'},
+  {id:'do',t:'Prace dodatkowe',j:'własna pozycja z ceną',dod:1,f:['dodBlok']}];
  var $=function(i){return document.getElementById(i);};
  var zl=function(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' zł';};
+ function ev(e,t){e.dispatchEvent(new Event(t,{bubbles:true}));}
  function blok(f){if(f.charAt(0)==='@'){var r=document.querySelector('form.ai-form input[name="'+f.slice(1)+'"]');return r&&r.closest('form.ai-form>*');}
   var e=$(f);if(!e)return null;if(/^(cw_|drop$|miniatury$)/.test(f))return e;return e.closest('form.ai-form>*')||e;}
  function radio(n,ktory){var rs=[].slice.call(document.querySelectorAll('input[name="'+n+'"]'));
   var x=rs.filter(function(r){var t=(r.closest('label')||{}).textContent||'';return ktory==='tak'?(n==='meble'?t.trim()==='tak':r.value!=='nie'):(n==='meble'?t.trim()==='nie':r.value==='nie');})[0];
   if(n==='listwy'&&ktory==='tak'){var cur=rs.filter(function(r){return r.checked;})[0];if(cur&&cur.value!=='nie')return;x=rs.filter(function(r){return r.value==='klasyczna';})[0];}
-  if(n==='stab'||n==='napr'){if(ktory==='tak')x=rs.filter(function(r){return r.value==='tak';})[0];}
-  if(x&&!x.checked){x.checked=true;x.dispatchEvent(new Event('change',{bubbles:true}));x.dispatchEvent(new Event('input',{bubbles:true}));}}
- function ustaw(k,v){if(k.uz!=null){var c=$('uzg'+k.uz);if(c&&c.checked!==v){c.checked=v;c.dispatchEvent(new Event('change',{bubbles:true}));}}
+  if((n==='stab'||n==='napr')&&ktory==='tak')x=rs.filter(function(r){return r.value==='tak';})[0];
+  if(x&&!x.checked){x.checked=true;ev(x,'change');ev(x,'input');}}
+ function ustaw(k,v){if(k.uz!=null){var c=$('uzg'+k.uz);if(c&&c.checked!==v){c.checked=v;ev(c,'change');}}
   if(k.r)radio(k.r,v?'tak':'nie');
-  if(k.kolor){var w=$('wyk');if(w){var i=v?4:0;if((w.selectedIndex===4)!==v){w.selectedIndex=i;w.dispatchEvent(new Event('change',{bubbles:true}));}}}
+  if(k.kolor){var w=$('wyk');if(w&&(w.selectedIndex===4)!==v){w.selectedIndex=v?4:0;ev(w,'change');}}
   if(k.dod){if(v&&!document.querySelector('#dodLista .dod-w')){var p=$('dodPlus');p&&p.click();}
-   [].forEach.call(document.querySelectorAll('#dodLista .dod-w'),function(w){var u=w.querySelector('.dod-u');if(u&&u.checked!==v&&(!v||(w.querySelector('.dod-o')||{}).value)){u.checked=v;u.dispatchEvent(new Event('change',{bubbles:true}));}});}
+   [].forEach.call(document.querySelectorAll('#dodLista .dod-w'),function(w){var u=w.querySelector('.dod-u');if(u&&u.checked!==v&&(!v||(w.querySelector('.dod-o')||{}).value)){u.checked=v;ev(u,'change');}});}
   odswiez();}
  function jest(k){if(k.uz!=null){var c=$('uzg'+k.uz);return !!(c&&c.checked);}
   if(k.dod)return [].some.call(document.querySelectorAll('#dodLista .dod-o'),function(o){return o.value.trim();});return false;}
  function kwota(k){var A;try{A=window.spArkusz&&window.spArkusz();}catch(e){}if(!A)return '';
   var P=A.poz.filter(function(p){return k.dod?(p.length<6&&!/^\*/.test(p[0])):(p[6]===k.q||(k.id==='pod'&&/^\*/.test(p[0])));});
   var s=0,uzg=false;P.forEach(function(p){if(typeof p[1]==='number'&&p[2])s+=p[1]*p[2];else if(p[1]&&p[1]!==0)uzg=true;});
-  return s>0?zl(s):(uzg?'do uzgodnienia':'');}
- /* pola przeniesione do kafelkow nie sa juz dziecmi form.ai-form - kopia regul ".ai-form > ..." dla ".wu-p > ..." */
+  return s>0?zl(s):(uzg?'do uzg.':'');}
+ function ilosc(k){var e=k.il&&$(k.il);var v=e?String(e.value||'').trim():'';return v&&parseFloat(v.replace(',','.'))>0?v.replace('.',',')+' '+(k.j==='kwota zł'?'zł':k.j.split(' ')[0]):'';}
+ /* pola przeniesione z form.ai-form nie sa juz jego dziecmi - kopia regul ".ai-form > ..." dla nowych kontenerow */
  function kopiujCss(){var out=[];function przejdz(R,med){[].forEach.call(R,function(r){
    if(r.cssRules&&r.media){przejdz(r.cssRules,r.media.mediaText);return;}
    if(!r.selectorText||!/ai-form\s*>/.test(r.selectorText))return;
-   var sel=r.selectorText.split(',').filter(function(x){return /ai-form\s*>/.test(x);}).map(function(x){return x.replace(/ai-form\s*>/g,'ai-form .wu-p >');}).join(',');
-   var t=sel+'{'+r.style.cssText+'}';out.push(med?'@media '+med+'{'+t+'}':t);});}
+   var sel=r.selectorText.split(',').filter(function(x){return /ai-form\s*>/.test(x)&&!/html\.wu|#wu/.test(x);}).map(function(x){return ['.wu-up','.wu-dane','.wu-wiecej-in'].map(function(c){return x.replace(/ai-form\s*>/g,'ai-form '+c+' >');}).join(',');}).join(',');
+   if(!sel)return;var t=sel+'{'+r.style.cssText+'}';out.push(med?'@media '+med+'{'+t+'}':t);});}
   [].forEach.call(document.styleSheets,function(sh){try{przejdz(sh.cssRules,'');}catch(e){}});
   var st=document.createElement('style');st.id='wu-css-kopia';st.textContent=out.join('\n');document.body.appendChild(st);}
+ function etykieta(id,t){var e=$(id),l=e&&document.querySelector('label[for="'+id+'"]');if(l)l.textContent=t;}
+ var info=null,infoT=0;
+ function pokazInfo(t,kl){if(!info)return;info.textContent=t;info.className=kl||'';info.hidden=false;clearTimeout(infoT);
+  if(kl==='ok'||kl==='lok')infoT=setTimeout(function(){info.hidden=true;},kl==='ok'?6000:12000);}
  function zbuduj(){
   var form=document.querySelector('form.ai-form');if(!form||$('wu'))return;
   kopiujCss();
   document.documentElement.classList.add('wu');
   var h=document.querySelector('#wycena .sticky h2');if(h)h.textContent='Wyceń usługę';
-  var oc=document.querySelector('#wycena .sticky .oczko');if(oc)oc.lastChild.textContent='SMARTPARKIET · Analizator';
+  var oc=document.querySelector('#wycena .sticky .oczko');if(oc&&oc.lastChild)oc.lastChild.textContent='SMARTPARKIET · narzędzie parkieciarza';
+  var st=document.querySelector('#wycena .sticky');if(st&&!st.querySelector('.an-przel')){var a=document.createElement('a');a.className='an-przel';a.href='analizator.html';a.textContent='Pełny Analizator ›';st.appendChild(a);}
   var wu=document.createElement('div');wu.id='wu';
-  wu.innerHTML='<div class="wu-seg" role="tablist"><button type="button" class="on" data-v="k">Wyceń usługę</button><button type="button" data-v="c">Usługa z cennika</button></div>'+
-   '<div id="wuK"><p class="wu-h">Co robimy u klienta?</p><div class="wu-grid" id="wuG"></div></div>'+
-   '<div id="wuC" hidden><input class="wu-szuk" id="wuSz" type="search" placeholder="Szukaj usługi, np. listwy" autocomplete="off"><div class="wu-chips" id="wuCh"></div><div id="wuL"></div></div>';
+  wu.innerHTML='<button type="button" class="wu-fol" id="wuFolB" aria-expanded="false"><span class="wu-ik">'+SVG+IK.fol+'</svg></span><span><b>Zapisane wyceny</b><small>Folder ofert - szukaj po adresie lub telefonie</small></span><i id="wuFolN"></i></button><div class="wu-folp" id="wuFolP"></div>'+
+   '<p class="wu-h">Usługi <small>naciśnij i wpisz ilość</small></p><div id="wuL"></div>'+
+   '<p class="wu-h">Dane klienta <small>adres, telefon, e-mail</small></p><div class="wu-dane" id="wuD"></div>'+
+   '<details class="wu-wiecej" id="wuW"><summary><span>Zdjęcia, termin, szczegóły<small>opcjonalnie</small></span></summary><div class="wu-wiecej-in" id="wuWi"></div></details>'+
+   '<div class="wu-koniec" id="wuKon"></div>';
   form.insertBefore(wu,form.firstChild);
-  var G=$('wuG');
-  K.forEach(function(k){var d=document.createElement('div');d.className='wu-k'+(k.szer?' wu-szer':'');d.id='wu_'+k.id;
-   d.innerHTML='<button type="button" class="wu-t" aria-expanded="false"><span class="wu-ik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+IK[k.id]+'</svg></span><span class="wu-n">'+k.t+'</span><span class="wu-s">'+(k.szer?(k.sms?'wklej wiadomość, otwórz zapisaną ofertę':'kontakt, adres, termin, zdjęcia'):'dotknij, aby dodać')+'</span></button><div class="wu-p"></div>';
-   var P=d.querySelector('.wu-p');
-   if(!k.szer){var sw=document.createElement('label');sw.className='wu-sw';sw.innerHTML='<span>Robimy - w wycenie</span><input type="checkbox">';P.appendChild(sw);
-    var cb=sw.querySelector('input');cb.onchange=function(){ustaw(k,cb.checked);};k.cb=cb;}
+  /* folder ofert + SMS (zwiniete) */
+  var sb=form.querySelector('.sms-box');if(sb)$('wuFolP').appendChild(sb);
+  $('wuFolB').onclick=function(){var p=$('wuFolP'),o=!p.classList.contains('otw');p.classList.toggle('otw',o);this.setAttribute('aria-expanded',o?'true':'false');
+   if(o){var s=$('folSzuk');if(s)ev(s,'focus');}};
+  /* uslugi */
+  var L=$('wuL');
+  K.forEach(function(k){var d=document.createElement('div');d.className='wu-u';d.id='wu_'+k.id;
+   d.innerHTML='<button type="button" class="wu-ut" aria-expanded="false"><span class="wu-ik">'+SVG+IK[k.id]+'</svg></span><span class="wu-un">'+k.t+'<small>'+k.j+'</small></span><span class="wu-uk"><span class="wu-plus" aria-hidden="true">+</span></span></button><div class="wu-up"></div>';
+   var P=d.querySelector('.wu-up');
    if(k.info){var i=document.createElement('p');i.className='wu-info';i.textContent=k.info;P.appendChild(i);}
    (k.f||[]).forEach(function(f){var b=blok(f);if(b)P.appendChild(b);});
-   if(k.sms){var sb=form.querySelector('.sms-box');if(sb)P.appendChild(sb);}
-   var z=document.createElement('button');z.type='button';z.className='wu-zamk';z.textContent='Gotowe - zwiń';P.appendChild(z);
-   z.onclick=function(){d.classList.remove('otw');d.scrollIntoView({block:'nearest',behavior:'smooth'});};
-   /* wpisana ilosc / cena w kafelku = automatycznie "robimy" */
-   P.addEventListener('input',function(e){if(!k.cb||e.target===k.cb)return;
-    /* prace dodatkowe: wpisana pozycja = "robimy (w zakresie)" przy tej pozycji */
-    var dw=e.target.closest&&e.target.closest('.dod-w');if(dw){var u=dw.querySelector('.dod-u');if(u&&!u.checked&&(dw.querySelector('.dod-o')||{}).value){u.checked=true;u.dispatchEvent(new Event('change',{bubbles:true}));}}var v=parseFloat(String(e.target.value||'').replace(',','.'));
-    if((e.target.type==='number'&&v>0)||(e.target.classList&&e.target.classList.contains('dod-o')&&e.target.value.trim())){if(!jest(k))ustaw(k,true);}});
-   d.querySelector('.wu-t').onclick=function(){var o=!d.classList.contains('otw');
-    [].forEach.call(G.querySelectorAll('.wu-k.otw'),function(x){x.classList.remove('otw');x.querySelector('.wu-t').setAttribute('aria-expanded','false');});
-    if(o){d.classList.add('otw');this.setAttribute('aria-expanded','true');setTimeout(function(){d.scrollIntoView({block:'start',behavior:'smooth'});},60);}};
-   k.el=d;G.appendChild(d);});
-  /* cennik */
-  var ch=$('wuCh'),L=$('wuL'),kat='Wszystkie';
-  ['Wszystkie'].concat(CENNIK.map(function(c){return c[0];})).forEach(function(n,i){var b=document.createElement('button');b.type='button';b.textContent=n;if(!i)b.className='on';
-   b.onclick=function(){kat=n;[].forEach.call(ch.children,function(x){x.classList.toggle('on',x===b);});lista();};ch.appendChild(b);});
-  function lista(){var q=($('wuSz').value||'').toLowerCase().trim();L.innerHTML='';
-   CENNIK.forEach(function(c){if(kat!=='Wszystkie'&&kat!==c[0])return;var R=c[1].filter(function(r){return !q||(r[0]+' '+r[1]).toLowerCase().indexOf(q)>=0;});if(!R.length)return;
-    var s=document.createElement('div');s.className='wu-kat';s.innerHTML='<b>'+c[0]+'</b>';
-    R.forEach(function(r){var k=K.filter(function(x){return x.id===r[3];})[0],w=document.createElement('div');w.className='wu-r'+(jest(k)?' jest':'');
-     var wy=$('wyk'),ma=r[4]==='auto'?false:(r[4]==='wosk'?!!(wy&&wy.selectedIndex===3):jest(k));w.className='wu-r'+(ma?' jest':'');
-     w.innerHTML='<span class="rn">'+r[0]+'</span><span class="rd">'+r[1]+'</span><span class="rc">'+r[2]+'</span><button type="button">'+(r[4]==='auto'?'Otwórz':(ma?'✓ Jest':'Dodaj'))+'</button>';
-     w.querySelector('button').onclick=function(){if(r[4]==='wosk'&&wy&&wy.selectedIndex!==3){wy.selectedIndex=3;wy.dispatchEvent(new Event('change',{bubbles:true}));}
-      if(r[4]!=='auto'&&!jest(k))ustaw(k,true);widok('k');if(!k.el.classList.contains('otw'))k.el.querySelector('.wu-t').click();};s.appendChild(w);});
-    L.appendChild(s);});}
-  $('wuSz').oninput=lista;
-  function widok(v){[].forEach.call(wu.querySelectorAll('.wu-seg button'),function(b){b.classList.toggle('on',b.dataset.v===v);});$('wuK').hidden=v!=='k';$('wuC').hidden=v!=='c';if(v==='c')lista();}
-  [].forEach.call(wu.querySelectorAll('.wu-seg button'),function(b){b.onclick=function(){widok(b.dataset.v);};});
-  /* dolny pasek: kwota + podglad PDF + wyslij (klikaja oryginalne przyciski silnika) */
+   var w=document.createElement('div');w.className='wu-wiersz';
+   w.innerHTML=(k.il||k.dod?'<button type="button" class="wu-gotowe">Gotowe</button>':'<button type="button" class="wu-dodaj">Dodaj do wyceny</button>')+'<button type="button" class="wu-usun">Usuń z wyceny</button>'+(P.querySelector('[id^="cw_"]')?'<button type="button" class="wu-cena">Zmień cenę</button>':'');
+   P.appendChild(w);
+   var zwin=function(){d.classList.remove('otw');d.querySelector('.wu-ut').setAttribute('aria-expanded','false');};
+   var g=w.querySelector('.wu-gotowe');if(g)g.onclick=zwin;
+   var dd=w.querySelector('.wu-dodaj');if(dd)dd.onclick=function(){ustaw(k,!jest(k));if(jest(k))zwin();};
+   w.querySelector('.wu-usun').onclick=function(){ustaw(k,false);zwin();};
+   var ce=w.querySelector('.wu-cena');if(ce)ce.onclick=function(){d.classList.toggle('ceny');ce.textContent=d.classList.contains('ceny')?'Ukryj cenę':'Zmień cenę';};
+   /* wpisana ilosc = automatycznie "robimy" */
+   P.addEventListener('input',function(e){var dw=e.target.closest&&e.target.closest('.dod-w');
+    if(dw){var u=dw.querySelector('.dod-u');if(u&&!u.checked&&(dw.querySelector('.dod-o')||{}).value){u.checked=true;ev(u,'change');}}
+    var v=parseFloat(String(e.target.value||'').replace(',','.'));
+    if(((e.target.type==='number'||e.target.inputMode==='decimal')&&v>0)||(e.target.classList&&e.target.classList.contains('dod-o')&&e.target.value.trim())){if(!jest(k))ustaw(k,true);}
+    odswiez();});
+   /* nacisniecie uslugi = dodanie do wyceny i rozwiniecie pola ilosci (Artur 06.11 15:55) */
+   d.querySelector('.wu-ut').onclick=function(){var o=!d.classList.contains('otw');
+    [].forEach.call(L.querySelectorAll('.wu-u.otw'),function(x){x.classList.remove('otw');x.querySelector('.wu-ut').setAttribute('aria-expanded','false');});
+    if(!o)return;
+    if((k.il||k.dod)&&!jest(k))ustaw(k,true);
+    d.classList.add('otw');this.setAttribute('aria-expanded','true');
+    setTimeout(function(){d.scrollIntoView({block:'start',behavior:'smooth'});var q=k.il&&$(k.il);if(!q&&k.dod)q=d.querySelector('.dod-o');
+     if(q&&!q.disabled&&!String(q.value||'').trim()){try{q.focus({preventScroll:true});}catch(e){}}},80);};
+   k.el=d;L.appendChild(d);});
+  /* dane klienta - tylko adres, telefon, e-mail (Artur 06.11 16:0x) */
+  var D=$('wuD');['ulicaKl','telKl','mailKl'].forEach(function(f){var b=blok(f);if(b)D.appendChild(b);});
+  etykieta('ulicaKl','Adres (ulica i numer)');etykieta('telKl','Telefon');etykieta('mailKl','E-mail');
+  var W=$('wuWi');['drop','miniatury','terminKl','kodKl','miastoKl','dzielKl','pietroKl','@winda','imieKl','obiektKl','gatKl','montazKl','vatBlok','kopiaBlok'].forEach(function(f){var b=blok(f);if(b)W.appendChild(b);});
+  /* koniec formularza: blad + glowny przycisk Wyslij (pokazuje tez "WYSLANE!") */
+  var kon=$('wuKon');['bladForm','wyslij'].forEach(function(f){var e=$(f);if(e)kon.appendChild(e);});
+  var bw=$('wyslij');if(bw&&!bw.disabled){[].forEach.call(bw.childNodes,function(n){if(n.nodeType===3&&n.textContent.trim())n.textContent=' Wyślij wycenę';});bw.dataset.oryg=bw.innerHTML;}
+  /* dolny pasek: kwota + Zapisz + PDF + Wyslij */
   var bar=document.createElement('div');bar.id='wuBar';
-  bar.innerHTML='<div><small>Netto</small><b id="wuSum">0 zł</b></div><button type="button" class="pdf">Podgląd PDF</button><button type="button" class="wys">Wyślij</button>';
+  bar.innerHTML='<div style="min-width:0"><small>Netto</small><b id="wuSum">0 zł</b></div><button type="button" class="zap">Zapisz</button><button type="button" class="pdf">PDF</button><button type="button" class="wys">Wyślij</button>';
   document.body.appendChild(bar);
+  info=document.createElement('div');info.id='wuInfo';info.hidden=true;info.setAttribute('role','status');document.body.appendChild(info);
+  info.onclick=function(){info.hidden=true;};
+  window.spSzkicInfo=pokazInfo;
+  var bz=bar.querySelector('.zap');bz.onclick=function(){if(!window.spZapiszSzkic)return;bz.disabled=true;
+   window.spZapiszSzkic().finally(function(){bz.disabled=false;});};
   bar.querySelector('.pdf').onclick=function(){var b=$('podgladOferty');b&&b.click();};
-  bar.querySelector('.wys').onclick=function(){var b=$('wyslij');if(b){b.scrollIntoView({block:'center',behavior:'smooth'});b.click();}};
+  bar.querySelector('.wys').onclick=function(){var b=$('wyslij');if(b){b.scrollIntoView({block:'center',behavior:'smooth'});if(!b.disabled)b.click();}};
   odswiez();setInterval(odswiez,800);}
- function odswiez(){K.forEach(function(k){if(!k.el||k.szer)return;var t=jest(k);k.el.classList.toggle('tak',t);if(k.cb)k.cb.checked=t;
-   var s=k.el.querySelector('.wu-s'),kw=t?kwota(k):'';s.textContent=t?('✓ '+(kw||'w wycenie')):'dotknij, aby dodać';});
-  var A;try{A=window.spArkusz&&window.spArkusz();}catch(e){}var e=$('wuSum');if(e&&A)e.textContent=zl(A.suma||0);}
+ function odswiez(){K.forEach(function(k){if(!k.el)return;var t=jest(k);k.el.classList.toggle('tak',t);
+   var kw=t?kwota(k):'',il=t?ilosc(k):'';
+   k.el.querySelector('.wu-un small').textContent=t?('✓ '+(il||'w wycenie')):k.j;
+   var u=k.el.querySelector('.wu-uk');var html=t?(kw||'✓'):'<span class="wu-plus" aria-hidden="true">+</span>';if(u.__h!==html){u.innerHTML=html;u.__h=html;}});
+  var A;try{A=window.spArkusz&&window.spArkusz();}catch(e){}var e=$('wuSum');if(e&&A)e.textContent=zl(A.suma||0);
+  var n=document.querySelectorAll('#folWyn button.fw-sz').length,fn=$('wuFolN');if(fn)fn.textContent=n?String(n):'';}
  window.spWuOdswiez=odswiez;
  function start(){setTimeout(zbuduj,700);}
  if(document.readyState==='complete')start();else window.addEventListener('load',start);
