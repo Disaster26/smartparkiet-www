@@ -37,8 +37,7 @@ OKR = ('<script type="application/ld+json" id="ld-okruszki">{"@context": "https:
        '{"@type": "ListItem", "position": 2, "name": "Zamów usługę online", "item": "https://smartparkiet.com.pl/zamow-online.html"}]}</script>')
 s = re.sub(r'<script type="application/ld\+json" id="ld-okruszki">.*?</script>', lambda m: OKR, s, count=1, flags=re.S)
 
-# prosty widok (Artur 07.11) nie dotyczy koszyka
-s = re.sub(r'\s*<!-- prosty-widok START -->.*?<!-- prosty-widok KONIEC -->', '', s, count=1, flags=re.S)
+# 07.11 22:34: Koszyk SMART tez w prostym widoku - blok prosty-widok z wycena.html zostaje (tryb KOSZ po window.SP_ZAMOWIENIE)
 # tryb zamowienia - zanim wystartuja skrypty strony
 m = re.search(r'<meta name="viewport"[^>]*>', s)
 s = s[:m.end()] + NL + '<script>window.SP_ZAMOWIENIE=1;</script>' + s[m.end():]
@@ -67,7 +66,7 @@ s = re.sub(r'    <div class="sticky">.*?</div>\s*<div class="ai">', lambda m: LE
 TEKST = """<section class="zam-tekst" id="jak-to-dziala">
   <div class="wrap">
     <h2>ZAMÓW CYKLINOWANIE SMART ONLINE&trade; + EKSPRES 48H</h2>
-    <p class="zt-start"><b>Renowacja parkietu jeszcze nigdy nie była tak prosta!</b></p>
+    <p class="zt-start"><b>Zamówienie usługi renowacji parkietu jeszcze nigdy nie było tak proste!</b></p>
     <p>Bez telefonów, oględzin i oczekiwania na wycenę i termin.</p>
     <p class="zt-lead">Teraz to my dostosowujemy się do Twojego harmonogramu!</p>
     <p><b>Zamów CYKLINOWANIE SMART&trade; online, poznaj wstępną wycenę i wybierz dogodne terminy.</b></p>
