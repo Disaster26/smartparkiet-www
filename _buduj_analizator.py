@@ -160,7 +160,7 @@ FOLDER_JS = r"""<style>
    var pd=(o.stan&&o.stan.podpisy)||[];setTimeout(function(){[].slice.call(document.querySelectorAll('#miniatury input.podp')).forEach(function(p,i){
     if(pd[i]){p.value=pd[i];p.dispatchEvent(new Event('input',{bubbles:true}));}});},300);}
   var ok=document.getElementById('ofertaKl');if(ok&&o.mailKlienta)ok.checked=true;
-  if(o.szkic||(o.stan&&o.stan.szkic)){info('Wczytana zapisana wycena z '+o.kiedy+((o.zdjecia||[]).length?' ('+o.zdjecia.length+' zdj.)':'')+'. Uzupełnij, co trzeba, i naciśnij Wyślij - albo Zapisz, żeby wrócić do niej później.');return;}
+  if(o.szkic||(o.stan&&o.stan.szkic)){info('Wczytana zapisana wycena z '+String(o.kiedy||'').replace(/^\d{4}-(\d\d)-(\d\d) (\d\d)-(\d\d)$/,'$2.$1 $3:$4')+((o.zdjecia||[]).length?' ('+o.zdjecia.length+' zdj.)':'')+'. Uzupełnij, co trzeba, i naciśnij Wyślij - albo Zapisz, żeby wrócić do niej później.');return;}
   /* Artur 01.11 21:16 "jest tylko bez zdjec": wersje zapisane przed poprawka z 29.10 nie maja zdjec w folderze (zdjecia sa tylko w starym PDF) -
      wyrazny komunikat, ze wystarczy dodac je raz, bo kazda kolejna wersja zachowuje zdjecia */
   if(!(o.zdjecia||[]).length){info('Wczytana oferta z '+o.kiedy+' - ta wersja NIE MA zapisanych zdjęć (zapis sprzed poprawki z 29.10). Dodaj zdjęcia raz przyciskiem „Dodaj zdjęcia” i wyślij - każda następna wersja tej oferty będzie już je miała.');return;}
@@ -247,7 +247,7 @@ zamien("      naDysk((document.getElementById('mailKl')||{}).value||'');",
 zamien("stan:stan,zdjecia:zd})}).then(()=>true)",
        "stan:stan,zdjecia:zd,szkicUsun:window.spSzkicDoUsuniecia?window.spSzkicDoUsuniecia():''})}).then(()=>true)")
 ZAPISZ_JS = r"""<style>
-#zapiszBtn{width:100%;margin:0 0 10px;border:2px solid #14110E;background:#fff;color:#14110E;font-weight:800;border-radius:10px;padding:13px 16px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+#zapiszBtn{width:100%;margin:0 0 10px;border-width:2px;display:flex;align-items:center;justify-content:center;gap:8px}
 #zapiszBtn:disabled{opacity:.6}
 #szkicInfo{margin:-4px 0 10px;font-size:.88rem;line-height:1.4;font-weight:700;min-height:0}
 #szkicInfo:empty{display:none}
@@ -305,7 +305,7 @@ ZAPISZ_JS = r"""<style>
  function owin(){var w=window.spWczytaj;if(!w||w.__sz)return;var nw=function(s){var r=w.apply(this,arguments);
    window.__szkicId=(s&&s.szkic&&s.szkicId)?s.szkicId:'';if(s&&s.szkic)window.__korekta=false;return r;};nw.__sz=1;window.spWczytaj=nw;}
  function start(){owin();setTimeout(owin,1500);
-  var bw=$('wyslij');if(bw&&!$('zapiszBtn')){var b=document.createElement('button');b.type='button';b.id='zapiszBtn';
+  var bw=$('wyslij');if(bw&&!$('zapiszBtn')){var b=document.createElement('button');b.type='button';b.id='zapiszBtn';b.className='btn btn-ghost';
    b.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Zapisz (bez wysyłania)';
    b.onclick=function(){window.spZapiszSzkic();};var p=document.createElement('p');p.id='szkicInfo';p.setAttribute('role','status');
    var pg=$('podgladOferty')||bw;pg.parentNode.insertBefore(b,pg);pg.parentNode.insertBefore(p,pg);}
