@@ -27,6 +27,8 @@ def zamien(stare, nowe, n=1):
 
 # 0. zdjecie tematyczne kalkulatora (Artur 04.11) tylko w wycena.html - narzedzie parkieciarza bez zdjecia
 s = re.sub(r'<!-- kalk-foto: START.*?<!-- kalk-foto: KONIEC -->', '', s, count=1, flags=re.S)
+# 0b. prosty widok (Artur 07.11) - blok z wycena.html dziala tylko w wycena.html (klient) i wycen-usluge.html (parkieciarz)
+s = re.sub(r'\s*<!-- prosty-widok START -->.*?<!-- prosty-widok KONIEC -->', '', s, count=1, flags=re.S)
 
 # 1. tytul, robots, ikony, manifest
 s = re.sub(r'<title>.*?</title>', '<title>SMARTPARKIET Analizator</title>', s, count=1, flags=re.S)
@@ -45,7 +47,10 @@ s = re.sub(r'<meta name="theme-color" content="[^"]*">', '<meta name="theme-colo
 
 # 2. tryb parkieciarza zawsze + blokada PIN (zaraz po <meta viewport>, przed reszta skryptow)
 BRAMKA = '''<script>window.SP_ANALIZATOR=1;
-(function(){var ok=false;try{ok=localStorage.getItem('spAnalizatorPin')==='1';}catch(e){}
+/* Artur 07.11 22:23 "od razu prosty widok": analizator.html (ikona na ekranie, stare linki #oferta=) -> wycen-usluge.html;
+   pelny arkusz tylko z linku "Pelny arkusz" (analizator.html?pelny) */
+if(!document.documentElement.classList.contains('wu-strona')&&!/[?&#]pelny/.test(location.search+location.hash)){window.__doWu=1;location.replace('wycen-usluge.html'+(/oferta=/.test(location.hash)?location.hash:''));}
+(function(){if(window.__doWu)return;var ok=false;try{ok=localStorage.getItem('spAnalizatorPin')==='1';}catch(e){}
  if(!ok)ok=/(?:^|; )spAnalizatorPin=1/.test(document.cookie);
  if(ok)return;document.documentElement.className+=' an-zamek';
  function pokaz(){if(document.getElementById('anPin'))return;var d=document.createElement('div');d.id='anPin';
