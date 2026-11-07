@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="pl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script>document.documentElement.classList.add('wu-strona')</script>
 <script>window.SP_ANALIZATOR=1;
 (function(){var ok=false;try{ok=localStorage.getItem('spAnalizatorPin')==='1';}catch(e){}
  if(!ok)ok=/(?:^|; )spAnalizatorPin=1/.test(document.cookie);
@@ -52,7 +53,7 @@ html.an-zamek,html.an-zamek body{overflow:hidden!important}
  try{turnstile.render(el,{sitekey:"0x4AAAAAAFTVRaURC39E8jHq",appearance:"interaction-only",
   callback:function(t){window.__ts=t},"error-callback":function(){window.__ts=""}})}catch(e){}}
  if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",go)}else{go()}})();
-</script><title>Wyceń usługę | SMARTPARKIET</title><meta name="robots" content="noindex,nofollow">
+</script><title>Wyceń usługę | SMARTPARKIET</title>
 <link rel="icon" href="img/favicon.png" type="image/png">
 <meta name="robots" content="noindex, nofollow">
 
@@ -62,7 +63,7 @@ html.an-zamek,html.an-zamek body{overflow:hidden!important}
 <meta name="theme-color" content="#FF6A13">
 <link rel="apple-touch-icon" sizes="180x180" href="img/analizator-180.png?v=3">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Analizator">
+<meta name="apple-mobile-web-app-title" content="Wyceń usługę">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&family=Marcellus&display=swap">
 <style>
@@ -1950,7 +1951,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       const b64=f=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]||'');r.onerror=()=>ok('');r.readAsDataURL(f);});
       const wyslij=async pdf=>{let zd=[];try{zd=(await Promise.all((window.__gotowe||[]).map(b64))).filter(Boolean);}catch(e){}
         return fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!(window.SP_ZAMOWIENIE||(window.spChce&&window.spChce())),numer:window.__nrZam||'',ekspres:!!(window.spOpcje&&window.spOpcje().ekspres),sciany:!!(window.spOpcje&&window.spOpcje().sciany),terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):((window.spChce&&window.spChce()&&window.spChce().data)?window.spChce().termin:''),stan:stan,zdjecia:zd})}).then(()=>true).catch(()=>false);};
+          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!(window.SP_ZAMOWIENIE||(window.spChce&&window.spChce())),numer:window.__nrZam||'',ekspres:!!(window.spOpcje&&window.spOpcje().ekspres),sciany:!!(window.spOpcje&&window.spOpcje().sciany),terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):((window.spChce&&window.spChce()&&window.spChce().data)?window.spChce().termin:''),stan:stan,zdjecia:zd,szkicUsun:window.spSzkicDoUsuniecia?window.spSzkicDoUsuniecia():''})}).then(()=>true).catch(()=>false);};
       const pdfF=plik||window.__karta;
       if(pdfF&&pdfF.type==='application/pdf')return new Promise(ok=>{
         const r=new FileReader();
@@ -2085,7 +2086,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       const t=tresc();
       podsum.textContent=t;
       doBiura(t,(document.getElementById('mailKl')||{}).value||'');
-      naDysk((document.getElementById('mailKl')||{}).value||'');
+      window.__wysWlasciwa=1;naDysk((document.getElementById('mailKl')||{}).value||'');
       waL.href='https://wa.me/48602242815?text='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi doślę w odpowiedzi.');
       mailL.href='mailto:smartparkiet.kontakt@gmail.com?subject='+encodeURIComponent(window.spTemat('Nowa wycena SMARTPARKIET'))+'&body='+encodeURIComponent(t+'\n\nProszę o kontakt. Zdjęcia podłogi dołączam do tej wiadomości.');
       {const dr=document.querySelector('#wyslano .drogi'); if(dr)dr.hidden=true;}
@@ -3700,6 +3701,9 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
 #folWyn .fw-k i{font-style:normal;font-size:.68rem;letter-spacing:.06em;padding:2px 7px;border-radius:999px}
 #folWyn .fw-n{background:#FF6A13;color:#fff}#folWyn .fw-s{background:#D5D8DC;color:#3A3F45}
 #folWyn button.fw-old{background:#F1F2F4;color:#4A5058}
+#folWyn .fw-z{background:#1F7A4D;color:#fff}#folWyn .fw-t{background:#7A5A00}
+#folWyn button.fw-sz{border-left:5px solid #1F7A4D}
+#folWyn .fw-zh{display:block;color:#9BE2B8;font-weight:800;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;margin:2px 0 0}
 #folInfo{margin:6px 0 0;font-size:.85rem;color:#E9E4DD!important;min-height:1em}
 #wycHist{display:none!important}
 </style>
@@ -3725,9 +3729,14 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
   return new File([a],'Zdjecie_'+String(i+1).padStart(2,'0')+'.jpg',{type:'image/jpeg'});}
  async function lista(){info('Pobieram listę ofert...');var j;try{j=await api('a=lista');}catch(e){}
   if(!j)return;if(!j.ok){info(j.blad||'Nie udało się pobrać listy.');if(j.blad==='Brak dostępu')pokazPin();return;}
-  WSZ=(j.lista||[]).slice().sort(function(x,y){return (y.t||0)-(x.t||0);});WSZ_T=Date.now();window.spFolderNieaktualny=false;pokazListe();
+  WSZ0=(j.lista||[]).slice().sort(function(x,y){return (y.t||0)-(x.t||0);});WSZ_T=Date.now();window.spFolderNieaktualny=false;pokazListe();
   info(j.lista.length?'Wpisz kilka liter ulicy albo wybierz z listy. Oferty od 22.10 wczytują się ze zdjęciami, starsze (szare) - same dane klienta.':'Folder jest pusty.');}
- async function wczytaj(id){info('Wczytuję ofertę...');var j;try{j=await api('a=wczytaj&id='+encodeURIComponent(id));}catch(e){}
+ async function wczytaj(id){info('Wczytuję ofertę...');var j;
+  /* 06.11: wycena zapisana tylko w tym telefonie (brak internetu przy Zapisz) - bez serwera */
+  if(/^lok_/.test(id)){var L=window.spSzkicLokalny?window.spSzkicLokalny(id.slice(4)):null;if(!L){info('Nie ma już tej wyceny na telefonie.');return;}
+   var pp=document.getElementById('poprawBtn');if(pp)pp.click();window.spWczytaj(L.stan||{});
+   info('Wczytana wycena zapisana na tym telefonie ('+new Date(L.t).toLocaleString('pl-PL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'). Zdjęcia nie były zapisane - dodaj je i naciśnij Zapisz albo Wyślij.');return;}
+  try{j=await api('a=wczytaj&id='+encodeURIComponent(id));}catch(e){}
   if(!j)return;if(!j.ok){info('Nie udało się wczytać oferty.');return;}
   if(j.stara){var sm=document.getElementById('smsWklej'),bt=document.getElementById('smsRozrzuc');
    if(sm&&bt){sm.value=j.tekst||'';bt.click();}
@@ -3743,47 +3752,62 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
    var pd=(o.stan&&o.stan.podpisy)||[];setTimeout(function(){[].slice.call(document.querySelectorAll('#miniatury input.podp')).forEach(function(p,i){
     if(pd[i]){p.value=pd[i];p.dispatchEvent(new Event('input',{bubbles:true}));}});},300);}
   var ok=document.getElementById('ofertaKl');if(ok&&o.mailKlienta)ok.checked=true;
+  if(o.szkic||(o.stan&&o.stan.szkic)){info('Wczytana zapisana wycena z '+o.kiedy+((o.zdjecia||[]).length?' ('+o.zdjecia.length+' zdj.)':'')+'. Uzupełnij, co trzeba, i naciśnij Wyślij - albo Zapisz, żeby wrócić do niej później.');return;}
   /* Artur 01.11 21:16 "jest tylko bez zdjec": wersje zapisane przed poprawka z 29.10 nie maja zdjec w folderze (zdjecia sa tylko w starym PDF) -
      wyrazny komunikat, ze wystarczy dodac je raz, bo kazda kolejna wersja zachowuje zdjecia */
   if(!(o.zdjecia||[]).length){info('Wczytana oferta z '+o.kiedy+' - ta wersja NIE MA zapisanych zdjęć (zapis sprzed poprawki z 29.10). Dodaj zdjęcia raz przyciskiem „Dodaj zdjęcia” i wyślij - każda następna wersja tej oferty będzie już je miała.');return;}
   info('Wczytana oferta z '+o.kiedy+' ('+((o.zdjecia||[]).length)+' zdj.). Popraw, co trzeba, i wyślij ponownie - klient dostanie poprawioną ofertę.');}
  /* Artur 27.10 13:22-13:24: lista ofert za dluga - pole szukania (3-4 litery ulicy, telefon albo data) filtruje na zywo */
- var WSZ=[],WSZ_T=0;
+ var WSZ0=[],WSZ_T=0;
  /* Artur 28.10 22:24: po korekcie i wysylce wyszukiwarka pokazywala STARA wersje - lista byla pobrana raz przy otwarciu strony
     i nigdy odswiezana (nowy zapis w Dysku byl, ale nie na liscie w telefonie). Teraz: pobieranie przy kazdym wejsciu w pole szukania
     (najwyzej co 15 s) i zawsze po wyslaniu oferty; wersje tego samego klienta oznaczone, najnowsza na gorze. */
  var LAD=null;function odswiez(){if(!LAD)LAD=lista().finally(function(){LAD=null;});return LAD;}
- function swieza(){return WSZ.length&&!window.spFolderNieaktualny&&Date.now()-WSZ_T<15000;}
+ function swieza(){return WSZ0.length&&!window.spFolderNieaktualny&&Date.now()-WSZ_T<15000;}
  function rozbierz(o){var op=String(o.opis||''),m=op.match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2})[-:](\d{2})\s*/),kiedy='',reszta=op;
   if(m){kiedy=m[3]+'.'+m[2]+' '+m[4]+':'+m[5];reszta=op.slice(m[0].length);}
   else if(o.t){var d=new Date(o.t);kiedy=('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
   var nt=(reszta.match(/netto (\d+) zł/)||[])[1],nr=(reszta.match(/nr (\d{8}-\d{3,5})/)||[])[1];
-  reszta=reszta.replace(/netto \d+ zł\s*/,'').replace(/nr \d{8}-\d{3,5}\s*/,'').trim();
+  reszta=reszta.replace(/\bZAPISANA\b\s*/,'').replace(/#\w{6,}\s*/,'').replace(/netto \d+ zł\s*/,'').replace(/nr \d{8}-\d{3,5}\s*/,'').trim();
   var tel=(reszta.replace(/[\s-]/g,'').match(/(\+?48)?(\d{9})(?!.*\d{9})/)||[])[2]||'';
   var klucz=tel||bezOg(reszta).replace(/^\d+([.,]\d+)?\s*m2?\s*/,'').replace(/[^a-z0-9]/g,'').slice(0,24);
   return {kiedy:kiedy,netto:nt?(+nt).toLocaleString('pl-PL').replace(/\u00a0/g,' ')+' zł':'',nr:nr||'',reszta:reszta.replace(/</g,''),klucz:klucz};}
  function bezOg(t){return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l');}
+ /* Artur 06.11 16:2x: wyceny ZAPISANE przyciskiem "Zapisz" (bez wysylki) - zawsze na gorze listy, oznaczone "ZAPISANA".
+    W opisie pliku: slowo ZAPISANA i znacznik #id szkicu. Przed wdrozeniem nowej wersji Apps Script kazde Zapisz tworzy
+    na serwerze nowa kopie - pokazujemy tylko najnowsza kopie danego szkicu (ten sam #id). Kopie zapisane tylko w telefonie
+    (brak internetu) dochodza z localStorage z dopiskiem "NA TELEFONIE". */
+ function czySzkic(o){return !!(o.szkic||o.lok||/\bZAPISANA\b/.test(String(o.opis||'')));}
+ function tagSzkicu(o){return o.szkicId||((String(o.opis||'').match(/#(\w{6,})/)||[])[1])||'';}
+ function zLokalnymi(L){var lok=[];try{lok=window.spSzkiceLokalne?window.spSzkiceLokalne():[];}catch(e){}
+  var bylo={},out=[];L.concat(lok).sort(function(x,y){return (y.t||0)-(x.t||0);}).forEach(function(o){
+   if(czySzkic(o)){var t=tagSzkicu(o);if(t){if(bylo[t])return;bylo[t]=1;}}out.push(o);});
+  return out.filter(czySzkic).concat(out.filter(function(o){return !czySzkic(o);}));}
+ window.spFolderOdswiez=function(){window.spFolderNieaktualny=true;if(k())odswiez();else pokazListe();};
  function pokazListe(){var sel=document.getElementById('folSel'),q=bezOg((document.getElementById('folSzuk')||{}).value||'').trim();
+  var WSZ=zLokalnymi(WSZ0);
   /* Artur 28.10 wieczor: "AL.Jana" nie znajdowalo "AL. JANA PAWLA II 61/36". Kropki, przecinki, podkreslenia, ukosniki = spacje;
      kazde slowo zapytania musi byc fragmentem tekstu oferty (adres, nazwa pliku, klient, telefon, data), w dowolnej kolejnosci */
   var tnij=function(t){return bezOg(t).replace(/[.,_\/\\;:·()\-]+/g,' ').replace(/\s+/g,' ').trim();};
   var qn=tnij(q),qw=qn?qn.split(' '):[],qs=qn.replace(/\s+/g,'');
   var lis=WSZ.filter(function(o){if(!q)return true;var t=tnij(o.opis+' '+(o.plik||'')),tz=t.replace(/\s+/g,'');
    return (qw.length&&qw.every(function(w){return t.indexOf(w)>=0;}))||(qs.length>2&&tz.indexOf(qs)>=0);});
-  var ile={},bylo={};lis.forEach(function(o){var r=rozbierz(o);o._r=r;ile[r.klucz]=(ile[r.klucz]||0)+1;});
-  lis.forEach(function(o){var r=o._r;r.wersja=ile[r.klucz]>1?(bylo[r.klucz]?'starsza wersja':'NAJNOWSZA'):'';bylo[r.klucz]=1;});
+  var ile={},bylo={};lis.forEach(function(o){var r=rozbierz(o);o._r=r;if(czySzkic(o))return;ile[r.klucz]=(ile[r.klucz]||0)+1;});
+  lis.forEach(function(o){var r=o._r;if(czySzkic(o)){r.wersja=o.lok?'NA TELEFONIE':'ZAPISANA';return;}r.wersja=ile[r.klucz]>1?(bylo[r.klucz]?'starsza wersja':'NAJNOWSZA'):'';bylo[r.klucz]=1;});
   sel.innerHTML='<option value="">'+(q?('Znaleziono: '+lis.length+' - wybierz ofertę…'):('Wybierz ofertę do poprawki ('+WSZ.length+')…'))+'</option>'+lis.map(function(o){var r=o._r;
    return '<option value="'+o.id+'">'+[r.kiedy,r.wersja,r.netto,r.reszta].filter(Boolean).join(' · ')+'</option>';}).join('');
   var wyn=document.getElementById('folWyn');if(!wyn)return;
-  if(!q){wyn.innerHTML='';return;}
-  wyn.innerHTML=lis.length?lis.slice(0,8).map(function(o){var r=o._r,t=String(o.opis).replace(/</g,'').split(' · ');
-   var gl=o.stara?t.slice(1,3).join(' · '):r.reszta;
-   var znak=r.wersja==='NAJNOWSZA'?'<i class="fw-n">NAJNOWSZA</i>':(r.wersja?'<i class="fw-s">starsza wersja</i>':'');
-   return '<button type="button" data-id="'+o.id+'"'+(o.stara?' class="st"':(r.wersja==='starsza wersja'?' class="fw-old"':''))+'><span class="fw-k">'+r.kiedy+znak+'</span>'+gl+'<small>'+[r.netto?('netto '+r.netto):'',r.nr?('nr '+r.nr):'',o.stara?'stara oferta':''].filter(Boolean).join(' · ')+'</small></button>';}).join('')
+  /* 06.11: bez wpisanego tekstu - same ZAPISANE wyceny (szkice), zeby od razu bylo widac, do czego wrocic */
+  if(!q){var sz=lis.filter(czySzkic);wyn.innerHTML=sz.length?'<small class="fw-zh">Zapisane wyceny ('+sz.length+')</small>'+sz.slice(0,8).map(przycisk).join('')+(sz.length>8?'<small style="color:#E9E4DD">i jeszcze '+(sz.length-8)+' - wpisz kilka liter</small>':''):'';return;}
+  wyn.innerHTML=lis.length?lis.slice(0,8).map(przycisk).join('')
    +(lis.length>8?'<small style="color:#E9E4DD">i jeszcze '+(lis.length-8)+' - wpisz więcej liter</small>':''):'<small style="color:#E9E4DD">Nic nie znaleziono - spróbuj inaczej: 3-4 litery ulicy, końcówka telefonu albo data (np. 21.10).</small>';}
+ function przycisk(o){var r=o._r,t=String(o.opis).replace(/</g,'').split(' · ');
+   var gl=o.stara?t.slice(1,3).join(' · '):r.reszta;
+   var znak=r.wersja==='NAJNOWSZA'?'<i class="fw-n">NAJNOWSZA</i>':(r.wersja==='ZAPISANA'?'<i class="fw-z">ZAPISANA</i>':(r.wersja==='NA TELEFONIE'?'<i class="fw-z fw-t">ZAPISANA NA TELEFONIE</i>':(r.wersja?'<i class="fw-s">starsza wersja</i>':'')));
+   return '<button type="button" data-id="'+o.id+'"'+(o.stara?' class="st"':(czySzkic(o)?' class="fw-sz"':(r.wersja==='starsza wersja'?' class="fw-old"':'')))+'><span class="fw-k">'+r.kiedy+znak+'</span>'+gl+'<small>'+[r.netto?('netto '+r.netto):'',r.nr?('nr '+r.nr):'',o.stara?'stara oferta':'',czySzkic(o)?'niewysłana - otwórz i wyślij':''].filter(Boolean).join(' · ')+'</small></button>';}
  function start(){var box=document.querySelector('.sms-box');if(document.getElementById('folOf')){if(k())lista();return;}if(!box)return;
   var w=document.createElement('div');w.id='folOf';
-  w.innerHTML='<b>Folder ofert <small style="float:right;font-weight:400;color:#B9BDC3;font-size:.72rem;letter-spacing:0">wersja 02.11 13:30</small></b><input id="folSzuk" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Szukaj: 3-4 litery ulicy, telefon lub data" aria-label="Szukaj oferty" style="width:100%;min-height:44px;font-size:16px;margin:0 0 8px;padding:8px 12px;border:1.5px solid #3A3F45;border-radius:10px;box-sizing:border-box"><div id="folWyn"></div><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
+  w.innerHTML='<b>Folder ofert <small style="float:right;font-weight:400;color:#B9BDC3;font-size:.72rem;letter-spacing:0">wersja 07.11</small></b><input id="folSzuk" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Szukaj: 3-4 litery ulicy, telefon lub data" aria-label="Szukaj oferty" style="width:100%;min-height:44px;font-size:16px;margin:0 0 8px;padding:8px 12px;border:1.5px solid #3A3F45;border-radius:10px;box-sizing:border-box"><div id="folWyn"></div><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
   box.insertBefore(w,box.firstChild);
   var sel=document.getElementById('folSel');
   sel.addEventListener('pointerdown',function(){if(sel.options.length<2)lista();},{once:true});
@@ -3797,77 +3821,163 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
   sel.addEventListener('focus',function(){if(!swieza())odswiez();});
   document.addEventListener('visibilitychange',function(){if(!document.hidden)window.spFolderNieaktualny=true;});
   sz.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();sz.blur();}});
+  pokazListe();
   var m=location.hash.match(/oferta=([\w-]+)/);if(m)wczytaj(m[1]);else if(k())lista();else pokazPin();}
  window.spFolderStart=start;
  if(document.readyState!=='loading')start();else document.addEventListener('DOMContentLoaded',start);
 })();
 </script>
+<style>
+#zapiszBtn{width:100%;margin:0 0 10px;border:2px solid #14110E;background:#fff;color:#14110E;font-weight:800;border-radius:10px;padding:13px 16px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+#zapiszBtn:disabled{opacity:.6}
+#szkicInfo{margin:-4px 0 10px;font-size:.88rem;line-height:1.4;font-weight:700;min-height:0}
+#szkicInfo:empty{display:none}
+#szkicInfo.ok{color:#1F7A4D}#szkicInfo.lok{color:#8A5A00}#szkicInfo.trwa{color:#4A5058}
+.an-przel{display:inline-flex;align-items:center;gap:6px;margin:10px 0 0;padding:9px 14px;border-radius:999px;background:#fff;color:#14110E!important;font:800 .9rem Inter,system-ui,sans-serif;text-decoration:none;box-shadow:0 4px 14px rgba(20,17,14,.18)}
+</style>
+<script>
+(function(){
+ var U='https://script.google.com/macros/s/AKfycbxC1j9MytYHxqD-ONdcd8Bar5SxnAVnmr8pxP1_pdEEIZzB1hbh9AXRDtXEg5hX0QXzDA/exec';
+ function $(i){return document.getElementById(i);}
+ function pole(i){return (($(i)||{}).value||'').trim();}
+ function lok(){try{return JSON.parse(localStorage.getItem('spSzkice')||'{}')||{};}catch(e){return {};}}
+ function lokZapisz(o){try{localStorage.setItem('spSzkice',JSON.stringify(o));return true;}catch(e){return false;}}
+ function lokUsun(id){var L=lok();if(L[id]){delete L[id];lokZapisz(L);}}
+ window.spSzkiceLokalne=function(){var L=lok();return Object.keys(L).map(function(id){return {id:'lok_'+id,szkicId:id,t:L[id].t,opis:L[id].opis,lok:true};});};
+ window.spSzkicLokalny=function(id){return lok()[id]||null;};
+ /* po prawdziwej wysylce: szkic do usuniecia na serwerze, w telefonie i zapomniany (kolejne Zapisz = nowa wycena) */
+ window.spSzkicDoUsuniecia=function(){if(!window.__wysWlasciwa)return '';window.__wysWlasciwa=0;var id=window.__szkicId||'';
+  if(id){lokUsun(id);window.__szkicId='';setTimeout(function(){window.spFolderOdswiez&&window.spFolderOdswiez();},4000);}return id;};
+ function info(t,kl){var e=$('szkicInfo');if(e){e.textContent=t;e.className=kl||'';}if(window.spSzkicInfo)window.spSzkicInfo(t,kl);}
+ function zmniejsz(f){return new Promise(function(ok){var img=new Image(),u=URL.createObjectURL(f);
+  img.onload=function(){var m=(window.__pliki&&window.__pliki().length>6)?1280:1600,k=Math.min(1,m/Math.max(img.width,img.height));
+   var c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+   c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(function(b){ok(b||f);},'image/jpeg',.78);};
+  img.onerror=function(){URL.revokeObjectURL(u);ok(f);};img.src=u;});}
+ function b64(b){return new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(String(r.result).split(',')[1]||'');};r.onerror=function(){ok('');};r.readAsDataURL(b);});}
+ function opis(id){var A=null;try{A=window.spArkusz&&window.spArkusz();}catch(e){}
+  return ['ZAPISANA','#'+id,pole('ulicaKl')||'bez adresu',pole('telKl'),(parseFloat(String(pole('m2')).replace(',','.'))||0)+' m2',A&&A.suma?('netto '+Math.round(A.suma)+' zł'):'',pole('mailKl'),pole('imieKl')].filter(Boolean).join(' ');}
+ var trwa=null;
+ window.spZapiszSzkic=function(){if(trwa)return trwa;
+  if(!pole('ulicaKl')&&!pole('telKl')&&!pole('mailKl')){info('Wpisz adres albo telefon klienta - po nich znajdziesz potem tę wycenę.','lok');var u=$('ulicaKl');if(u){u.scrollIntoView({block:'center'});u.focus();}return Promise.resolve(false);}
+  trwa=(async function(){
+   var b=$('zapiszBtn');if(b)b.disabled=true;info('Zapisuję w Folderze ofert…','trwa');
+   if(!window.__szkicId)window.__szkicId=Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+   var id=window.__szkicId,stan={};
+   try{stan=window.spZrzut();stan.podpisy=(window.__podpisy||[]).slice();}catch(e){}
+   stan.szkic=1;stan.szkicId=id;
+   var op=opis(id),pl=window.__pliki?window.__pliki():[],zd=[];
+   /* kopia pol w telefonie od razu (bez zdjec - za duze), usuwana po udanym zapisie na serwerze */
+   var L=lok();L[id]={t:Date.now(),opis:op,stan:stan};lokZapisz(L);
+   for(var i=0;i<pl.length;i++){try{zd.push(await b64(await zmniejsz(pl[i])));}catch(e){}}
+   var j=null;
+   try{var ac=new AbortController(),to=setTimeout(function(){ac.abort();},90000);
+    var r=await fetch(U,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},signal:ac.signal,
+     body:JSON.stringify({tryb:'szkic',szkicId:id,opis:op,mailKlienta:'',stan:stan,zdjecia:zd})});
+    clearTimeout(to);j=await r.json();}catch(e){}
+   if(b)b.disabled=false;
+   if(j&&j.ok){lokUsun(id);window.__zapisNaSerwerze=j.szkic?'nowy':'stary';
+    info('✓ Zapisano w Folderze ofert'+(zd.length?' ('+zd.length+' zdj.)':'')+'. Nic nie poszło do klienta. Znajdziesz ją w Folderze ofert jako ZAPISANA.','ok');}
+   else info('Brak połączenia z serwerem - wycena zapisana tylko na tym telefonie (bez zdjęć). Naciśnij Zapisz jeszcze raz, gdy będzie internet.','lok');
+   window.spFolderOdswiez&&window.spFolderOdswiez();
+   return !!(j&&j.ok);})().finally(function(){trwa=null;});
+  return trwa;};
+ /* wczytanie: zapisana wycena (szkic) zachowuje swoj identyfikator - ponowne Zapisz nadpisuje ja; wyslana oferta = nowy szkic */
+ function owin(){var w=window.spWczytaj;if(!w||w.__sz)return;var nw=function(s){var r=w.apply(this,arguments);
+   window.__szkicId=(s&&s.szkic&&s.szkicId)?s.szkicId:'';if(s&&s.szkic)window.__korekta=false;return r;};nw.__sz=1;window.spWczytaj=nw;}
+ function start(){owin();setTimeout(owin,1500);
+  var bw=$('wyslij');if(bw&&!$('zapiszBtn')){var b=document.createElement('button');b.type='button';b.id='zapiszBtn';
+   b.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Zapisz (bez wysyłania)';
+   b.onclick=function(){window.spZapiszSzkic();};var p=document.createElement('p');p.id='szkicInfo';p.setAttribute('role','status');
+   var pg=$('podgladOferty')||bw;pg.parentNode.insertBefore(b,pg);pg.parentNode.insertBefore(p,pg);}
+  /* przelacznik do uproszczonego widoku "Wycen usluge" (Artur 06.11) */
+  var st=document.querySelector('#wycena .sticky');if(st&&!document.querySelector('.an-przel')&&!document.documentElement.classList.contains('wu-strona')){
+   var a=document.createElement('a');a.className='an-przel';a.href='wycen-usluge.html';a.textContent='Prosty widok: Wyceń usługę ›';st.appendChild(a);}}
+ if(document.readyState==='complete')start();else window.addEventListener('load',function(){setTimeout(start,300);});
+})();
+</script>
 <!-- wycen-usluge START -->
-<style id="wycen-usluge-0611">
-html.wu #wycena .sticky>*:not(h2):not(.oczko){display:none!important}
-html.wu #wycena .sticky h2{margin:0 0 4px!important}
-html.wu #wycena .ai-out,html.wu #uzgPanel,html.wu form.ai-form>.est,html.wu form.ai-form>.sekcja-form,html.wu .cta-bar,html.wu #spTabBtn,html.wu #spDok,html.wu p.pod-przyc{display:none!important}
-html.wu body{padding-bottom:84px}
-#wu{margin:0 0 18px}
-.wu-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:#EEF0F2;border-radius:14px;margin:0 0 14px}
-.wu-seg button{border:0;border-radius:11px;padding:12px 6px;font:800 .95rem/1.15 Inter,system-ui,sans-serif;color:#3A3F45;background:transparent;cursor:pointer}
-.wu-seg button.on{background:#fff;color:#14110E;box-shadow:0 2px 8px rgba(20,17,14,.12)}
-.wu-h{font:800 .78rem/1.2 Inter,system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#4A5058;margin:4px 2px 10px}
-.wu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;grid-auto-flow:row dense}
-.wu-k{position:relative;border:1.5px solid #E1E3E6;border-radius:16px;background:#fff;min-width:0;scroll-margin-top:96px}
-.wu-k>button.wu-t{all:unset;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;min-height:118px;padding:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.wu-ik{width:44px;height:44px;border-radius:12px;background:#FFF1E6;color:#FF6A13;display:grid;place-items:center;margin-bottom:4px}
-.wu-n{overflow-wrap:anywhere;hyphens:auto}
-.wu-ik svg{width:26px;height:26px}
-.wu-n{font:800 .95rem/1.2 Inter,system-ui,sans-serif;color:#14110E}
-.wu-s{font:600 .78rem/1.25 Manrope,system-ui,sans-serif;color:#6B7076}
-.wu-k.tak{border-color:#FF6A13;background:#FFF8F2}
-.wu-k.tak .wu-ik{background:#FF6A13;color:#fff}
-.wu-k.tak .wu-s{color:#B03C0A;font-weight:800}
-.wu-k.otw{grid-column:1/-1;border-color:#FF6A13;box-shadow:0 8px 24px rgba(255,106,19,.14)}
-.wu-k.wu-szer{grid-column:1/-1}
-.wu-k.wu-szer>button.wu-t{min-height:64px;display:grid;grid-template-columns:44px 1fr;align-items:center;gap:2px 12px}
-.wu-k.wu-szer .wu-ik{grid-row:span 2;margin:0}
-.wu-k.otw>button.wu-t{min-height:0;display:grid;grid-template-columns:44px 1fr;align-items:center;gap:2px 12px}
-.wu-k.otw .wu-ik{grid-row:span 2;margin:0}
-.wu-k.wu-szer .wu-ik{background:#14110E;color:#fff}
-.wu-p{display:none;padding:0 12px 14px}
-.wu-k.otw .wu-p{display:block}
-.wu-p>div,.wu-p>label.drop,.wu-p>.miniatury{margin-bottom:10px}
-#wycena .wu-p label.wu-sw span{font:800 .95rem Inter,system-ui,sans-serif!important;color:#fff!important;text-transform:none!important;letter-spacing:0!important}
-#wycena .wu-p label.wu-sw{margin:0 0 12px!important}
-.wu-sw{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px;padding:12px 14px;border-radius:12px;background:#14110E;color:#fff;font:800 .95rem Inter,system-ui,sans-serif;cursor:pointer}
-.wu-sw input{appearance:none;-webkit-appearance:none;width:52px;height:30px;border-radius:30px;background:#5A5F66;position:relative;flex:none;margin:0;cursor:pointer;transition:background .2s}
-.wu-sw input::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s}
-.wu-sw input:checked{background:#FF6A13}
-.wu-sw input:checked::after{transform:translateX(22px)}
-.wu-info{font:600 .85rem/1.45 Manrope,system-ui,sans-serif;color:#4A5058;margin:0 0 10px}
-.wu-zamk{display:block;width:100%;margin-top:4px;border:0;border-radius:12px;padding:12px;background:#EEF0F2;font:800 .9rem Inter,system-ui,sans-serif;color:#14110E;cursor:pointer}
-.wu-szuk{width:100%;box-sizing:border-box;padding:13px 14px;border:1.5px solid #C9CDD2;border-radius:12px;font:600 1rem Manrope,system-ui,sans-serif;margin:0 0 10px}
-.wu-chips{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px;scrollbar-width:none}
-.wu-chips::-webkit-scrollbar{display:none}
-#wycena #wu .wu-chips button,#wycena #wu .wu-r button,#wycena #wu .wu-seg button{width:auto;min-height:0;margin:0}
-#wycena #wu .wu-seg button{width:100%}
-.wu-chips button{flex:none;border:1.5px solid #E1E3E6;background:#fff;border-radius:999px;padding:8px 14px;font:700 .85rem Inter,system-ui,sans-serif;color:#3A3F45;cursor:pointer}
-.wu-chips button.on{background:#14110E;border-color:#14110E;color:#fff}
-.wu-kat{border:1.5px solid #E1E3E6;border-radius:16px;background:#fff;margin:0 0 10px;overflow:hidden}
-.wu-kat>b{display:block;padding:12px 14px;font:800 .95rem Inter,system-ui,sans-serif;color:#14110E;background:#F6F7F8}
-.wu-r{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;padding:12px 14px;border-top:1px solid #EEF0F2}
-.wu-r .rn{font:700 .92rem/1.25 Inter,system-ui,sans-serif;color:#14110E}
-.wu-r .rd{grid-column:1;font:500 .78rem/1.3 Manrope,system-ui,sans-serif;color:#6B7076}
-.wu-r .rc{grid-column:1;font:800 .9rem Inter,system-ui,sans-serif;color:#B03C0A}
-.wu-r button{grid-column:2;grid-row:1/span 3;border:0;border-radius:10px;padding:11px 16px;background:#FF6A13;color:#fff;font:800 .88rem Inter,system-ui,sans-serif;cursor:pointer}
-.wu-r.jest button{background:#1F7A4D}
-#wuBar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#14110E;color:#fff;box-shadow:0 -6px 20px rgba(0,0,0,.18)}
-#wuBar small{display:block;font:700 .68rem Inter,system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#B9BDC3}
-#wuBar b{font:800 1.25rem Inter,system-ui,sans-serif;color:#FF6A13;white-space:nowrap}
-#wuBar button{border:0;border-radius:11px;padding:12px 12px;font:800 .86rem Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+<style id="wycen-usluge-0711">
+html.wu #wycena .sticky>*:not(h2):not(.oczko):not(.an-przel){display:none!important}
+html.wu #wycena .sticky h2{margin:0!important}
+html.wu #wycena .split{gap:14px!important}
+html.wu form.ai-form>*:not(#wu),html.wu #aiPhoto,html.wu #aiOut,html.wu #wycena .ai>.drop,html.wu #wycena .ai>.miniatury,html.wu .cta-bar,html.wu #spTabBtn,html.wu #spDok,html.wu #zapiszBtn,html.wu #szkicInfo,html.wu .wu-up .maly-info{display:none!important}
+html.wu #wycena .ai-form{display:block!important;padding:14px 12px!important}
+html.wu #wycena .ai{padding:0!important;overflow:visible!important}
+html.wu body{padding-bottom:96px}
+#wu{font-family:Inter,system-ui,sans-serif}
+#wu *{box-sizing:border-box}
+.wu-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:18px 2px 8px;font:800 1.05rem/1.2 Inter,system-ui,sans-serif;color:#14110E}
+.wu-h:first-child{margin-top:4px}
+.wu-h small{font:600 .8rem/1.2 Manrope,system-ui,sans-serif;color:#6B7076}
+/* uslugi */
+.wu-u{border:1.5px solid #E1E3E6;border-radius:14px;background:#fff;margin:0 0 8px;scroll-margin-top:84px}
+#wycena #wu button.wu-ut{all:unset;box-sizing:border-box;display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;width:100%;min-height:62px;padding:10px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wu-ik{width:40px;height:40px;border-radius:11px;background:#FFF1E6;color:#FF6A13;display:grid;place-items:center}
+.wu-ik svg{width:23px;height:23px}
+.wu-un{min-width:0;font:800 1rem/1.2 Inter,system-ui,sans-serif;color:#14110E}
+.wu-un small{display:block;margin-top:2px;font:600 .8rem/1.25 Manrope,system-ui,sans-serif;color:#6B7076}
+.wu-uk{font:800 .95rem Inter,system-ui,sans-serif;color:#14110E;white-space:nowrap;text-align:right}
+.wu-plus{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#FF6A13;color:#fff;font:700 1.4rem/1 Inter,system-ui,sans-serif}
+.wu-u.tak{border-color:#FF6A13;background:#FFF8F2}
+.wu-u.tak .wu-ik{background:#FF6A13;color:#fff}
+.wu-u.tak .wu-un small{color:#B03C0A;font-weight:800}
+.wu-u.otw{border-color:#FF6A13;box-shadow:0 6px 20px rgba(255,106,19,.14)}
+.wu-up{display:none;padding:2px 12px 12px}
+.wu-u.otw .wu-up{display:block}
+.wu-up>div,.wu-up>label.drop,.wu-up>.miniatury{margin-bottom:10px}
+.wu-up input,.wu-up select{font-size:16px!important}
+.wu-u:not(.ceny) .wu-up [id^="cw_"]{display:none!important}
+.wu-info{font:600 .88rem/1.45 Manrope,system-ui,sans-serif;color:#4A5058;margin:0 0 10px}
+.wu-wiersz{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#wycena #wu .wu-wiersz button{width:auto;min-height:44px;margin:0;border-radius:11px;padding:10px 14px;font:800 .9rem Inter,system-ui,sans-serif;cursor:pointer}
+#wycena #wu .wu-gotowe{flex:1;border:0;background:#14110E;color:#fff}
+#wycena #wu .wu-usun{border:1.5px solid #E1E3E6;background:#fff;color:#B23B1E}
+#wycena #wu .wu-dodaj{flex:1;border:0;background:#FF6A13;color:#fff}
+#wycena #wu .wu-cena{border:0;background:none;color:#4A5058;text-decoration:underline;padding:10px 4px;font-weight:700}
+/* dane klienta */
+.wu-dane{border:1.5px solid #E1E3E6;border-radius:14px;background:#fff;padding:12px 12px 2px}
+.wu-dane>div{margin-bottom:10px}
+.wu-dane input{font-size:16px!important}
+details.wu-wiecej{border:1.5px dashed #C9CDD2;border-radius:14px;background:#fff;margin:8px 0 0}
+details.wu-wiecej>summary{list-style:none;cursor:pointer;padding:14px 12px;font:800 .95rem Inter,system-ui,sans-serif;color:#14110E;display:flex;justify-content:space-between;gap:8px}
+details.wu-wiecej>summary::-webkit-details-marker{display:none}
+details.wu-wiecej>summary::after{content:"+";color:#FF6A13;font-size:1.3rem;line-height:1}
+details.wu-wiecej[open]>summary::after{content:"−"}
+details.wu-wiecej>summary small{display:block;font:600 .8rem Manrope,system-ui,sans-serif;color:#6B7076;margin-top:2px}
+.wu-wiecej-in{padding:0 12px 4px}
+.wu-wiecej-in>*{margin-bottom:10px}
+/* folder ofert */
+#wycena #wu button.wu-fol{all:unset;box-sizing:border-box;display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;width:100%;padding:10px 12px;border-radius:14px;background:#14110E;color:#fff;cursor:pointer}
+.wu-fol .wu-ik{background:#2E3136;color:#FF8A4C}
+.wu-fol b{font:800 1rem/1.2 Inter,system-ui,sans-serif}
+.wu-fol small{display:block;font:600 .8rem/1.25 Manrope,system-ui,sans-serif;color:#B9BDC3}
+.wu-fol i{font-style:normal;font:800 .78rem Inter,system-ui,sans-serif;background:#1F7A4D;color:#fff;border-radius:999px;padding:4px 9px}
+.wu-fol i:empty{display:none}
+.wu-folp{display:none;margin:8px 0 0}
+.wu-folp.otw{display:block}
+.wu-folp .sms-box{margin:0!important}
+html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important}
+.wu-koniec{margin:16px 0 0}
+.wu-koniec #wyslij{width:100%}
+/* dolny pasek */
+#wuBar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:6px;align-items:center;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:#14110E;color:#fff;box-shadow:0 -6px 20px rgba(0,0,0,.18)}
+#wuBar small{display:block;font:700 .66rem Inter,system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#B9BDC3}
+#wuBar b{display:block;font:800 1.12rem Inter,system-ui,sans-serif;color:#FF6A13;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#wuBar button{border:0;border-radius:11px;min-height:46px;padding:0 11px;font:800 .86rem Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+#wuBar .zap{background:#fff;color:#14110E}
 #wuBar .pdf{background:#3A3F45;color:#fff}
 #wuBar .wys{background:#FF6A13;color:#fff}
-@media(min-width:720px){.wu-grid{grid-template-columns:repeat(3,1fr)}#wuBar{left:50%;right:auto;transform:translateX(-50%);width:min(720px,100%);border-radius:16px 16px 0 0}}
+#wuBar button:disabled{opacity:.6}
+#wuInfo{position:fixed;left:10px;right:10px;bottom:calc(72px + env(safe-area-inset-bottom));z-index:71;padding:12px 14px;border-radius:12px;font:700 .9rem/1.4 Manrope,system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.2);background:#14110E;color:#fff}
+#wuInfo[hidden]{display:none}
+#wuInfo.ok{background:#1F7A4D}#wuInfo.lok{background:#8A5A00}
+@media(max-width:370px){#wuBar button{padding:0 8px;font-size:.8rem}#wuBar b{font-size:1rem}}
+@media(min-width:720px){#wuBar{left:50%;right:auto;transform:translateX(-50%);width:min(720px,100%);border-radius:16px 16px 0 0}#wuInfo{left:50%;right:auto;transform:translateX(-50%);width:min(700px,100%)}}
 </style>
-<script id="wycen-usluge-0611s">
+<script id="wycen-usluge-0711s">
 (function(){
+ var SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
  var IK={
   pod:'<path d="M3 17h18M3 13h18M7 13v4M12 13v4M17 13v4M3 9l9-5 9 5"/>',
   lw:'<path d="M3 18h18M3 14h18v4H3zM7 10l3-3 3 3M10 7v7"/>',
@@ -3878,112 +3988,127 @@ html.wu body{padding-bottom:84px}
   do:'<path d="M12 5v14M5 12h14"/>',
   me:'<path d="M4 18v-6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6M4 15h16M6 18v2M18 18v2M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/>',
   sc:'<path d="M3 20h5v-4h4v-4h4V8h5"/>',
-  kl:'<path d="M20 21a8 8 0 1 0-16 0M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>',
-  sms:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'};
- /* kafelki: uz = numer kratki "Zakres prac" (uzgN), q = nazwa pozycji w arkuszu (q[6]), f = pola przenoszone do kafelka */
+  fol:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'};
+ /* uslugi: uz = kratka "Zakres prac" (uzgN), q = nazwa pozycji w arkuszu (p[6]), il = pole ilosci (fokus po rozwinieciu),
+    f = pola przenoszone do panelu uslugi, r = radio tak/nie silnika (ustawiane samo) */
  var K=[
-  {id:'pod',t:'Odnowienie podłogi',uz:0,q:'Renowacja parkietu',f:['m2','typ','wyk','gatKl','montazKl']},
-  {id:'lw',t:'Wymiana listew',uz:1,q:'Wymiana listew',r:'listwy',f:['@listwy','listwyMb']},
-  {id:'lo',t:'Odświeżenie listew',uz:7,q:'Odświeżenie listew',info:'Pozycja 1 kpl., cena do uzgodnienia. Znasz kwotę? Dopisz ją w Pracach dodatkowych.'},
-  {id:'na',t:'Naprawa',uz:3,q:'Naprawy',r:'napr',f:['@napr','naprBlok']},
-  {id:'st',t:'Stabilizacja',uz:2,q:'Stabilizacja',r:'stab',f:['@stab','stabM2']},
-  {id:'ko',t:'Koloryzacja',uz:4,q:'Koloryzacja',kolor:1,info:'Koloryzacja liczy się od metrażu z kafelka Odnowienie podłogi.',f:['cw_kolor']},
-  {id:'do',t:'Prace dodatkowe',dod:1,f:['dodBlok']},
-  {id:'me',t:'Pomoc z meblami',uz:5,q:'Przesunięcie mebli',r:'meble',f:['@meble','mebleKw']},
-  {id:'sc',t:'Renowacja schodów',uz:6,q:'Renowacja schodów',info:'Pozycja 1 kpl., cena do uzgodnienia po wizji lokalnej.'},
-  {id:'kl',t:'Klient, adres i zdjęcia',szer:1,f:['drop','miniatury','imieKl','ulicaKl','kodKl','miastoKl','dzielKl','obiektKl','pietroKl','@winda','terminKl','telKl','mailKl','kopiaBlok','vatBlok']},
-  {id:'sms',t:'Folder ofert i SMS klienta',szer:1,sms:1}];
- var CENNIK=[
-  ['Podłoga',[['Odnowienie podłogi','cyklinowanie bezpyłowe + 3 warstwy lakieru','130 zł/m²','pod'],['Ryczałt SMART','poniżej 10 m², na gotowo - liczy się sam z metrażu','1 500 zł','pod','auto'],['Dopłata do małego metrażu','od 10 do 22 m² - liczy się sama z metrażu','+30 zł/m²','pod','auto'],['Twardy wosk zamiast lakieru','dopłata do odnowienia podłogi','+12 zł/m²','pod','wosk'],['Koloryzacja','barwienie przed lakierem','70 zł/m²','ko']]],
-  ['Listwy',[['Wymiana listew','klasyczna lub MDF, z montażem','50 zł/mb','lw'],['Odświeżenie listew','zmatowienie i lakier','do uzgodnienia','lo']]],
-  ['Naprawy',[['Stabilizacja','iniekcja luźnych, skrzypiących klepek','70 zł/m²','st'],['Naprawa ubytków','wymiana lub uzupełnienie klepek','wg wyceny','na']]],
-  ['Inne',[['Pomoc z meblami','przesunięcie mebli przez ekipę','300 zł','me'],['Renowacja schodów','po wizji lokalnej','do uzgodnienia','sc'],['Prace dodatkowe','własna pozycja z ceną','wpisujesz sam','do']]]];
+  {id:'pod',t:'Cyklinowanie / odnowienie podłogi',j:'m²',uz:0,q:'Renowacja parkietu',il:'m2',f:['m2','typ','wyk']},
+  {id:'lw',t:'Wymiana listew',j:'mb',uz:1,q:'Wymiana listew',r:'listwy',il:'listwyMb',f:['listwyMb','@listwy']},
+  {id:'lo',t:'Odświeżenie listew',j:'kpl.',uz:7,q:'Odświeżenie listew',info:'Pozycja 1 kpl., cena do uzgodnienia. Znasz kwotę? Dopisz ją w Pracach dodatkowych.'},
+  {id:'st',t:'Stabilizacja',j:'m²',uz:2,q:'Stabilizacja',r:'stab',il:'stabM2',f:['stabM2']},
+  {id:'na',t:'Naprawa',j:'ilość i kwota',uz:3,q:'Naprawy',r:'napr',il:'naprIl',f:['naprBlok']},
+  {id:'ko',t:'Koloryzacja',j:'od metrażu podłogi',uz:4,q:'Koloryzacja',kolor:1,info:'Liczy się od metrażu z pozycji Cyklinowanie.',f:['cw_kolor']},
+  {id:'me',t:'Pomoc z meblami',j:'kwota zł',uz:5,q:'Przesunięcie mebli',r:'meble',il:'mebleKw',f:['mebleKw']},
+  {id:'sc',t:'Renowacja schodów',j:'kpl.',uz:6,q:'Renowacja schodów',info:'Pozycja 1 kpl., cena do uzgodnienia po wizji lokalnej.'},
+  {id:'do',t:'Prace dodatkowe',j:'własna pozycja z ceną',dod:1,f:['dodBlok']}];
  var $=function(i){return document.getElementById(i);};
  var zl=function(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' zł';};
+ function ev(e,t){e.dispatchEvent(new Event(t,{bubbles:true}));}
  function blok(f){if(f.charAt(0)==='@'){var r=document.querySelector('form.ai-form input[name="'+f.slice(1)+'"]');return r&&r.closest('form.ai-form>*');}
   var e=$(f);if(!e)return null;if(/^(cw_|drop$|miniatury$)/.test(f))return e;return e.closest('form.ai-form>*')||e;}
  function radio(n,ktory){var rs=[].slice.call(document.querySelectorAll('input[name="'+n+'"]'));
   var x=rs.filter(function(r){var t=(r.closest('label')||{}).textContent||'';return ktory==='tak'?(n==='meble'?t.trim()==='tak':r.value!=='nie'):(n==='meble'?t.trim()==='nie':r.value==='nie');})[0];
   if(n==='listwy'&&ktory==='tak'){var cur=rs.filter(function(r){return r.checked;})[0];if(cur&&cur.value!=='nie')return;x=rs.filter(function(r){return r.value==='klasyczna';})[0];}
-  if(n==='stab'||n==='napr'){if(ktory==='tak')x=rs.filter(function(r){return r.value==='tak';})[0];}
-  if(x&&!x.checked){x.checked=true;x.dispatchEvent(new Event('change',{bubbles:true}));x.dispatchEvent(new Event('input',{bubbles:true}));}}
- function ustaw(k,v){if(k.uz!=null){var c=$('uzg'+k.uz);if(c&&c.checked!==v){c.checked=v;c.dispatchEvent(new Event('change',{bubbles:true}));}}
+  if((n==='stab'||n==='napr')&&ktory==='tak')x=rs.filter(function(r){return r.value==='tak';})[0];
+  if(x&&!x.checked){x.checked=true;ev(x,'change');ev(x,'input');}}
+ function ustaw(k,v){if(k.uz!=null){var c=$('uzg'+k.uz);if(c&&c.checked!==v){c.checked=v;ev(c,'change');}}
   if(k.r)radio(k.r,v?'tak':'nie');
-  if(k.kolor){var w=$('wyk');if(w){var i=v?4:0;if((w.selectedIndex===4)!==v){w.selectedIndex=i;w.dispatchEvent(new Event('change',{bubbles:true}));}}}
+  if(k.kolor){var w=$('wyk');if(w&&(w.selectedIndex===4)!==v){w.selectedIndex=v?4:0;ev(w,'change');}}
   if(k.dod){if(v&&!document.querySelector('#dodLista .dod-w')){var p=$('dodPlus');p&&p.click();}
-   [].forEach.call(document.querySelectorAll('#dodLista .dod-w'),function(w){var u=w.querySelector('.dod-u');if(u&&u.checked!==v&&(!v||(w.querySelector('.dod-o')||{}).value)){u.checked=v;u.dispatchEvent(new Event('change',{bubbles:true}));}});}
+   [].forEach.call(document.querySelectorAll('#dodLista .dod-w'),function(w){var u=w.querySelector('.dod-u');if(u&&u.checked!==v&&(!v||(w.querySelector('.dod-o')||{}).value)){u.checked=v;ev(u,'change');}});}
   odswiez();}
  function jest(k){if(k.uz!=null){var c=$('uzg'+k.uz);return !!(c&&c.checked);}
   if(k.dod)return [].some.call(document.querySelectorAll('#dodLista .dod-o'),function(o){return o.value.trim();});return false;}
  function kwota(k){var A;try{A=window.spArkusz&&window.spArkusz();}catch(e){}if(!A)return '';
   var P=A.poz.filter(function(p){return k.dod?(p.length<6&&!/^\*/.test(p[0])):(p[6]===k.q||(k.id==='pod'&&/^\*/.test(p[0])));});
   var s=0,uzg=false;P.forEach(function(p){if(typeof p[1]==='number'&&p[2])s+=p[1]*p[2];else if(p[1]&&p[1]!==0)uzg=true;});
-  return s>0?zl(s):(uzg?'do uzgodnienia':'');}
- /* pola przeniesione do kafelkow nie sa juz dziecmi form.ai-form - kopia regul ".ai-form > ..." dla ".wu-p > ..." */
+  return s>0?zl(s):(uzg?'do uzg.':'');}
+ function ilosc(k){var e=k.il&&$(k.il);var v=e?String(e.value||'').trim():'';return v&&parseFloat(v.replace(',','.'))>0?v.replace('.',',')+' '+(k.j==='kwota zł'?'zł':k.j.split(' ')[0]):'';}
+ /* pola przeniesione z form.ai-form nie sa juz jego dziecmi - kopia regul ".ai-form > ..." dla nowych kontenerow */
  function kopiujCss(){var out=[];function przejdz(R,med){[].forEach.call(R,function(r){
    if(r.cssRules&&r.media){przejdz(r.cssRules,r.media.mediaText);return;}
    if(!r.selectorText||!/ai-form\s*>/.test(r.selectorText))return;
-   var sel=r.selectorText.split(',').filter(function(x){return /ai-form\s*>/.test(x);}).map(function(x){return x.replace(/ai-form\s*>/g,'ai-form .wu-p >');}).join(',');
-   var t=sel+'{'+r.style.cssText+'}';out.push(med?'@media '+med+'{'+t+'}':t);});}
+   var sel=r.selectorText.split(',').filter(function(x){return /ai-form\s*>/.test(x)&&!/html\.wu|#wu/.test(x);}).map(function(x){return ['.wu-up','.wu-dane','.wu-wiecej-in'].map(function(c){return x.replace(/ai-form\s*>/g,'ai-form '+c+' >');}).join(',');}).join(',');
+   if(!sel)return;var t=sel+'{'+r.style.cssText+'}';out.push(med?'@media '+med+'{'+t+'}':t);});}
   [].forEach.call(document.styleSheets,function(sh){try{przejdz(sh.cssRules,'');}catch(e){}});
   var st=document.createElement('style');st.id='wu-css-kopia';st.textContent=out.join('\n');document.body.appendChild(st);}
+ function etykieta(id,t){var e=$(id),l=e&&document.querySelector('label[for="'+id+'"]');if(l)l.textContent=t;}
+ var info=null,infoT=0;
+ function pokazInfo(t,kl){if(!info)return;info.textContent=t;info.className=kl||'';info.hidden=false;clearTimeout(infoT);
+  if(kl==='ok'||kl==='lok')infoT=setTimeout(function(){info.hidden=true;},kl==='ok'?6000:12000);}
  function zbuduj(){
   var form=document.querySelector('form.ai-form');if(!form||$('wu'))return;
   kopiujCss();
   document.documentElement.classList.add('wu');
   var h=document.querySelector('#wycena .sticky h2');if(h)h.textContent='Wyceń usługę';
-  var oc=document.querySelector('#wycena .sticky .oczko');if(oc)oc.lastChild.textContent='SMARTPARKIET · Analizator';
+  var oc=document.querySelector('#wycena .sticky .oczko');if(oc&&oc.lastChild)oc.lastChild.textContent='SMARTPARKIET · narzędzie parkieciarza';
+  var st=document.querySelector('#wycena .sticky');if(st&&!st.querySelector('.an-przel')){var a=document.createElement('a');a.className='an-przel';a.href='analizator.html';a.textContent='Pełny Analizator ›';st.appendChild(a);}
   var wu=document.createElement('div');wu.id='wu';
-  wu.innerHTML='<div class="wu-seg" role="tablist"><button type="button" class="on" data-v="k">Wyceń usługę</button><button type="button" data-v="c">Usługa z cennika</button></div>'+
-   '<div id="wuK"><p class="wu-h">Co robimy u klienta?</p><div class="wu-grid" id="wuG"></div></div>'+
-   '<div id="wuC" hidden><input class="wu-szuk" id="wuSz" type="search" placeholder="Szukaj usługi, np. listwy" autocomplete="off"><div class="wu-chips" id="wuCh"></div><div id="wuL"></div></div>';
+  wu.innerHTML='<button type="button" class="wu-fol" id="wuFolB" aria-expanded="false"><span class="wu-ik">'+SVG+IK.fol+'</svg></span><span><b>Zapisane wyceny</b><small>Folder ofert - szukaj po adresie lub telefonie</small></span><i id="wuFolN"></i></button><div class="wu-folp" id="wuFolP"></div>'+
+   '<p class="wu-h">Usługi <small>naciśnij i wpisz ilość</small></p><div id="wuL"></div>'+
+   '<p class="wu-h">Dane klienta <small>adres, telefon, e-mail</small></p><div class="wu-dane" id="wuD"></div>'+
+   '<details class="wu-wiecej" id="wuW"><summary><span>Zdjęcia, termin, szczegóły<small>opcjonalnie</small></span></summary><div class="wu-wiecej-in" id="wuWi"></div></details>'+
+   '<div class="wu-koniec" id="wuKon"></div>';
   form.insertBefore(wu,form.firstChild);
-  var G=$('wuG');
-  K.forEach(function(k){var d=document.createElement('div');d.className='wu-k'+(k.szer?' wu-szer':'');d.id='wu_'+k.id;
-   d.innerHTML='<button type="button" class="wu-t" aria-expanded="false"><span class="wu-ik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+IK[k.id]+'</svg></span><span class="wu-n">'+k.t+'</span><span class="wu-s">'+(k.szer?(k.sms?'wklej wiadomość, otwórz zapisaną ofertę':'kontakt, adres, termin, zdjęcia'):'dotknij, aby dodać')+'</span></button><div class="wu-p"></div>';
-   var P=d.querySelector('.wu-p');
-   if(!k.szer){var sw=document.createElement('label');sw.className='wu-sw';sw.innerHTML='<span>Robimy - w wycenie</span><input type="checkbox">';P.appendChild(sw);
-    var cb=sw.querySelector('input');cb.onchange=function(){ustaw(k,cb.checked);};k.cb=cb;}
+  /* folder ofert + SMS (zwiniete) */
+  var sb=form.querySelector('.sms-box');if(sb)$('wuFolP').appendChild(sb);
+  $('wuFolB').onclick=function(){var p=$('wuFolP'),o=!p.classList.contains('otw');p.classList.toggle('otw',o);this.setAttribute('aria-expanded',o?'true':'false');
+   if(o){var s=$('folSzuk');if(s)ev(s,'focus');}};
+  /* uslugi */
+  var L=$('wuL');
+  K.forEach(function(k){var d=document.createElement('div');d.className='wu-u';d.id='wu_'+k.id;
+   d.innerHTML='<button type="button" class="wu-ut" aria-expanded="false"><span class="wu-ik">'+SVG+IK[k.id]+'</svg></span><span class="wu-un">'+k.t+'<small>'+k.j+'</small></span><span class="wu-uk"><span class="wu-plus" aria-hidden="true">+</span></span></button><div class="wu-up"></div>';
+   var P=d.querySelector('.wu-up');
    if(k.info){var i=document.createElement('p');i.className='wu-info';i.textContent=k.info;P.appendChild(i);}
    (k.f||[]).forEach(function(f){var b=blok(f);if(b)P.appendChild(b);});
-   if(k.sms){var sb=form.querySelector('.sms-box');if(sb)P.appendChild(sb);}
-   var z=document.createElement('button');z.type='button';z.className='wu-zamk';z.textContent='Gotowe - zwiń';P.appendChild(z);
-   z.onclick=function(){d.classList.remove('otw');d.scrollIntoView({block:'nearest',behavior:'smooth'});};
-   /* wpisana ilosc / cena w kafelku = automatycznie "robimy" */
-   P.addEventListener('input',function(e){if(!k.cb||e.target===k.cb)return;
-    /* prace dodatkowe: wpisana pozycja = "robimy (w zakresie)" przy tej pozycji */
-    var dw=e.target.closest&&e.target.closest('.dod-w');if(dw){var u=dw.querySelector('.dod-u');if(u&&!u.checked&&(dw.querySelector('.dod-o')||{}).value){u.checked=true;u.dispatchEvent(new Event('change',{bubbles:true}));}}var v=parseFloat(String(e.target.value||'').replace(',','.'));
-    if((e.target.type==='number'&&v>0)||(e.target.classList&&e.target.classList.contains('dod-o')&&e.target.value.trim())){if(!jest(k))ustaw(k,true);}});
-   d.querySelector('.wu-t').onclick=function(){var o=!d.classList.contains('otw');
-    [].forEach.call(G.querySelectorAll('.wu-k.otw'),function(x){x.classList.remove('otw');x.querySelector('.wu-t').setAttribute('aria-expanded','false');});
-    if(o){d.classList.add('otw');this.setAttribute('aria-expanded','true');setTimeout(function(){d.scrollIntoView({block:'start',behavior:'smooth'});},60);}};
-   k.el=d;G.appendChild(d);});
-  /* cennik */
-  var ch=$('wuCh'),L=$('wuL'),kat='Wszystkie';
-  ['Wszystkie'].concat(CENNIK.map(function(c){return c[0];})).forEach(function(n,i){var b=document.createElement('button');b.type='button';b.textContent=n;if(!i)b.className='on';
-   b.onclick=function(){kat=n;[].forEach.call(ch.children,function(x){x.classList.toggle('on',x===b);});lista();};ch.appendChild(b);});
-  function lista(){var q=($('wuSz').value||'').toLowerCase().trim();L.innerHTML='';
-   CENNIK.forEach(function(c){if(kat!=='Wszystkie'&&kat!==c[0])return;var R=c[1].filter(function(r){return !q||(r[0]+' '+r[1]).toLowerCase().indexOf(q)>=0;});if(!R.length)return;
-    var s=document.createElement('div');s.className='wu-kat';s.innerHTML='<b>'+c[0]+'</b>';
-    R.forEach(function(r){var k=K.filter(function(x){return x.id===r[3];})[0],w=document.createElement('div');w.className='wu-r'+(jest(k)?' jest':'');
-     var wy=$('wyk'),ma=r[4]==='auto'?false:(r[4]==='wosk'?!!(wy&&wy.selectedIndex===3):jest(k));w.className='wu-r'+(ma?' jest':'');
-     w.innerHTML='<span class="rn">'+r[0]+'</span><span class="rd">'+r[1]+'</span><span class="rc">'+r[2]+'</span><button type="button">'+(r[4]==='auto'?'Otwórz':(ma?'✓ Jest':'Dodaj'))+'</button>';
-     w.querySelector('button').onclick=function(){if(r[4]==='wosk'&&wy&&wy.selectedIndex!==3){wy.selectedIndex=3;wy.dispatchEvent(new Event('change',{bubbles:true}));}
-      if(r[4]!=='auto'&&!jest(k))ustaw(k,true);widok('k');if(!k.el.classList.contains('otw'))k.el.querySelector('.wu-t').click();};s.appendChild(w);});
-    L.appendChild(s);});}
-  $('wuSz').oninput=lista;
-  function widok(v){[].forEach.call(wu.querySelectorAll('.wu-seg button'),function(b){b.classList.toggle('on',b.dataset.v===v);});$('wuK').hidden=v!=='k';$('wuC').hidden=v!=='c';if(v==='c')lista();}
-  [].forEach.call(wu.querySelectorAll('.wu-seg button'),function(b){b.onclick=function(){widok(b.dataset.v);};});
-  /* dolny pasek: kwota + podglad PDF + wyslij (klikaja oryginalne przyciski silnika) */
+   var w=document.createElement('div');w.className='wu-wiersz';
+   w.innerHTML=(k.il||k.dod?'<button type="button" class="wu-gotowe">Gotowe</button>':'<button type="button" class="wu-dodaj">Dodaj do wyceny</button>')+'<button type="button" class="wu-usun">Usuń z wyceny</button>'+(P.querySelector('[id^="cw_"]')?'<button type="button" class="wu-cena">Zmień cenę</button>':'');
+   P.appendChild(w);
+   var zwin=function(){d.classList.remove('otw');d.querySelector('.wu-ut').setAttribute('aria-expanded','false');};
+   var g=w.querySelector('.wu-gotowe');if(g)g.onclick=zwin;
+   var dd=w.querySelector('.wu-dodaj');if(dd)dd.onclick=function(){ustaw(k,!jest(k));if(jest(k))zwin();};
+   w.querySelector('.wu-usun').onclick=function(){ustaw(k,false);zwin();};
+   var ce=w.querySelector('.wu-cena');if(ce)ce.onclick=function(){d.classList.toggle('ceny');ce.textContent=d.classList.contains('ceny')?'Ukryj cenę':'Zmień cenę';};
+   /* wpisana ilosc = automatycznie "robimy" */
+   P.addEventListener('input',function(e){var dw=e.target.closest&&e.target.closest('.dod-w');
+    if(dw){var u=dw.querySelector('.dod-u');if(u&&!u.checked&&(dw.querySelector('.dod-o')||{}).value){u.checked=true;ev(u,'change');}}
+    var v=parseFloat(String(e.target.value||'').replace(',','.'));
+    if(((e.target.type==='number'||e.target.inputMode==='decimal')&&v>0)||(e.target.classList&&e.target.classList.contains('dod-o')&&e.target.value.trim())){if(!jest(k))ustaw(k,true);}
+    odswiez();});
+   /* nacisniecie uslugi = dodanie do wyceny i rozwiniecie pola ilosci (Artur 06.11 15:55) */
+   d.querySelector('.wu-ut').onclick=function(){var o=!d.classList.contains('otw');
+    [].forEach.call(L.querySelectorAll('.wu-u.otw'),function(x){x.classList.remove('otw');x.querySelector('.wu-ut').setAttribute('aria-expanded','false');});
+    if(!o)return;
+    if((k.il||k.dod)&&!jest(k))ustaw(k,true);
+    d.classList.add('otw');this.setAttribute('aria-expanded','true');
+    setTimeout(function(){d.scrollIntoView({block:'start',behavior:'smooth'});var q=k.il&&$(k.il);if(!q&&k.dod)q=d.querySelector('.dod-o');
+     if(q&&!q.disabled&&!String(q.value||'').trim()){try{q.focus({preventScroll:true});}catch(e){}}},80);};
+   k.el=d;L.appendChild(d);});
+  /* dane klienta - tylko adres, telefon, e-mail (Artur 06.11 16:0x) */
+  var D=$('wuD');['ulicaKl','telKl','mailKl'].forEach(function(f){var b=blok(f);if(b)D.appendChild(b);});
+  etykieta('ulicaKl','Adres (ulica i numer)');etykieta('telKl','Telefon');etykieta('mailKl','E-mail');
+  var W=$('wuWi');['drop','miniatury','terminKl','kodKl','miastoKl','dzielKl','pietroKl','@winda','imieKl','obiektKl','gatKl','montazKl','vatBlok','kopiaBlok'].forEach(function(f){var b=blok(f);if(b)W.appendChild(b);});
+  /* koniec formularza: blad + glowny przycisk Wyslij (pokazuje tez "WYSLANE!") */
+  var kon=$('wuKon');['bladForm','wyslij'].forEach(function(f){var e=$(f);if(e)kon.appendChild(e);});
+  var bw=$('wyslij');if(bw&&!bw.disabled){[].forEach.call(bw.childNodes,function(n){if(n.nodeType===3&&n.textContent.trim())n.textContent=' Wyślij wycenę';});bw.dataset.oryg=bw.innerHTML;}
+  /* dolny pasek: kwota + Zapisz + PDF + Wyslij */
   var bar=document.createElement('div');bar.id='wuBar';
-  bar.innerHTML='<div><small>Netto</small><b id="wuSum">0 zł</b></div><button type="button" class="pdf">Podgląd PDF</button><button type="button" class="wys">Wyślij</button>';
+  bar.innerHTML='<div style="min-width:0"><small>Netto</small><b id="wuSum">0 zł</b></div><button type="button" class="zap">Zapisz</button><button type="button" class="pdf">PDF</button><button type="button" class="wys">Wyślij</button>';
   document.body.appendChild(bar);
+  info=document.createElement('div');info.id='wuInfo';info.hidden=true;info.setAttribute('role','status');document.body.appendChild(info);
+  info.onclick=function(){info.hidden=true;};
+  window.spSzkicInfo=pokazInfo;
+  var bz=bar.querySelector('.zap');bz.onclick=function(){if(!window.spZapiszSzkic)return;bz.disabled=true;
+   window.spZapiszSzkic().finally(function(){bz.disabled=false;});};
   bar.querySelector('.pdf').onclick=function(){var b=$('podgladOferty');b&&b.click();};
-  bar.querySelector('.wys').onclick=function(){var b=$('wyslij');if(b){b.scrollIntoView({block:'center',behavior:'smooth'});b.click();}};
+  bar.querySelector('.wys').onclick=function(){var b=$('wyslij');if(b){b.scrollIntoView({block:'center',behavior:'smooth'});if(!b.disabled)b.click();}};
   odswiez();setInterval(odswiez,800);}
- function odswiez(){K.forEach(function(k){if(!k.el||k.szer)return;var t=jest(k);k.el.classList.toggle('tak',t);if(k.cb)k.cb.checked=t;
-   var s=k.el.querySelector('.wu-s'),kw=t?kwota(k):'';s.textContent=t?('✓ '+(kw||'w wycenie')):'dotknij, aby dodać';});
-  var A;try{A=window.spArkusz&&window.spArkusz();}catch(e){}var e=$('wuSum');if(e&&A)e.textContent=zl(A.suma||0);}
+ function odswiez(){K.forEach(function(k){if(!k.el)return;var t=jest(k);k.el.classList.toggle('tak',t);
+   var kw=t?kwota(k):'',il=t?ilosc(k):'';
+   k.el.querySelector('.wu-un small').textContent=t?('✓ '+(il||'w wycenie')):k.j;
+   var u=k.el.querySelector('.wu-uk');var html=t?(kw||'✓'):'<span class="wu-plus" aria-hidden="true">+</span>';if(u.__h!==html){u.innerHTML=html;u.__h=html;}});
+  var A;try{A=window.spArkusz&&window.spArkusz();}catch(e){}var e=$('wuSum');if(e&&A)e.textContent=zl(A.suma||0);
+  var n=document.querySelectorAll('#folWyn button.fw-sz').length,fn=$('wuFolN');if(fn)fn.textContent=n?String(n):'';}
  window.spWuOdswiez=odswiez;
  function start(){setTimeout(zbuduj,700);}
  if(document.readyState==='complete')start();else window.addEventListener('load',start);

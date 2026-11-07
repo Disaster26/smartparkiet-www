@@ -288,6 +288,8 @@ function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
     const kiedy = Utilities.formatDate(new Date(), 'Europe/Warsaw', 'yyyy-MM-dd HH-mm');
+    /* Artur 06.11: przycisk "Zapisz" - sam zapis do Folderu ofert, bez PDF, arkusza, rejestru i bez zadnego maila */
+    if (d.tryb === 'szkic') return json(zapiszSzkic(d, kiedy));
     /* 27.10: numer zamowienia ze strony; gdy strona go nie dostala - nadajemy tutaj (tylko zamowienia) */
     const numer = /^SMART\/\d{4}\/\d{4}\/\d{3,}$/.test(String(d.numer || '')) ? String(d.numer) : (d.zamowienie ? nadajNumer() : '');
     const nazwa = czysc(kiedy + ' ' + (numer ? numer.replace(/\//g, '-') + ' ' : '') + (d.opis || 'wycena')) + '.pdf';
@@ -343,6 +345,8 @@ function doPost(e) {
         attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Wstepna_wycena_SMARTPARKIET.pdf')] : []
       });
     }
+    /* 07.11: oferta wyslana na podstawie zapisanej wyceny - szkic nie jest juz potrzebny (wyslana wersja jest w folderze) */
+    if (d.szkicUsun) try { usunSzkic(d.szkicUsun); } catch (e) { console.error('usun szkic: ' + e); }
     return json({ ok: true, plik: nazwa, id: idStanu, nr: numer });
   } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({ ok: false, blad: String(err) }))
@@ -362,6 +366,7 @@ function doGet(e) {
     if (!hasloOk(p.pin)) { c.put('bledyPin', String(bledy + 1), 3600); return json({ ok: false, blad: 'Zły PIN' }); }
     return json({ ok: true, k: kluczListy() });
   }
+  if (p.a === 'wersja') return json({ ok: true, wersja: '2026-11-07', szkic: true }); /* 07.11: front sprawdza, czy skrypt zna zapis szkicow */
   if (p.a === 'nr') return json({ ok: true, nr: nadajNumer() }); /* 27.10: numer zamowienia dla strony (przed PDF i mailem do biura) */
   if (p.a === 'lista' || p.a === 'wczytaj') {
     if (String(p.k || '') !== kluczListy()) return json({ ok: false, blad: 'Brak dostępu' });
@@ -375,7 +380,11 @@ function doGet(e) {
     const it = folderPoprawek().getFiles();
     while (it.hasNext()) {
       const f = it.next();
-      lista.push({ id: f.getId(), opis: f.getDescription() || f.getName().replace(/\.json$/, ''), t: f.getDateCreated().getTime() });
+      if (f.isTrashed()) continue;
+      const opis = f.getDescription() || f.getName().replace(/\.json$/, '');
+      /* 07.11: szkic (Zapisz) - data ostatniego zapisu, znacznik szkic */
+      const szkic = /^SZKIC /.test(f.getName()) || /\bZAPISANA\b/.test(opis);
+      lista.push({ id: f.getId(), opis: opis, t: (szkic ? f.getLastUpdated() : f.getDateCreated()).getTime(), szkic: szkic });
     }
     lista.push.apply(lista, stareZRejestru());
     lista.sort(function (x, y) { return y.t - x.t; });
@@ -444,3 +453,43 @@ function staraOferta(id) {
   return { ok: true, stara: true, tekst: tekst, kiedy: d['Data'] || '', pozycje: poz, arkusz: f.getUrl() };
 }
 
+/* Artur 06.11 16:2x: "przycisk ZAPISZ - zapisuje w katalogu, wroce i wysle pozniej".
+   Szkic = plik "SZKIC <id>.json" w folderze "Oferty do poprawki" (ten sam format co zapis przy wysylce + szkic:true).
+   <id> nadaje strona i trzyma w stanie wyceny, wiec ponowne Zapisz tej samej wyceny NADPISUJE ja: nowy plik, a stare pliki
+   z tym <id> (tez kopie zapisane przez starsza wersje skryptu jako "... ZAPISANA #<id> ...") ida do kosza Dysku.
+   Bez PDF, bez arkusza, bez Rejestru wycen i bez maili (ani do klienta, ani do biura). */
+function zapiszSzkic(d, kiedy) {
+  const id = String(d.szkicId || '').replace(/[^0-9a-z]/gi, '').slice(0, 40);
+  if (id.length < 6) return { ok: false, blad: 'Brak identyfikatora wyceny' };
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const fol = folderPoprawek();
+    const nazwa = 'SZKIC ' + id + '.json';
+    const opis = czysc(kiedy + ' ' + (d.opis || ('ZAPISANA #' + id)));
+    const stan = d.stan || {};
+    stan.szkic = 1; stan.szkicId = id;
+    const plik = fol.createFile(nazwa, JSON.stringify({ kiedy: kiedy, opis: d.opis || '', mailKlienta: '', szkic: true, szkicId: id,
+      stan: stan, zdjecia: d.zdjecia || [] }), 'application/json');
+    plik.setDescription(opis);
+    usunSzkic(id, plik.getId());
+    return { ok: true, szkic: true, id: plik.getId(), plik: nazwa };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/* wszystkie pliki szkicu <id> do kosza (poza plikiem "zostaw") - po nadpisaniu albo po prawdziwej wysylce */
+function usunSzkic(idSzkicu, zostaw) {
+  const id = String(idSzkicu || '').replace(/[^0-9a-z]/gi, '').slice(0, 40);
+  if (id.length < 6) return 0;
+  let n = 0;
+  const it = folderPoprawek().searchFiles('title contains "' + id + '" and trashed = false');
+  while (it.hasNext()) {
+    const f = it.next();
+    if (f.getId() === zostaw) continue;
+    if (f.getName().indexOf(id) < 0) continue;
+    f.setTrashed(true); n++;
+  }
+  return n;
+}
