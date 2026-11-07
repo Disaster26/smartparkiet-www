@@ -37,6 +37,8 @@ OKR = ('<script type="application/ld+json" id="ld-okruszki">{"@context": "https:
        '{"@type": "ListItem", "position": 2, "name": "Zamów usługę online", "item": "https://smartparkiet.com.pl/zamow-online.html"}]}</script>')
 s = re.sub(r'<script type="application/ld\+json" id="ld-okruszki">.*?</script>', lambda m: OKR, s, count=1, flags=re.S)
 
+# prosty widok (Artur 07.11) nie dotyczy koszyka
+s = re.sub(r'\s*<!-- prosty-widok START -->.*?<!-- prosty-widok KONIEC -->', '', s, count=1, flags=re.S)
 # tryb zamowienia - zanim wystartuja skrypty strony
 m = re.search(r'<meta name="viewport"[^>]*>', s)
 s = s[:m.end()] + NL + '<script>window.SP_ZAMOWIENIE=1;</script>' + s[m.end():]
