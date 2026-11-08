@@ -290,6 +290,8 @@ function doPost(e) {
     const kiedy = Utilities.formatDate(new Date(), 'Europe/Warsaw', 'yyyy-MM-dd HH-mm');
     /* Artur 06.11: przycisk "Zapisz" - sam zapis do Folderu ofert, bez PDF, arkusza, rejestru i bez zadnego maila */
     if (d.tryb === 'szkic') return json(zapiszSzkic(d, kiedy));
+    /* Artur 08.11: krotka opinia klienta po wysylce wyceny -> zakladka "Opinie" w Rejestrze wycen (do analizy) */
+    if (d.tryb === 'opinia') return json(zapiszOpinie(d, kiedy));
     /* 27.10: numer zamowienia ze strony; gdy strona go nie dostala - nadajemy tutaj (tylko zamowienia) */
     const numer = /^SMART\/\d{4}\/\d{4}\/\d{3,}$/.test(String(d.numer || '')) ? String(d.numer) : (d.zamowienie ? nadajNumer() : '');
     const nazwa = czysc(kiedy + ' ' + (numer ? numer.replace(/\//g, '-') + ' ' : '') + (d.opis || 'wycena')) + '.pdf';
@@ -492,4 +494,39 @@ function usunSzkic(idSzkicu, zostaw) {
     f.setTrashed(true); n++;
   }
   return n;
+}
+
+/* Artur 08.11: opinie klientow o wycenie online. Zakladka "Opinie" w arkuszu "Rejestr wycen": najnowsza na gorze,
+   a w kolumnach J-K podsumowanie (liczba, srednia, rozklad gwiazdek) przeliczane przy kazdej nowej opinii
+   (wartosci, nie formuly - polski arkusz nie lubi przecinkow w setFormula). */
+function zapiszOpinie(d, kiedy) {
+  const ocena = Math.max(1, Math.min(5, parseInt(d.ocena, 10) || 0));
+  if (!ocena) return { ok: false, blad: 'ocena' };
+  const it = glownyFolder().getFilesByName('Rejestr wycen');
+  if (!it.hasNext()) return { ok: false, blad: 'brak rejestru' };
+  const ss = SpreadsheetApp.open(it.next());
+  let sh = ss.getSheetByName('Opinie');
+  if (!sh) {
+    sh = ss.insertSheet('Opinie');
+    sh.getRange(1, 1, 1, 8).setValues([['Data', 'Ocena (1-5)', 'Ocena słownie', 'Komentarz', 'Adres', 'Telefon', 'Nr oferty', 'Strona']])
+      .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
+    sh.setFrozenRows(1);
+    sh.setColumnWidth(4, 360);
+  }
+  const t = function (v, n) { return String(v || '').replace(/\s+/g, ' ').trim().slice(0, n); };
+  sh.insertRowAfter(1);
+  const w = sh.getRange(2, 1, 1, 8);
+  w.setBackground(null).setFontColor('#1A1A1A').setFontWeight('normal');
+  w.setValues([[kiedy.replace(/ (\d\d)-(\d\d)$/, ' $1:$2'), ocena, t(d.slowo, 30), t(d.komentarz, 600), t(d.adres, 200), t(d.tel, 40), t(d.nr, 40), t(d.strona, 80)]]);
+  try {
+    const n = sh.getLastRow() - 1;
+    const v = n > 0 ? sh.getRange(2, 2, n, 1).getValues().map(function (r) { return +r[0] || 0; }).filter(function (x) { return x > 0; }) : [];
+    const ile = [0, 0, 0, 0, 0, 0];
+    v.forEach(function (x) { ile[x]++; });
+    const sr = v.length ? Math.round(v.reduce(function (a, b) { return a + b; }, 0) / v.length * 100) / 100 : 0;
+    sh.getRange(1, 10, 8, 2).setValues([['Podsumowanie', ''], ['Liczba opinii', v.length], ['Średnia', sr],
+      ['5 gwiazdek', ile[5]], ['4 gwiazdki', ile[4]], ['3 gwiazdki', ile[3]], ['2 gwiazdki', ile[2]], ['1 gwiazdka', ile[1]]]);
+    sh.getRange(1, 10, 1, 2).setFontWeight('bold').setBackground('#16191D').setFontColor('#FFFFFF');
+  } catch (e) { console.error('podsumowanie opinii: ' + e); }
+  return { ok: true };
 }
