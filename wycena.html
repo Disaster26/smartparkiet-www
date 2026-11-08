@@ -4079,7 +4079,8 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
 <!-- prosty-widok KONIEC -->
 <!-- opinia-0811 START -->
 <style id="opinia-0811">
-/* Artur 08.11 14:47-14:50: krotka opinia klienta po wysylce wyceny. Ocena trafia TYLKO do biura (mail przez /wyslij.php),
+/* Artur 08.11 14:47-14:50: krotka opinia klienta po wysylce wyceny. Ocena trafia TYLKO do biura: wiersz w arkuszu "Rejestr wycen",
+   zakladka "Opinie" (Apps Script, tryb opinia - do analizy) + mail przez /wyslij.php,
    nic nie jest publikowane - zadnego ryzyka "trojki" na wizytowce Google. */
 #spOpinia{margin:14px 0 4px;padding:18px 16px 16px;border-radius:16px;background:#16191D;color:#F4EFE8;font-family:Inter,system-ui,sans-serif;box-shadow:0 10px 28px rgba(20,17,14,.18);text-align:left}
 #spOpinia .op-t{display:block;font-size:1.05rem;font-weight:800;line-height:1.3;color:#fff;margin:0 0 4px}
@@ -4109,6 +4110,7 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
 (function(){
   var wew=false;try{wew=!!window.SP_ANALIZATOR||/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
   var URL_W=(/(^|\.)smartparkiet\.com\.pl$/.test(location.hostname)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))?'/wyslij.php':'https://smartparkiet.com.pl/wyslij.php';
+  var ARKUSZ='https://script.google.com/macros/s/AKfycbxC1j9MytYHxqD-ONdcd8Bar5SxnAVnmr8pxP1_pdEEIZzB1hbh9AXRDtXEg5hX0QXzDA/exec'; /* ten sam Apps Script co Folder ofert (ai/wyceny_dysk.gs) */
   var ETYK=['','Słabo','Może być','W porządku','Dobrze','Super!'];
   var GW='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.5l6-.8z"/></svg>';
   var z=null,zT=0;
@@ -4144,8 +4146,13 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
         fd.append('_honey','');fd.append('email','');fd.append('_z',z||'');
         fd.append('_pola',JSON.stringify([['Ocena',gw+' ('+ocena+'/5, '+ETYK[ocena].replace('!','')+')'],
           ['Komentarz',ta.value.trim()||'-'],['Adres',adr||'-'],['Telefon',pole('telKl')||'-'],['Oferta nr',window.__nrOferty||'-'],['Strona',location.pathname]]));
-        var r=await fetch(URL_W,{method:'POST',body:fd,headers:{'Accept':'application/json'}});var j=await r.json().catch(function(){return {};});
-        if(!(r.ok&&j.success))throw 0;
+        /* Artur 08.11: glownie do arkusza (analiza), mail dodatkowo */
+        var doArk=fetch(ARKUSZ,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body:JSON.stringify({tryb:'opinia',ocena:ocena,slowo:ETYK[ocena].replace('!',''),komentarz:ta.value.trim(),adres:adr,tel:pole('telKl'),nr:window.__nrOferty||'',strona:location.pathname})})
+          .then(function(){return true;}).catch(function(){return false;});
+        var doMaila=fetch(URL_W,{method:'POST',body:fd,headers:{'Accept':'application/json'}}).then(function(r){return r.json().then(function(j){return r.ok&&!!j.success;}).catch(function(){return false;});}).catch(function(){return false;});
+        var wyn=await Promise.all([doArk,doMaila]);
+        if(!wyn[0]&&!wyn[1])throw 0;
         try{sessionStorage.setItem('spOpinia',String(ocena));}catch(e){}
         c.innerHTML='<p class="op-ok"><b>Dziękujemy za opinię!</b> '+(ocena>=4?'Cieszymy się, że wycena online się przydała.':'Weźmiemy ją pod uwagę przy kolejnych poprawkach kalkulatora.')+'</p>';
       }catch(e){w.disabled=false;w.textContent='Wyślij opinię';l.textContent='Nie udało się wysłać - spróbuj jeszcze raz.';}};
