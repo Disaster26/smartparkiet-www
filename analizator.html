@@ -2039,7 +2039,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
           {const wb=document.getElementById('wyslano'); if(wb)wb.hidden=true;}
           bw&&bw.scrollIntoView({behavior:'smooth',block:'center'});
           if(window.spZamowienieOk)window.spZamowienieOk(); else if(window.spChce&&window.spChce()&&window.spZamPanel)window.spZamPanel(window.spChce().termin); /* 27.10: ekran zamowienia (zamow-online i "Chcę zamówić") */
-          if(window.spPokazPopraw)window.spPokazPopraw(); if(window.spZapiszWycene)window.spZapiszWycene();
+          if(window.spPokazPopraw)window.spPokazPopraw(); if(window.spZapiszWycene)window.spZapiszWycene(); if(window.spOpinia)setTimeout(window.spOpinia,1200); /* Artur 08.11: krotka opinia po wysylce (tylko klient) */
         }
       };
       /* 14.10: przy 12 zdjeciach i slabym zasiegu przesylanie trwa dluzej niz 25 s - wczesniej pokazywalo blad, choc mail dochodzil */
@@ -3688,6 +3688,82 @@ html body #uzgPanel label{gap:7px!important;line-height:1.25!important;min-heigh
  b.parentNode.insertBefore(a,b.nextSibling);})();
 </script>
 <style id="bez-oceny-0711">/* Artur 06.11 17:44: "nie bedziemy oceniac zadnych zdjec" - bez przycisku Ocen zdjecie teraz */#analizuj{display:none!important}</style>
+<!-- opinia-0811 START -->
+<style id="opinia-0811">
+/* Artur 08.11 14:47-14:50: krotka opinia klienta po wysylce wyceny. Ocena trafia TYLKO do biura (mail przez /wyslij.php),
+   nic nie jest publikowane - zadnego ryzyka "trojki" na wizytowce Google. */
+#spOpinia{margin:14px 0 4px;padding:18px 16px 16px;border-radius:16px;background:#16191D;color:#F4EFE8;font-family:Inter,system-ui,sans-serif;box-shadow:0 10px 28px rgba(20,17,14,.18);text-align:left}
+#spOpinia .op-t{display:block;font-size:1.05rem;font-weight:800;line-height:1.3;color:#fff;margin:0 0 4px}
+#spOpinia .op-p{margin:0 0 12px;font-size:.84rem;line-height:1.45;color:#C9C4BD}
+#spOpinia .op-g{display:flex;gap:6px;align-items:center}
+#spOpinia .op-g button{all:unset;box-sizing:border-box;cursor:pointer;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#24282D;-webkit-tap-highlight-color:transparent;transition:transform .16s ease-out,background .16s ease}
+#spOpinia .op-g button:active{transform:scale(.94)}
+#spOpinia .op-g button:focus-visible{outline:2px solid #FF6A13;outline-offset:2px}
+#spOpinia .op-g svg{width:28px;height:28px;fill:none;stroke:#6B7078;stroke-width:1.8;stroke-linejoin:round;transition:fill .16s ease,stroke .16s ease}
+#spOpinia .op-g button.on{background:#2E2117}
+#spOpinia .op-g button.on svg{fill:#FF6A13;stroke:#FF6A13}
+#spOpinia .op-l{display:block;min-height:1.2em;margin:8px 0 0;font-size:.82rem;font-weight:700;color:#FF8A4C}
+#spOpinia .op-k{margin-top:10px}
+#spOpinia .op-k[hidden]{display:none}
+#spOpinia textarea{width:100%;box-sizing:border-box;min-height:70px;padding:10px 12px;border-radius:10px;border:1px solid #3A3F45;background:#24282D;color:#fff;font:inherit;font-size:16px;line-height:1.4;resize:vertical}
+#spOpinia textarea::placeholder{color:#8A8F96}
+#spOpinia .op-w{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin-top:10px;min-height:46px;padding:0 20px;border-radius:12px;background:#FF6A13;color:#fff;font-weight:800;font-size:.95rem;transition:transform .16s ease-out,background .16s ease}
+#spOpinia .op-w:hover{background:#F25F0C}
+#spOpinia .op-w:active{transform:scale(.97)}
+#spOpinia .op-w[disabled]{opacity:.6;cursor:default}
+#spOpinia .op-ok{margin:0;font-size:.92rem;line-height:1.45;color:#fff}
+#spOpinia .op-ok b{color:#FF8A4C}
+#spOpinia .op-x{all:unset;float:right;cursor:pointer;color:#8A8F96;font-size:1.4rem;line-height:1;padding:2px 6px;margin:-8px -6px 0 8px}
+@media(prefers-reduced-motion:reduce){#spOpinia *{transition:none!important}}
+</style>
+<script>
+(function(){
+  var wew=false;try{wew=!!window.SP_ANALIZATOR||/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
+  var URL_W=(/(^|\.)smartparkiet\.com\.pl$/.test(location.hostname)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))?'/wyslij.php':'https://smartparkiet.com.pl/wyslij.php';
+  var ETYK=['','Słabo','Może być','W porządku','Dobrze','Super!'];
+  var GW='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.5l6-.8z"/></svg>';
+  var z=null,zT=0;
+  function znacznik(){zT=Date.now();return fetch(URL_W+'?znacznik=1',{cache:'no-store',headers:{'Accept':'application/json'}}).then(function(r){return r.json();}).then(function(j){z=(j&&j.z)||null;return z;}).catch(function(){return null;});}
+  function pole(id){return ((document.getElementById(id)||{}).value||'').trim();}
+  window.spOpinia=function(){
+    if(wew||document.getElementById('spOpinia'))return;
+    try{if(sessionStorage.getItem('spOpinia'))return;}catch(e){}
+    var bw=document.getElementById('wyslij');if(!bw||!bw.parentNode)return;
+    var za=document.getElementById('zamOk'),po=(za&&za.parentNode===bw.parentNode)?za:bw;
+    var c=document.createElement('div');c.id='spOpinia';c.setAttribute('role','group');c.setAttribute('aria-label','Ocena wyceny online');
+    c.innerHTML='<button type="button" class="op-x" aria-label="Zamknij">&times;</button><b class="op-t">Jak oceniasz wycenę online?</b>'+
+      '<p class="op-p">Jedno kliknięcie. Ocena trafia tylko do naszego biura i pomaga nam ulepszać kalkulator.</p>'+
+      '<div class="op-g">'+[1,2,3,4,5].map(function(n){return '<button type="button" data-n="'+n+'" aria-label="'+n+' na 5">'+GW+'</button>';}).join('')+'</div>'+
+      '<span class="op-l" aria-live="polite"></span>'+
+      '<div class="op-k" hidden><textarea maxlength="600" aria-label="Komentarz"></textarea><button type="button" class="op-w">Wyślij opinię</button></div>';
+    po.parentNode.insertBefore(c,po.nextSibling);
+    znacznik();
+    var ocena=0,g=c.querySelector('.op-g'),l=c.querySelector('.op-l'),k=c.querySelector('.op-k'),ta=c.querySelector('textarea'),w=c.querySelector('.op-w');
+    c.querySelector('.op-x').onclick=function(){c.remove();try{sessionStorage.setItem('spOpinia','x');}catch(e){}};
+    g.addEventListener('click',function(ev){var b=ev.target.closest('button[data-n]');if(!b)return;ocena=+b.getAttribute('data-n');
+      [].forEach.call(g.children,function(x){var n=+x.getAttribute('data-n');x.classList.toggle('on',n<=ocena);x.setAttribute('aria-pressed',n===ocena?'true':'false');});
+      l.textContent=ETYK[ocena];k.hidden=false;
+      ta.placeholder=ocena<=3?'Co możemy poprawić? (opcjonalnie)':'Co było najwygodniejsze? (opcjonalnie)';});
+    w.onclick=async function(){if(!ocena)return;w.disabled=true;w.textContent='Wysyłam...';
+      try{
+        if(!z||Date.now()-zT>3*3600*1000)await znacznik();
+        var cz=3500-(Date.now()-zT);if(cz>0)await new Promise(function(r){setTimeout(r,cz);});
+        var adr=[pole('ulicaKl'),pole('miastoKl')].filter(Boolean).join(', ');
+        var gw='';for(var i=1;i<=5;i++)gw+=i<=ocena?'★':'☆';
+        var fd=new FormData();
+        fd.append('_subject','Opinia o wycenie online: '+ocena+'/5'+(adr?' - '+adr:''));
+        fd.append('_honey','');fd.append('email','');fd.append('_z',z||'');
+        fd.append('_pola',JSON.stringify([['Ocena',gw+' ('+ocena+'/5, '+ETYK[ocena].replace('!','')+')'],
+          ['Komentarz',ta.value.trim()||'-'],['Adres',adr||'-'],['Telefon',pole('telKl')||'-'],['Oferta nr',window.__nrOferty||'-'],['Strona',location.pathname]]));
+        var r=await fetch(URL_W,{method:'POST',body:fd,headers:{'Accept':'application/json'}});var j=await r.json().catch(function(){return {};});
+        if(!(r.ok&&j.success))throw 0;
+        try{sessionStorage.setItem('spOpinia',String(ocena));}catch(e){}
+        c.innerHTML='<p class="op-ok"><b>Dziękujemy za opinię!</b> '+(ocena>=4?'Cieszymy się, że wycena online się przydała.':'Weźmiemy ją pod uwagę przy kolejnych poprawkach kalkulatora.')+'</p>';
+      }catch(e){w.disabled=false;w.textContent='Wyślij opinię';l.textContent='Nie udało się wysłać - spróbuj jeszcze raz.';}};
+  };
+})();
+</script>
+<!-- opinia-0811 KONIEC -->
 <style>/* analizator: okienko SMS wyroznione (Artur 21.10 17:27) */
 html body .sms-box{background:#3A3D42!important;border:1.5px solid #3A3D42!important;color:#F4EFE8;box-shadow:0 6px 18px rgba(20,17,14,.18)}
 html body .sms-box::before{content:"Analizator";display:block;font-size:1.15rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#FF8A4C;margin:0 0 6px}
