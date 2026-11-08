@@ -94,7 +94,7 @@ details.wu-wiecej>summary small{display:block;font:600 .8rem Manrope,system-ui,s
 .wu-folp{display:none;margin:-4px 0 12px}
 .wu-folp.otw{display:block}
 .wu-folp .sms-box{margin:0!important}
-html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important}
+html.wu .sms-box textarea#smsWklej{height:72px!important;min-height:0!important}
 /* koniec formularza */
 .wu-koniec{margin:16px 0 0}
 #wycena #wu .wu-podg{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:52px;margin:0 0 8px;border:0;border-radius:12px;background:#14110E;color:#fff;font:800 1rem Inter,system-ui,sans-serif;cursor:pointer}
