@@ -3801,6 +3801,11 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
      kazde slowo zapytania musi byc fragmentem tekstu oferty (adres, nazwa pliku, klient, telefon, data), w dowolnej kolejnosci */
   var tnij=function(t){return bezOg(t).replace(/[.,_\/\\;:·()\-]+/g,' ').replace(/\s+/g,' ').trim();};
   var qn=tnij(q),qw=qn?qn.split(' '):[],qs=qn.replace(/\s+/g,'');
+  /* Artur 08.11 14:41: wpisuje "ostatnie" (tez "/ostatnie/", "ost") - 10 ostatnich wycen, od najnowszej */
+  var OST=/^\/?(ost|ostat|ostatni|ostatnie|ostatnia)\/?$/.test(q.replace(/\s+/g,''));
+  if(OST){var lo=WSZ.slice().sort(function(x,y){return (y.t||0)-(x.t||0);}).slice(0,10);lo.forEach(function(o){o._r=rozbierz(o);o._r.wersja=czySzkic(o)?(o.lok?'NA TELEFONIE':'ZAPISANA'):'';});
+   sel.innerHTML='<option value="">Ostatnie '+lo.length+' wycen - wybierz…</option>'+lo.map(function(o){var r=o._r;return '<option value="'+o.id+'">'+[r.kiedy,r.wersja,r.netto,r.reszta].filter(Boolean).join(' · ')+'</option>';}).join('');
+   var wy=document.getElementById('folWyn');if(wy)wy.innerHTML=lo.length?'<small class="fw-zh">Ostatnie wyceny ('+lo.length+'), od najnowszej</small>'+lo.map(przycisk).join(''):'<small style="color:#E9E4DD">Folder jest pusty.</small>';return;}
   var lis=WSZ.filter(function(o){if(!q)return true;var t=tnij(o.opis+' '+(o.plik||'')),tz=t.replace(/\s+/g,'');
    return (qw.length&&qw.every(function(w){return t.indexOf(w)>=0;}))||(qs.length>2&&tz.indexOf(qs)>=0);});
   var ile={},bylo={};lis.forEach(function(o){var r=rozbierz(o);o._r=r;if(czySzkic(o))return;ile[r.klucz]=(ile[r.klucz]||0)+1;});
@@ -3818,7 +3823,7 @@ html body .sms-box .sms-wynik{color:#E9E4DD}
    return '<button type="button" data-id="'+o.id+'"'+(o.stara?' class="st"':(czySzkic(o)?' class="fw-sz"':(r.wersja==='starsza wersja'?' class="fw-old"':'')))+'><span class="fw-k">'+r.kiedy+znak+'</span>'+gl+'<small>'+[r.netto?('netto '+r.netto):'',r.nr?('nr '+r.nr):'',o.stara?'stara oferta':'',czySzkic(o)?'niewysłana - otwórz i wyślij':''].filter(Boolean).join(' · ')+'</small></button>';}
  function start(){var box=document.querySelector('.sms-box');if(document.getElementById('folOf')){if(k())lista();return;}if(!box)return;
   var w=document.createElement('div');w.id='folOf';
-  w.innerHTML='<b>Folder ofert <small style="float:right;font-weight:400;color:#B9BDC3;font-size:.72rem;letter-spacing:0">wersja 07.11</small></b><input id="folSzuk" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Szukaj: 3-4 litery ulicy, telefon lub data" aria-label="Szukaj oferty" style="width:100%;min-height:44px;font-size:16px;margin:0 0 8px;padding:8px 12px;border:1.5px solid #3A3F45;border-radius:10px;box-sizing:border-box"><div id="folWyn"></div><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
+  w.innerHTML='<b>Folder ofert <small style="float:right;font-weight:400;color:#B9BDC3;font-size:.72rem;letter-spacing:0">wersja 08.11</small></b><input id="folSzuk" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Szukaj: ulica, telefon, data albo ostatnie" aria-label="Szukaj oferty" style="width:100%;min-height:44px;font-size:16px;margin:0 0 8px;padding:8px 12px;border:1.5px solid #3A3F45;border-radius:10px;box-sizing:border-box"><div id="folWyn"></div><select id="folSel" aria-label="Wysłane oferty"><option value="">Otwórz listę wysłanych ofert…</option></select><p id="folInfo"></p>';
   box.insertBefore(w,box.firstChild);
   var sel=document.getElementById('folSel');
   sel.addEventListener('pointerdown',function(){if(sel.options.length<2)lista();},{once:true});
