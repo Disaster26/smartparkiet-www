@@ -1812,7 +1812,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       y=zawin(g,'Pracownik jest upoważniony do przyjęcia płatności gotówką (kwota netto). Faktura wystawiana na życzenie klienta. Wycena wstępna, przygotowana na podstawie danych i zdjęć od klienta; ostateczną cenę potwierdza SMARTPARKIET.',M,y,W-2*M,28);
       // zdjecia, 6 na strone, bez pustych ramek
       for(let s0=0;s0<zdj.length;s0+=6){
-        g=nowa();g.textBaseline='alphabetic';naglowek(g,'ZDJĘCIA OD KLIENTA',M,190);
+        g=nowa();g.textBaseline='alphabetic';/* Artur 08.11: bez naglowka nad zdjeciami */
         const sz=(W-2*M-30)/2, wy=(H-260-80-2*30)/3;
         for(let i=s0;i<Math.min(zdj.length,s0+6);i++){
           const im=await new Promise(res=>{const o=new Image();o.onload=()=>res(o);o.onerror=()=>res(null);o.src=URL.createObjectURL(zdj[i]);});

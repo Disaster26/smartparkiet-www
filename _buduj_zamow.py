@@ -66,9 +66,8 @@ s = re.sub(r'    <div class="sticky">.*?</div>\s*<div class="ai">', lambda m: LE
 TEKST = """<section class="zam-tekst" id="jak-to-dziala">
   <div class="wrap">
     <h2>ZAMÓW CYKLINOWANIE SMART ONLINE&trade; + EKSPRES 48H</h2>
-    <p class="zt-start"><b>Zamówienie usługi renowacji parkietu jeszcze nigdy nie było tak proste!</b></p>
     <p>Bez telefonów, oględzin i oczekiwania na wycenę i termin.</p>
-    <p class="zt-lead">Teraz to my dostosowujemy się do Twojego harmonogramu!</p>
+    <p class="zt-lead">Dostosowujemy się do Twoich potrzeb i Twojego harmonogramu!</p>
     <p><b>Zamów CYKLINOWANIE SMART&trade; online, poznaj wstępną wycenę i wybierz dogodne terminy.</b></p>
     <p><b>Potrzebujesz szybkiego startu?</b> W koszyku zaznacz tryb ekspres 48h (start w 24-48 h, do 40 m²).</p>
     <p><b>Złóż zamówienie online!</b> W ciągu 2 godzin roboczych potwierdzimy dostępność wybranego terminu i szczegóły realizacji.</p>
