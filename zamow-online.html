@@ -1144,7 +1144,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
 </script>
 <style>.sms-box{grid-column:1/-1;background:#FFF6F0;border:1.5px dashed #FF6A13;border-radius:12px;padding:14px 16px;margin-bottom:6px}
 .sms-box b{display:block;font-size:.95rem;margin-bottom:4px}.sms-box p{font-size:.82rem;color:#6B5E52;margin:0 0 8px}
-.sms-box textarea{width:100%;min-height:110px;font:inherit;font-size:.9rem}
+.sms-box textarea{width:100%;min-height:72px;height:72px;font:inherit;font-size:.9rem}
 .sms-box .sms-akcje{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
 .sms-box button{border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer;background:#FF6A13;color:#fff}
 .sms-box button.sms-czysc{background:#EDE6DC;color:#3A3F45}
@@ -1157,7 +1157,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
   var on=false; try{on=!!window.SP_ANALIZATOR||/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
   var f=document.querySelector('form.ai-form'); if(!on||!f)return;
   var box=document.createElement('div'); box.className='sms-box';
-  box.innerHTML='<b>Wklej SMS lub wiadomość klienta</b><p>Wklej całą wiadomość tak, jak przyszła. Arkusz sam wpisze adres, telefon, e-mail, metraż, piętro, termin, listwy i uwagi do właściwych pól. Sprawdź je potem wzrokiem.</p>'+
+  box.innerHTML='<b>Wklej SMS lub wiadomość klienta</b>'+ /* Artur 08.11 12:57: bez opisu pod naglowkiem, okienko mniejsze */
     '<textarea id="smsWklej" placeholder="1. Niekłańska 42/19, Warszawa&#10;2. 601 484 540&#10;3. jan.kowalski@wp.pl&#10;4. pokój 10,5 m2, pokój 18 m2&#10;5. parter&#10;6. pomiędzy 12.10 - 16.10&#10;7. listwy - nie"></textarea>'+
     '<div class="sms-akcje"><button type="button" id="smsRozrzuc">Rozrzuć do pól</button><button type="button" class="sms-czysc" id="smsCzysc">Wyczyść</button></div><div class="sms-wynik" id="smsWynik"></div>';
   f.insertBefore(box,f.firstChild);
@@ -1745,7 +1745,8 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
           return hc;};
         const podpis=(t,yy,x)=>{x=x||M;if(rys){g.fillStyle=SZARY;wpisz(g,t,x+2,yy,kol-4,D.fh,'bold');}};
         /* prawa kolumna: Technologia na wysokosci pierwszego podpisu lewego paska */
-        let yRt=yr+28+D.gap;podpis('Technologia',yRt,xR);yRt+=10;techn.forEach(t=>{yRt+=pole(t,yRt,xR)+D.gb;});
+        /* Artur 08.11 13:06: "Technologia Cyklinowanie smart u gory w jednym pasku", pod spodem pasek z lakierem, nizej duzy pasek z informacjami */
+        let yRt=yr+28+D.gap-D.fh+4;yRt+=pole('Technologia: #CyklinowanieSmart',yRt,xR)+D.gb;if(A.technika)yRt+=pole(A.technika,yRt,xR)+D.gb;
         /* Artur 29.10 00:03 "rozjechalo sie ... daj te dolne ramki po prawej stronie, bedzie wiecej miejsca": lewy pasek byl dlugi, prawa kolumna
            prawie pusta, tabela cen spadala na 2. strone. Teraz: ostatnie k pozycji zakresu prac przechodzi na prawo pod Technologie
            (k dobierane tak, zeby kolumny byly mozliwie rowne), a Informacje dodatkowe sa zawsze w prawej kolumnie. */
@@ -1755,17 +1756,21 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         if(zP.length){yRt+=D.gap;podpis(zL.length?'Zakres prac (cd.)':'Zakres prac',yRt,xR);yRt+=10;zP.forEach(t=>{yRt+=pole(t,yRt,xR)+D.gb;});}
         const yLL=yL;yL=yRt;{const M=xR; /* od tego miejsca rysujemy w prawej kolumnie */
         /* informacje dodatkowe: termin, prace dodatkowe / uwagi (ramka, max D.maxU linii - pelna tresc w mailu), odeslanie do zasad */
-        yL+=D.gap;podpis('Informacje dodatkowe',yL,M);yL+=10;
-        yL+=pole((window.SP_ZAMOWIENIE?'Preferowane terminy (do potwierdzenia): ':'Termin: ')+(A.pole('terminKl')||'do ustalenia'),yL,M,!!window.SP_ZAMOWIENIE)+D.gb;
+        /* Artur 08.11 13:05-13:06: informacje dodatkowe (termin + prace dodatkowe / uwagi) w jednym duzym pasku, cala tresc widoczna -
+           zamiast ucinania "... (wiecej w mailu)" czcionka sama sie zmniejsza (do 15 px), a gdy i to za malo, pasek rosnie. */
+        yL+=Math.round(D.gap/2);
         {const ot=window.spOpcjeTekst&&window.spOpcjeTekst();if(ot)yL+=pole(ot,yL,M,true)+D.gb;} /* Artur 28.10: ekspres / sciany */
         /* Artur 27.10 01:52: klient zaznaczyl "Chce skorzystac z wykonania uslugi na podstawie tej oferty" */
         {const ch=window.spChce&&window.spChce();if(ch)yL+=pole('CHCE ZAMÓWIĆ na podstawie oferty - termin: '+ch.termin+' (do potwierdzenia)',yL,M,true)+D.gb;}
-        if(uwT){const fu=D.fl+'px Arial';let ll=linie(g,uwT,kol-28,fu,99);
-          if(ll.length>D.maxU){ll=ll.slice(0,D.maxU);g.font=fu;let o=ll[D.maxU-1];while(o.length>4&&g.measureText(o+' … (więcej w mailu)').width>kol-28)o=o.slice(0,-1);ll[D.maxU-1]=o.replace(/\s+\S*$/,'')+' … (więcej w mailu)';}
-          const hb=D.pd+ll.length*D.lh+(D.fl+8);
-          if(rys){if(EST){g.fillStyle=JASNY;g.fillRect(M,yL,kol,hb);}else{g.fillStyle='#fff';g.fillRect(M,yL,kol,hb);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yL+1,kol-2,hb-2);}
-            g.fillStyle=SZARY;g.font='bold '+(D.fl-2)+'px Arial';g.fillText('Prace dodatkowe / uwagi',M+14,yL+Math.round(D.pd/2)+D.fl);
-            g.fillStyle=CIEMNY;g.font=fu;ll.forEach((t,k)=>g.fillText(t,M+14,yL+Math.round(D.pd/2)+D.fl+8+(k+1)*D.lh-4));}
+        {const tT=(window.SP_ZAMOWIENIE?'Preferowane terminy (do potwierdzenia): ':'Termin: ')+(A.pole('terminKl')||'do ustalenia');
+          const wT=kol-28,limit=(D.maxU+5)*D.lh;let f=D.fl,lh,lT,lU;
+          for(;;){lh=Math.round(f*1.25);lT=linie(g,tT,wT,'italic '+f+'px Arial',99);lU=uwT?linie(g,uwT,wT,f+'px Arial',999):[];
+            const hh=(lT.length+(uwT?lU.length+1:0))*lh;if(hh<=limit||f<=15)break;f--;}
+          const hb=D.pd+(lT.length+(uwT?lU.length+1:0))*lh+6;
+          if(rys){g.fillStyle=JASNY;g.fillRect(M,yL,kol,hb);let ty=yL+Math.round(D.pd/2)+f+2;
+            g.fillStyle=CIEMNY;g.font='italic '+f+'px Arial';lT.forEach(t=>{g.fillText(t,M+14,ty);ty+=lh;});
+            if(uwT){g.fillStyle=SZARY;g.font='bold '+Math.max(13,f-2)+'px Arial';g.fillText('Prace dodatkowe / uwagi',M+14,ty);ty+=lh;
+              g.fillStyle=CIEMNY;g.font=f+'px Arial';lU.forEach(t=>{g.fillText(t,M+14,ty);ty+=lh;});}}
           yL+=hb+D.gb;}
         {const ft='italic '+(D.fl-1)+'px Arial',ll=linie(g,'Przed rozpoczęciem prac prosimy o zapoznanie się z zasadami renowacji na ostatniej stronie.',kol-4,ft,3);
           yL+=D.lh;if(rys){g.fillStyle=SZARY;g.font=ft;ll.forEach((t,k)=>g.fillText(t,M+2,yL+k*D.lh));}yL+=(ll.length-1)*D.lh;}
@@ -1818,7 +1823,8 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       y=zawin(g,'Pracownik jest upoważniony do przyjęcia płatności gotówką (kwota netto). Faktura wystawiana na życzenie klienta. Wycena wstępna, przygotowana na podstawie danych i zdjęć od klienta; ostateczną cenę potwierdza SMARTPARKIET.',M,y,W-2*M,28);
       // zdjecia, 6 na strone, bez pustych ramek
       for(let s0=0;s0<zdj.length;s0+=6){
-        g=nowa();g.textBaseline='alphabetic';/* Artur 08.11: bez naglowka nad zdjeciami */
+        g=nowa();g.textBaseline='alphabetic';/* Artur 08.11 12:54-12:59: nad zdjeciami sam adres klienta (z automatu), bez napisu "zdjecia klienta" */
+        {const ad=A.adres||A.ulica;if(ad){g.fillStyle=NAGL;wpisz(g,ad,M,190,W-2*M,34,'bold');g.fillStyle=POM;g.fillRect(M,214,60,4);}}
         const sz=(W-2*M-30)/2, wy=(H-260-80-2*30)/3;
         for(let i=s0;i<Math.min(zdj.length,s0+6);i++){
           const im=await new Promise(res=>{const o=new Image();o.onload=()=>res(o);o.onerror=()=>res(null);o.src=URL.createObjectURL(zdj[i]);});
@@ -3766,7 +3772,7 @@ details.wu-wiecej>summary small{display:block;font:600 .8rem Manrope,system-ui,s
 .wu-folp{display:none;margin:-4px 0 12px}
 .wu-folp.otw{display:block}
 .wu-folp .sms-box{margin:0!important}
-html.wu .sms-box textarea#smsWklej{height:110px!important;min-height:0!important}
+html.wu .sms-box textarea#smsWklej{height:72px!important;min-height:0!important}
 /* koniec formularza */
 .wu-koniec{margin:16px 0 0}
 #wycena #wu .wu-podg{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:52px;margin:0 0 8px;border:0;border-radius:12px;background:#14110E;color:#fff;font:800 1rem Inter,system-ui,sans-serif;cursor:pointer}
