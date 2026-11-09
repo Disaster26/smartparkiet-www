@@ -314,33 +314,39 @@ function doPost(e) {
       idStanu = plikStanu.getId();
     } catch (e) { console.error('folder poprawek: ' + e); }
     /* 22.10: blad arkusza/rejestru nie moze zablokowac maila do klienta (tak bylo 16:01-16:20) */
+    let urlArkusza = ''; /* Artur 09.11: link do arkusza w kopii dla Artura */
     if (d.arkusz) {
       try {
         const a = d.arkusz;
         a.numer = numer;
         const tytul = String.fromCodePoint(0x1F4CD) + ' ' + czysc((a.ulica || a.imie || a.tel || 'wycena') + ' ' + kiedy.slice(0, 10));
         const url = arkuszWyceny(folder, tytul, a, kiedy);
+        urlArkusza = url;
         rejestr(a, kiedy, url, idStanu);
       } catch (e) { console.error('arkusz/rejestr: ' + e); }
     }
     const mail = String(d.mailKlienta || '').trim();
     const mailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail);
+    let wyslanoBcc = false; /* Artur 09.11: czy Artur dostal juz ten mail w ukrytej kopii */
     if (d.ofertaKlientowi && mailOk && d.pdf) {
       const akapity = ['w załączniku przesyłamy ofertę renowacji parkietu przygotowaną na podstawie przesłanych informacji i zdjęć. Na ostatniej stronie znajdą Państwo zasady renowacji.',
         'W razie pytań albo chęci ustalenia terminu prosimy o kontakt telefoniczny lub odpowiedź na tę wiadomość.'];
       /* Artur 09.11: informacje dodatkowe (pietro, winda, termin realizacji) tez w mailu z oferta */
       const info = String((d.arkusz && d.arkusz.info) || '').replace(/[<>&"]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
       if (info) akapity.splice(1, 0, 'Informacje dodatkowe: ' + info + '.');
-      MailApp.sendEmail({
+      const opcjeOferty = {
         to: mail,
-        bcc: ARTUR, /* Artur 22.10: kopia maila do klienta w jego skrzynce */
+        bcc: ARTUR, /* Artur 22.10: kopia maila do klienta w jego skrzynce; 09.11: bez bcc, gdy ta wersja juz poszla do Artura z podgladu */
         replyTo: ARTUR,
         name: 'SMARTPARKIET',
         subject: d.temat || 'Oferta renowacji parkietu - SMARTPARKIET', /* Artur 26.10 21:57: temat od adresu (budowany w wycena.html) */
         body: 'Dzień dobry,\n\n' + akapity.join('\n\n') + '\n\nPozdrawiamy\nSMARTPARKIET TREMBIŃSKI\nArtur | 602 242 815',
         htmlBody: mailHtml(akapity),
         attachments: [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Oferta_SMARTPARKIET.pdf')]
-      });
+      };
+      if (d.bezBcc) delete opcjeOferty.bcc;
+      MailApp.sendEmail(opcjeOferty);
+      wyslanoBcc = !d.bezBcc;
     } else if (POTWIERDZENIE && mailOk) {
       /* 27.10 02:36-02:44 Artur: nowa tresc potwierdzenia (zamowienie online / "Chce zamowic" vs zwykla wycena) */
       const m = mailPotwierdzenie(!!d.zamowienie, numer);
@@ -354,6 +360,27 @@ function doPost(e) {
         htmlBody: m.html,
         attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Wstepna_wycena_SMARTPARKIET.pdf')] : []
       });
+      wyslanoBcc = true;
+    }
+    /* Artur 09.11 12:19: kazda wycena z narzedzia parkieciarza (podglad, WhatsApp, mail) na smartparkiet.kontakt@gmail.com,
+       takze gdy klient nie podal maila. Gdy wyzej poszla oferta / potwierdzenie z bcc do Artura - drugiego maila nie wysylamy. */
+    if (d.kopiaArtur && !wyslanoBcc) {
+      try {
+        const a = d.arkusz || {};
+        const ak = ['Kopia wyceny z narzędzia parkieciarza (' + kiedy + ').',
+          'Adres: ' + (a.adres || a.ulica || '-') + ' · tel. ' + (a.tel || '-') + ' · e-mail klienta: ' + (a.mail || '-'),
+          'Kwota netto: ' + (Math.round((a.suma || 0) * 100) / 100) + ' zł' + (a.info ? ' · ' + a.info : '')]
+          .map(function (t) { return String(t).replace(/[<>&"]/g, ' '); });
+        if (urlArkusza) ak.push('Arkusz: ' + urlArkusza);
+        MailApp.sendEmail({
+          to: ARTUR,
+          name: 'SMARTPARKIET wyceny',
+          subject: 'Kopia: ' + (d.temat || 'Wycena SMARTPARKIET'),
+          body: ak.join('\n\n'),
+          htmlBody: mailHtml(ak),
+          attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Oferta_SMARTPARKIET.pdf')] : []
+        });
+      } catch (e) { console.error('kopia dla Artura: ' + e); }
     }
     /* 07.11: oferta wyslana na podstawie zapisanej wyceny - szkic nie jest juz potrzebny (wyslana wersja jest w folderze) */
     if (d.szkicUsun) try { usunSzkic(d.szkicUsun); } catch (e) { console.error('usun szkic: ' + e); }

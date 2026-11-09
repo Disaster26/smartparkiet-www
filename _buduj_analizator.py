@@ -254,8 +254,8 @@ s = s.rstrip('\r\n') + NL + FOLDER_JS.replace('\n', NL) + NL
 #    a gdy serwer nie odpowiada - kopia bez zdjec zostaje w telefonie (localStorage) i jest widoczna w Folderze ofert.
 zamien("      naDysk((document.getElementById('mailKl')||{}).value||'');",
        "      window.__wysWlasciwa=1;naDysk((document.getElementById('mailKl')||{}).value||'');")
-zamien("stan:stan,zdjecia:zd})}).then(()=>true)",
-       "stan:stan,zdjecia:zd,szkicUsun:window.spSzkicDoUsuniecia?window.spSzkicDoUsuniecia():''})}).then(()=>true)")
+zamien("stan:stan,zdjecia:zd,kopiaArtur:KOP.kopia,bezBcc:KOP.bezBcc})}).then(()=>true)",
+       "stan:stan,zdjecia:zd,kopiaArtur:KOP.kopia,bezBcc:KOP.bezBcc,szkicUsun:window.spSzkicDoUsuniecia?window.spSzkicDoUsuniecia():''})}).then(()=>true)")
 ZAPISZ_JS = r"""<style>
 #zapiszBtn{width:100%;margin:0 0 10px;border-width:2px;display:flex;align-items:center;justify-content:center;gap:8px}
 #zapiszBtn:disabled{opacity:.6}
