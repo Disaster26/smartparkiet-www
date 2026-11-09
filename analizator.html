@@ -1970,9 +1970,15 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
          wczytac w analizatorze, zmienic kwote i wyslac klientowi poprawiona oferte */
       let stan=null;try{stan=window.spZrzut?window.spZrzut():null;if(stan)stan.podpisy=(window.__podpisy||[]).slice();}catch(e){}
       const b64=f=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]||'');r.onerror=()=>ok('');r.readAsDataURL(f);});
+      /* Artur 09.11 12:19: kazda wycena z narzedzia parkieciarza (podglad / WhatsApp / mail) ma trafic na smartparkiet.kontakt@gmail.com.
+         Apps Script wysyla kopie z PDF i linkiem do arkusza; gdy idzie oferta do klienta z ukryta kopia (bcc) - bez drugiego maila.
+         Bez dubla: oferta wyslana mailem w tej samej wersji, ktora juz poszla do Artura z podgladu - bez bcc. */
+      const KOP={kopia:!!window.SP_ANALIZATOR,bezBcc:false};
+      if(KOP.kopia&&mail){let kl='';try{kl=JSON.stringify(window.spZrzut?window.spZrzut():'')+'|'+(window.__gotowe||[]).map(x=>x.size).join(',');}catch(e){}
+        if(kl&&kl===window.__zapisanyKlucz&&window.__zapisOk){KOP.kopia=false;KOP.bezBcc=true;}}
       const wyslij=async pdf=>{let zd=[];try{zd=(await Promise.all((window.__gotowe||[]).map(b64))).filter(Boolean);}catch(e){}
         return fetch(DYSK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!(window.SP_ZAMOWIENIE||(window.spChce&&window.spChce())),numer:window.__nrZam||'',ekspres:!!(window.spOpcje&&window.spOpcje().ekspres),sciany:!!(window.spOpcje&&window.spOpcje().sciany),terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):((window.spChce&&window.spChce()&&window.spChce().data)?window.spChce().termin:''),stan:stan,zdjecia:zd,szkicUsun:window.spSzkicDoUsuniecia?window.spSzkicDoUsuniecia():''})}).then(()=>true).catch(()=>false);};
+          body:JSON.stringify({opis:opis,pdf:pdf||'',mailKlienta:mail||'',arkusz:ark,ofertaKlientowi:!!(document.getElementById('ofertaKl')||{}).checked,nazwaPdf:(window.__karta&&window.__karta.name)||'',temat:window.spTemat('Wstępna wycena renowacji parkietu SMARTPARKIET'),zamowienie:!!(window.SP_ZAMOWIENIE||(window.spChce&&window.spChce())),numer:window.__nrZam||'',ekspres:!!(window.spOpcje&&window.spOpcje().ekspres),sciany:!!(window.spOpcje&&window.spOpcje().sciany),terminy:window.SP_ZAMOWIENIE?((document.getElementById('terminKl')||{}).value||''):((window.spChce&&window.spChce()&&window.spChce().data)?window.spChce().termin:''),stan:stan,zdjecia:zd,kopiaArtur:KOP.kopia,bezBcc:KOP.bezBcc,szkicUsun:window.spSzkicDoUsuniecia?window.spSzkicDoUsuniecia():''})}).then(()=>true).catch(()=>false);};
       const pdfF=plik||window.__karta;
       if(pdfF&&pdfF.type==='application/pdf')return new Promise(ok=>{
         const r=new FileReader();
