@@ -367,7 +367,7 @@ function doPost(e) {
     if (d.kopiaArtur && !wyslanoBcc) {
       try {
         const a = d.arkusz || {};
-        const ak = ['Kopia wyceny z narzędzia parkieciarza (' + kiedy + ').',
+        const ak = ['Kopia wyceny z narzędzia samodzielna wycena online (' + kiedy + ').',
           'Adres: ' + (a.adres || a.ulica || '-') + ' · tel. ' + (a.tel || '-') + ' · e-mail klienta: ' + (a.mail || '-'),
           'Kwota netto: ' + (Math.round((a.suma || 0) * 100) / 100) + ' zł' + (a.info ? ' · ' + a.info : '')]
           .map(function (t) { return String(t).replace(/[<>&"]/g, ' '); });
