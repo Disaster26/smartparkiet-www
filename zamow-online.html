@@ -4095,8 +4095,9 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
    k.el=d;L.appendChild(d);});
   /* termin i szczegoly */
   if(KOSZ){var tb=$('terminyBlok');if(tb)$('wuTerm').appendChild(tb);}
+  /* Artur 09.11 12:19: w ADRES | info bez gatunku, montazu i VAT (zostaja domyslne: gatunek pusty, montaz nie wiem, VAT 8%) */
   var W=PUB||KOSZ?$('wuWi'):TA;(KOSZ?['miastoKl','pietroKl','@winda','imieKl']:PUB?['terminKl','chceBlok','kodKl','miastoKl','dzielKl','pietroKl','@winda','obiektKl','imieKl','gatKl','montazKl']
-   :['kodKl','miastoKl','dzielKl','imieKl','obiektKl','gatKl','montazKl','vatBlok']).forEach(function(f){var b=blok(f);if(b)W.appendChild(b);});
+   :['kodKl','miastoKl','dzielKl','imieKl','obiektKl']).forEach(function(f){var b=blok(f);if(b)W.appendChild(b);});
   /* koniec: blad, Turnstile, Podglad (JEDEN przycisk wysylki jest na dolnym pasku i w podgladzie), potwierdzenie wyslania */
   var kon=$('wuKon');
   var pg=document.createElement('button');pg.type='button';pg.className='wu-podg';pg.innerHTML=SVG+IK.oko+'</svg>'+(PUB?'Podgląd zgłoszenia':'Podgląd oferty (PDF)');pg.onclick=podglad;
