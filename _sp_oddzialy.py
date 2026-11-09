@@ -72,7 +72,7 @@ ODDZIALY = [
         'ulica': 'ul. Belwederska 23', 'kod': '00-761', 'miasto': 'Warszawa',
         'cid': '8329908770735610659',
         'rola': 'SMARTPARKIET | BLVD 23. Ekipa południowa, dużo kamienic i jodełki.',
-        'obszar': ['Mokotów', 'Śródmieście', 'Ursynów', 'Wilanów', 'Sadyba'],
+        'obszar': ['Mokotów', 'Śródmieście', 'Sadyba'],  # 09.11: Ursynow i Wilanow od 28.10 obsluguje oddzial Ursynow
         'eta': 'ok. 10-20 min',
         'opinia': ('„Podłoga wygląda świetnie, cyklinowanie z uzupełnieniem '
                    'przestrzeni między deskami.”', 'opinia Google, wizytówka Mokotów'),

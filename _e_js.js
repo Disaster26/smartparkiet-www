@@ -5,12 +5,12 @@
     {n:'Demontaż uszkodzonej podłogi',            j:'m²',      s:35,  il:function(d){return d.m2zal}},
     {n:'Osuszanie, najem osuszacza',              j:'doba',    s:90,  il:function(d){return d.u_plesn?7:4}},
     {n:'Wywóz i utylizacja',                      j:'ryczałt', s:200, il:function(d){return d.m2zal>0?1:0}},
-    {n:'Stabilizacja i naprawy',                  j:'m²',      s:65,  il:function(d){return d.u_odsp?d.m2zal:0}},
+    {n:'Stabilizacja i naprawy',                  j:'m²',      s:70,  il:function(d){return d.u_odsp?d.m2zal:0}},
     {n:'Uzupełnienie klepki z odzysku',           j:'m²',      s:120, il:function(d){return d.u_spec?d.m2zal:0}},
     {n:'Cyklinowanie bezpyłowe',                  j:'m²',      s:120, il:function(d){return d.m2}},
     {n:'Lakierowanie lub olejowanie',             j:'m²',      s:0,   il:function(d){return d.m2}},
-    {n:'Koloryzacja',                             j:'m²',      s:55,  il:function(d){return 0}},
-    {n:'Listwy przypodłogowe',                    j:'mb',      s:52,  il:function(d){return d.u_listwy?Math.round(Math.sqrt(d.m2||0)*4):0}},
+    {n:'Koloryzacja',                             j:'m²',      s:70,  il:function(d){return 0}},
+    {n:'Listwy przypodłogowe',                    j:'mb',      s:50,  il:function(d){return d.u_listwy?Math.round(Math.sqrt(d.m2||0)*4):0}},
     {n:'Schody: stopień z podstopnicą',           j:'komplet', s:250, il:function(d){return d.u_schody?1:0}},
     {n:'Zabezpieczenie pomieszczeń i mebli',      j:'ryczałt', s:150, il:function(d){return d.m2>0?1:0}},
     {n:'Dojazd poza Warszawę',                    j:'km',      s:2,   il:function(d){return 0}}
@@ -88,7 +88,7 @@
     if((d.rok>0&&d.rok<1945)||d.podloze==='na legarach'||d.podloze==='na gwoździe'){w.push(['SMART KAMIENICA RESTORE™',0]);op+=' Podłoga w starym układzie, ubytki uzupełniamy klepką z odzysku.';}
     if(EXOT.indexOf(d.gatunek)>-1){w.push(['SMART EXOTIC FLOOR™',0]);op+=' Drewno egzotyczne wymaga wykończenia dobranego do gatunku.';}
     if(d.obiekt==='biuro'||d.obiekt==='lokal usługowy'||d.obiekt==='obiekt publiczny'){w.push(['SMART PUBLIC RESTORE™',0]);op+=' Obiekt czynny, pracujemy etapami poza godzinami działalności.';}
-    if(d.termin!=='zwykły'&&d.m2>0&&d.m2<=40){w.push(['SMART EXPRESS 48H™',0]);op+=' Metraż i termin mieszczą się w trybie 48-godzinnym.';}
+    if(d.termin!=='zwykły'&&d.m2>0&&d.m2<=40){w.push(['Tryb ekspres 48h',0]);op+=' Metraż i termin pozwalają zaznaczyć w zamówieniu online tryb ekspres 48h (start w 24-48 h, do 40 m²).';}
     if(!w.length&&d.m2>0){w.push(['SMART PREMIUM FLOOR™',1]);op='Zakres bez znamion szkody wodnej, więc standardowa renowacja pełna.';}
     w.push(['SMART ZERO DUST™',0]);
     if(w.length===1){op='Proszę uzupełnić metraż i zakres szkody, program dobierze się sam.';}
