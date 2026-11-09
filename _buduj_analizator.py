@@ -143,7 +143,7 @@ FOLDER_JS = r"""<style>
  async function lista(){info('Pobieram listę ofert...');var j;try{j=await api('a=lista');}catch(e){}
   if(!j)return;if(!j.ok){info(j.blad||'Nie udało się pobrać listy.');if(j.blad==='Brak dostępu')pokazPin();return;}
   WSZ0=(j.lista||[]).slice().sort(function(x,y){return (y.t||0)-(x.t||0);});WSZ_T=Date.now();window.spFolderNieaktualny=false;pokazListe();
-  info(j.lista.length?'Wpisz kilka liter ulicy albo wybierz z listy. Oferty od 22.10 wczytują się ze zdjęciami, starsze (szare) - same dane klienta.':'Folder jest pusty.');}
+  info(j.lista.length?'':'Folder jest pusty.');} /* Artur 09.11 12:08: bez tekstu pomocniczego */
  async function wczytaj(id){info('Wczytuję ofertę...');var j;
   /* 06.11: wycena zapisana tylko w tym telefonie (brak internetu przy Zapisz) - bez serwera */
   if(/^lok_/.test(id)){var L=window.spSzkicLokalny?window.spSzkicLokalny(id.slice(4)):null;if(!L){info('Nie ma już tej wyceny na telefonie.');return;}

@@ -26,7 +26,7 @@ html.wu:not(.wu-kosz) #wycena .sticky h2{margin:0!important}
 html.wu #wycena .sticky .se-lead{margin:4px 0 0!important}
 html.wu #wycena .sticky .kalk-foto{margin:12px 0 0!important}
 html.wu-strona.wu #wycena .sticky .kalk-foto{aspect-ratio:2.2/1!important}/* Artur 09.11 12:05: wezsze zdjecie (niski pasek), formularz zaczyna sie wyzej */
-html.wu-strona.wu #wycena .sticky .kalk-foto img{object-position:50% 34%!important}
+html.wu-strona.wu #wycena .sticky .kalk-foto img{object-position:50% 50%!important}/* 12:07: plik wycena-laptop-pasek (ekran rozmyty) */
 html.wu #wycena .split{gap:14px!important}
 html.wu form.ai-form>*:not(#wu),html.wu #wycena .ai-body,html.wu #wycena .ai>.drop,html.wu #wycena .ai>.miniatury,html.wu .cta-bar,html.wu #spTabBtn,html.wu #spDok,html.wu #zapiszBtn,html.wu #szkicInfo,html.wu #podgladOferty,html.wu:not(.wu-kosz) #wuKon #wyslij,html.wu-strona .oferta-kl,html.wu .wu-up .maly-info{display:none!important}
 html.wu #wycena .ai-form{display:block!important;padding:14px 12px!important}
@@ -109,8 +109,14 @@ html.wu-strona details.wu-wiecej>summary::after{color:#14110E}
 .wu-fol i:empty{display:none}
 .wu-folp{display:none;margin:-4px 0 12px}
 .wu-folp.otw{display:block}
+#wycena #wu button.wu-an{background:linear-gradient(160deg,#4A4E54 0%,#34373C 55%,#24262A 100%);color:#fff;border-color:#24262A;box-shadow:0 4px 12px rgba(20,17,14,.18)}/* Artur 09.11 12:09: ciemniejsza zakladka */
+.wu-an .wu-ik{background:#24262A;color:#FF8A4C;box-shadow:none}
+.wu-an b{color:#fff}.wu-an small{color:#C9CDD2!important}
+#wuAnP .sms-box::before{display:none!important}
+html body #wuAnP .sms-box{margin:0!important;border-radius:14px!important}
+#wuFolP #folOf{margin:0!important}
 .wu-folp .sms-box{margin:0!important}
-html.wu .sms-box textarea#smsWklej{height:72px!important;min-height:0!important}
+html.wu .sms-box textarea#smsWklej{height:52px!important;min-height:0!important;resize:none}/* Artur 09.11 12:08: jeszcze wezszy, rosnie przy pisaniu */
 /* koniec formularza */
 .wu-koniec{margin:16px 0 0}
 #wycena #wu .wu-podg{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:52px;margin:0 0 8px;border:0;border-radius:12px;background:#14110E;color:#fff;font:800 1rem Inter,system-ui,sans-serif;cursor:pointer}
@@ -271,7 +277,8 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
  /* zdjecie "laptop + dlugopis" na gorze (Artur 07.11 22:20 "dla zachety to zdjecie z komputerem") */
  function zdjecie(){var st=document.querySelector('#wycena .sticky');if(!st||st.querySelector('.kalk-foto'))return;
   var f=document.createElement('figure');f.className='kalk-foto';
-  f.innerHTML='<img src="img/wycena-cyklinowania-online-kalkulator-480.webp" srcset="img/wycena-cyklinowania-online-kalkulator-480.webp 480w, img/wycena-cyklinowania-online-kalkulator-900.webp 900w" sizes="(max-width:900px) calc(100vw - 32px), 520px" width="900" height="694" decoding="async" alt="Laptop z tabelą wyceny, długopis i notes na parkiecie">';
+  if(WEW){f.innerHTML='<img src="img/wycena-laptop-pasek-480.webp" srcset="img/wycena-laptop-pasek-480.webp 480w, img/wycena-laptop-pasek-900.webp 900w" sizes="(max-width:900px) calc(100vw - 32px), 520px" width="900" height="409" decoding="async" alt="Laptop z rozmytym ekranem, długopis i notes na parkiecie">';}
+  else f.innerHTML='<img src="img/wycena-cyklinowania-online-kalkulator-480.webp" srcset="img/wycena-cyklinowania-online-kalkulator-480.webp 480w, img/wycena-cyklinowania-online-kalkulator-900.webp 900w" sizes="(max-width:900px) calc(100vw - 32px), 520px" width="900" height="694" decoding="async" alt="Laptop z tabelą wyceny, długopis i notes na parkiecie">';
   var h=st.querySelector('h2');if(h)h.after(f);else st.appendChild(f);}
  /* zakladki zwiniete na starcie (Artur 07.11 22:21: zdjecie, dwie zakladki, potem od razu kafelki); drugie nacisniecie zwija */
  function zakladka(t){if(t&&!$(t==='a'?'wuTA':'wuTZ').hidden)t='';[].forEach.call(document.querySelectorAll('#wu .wu-tabs button'),function(b){var on=b.dataset.t===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');});
@@ -329,7 +336,8 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   if(!PUB){var h=document.querySelector('#wycena .sticky h2');if(h)h.textContent='Wyceń usługę';
    var oc=document.querySelector('#wycena .sticky .oczko');if(oc&&oc.lastChild)oc.lastChild.textContent='Wycena online · narzędzie nowoczesnego parkieciarza';/* Artur 08.11 */}
   var wu=document.createElement('div');wu.id='wu';
-  wu.innerHTML=(PUB?'':'<button type="button" class="wu-fol" id="wuFolB" aria-expanded="false"><span class="wu-ik">'+SVG+IK.fol+'</svg></span><span><b>Zapisane wyceny</b><small>Folder ofert - szukaj po adresie lub telefonie</small></span><i id="wuFolN"></i></button><div class="wu-folp" id="wuFolP"></div>')+
+  wu.innerHTML=(PUB?'':'<button type="button" class="wu-fol" id="wuFolB" aria-expanded="false"><span class="wu-ik">'+SVG+IK.fol+'</svg></span><span><b>Zapisane wyceny</b><small>Folder ofert - szukaj po adresie lub telefonie</small></span><i id="wuFolN"></i></button><div class="wu-folp" id="wuFolP"></div>'+
+   '<button type="button" class="wu-fol wu-an" id="wuAnB" aria-expanded="false"><span class="wu-ik">'+SVG+IK.uw+'</svg></span><span><b>Analizator</b><small>wklej SMS albo czat klienta - rozrzuci do pól</small></span><i></i></button><div class="wu-folp" id="wuAnP"></div>')+
    '<div class="wu-tabs" role="tablist"><button type="button" role="tab" data-t="a" aria-selected="false">'+SVG+IK.adr+'</svg>Adres</button><button type="button" role="tab" data-t="z" aria-selected="false">'+SVG+IK.zdj+'</svg>Wklej zdjęcia<i id="wuZn"></i></button></div>'+
    '<div class="wu-tabp" id="wuTA" role="tabpanel" hidden></div><div class="wu-tabp" id="wuTZ" role="tabpanel" hidden><p class="wu-info">'+(PUB?'Dodaj 4-6 zdjęć podłogi (przy naprawach do 12), także miejsca uszkodzeń.':'Zdjęcia podłogi klienta - trafią do PDF i do Folderu ofert.')+'</p></div>'+
    (PUB?'':'<div class="wu-tabp wu-pw" id="wuPW"></div>')+
@@ -340,9 +348,14 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   form.insertBefore(wu,form.firstChild);
   [].forEach.call(wu.querySelectorAll('.wu-tabs button'),function(b){b.onclick=function(){zakladka(b.dataset.t);};});
   /* folder ofert + SMS (parkieciarz, zwiniete) */
-  if(!PUB){var sb=form.querySelector('.sms-box');if(sb)$('wuFolP').appendChild(sb);
-   $('wuFolB').onclick=function(){var p=$('wuFolP'),o=!p.classList.contains('otw');p.classList.toggle('otw',o);this.setAttribute('aria-expanded',o?'true':'false');
-    if(o){var s=$('folSzuk');if(s)ev(s,'focus');}};}
+  /* Artur 09.11 12:09: Folder ofert osobno ("Zapisane wyceny"), wklejanie SMS / czatu w osobnej ciemnej zakladce "Analizator" (zwinieta, tylko narzedzie parkieciarza) */
+  if(!PUB){var sb=form.querySelector('.sms-box');if(sb)$('wuAnP').appendChild(sb);
+   var przeniesFolder=function(n){var fo=$('folOf');if(fo){$('wuFolP').appendChild(fo);return;}if(n<40)setTimeout(function(){przeniesFolder(n+1);},250);};przeniesFolder(0);
+   var sms=$('smsWklej');if(sms){var rosnij=function(){sms.style.removeProperty('height');if(!sms.value)return;var h=Math.min(Math.max(52,sms.scrollHeight+2),260);sms.style.setProperty('height',h+'px','important');};
+    sms.addEventListener('input',rosnij);sms.addEventListener('focus',rosnij);}
+   var przelacz=function(b,p,po){b.onclick=function(){var P=$(p),o=!P.classList.contains('otw');P.classList.toggle('otw',o);b.setAttribute('aria-expanded',o?'true':'false');if(o&&po)po();};};
+   przelacz($('wuFolB'),'wuFolP',function(){var s=$('folSzuk');if(s)ev(s,'focus');});
+   przelacz($('wuAnB'),'wuAnP',function(){var t=$('smsWklej');if(t&&!t.value){try{t.focus({preventScroll:true});}catch(e){}}});}
   /* zakladka Adres: adres, telefon, e-mail (Artur 06.11 16:0x); Wklej zdjecia: dodawanie zdjec */
   var TA=$('wuTA');['ulicaKl','telKl','mailKl'].forEach(function(f){var b=blok(f);if(b)TA.appendChild(b);});
   etykieta('ulicaKl',PUB?'Adres realizacji (ulica i numer)':'Adres (ulica i numer)');etykieta('telKl','Telefon');etykieta('mailKl',PUB?'E-mail (tu wyślemy wycenę)':'E-mail klienta (oferta PDF)');
