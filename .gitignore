@@ -6,3 +6,9 @@ ai/.wrangler/
 ai/node_modules/
 _src/
 _od_artura_0911/
+
+# 09.11: materialy wewnetrzne (audyt konkurencji, notatki z audytow) - poza publicznym repo i paczka
+audyt_konkurencji/
+_src_audyt/
+_buduj_analizator.bak_*.py
+_wa_0411/
