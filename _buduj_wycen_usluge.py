@@ -258,7 +258,7 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   var P=A.poz.filter(function(p){return k.dod?(p.length<6&&!/^\*/.test(p[0])):(p[6]===k.q||(k.id==='pod'&&/^\*/.test(p[0])));});
   var s=0,uzg=false;P.forEach(function(p){if(typeof p[1]==='number'&&p[2])s+=p[1]*p[2];else if(p[1]&&p[1]!==0)uzg=true;});
   return s>0?zl(s):(uzg?'do uzg.':'');}
- /* cena z cennika silnika (te same stawki co w PDF i w kalkulatorze), np. "130 zł/m²" */
+ /* cena z cennika silnika (te same stawki co w PDF i w kalkulatorze), np. "120 zł/m²" */
  function cennik(k,A){if(k.c)return k.c;var p=A&&A.poz.filter(function(p){return p[6]===k.q;})[0];
   if(p&&typeof p[2]==='number'&&p[2]>0)return zl(p[2])+'/'+k.j;return k.j;}
  function ilosc(k){if(k.tekst)return '';var e=k.il&&$(k.il);var v=e?String(e.value||'').trim():'';return v&&parseFloat(v.replace(',','.'))>0?v.replace('.',',')+' '+k.j:'';}

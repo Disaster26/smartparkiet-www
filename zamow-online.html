@@ -1628,7 +1628,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
          zastepuje domyslne 300 zl; bez kwoty i gdy meble przesuwa ekipa - 300 zl. */
       const mebleKw=parseFloat(String(pole('mebleKw')).replace(',','.')), mebleCena=isFinite(mebleKw)&&mebleKw>0?mebleKw:300;
       const meble=zn('meble')==='nie'||(isFinite(mebleKw)&&mebleKw>0);
-      const kat=Math.round((130+dop)*100)/100, cena=C('ren',kat); /* Artur 14.10: 130 zl/m2 niezaleznie od rodzaju podlogi; 30.10: cena moze zmienic parkieciarz */
+      const kat=Math.round((120+dop)*100)/100, cena=C('ren',kat); /* Artur 09.11 16:02: 120 zl/m2 (wczesniej 130, 14.10) niezaleznie od rodzaju podlogi; 30.10: cena moze zmienic parkieciarz */
       const tm=malyTryb(a), ryczalt=tm==='ryczalt';
       /* 30.10: 5. element pozycji = cena katalogowa (PDF przekresla ja, gdy parkieciarz dal nizsza cene; arkusz Google ma kolumne "Cena katalogowa") */
       const baza=[
@@ -3613,9 +3613,9 @@ html body #wycena .ai-form .dod-w.ma-il{background:#FFDCC2;border-radius:10px;pa
   /* ---- 1) ceny jednostkowe / upust - tylko parkieciarz i analizator ---- */
   var park=false;try{park=!!window.SP_ANALIZATOR||/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
   if(window.SP_ZAMOWIENIE)park=false; /* Koszyk SMART = klient, bez zmiany cen */
-  /* ceny katalogowe - te same co w kalkulatorze (CENY, MALY, 130 zl/m2; olej twardy w cenie - Artur 04.11, twardy wosk bez doplaty - Artur 06.11 17:42) */
+  /* ceny katalogowe - te same co w kalkulatorze (CENY, MALY, 120 zl/m2; olej twardy w cenie - Artur 04.11, twardy wosk bez doplaty - Artur 06.11 17:42) */
   var POZ=[
-    {k:'ren',gdzie:'m2',t:'Renowacja parkietu',jm:'zł/m²',kat:function(){return 130+({'Olej':0,'Twardy wosk':0}[wykT()]||0);},jest:function(){return m2()>=10;}},
+    {k:'ren',gdzie:'m2',t:'Renowacja parkietu',jm:'zł/m²',kat:function(){return 120+({'Olej':0,'Twardy wosk':0}[wykT()]||0);},jest:function(){return m2()>=10;}},
     {k:'rycz',gdzie:'m2',t:'Ryczałt SMART (poniżej 10 m²)',jm:'zł',kat:function(){return 1500;},jest:function(){var a=m2();return a>0&&a<10;}},
     {k:'dopl',gdzie:'m2',t:'Dopłata do małego metrażu',jm:'zł/m²',kat:function(){return 30;},jest:function(){var a=m2();return a>=10&&a<=22;}},
     {k:'kolor',gdzie:'wyk',t:'Koloryzacja',jm:'zł/m²',kat:function(){return 70;},jest:function(){return wykT()==='Kolor';}},
@@ -3954,7 +3954,7 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   var P=A.poz.filter(function(p){return k.dod?(p.length<6&&!/^\*/.test(p[0])):(p[6]===k.q||(k.id==='pod'&&/^\*/.test(p[0])));});
   var s=0,uzg=false;P.forEach(function(p){if(typeof p[1]==='number'&&p[2])s+=p[1]*p[2];else if(p[1]&&p[1]!==0)uzg=true;});
   return s>0?zl(s):(uzg?'do uzg.':'');}
- /* cena z cennika silnika (te same stawki co w PDF i w kalkulatorze), np. "130 zł/m²" */
+ /* cena z cennika silnika (te same stawki co w PDF i w kalkulatorze), np. "120 zł/m²" */
  function cennik(k,A){if(k.c)return k.c;var p=A&&A.poz.filter(function(p){return p[6]===k.q;})[0];
   if(p&&typeof p[2]==='number'&&p[2]>0)return zl(p[2])+'/'+k.j;return k.j;}
  function ilosc(k){if(k.tekst)return '';var e=k.il&&$(k.il);var v=e?String(e.value||'').trim():'';return v&&parseFloat(v.replace(',','.'))>0?v.replace('.',',')+' '+k.j:'';}
