@@ -54,8 +54,9 @@ ODDZIALY = [
         'rola': 'Ekipa zachodnia. Najkrótszy dojazd na Ochotę, Wolę i Włochy.',
         'obszar': ['Ochota', 'Wola', 'Włochy', 'Bemowo', 'Ursus'],
         'eta': 'ok. 10-20 min',
-        'opinia': ('„Mogę śmiało polecić firmę smartparkiet. Doskonały, szybki, '
-                   'przejrzysty kontakt.”', 'opinia Google, wizytówka Ochota'),
+        # 09.11 (Artur, decyzja 4): tylko opinia z wizytowki Grojecka (jedyna znana z tej wizytowki,
+        # zapis statyczny z wizytowek 14.09.2026). Wczesniej byl tu cytat M. Glebickiego z wizytowki Suflerska.
+        'opinia': ('„Zdecydowanie polecam firmę SMART PARKIET!”', 'opinia Google, wizytówka Ochota'),
     },
     {
         'plik': 'cyklinowanie-targowek.html', 'dz': 'Targówek',
@@ -64,8 +65,11 @@ ODDZIALY = [
         'rola': 'Ekipa północna. Obsługuje prawy brzeg i północ miasta.',
         'obszar': ['Targówek', 'Bródno', 'Białołęka', 'Praga-Północ', 'Żoliborz', 'Bielany'],
         'eta': 'ok. 10-25 min',
+        # 09.11 (Artur, decyzja 4): Turmoncka nie ma opinii do zacytowania, wiec opinia firmy
+        # podpisana prawdziwa wizytowka (Al, wizytowka Suflerska = Rembertow).
+        'op_naglowek': 'Opinia klienta SMARTPARKIET',
         'opinia': ('„Firma rzetelna, terminowa i profesjonalna. Potrafi doradzić '
-                   'przy starych parkietach.”', 'opinia Google, wizytówka Targówek'),
+                   'przy starych parkietach.”', 'opinia Google, wizytówka Rembertów (ul. Suflerska 4)'),
     },
     {
         'plik': 'cyklinowanie-mokotow.html', 'dz': 'Mokotów',
@@ -74,8 +78,11 @@ ODDZIALY = [
         'rola': 'SMARTPARKIET | BLVD 23. Ekipa południowa, dużo kamienic i jodełki.',
         'obszar': ['Mokotów', 'Śródmieście', 'Sadyba'],  # 09.11: Ursynow i Wilanow od 28.10 obsluguje oddzial Ursynow
         'eta': 'ok. 10-20 min',
+        # 09.11 (Artur, decyzja 4): z wizytowki Belwederska nie mamy opinii do zacytowania, wiec opinia firmy
+        # podpisana prawdziwa wizytowka (Andrzej G., wizytowka Suflerska = Rembertow).
+        'op_naglowek': 'Opinia klienta SMARTPARKIET',
         'opinia': ('„Podłoga wygląda świetnie, cyklinowanie z uzupełnieniem '
-                   'przestrzeni między deskami.”', 'opinia Google, wizytówka Mokotów'),
+                   'przestrzeni między deskami.”', 'Andrzej G., opinia Google, wizytówka Rembertów (ul. Suflerska 4)'),
     },
     {
         # Artur 28.10.2026 wieczor: piaty oddzial zatwierdzony, "odpalaj tam wizytowke".
@@ -217,7 +224,7 @@ def tresc(o, inne):
         pomieszczeń, relokacji mebli oraz dodatkowym zabezpieczeniu wyposażenia.</p></article>
     </div>
 
-    <h2 style="margin-top:30px">Opinia z wizytówki %(dz)s</h2>
+    <h2 style="margin-top:30px">%(op_naglowek)s</h2>
     <div class="odz-op">
       <p>%(opinia)s</p>
       <b><span>&#9733;&#9733;&#9733;&#9733;&#9733;</span>%(autor)s</b>
@@ -252,6 +259,7 @@ def tresc(o, inne):
 ''' % {'dz': o['dz'], 'rola': o['rola'], 'ulica': o['ulica'], 'kod': o['kod'],
        'eta': o['eta'], 'cid': o['cid'], 'mapa': mapa, 'linki': linki,
        'opinia': o['opinia'][0], 'autor': o['opinia'][1],
+       'op_naglowek': o.get('op_naglowek') or 'Opinia z wizytówki %s' % o['dz'],
        'obszar': ''.join('<span>%s</span>' % x for x in o['obszar'])}
 
 
@@ -349,7 +357,7 @@ def ld_oddzialu(o):
         "email": "smartparkiet@gmail.com",
         "image": BAZA + "/img/og-smartparkiet-artur.jpg",
         "logo": BAZA + "/img/ikona-512.png",
-        "priceRange": "120-140 zł/m² netto",
+        "priceRange": "od 120 zł/m² netto",
         "address": {"@type": "PostalAddress", "streetAddress": o['ulica'].replace('ul. ', ''), "postalCode": o['kod'],
                     "addressLocality": "Warszawa", "addressRegion": "mazowieckie", "addressCountry": "PL"},
         "openingHoursSpecification": GODZINY,
@@ -401,7 +409,7 @@ def nowy(plik):
                '      <p>Wizytówka Google oddziału %s jest w przygotowaniu. Opinie klientów '
                'z pozostałych oddziałów są na stronie <a href="oddzialy.html">Oddziały</a>.</p>\n'
                '    </div>' % o['dz'])
-    tresc_, n = re.subn(r'<h2 style="margin-top:30px">Opinia z wizytówki [^<]*</h2>\s*<div class="odz-op">.*?</p>\s*</div>',
+    tresc_, n = re.subn(r'<h2 style="margin-top:30px">Opini[^<]*</h2>\s*<div class="odz-op">.*?</p>\s*</div>',
                         nowa_op, tresc_, count=1, flags=re.S)
     if n != 1:
         raise SystemExit('nie znalazlem bloku opinii')
