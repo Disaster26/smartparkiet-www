@@ -4016,8 +4016,8 @@ html.wu-strona.wu #wycena .sticky .oczko{white-space:normal!important;max-width:
 html.wu:not(.wu-kosz) #wycena .sticky h2{margin:0!important}
 html.wu #wycena .sticky .se-lead{margin:4px 0 0!important}
 html.wu #wycena .sticky .kalk-foto{margin:12px 0 0!important}
-html.wu-strona.wu #wycena .sticky .kalk-foto{aspect-ratio:2.2/1!important}/* Artur 09.11 12:05: wezsze zdjecie (niski pasek), formularz zaczyna sie wyzej */
-html.wu-strona.wu #wycena .sticky .kalk-foto img{object-position:50% 50%!important}/* 12:07: plik wycena-laptop-pasek (ekran rozmyty) */
+html.wu-strona.wu #wycena .sticky .kalk-foto{aspect-ratio:900/474!important}/* Artur 09.11 12:05: wezsze zdjecie (niski pasek), formularz zaczyna sie wyzej */
+html.wu-strona.wu #wycena .sticky .kalk-foto img{object-position:50% 50%!important}/* 12:08: zdjecie od Artura (IMG_0717, ramka zrzutu przycieta) w plikach wycena-laptop-pasek */
 html.wu #wycena .split{gap:14px!important}
 html.wu form.ai-form>*:not(#wu),html.wu #wycena .ai-body,html.wu #wycena .ai>.drop,html.wu #wycena .ai>.miniatury,html.wu .cta-bar,html.wu #spTabBtn,html.wu #spDok,html.wu #zapiszBtn,html.wu #szkicInfo,html.wu #podgladOferty,html.wu:not(.wu-kosz) #wuKon #wyslij,html.wu-strona .oferta-kl,html.wu .wu-up .maly-info{display:none!important}
 html.wu #wycena .ai-form{display:block!important;padding:14px 12px!important}
@@ -4268,7 +4268,7 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
  /* zdjecie "laptop + dlugopis" na gorze (Artur 07.11 22:20 "dla zachety to zdjecie z komputerem") */
  function zdjecie(){var st=document.querySelector('#wycena .sticky');if(!st||st.querySelector('.kalk-foto'))return;
   var f=document.createElement('figure');f.className='kalk-foto';
-  if(WEW){f.innerHTML='<img src="img/wycena-laptop-pasek-480.webp" srcset="img/wycena-laptop-pasek-480.webp 480w, img/wycena-laptop-pasek-900.webp 900w" sizes="(max-width:900px) calc(100vw - 32px), 520px" width="900" height="409" decoding="async" alt="Laptop z rozmytym ekranem, długopis i notes na parkiecie">';}
+  if(WEW){f.innerHTML='<img src="img/wycena-laptop-pasek-480.webp" srcset="img/wycena-laptop-pasek-480.webp 480w, img/wycena-laptop-pasek-900.webp 900w" sizes="(max-width:900px) calc(100vw - 32px), 520px" width="900" height="474" decoding="async" alt="Laptop z rozmytym ekranem, długopis i notes na parkiecie">';}
   else f.innerHTML='<img src="img/wycena-cyklinowania-online-kalkulator-480.webp" srcset="img/wycena-cyklinowania-online-kalkulator-480.webp 480w, img/wycena-cyklinowania-online-kalkulator-900.webp 900w" sizes="(max-width:900px) calc(100vw - 32px), 520px" width="900" height="694" decoding="async" alt="Laptop z tabelą wyceny, długopis i notes na parkiecie">';
   var h=st.querySelector('h2');if(h)h.after(f);else st.appendChild(f);}
  /* zakladki zwiniete na starcie (Artur 07.11 22:21: zdjecie, dwie zakladki, potem od razu kafelki); drugie nacisniecie zwija */
