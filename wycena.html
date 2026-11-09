@@ -985,7 +985,7 @@ figure{margin:0}
     <div class="sticky">
       <p class="oczko"><span></span>Kalkulator online</p>
       <h2>Kalkulator bezpłatnej wyceny</h2>
-      <p class="lead se-lead">Prosty formularz mobilny - wypełnienie zajmuje ok. 2&nbsp;minuty.</p><!-- kalk-foto: START (Artur 04.11) --><figure class="kalk-foto"><img src="img/wycena-cyklinowania-online-kalkulator-900.webp" srcset="img/wycena-cyklinowania-online-kalkulator-480.webp 480w, img/wycena-cyklinowania-online-kalkulator-900.webp 900w" sizes="(max-width:900px) calc(100vw - 32px), 520px" width="900" height="694" fetchpriority="high" decoding="async" alt="Wycena cyklinowania parkietu online - kalkulator SMARTPARKIET: laptop z tabelą wyceny, długopis i notes na parkiecie w jodełkę"></figure><!-- kalk-foto: KONIEC --><p class="lead" style="margin-top:14px;font-style:italic">Dodaj 4-6 zdjęć podłogi (przy naprawach do 12), uwzględniając miejsca uszkodzeń.</p><p class="lead" style="margin-top:14px"><b>System automatycznie obliczy orientacyjne widełki cenowe.</b> <i>Specjalista oceni zdjęcia i przekaże indywidualną wycenę w ciągu 2 godzin roboczych.</i></p>
+      <p class="lead se-lead">Prosty formularz mobilny - wypełnienie zajmuje ok. 2&nbsp;minuty.</p><!-- kalk-foto: START (Artur 04.11) --><figure class="kalk-foto"><img src="img/wycena-cyklinowania-online-kalkulator-900.webp" srcset="img/wycena-cyklinowania-online-kalkulator-480.webp 480w, img/wycena-cyklinowania-online-kalkulator-900.webp 900w" sizes="(max-width:900px) calc(100vw - 32px), 520px" width="900" height="694" fetchpriority="high" decoding="async" alt="Wycena cyklinowania parkietu online - kalkulator SMARTPARKIET: laptop z tabelą wyceny, długopis i notes na parkiecie w jodełkę"></figure><!-- kalk-foto: KONIEC --><p class="lead" style="margin-top:14px;font-style:italic">Dodaj 4-6 zdjęć podłogi (przy naprawach do 12), uwzględniając miejsca uszkodzeń.</p><p class="lead" style="margin-top:14px"><b>System automatycznie obliczy orientacyjną cenę.</b> <i>Specjalista oceni zdjęcia i przekaże indywidualną wycenę w ciągu 2 godzin roboczych.</i></p>
     </div>
     <div class="ai">
       <label class="drop" id="drop" for="file"><span><b>Zdjęcia podłogi: 4-6 (przy naprawach do 12)</b></span><span class="btn btn-ghost" style="pointer-events:none">Dodaj zdjęcia</span><input id="file" type="file" accept="image/*" multiple hidden></label>
@@ -997,7 +997,7 @@ figure{margin:0}
           <div class="line on" data-l="2"><span class="k">ocena podłogi</span><b id="oU">parkieciarz, po obejrzeniu zdjęć</b></div>
           <div class="line on" data-l="3"><span class="k">odpowiedź</span><b id="oS">w 2 godziny robocze</b></div>
           <div class="line on" data-l="4"><span class="k">koszt wyceny</span><b id="oZ">0 zł, bez zobowiązań</b></div>
-          <div class="est"><div class="n" id="oN">-</div><small id="oT">Proszę podać metraż i rodzaj podłogi, żeby zobaczyć widełki.</small></div>
+          <div class="est"><div class="n" id="oN">-</div><small id="oT">Proszę podać metraż i rodzaj podłogi, żeby zobaczyć kwotę.</small></div>
         </div>
       </div>
       <form class="ai-form" onsubmit="return false">
@@ -1484,7 +1484,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
   const m2=document.getElementById('m2'),typ=document.getElementById('typ'),wyk=document.getElementById('wyk');
   const oN=document.getElementById('oN'),oT=document.getElementById('oT');
   if(!m2||!typ||!wyk||!oN||!oT)return;
-  const pln=n=>(Math.round(n/10)*10).toLocaleString('pl-PL').replace(/ /g,' ');
+  const pln=n=>Math.round(n).toLocaleString('pl-PL').replace(/ /g,' '); /* Artur 09.11 16:43: kwota co do zlotowki, jak w PDF (wczesniej zaokraglenie do 10 zl) */
   /* ceny dodatkow (Artur 13.10): listwy 50 zl/mb, zastrzyki stabilizujace 70 zl/m2, koloryzacja 70 zl/m2, naprawy do uzgodnienia */
   const CENY={listwy:50,stab:70,kolor:70};
   /* Artur 30.10 14:02-14:09 ("klienci sie targuja, czasem musze zejsc ze 130 na 120"): w trybie parkieciarza przy pozycji
@@ -1509,9 +1509,10 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     const nap=window.spNaprawa?window.spNaprawa():null,napZl=nap?nap.i*nap.c:0; /* Artur 28.10: kwota naprawy z ramki pod pytaniem */
     const dod=mb*cL+sm*cS+kol+extS+dopM+mebZl+napZl;
     /* 30.10: cena za m2 wpisana przez parkieciarza = jedna kwota zamiast widelek */
-    const lo=(tm==='ryczalt'?cR:(cRen>0?cRen:120+w)*a)+dod,hi=(tm==='ryczalt'?cR:(cRen>0?cRen:140+w)*a)+dod;
+    /* Artur 09.11 16:43: zamiast widelek 120-140 jedna kwota "od X zl" liczona ze 120 zl/m2 - ta sama suma co w PDF (arkusz().suma) */
+    const lo=(tm==='ryczalt'?cR:(cRen>0?cRen:120+w)*a)+dod;
     const days=a<=40?'1-2 dni':a<=90?'2 dni':a<=160?'3 dni':'4-5 dni';
-    oN.textContent=(lo||hi)?(lo===hi?pln(lo):pln(lo)+'-'+pln(hi))+' zł':'0 zł'; /* Artur 21.10 11:33: metraz domyslnie 0 */
+    oN.textContent=lo?(cRen>0?'':'od ')+pln(lo)+' zł':'0 zł'; /* Artur 21.10 11:33: metraz domyslnie 0; cena wpisana przez parkieciarza = kwota bez "od" */
     const czesci=[];
     if(tm==='ryczalt')czesci.push('ryczałt SMART poniżej '+MALY.RYCZALT_DO+' m² '+cR+' zł');
     if(dopM)czesci.push('dopłata do małego metrażu '+a+' m² × '+cD+' zł');
@@ -1925,8 +1926,8 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       w.push('Wymiana listew przypodłogowych: '+zn('listwy'));
       w.push((window.SP_ZAMOWIENIE?'Preferowane terminy (do potwierdzenia): ':'Termin realizacji: ')+(pole('terminKl')||'nie podano'));
       if(window.spOpcje){w.push('Tryb ekspres 48h: '+(window.spOpcje().ekspres?'TAK (dostępność i dopłata do potwierdzenia)':'nie'));w.push('Wykończenie ścian (CYKLINOWANIE SMART PLUS | ŚCIANY™): '+(window.spOpcje().sciany?'TAK (osobna kalkulacja biura)':'nie'));}
-      w.push('Widełki z kalkulatora: '+oN.textContent);
-      if(zn('listwy')&&zn('listwy')!=='nie') w.push('Listwy wyceniamy po obejrzeniu zdjęć, nie wchodzą w widełki powyżej.');
+      w.push('Kwota z kalkulatora: '+oN.textContent);
+      if(zn('listwy')&&zn('listwy')!=='nie') w.push('Listwy wyceniamy po obejrzeniu zdjęć, nie wchodzą w kwotę powyżej.');
       w.push('Telefon: '+(pole('telKl')||'nie podano'));
       w.push('E-mail klienta: '+(pole('mailKl')||'nie podano'));
       return w.join('\n');
