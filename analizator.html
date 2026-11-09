@@ -1668,6 +1668,12 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     const doReal=p=>typeof p[1]==='number'&&p[1]>0;
     const sortPoz=P=>P.filter(doReal).concat(P.filter(p=>!doReal(p)&&p[1]!==0&&p[1]!=='0'),P.filter(p=>p[1]===0||p[1]==='0'));
     const zmCena=p=>p[2]!=null&&p[4]!=null&&Math.abs(p[2]-p[4])>.004; /* parkieciarz zmienil cene jednostkowa */
+    /* Artur 09.11: informacje ogolne BEZ ceny (pietro, winda, termin) - pasek w PDF, kolumna "Informacje dodatkowe" w Rejestrze wycen, mail */
+    window.spPietroWinda=function(){const p=((document.getElementById('pietroKl')||{}).value||'').trim(),w=document.querySelector('input[name="winda"]:checked');
+      return 'Piętro: '+(p===''?'nie podano':(p==='0'?'parter':p))+' · winda: '+(w?w.value:'nie podano');};
+    window.spInfoDod=function(){const p=((document.getElementById('pietroKl')||{}).value||'').trim(),w=document.querySelector('input[name="winda"]:checked'),
+        t=((document.getElementById('terminKl')||{}).value||'').trim();
+      return [p!==''?'Piętro: '+(p==='0'?'parter':p):'',(p!==''||(w&&w.value==='tak'))&&w?'winda: '+w.value:'',t?(window.SP_ZAMOWIENIE?'preferowane terminy: ':'termin realizacji: ')+t:''].filter(Boolean).join(', ');};
     window.spArkusz=arkusz; /* 30.10: podglad kwoty netto/brutto przy cenach w trybie parkieciarza (blok ceny-3010) */
     /* PDF w ukladzie arkusza Artura (A4, 1240x1754 px na strone) */
     async function ofertaPdf(zdj){
@@ -1695,7 +1701,10 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       let g=nowa(); g.textBaseline='alphabetic';
       const kol=(W-2*M-40)/2, xR=M+kol+40;
       naglowek(g,'DANE KLIENTA',M,190); naglowek(g,'SMARTPARKIET',xR,190);
-      const kl=[A.pole('imieKl')||'Klient (imię nie podane)',A.ulica||'adres nie podany',A.pole('telKl')||'-',A.obiekt,A.pole('mailKl')||'-'];
+      /* Artur 09.11 11:4x: "zamiast nazwiska zrob ulice ... przesun wszystko w gore, a na dole pasek winda pietro i osobny pasek termin realizacji".
+         Wiersze: adres, telefon (imie tylko gdy wpisane), rodzaj obiektu, e-mail, Pietro / winda, Termin realizacji. */
+      const kl=[A.ulica||A.adres||'adres nie podany',[A.pole('telKl'),A.pole('imieKl')].filter(Boolean).join(' · ')||'-',A.pole('obiektKl'),A.pole('mailKl')||'-',
+        window.spPietroWinda(),(window.SP_ZAMOWIENIE?'Preferowane terminy: ':'Termin realizacji: ')+(A.pole('terminKl')||'do ustalenia')].filter(Boolean);
       const sp=['SMARTPARKIET','Artur Trembiński · +48 602 242 815','Suflerska 4','NIP 527 158 81 14','smartparkiet@gmail.com'];
       /* podzial na linie (najwyzej 2), slowa za dlugie lamane po znakach, nadmiar z wielokropkiem */
       const linie=(g,t,w,font,maks)=>{g.font=font;const sl=String(t).split(' ');const out=[];let l='';
@@ -1723,9 +1732,10 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         {fk:20,lk:24,hk:16,fl:18,lh:22,pd:12,gap:24,gb:2,fh:19,hd:40,maxU:2}];
       const uklad=(D,rys,k)=>{k=k||0;
         let yk=212;
-        for(let i=0;i<5;i++){
-          const fk='bold '+D.fk+'px Arial', a1=linie(g,kl[i],kol-32,fk,2), a2=linie(g,sp[i],kol-32,fk,2), n=Math.max(a1.length,a2.length), hw=D.hk+n*D.lk;
-          if(rys){if(EST){g.fillStyle=i%2?'#fff':JASNY;g.fillRect(M,yk,kol,hw);g.fillRect(xR,yk,kol,hw);}else{g.fillStyle='#fff';g.fillRect(M,yk,kol,hw);g.fillRect(xR,yk,kol,hw);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yk+1,kol-2,hw-2);g.strokeRect(xR+1,yk+1,kol-2,hw-2);}
+        for(let i=0;i<Math.max(kl.length,sp.length);i++){
+          const jestP=i<sp.length;
+          const fk='bold '+D.fk+'px Arial', a1=linie(g,kl[i]||'',kol-32,fk,2), a2=jestP?linie(g,sp[i],kol-32,fk,2):[], n=Math.max(a1.length,a2.length,1), hw=D.hk+n*D.lk;
+          if(rys){if(EST){g.fillStyle=i>=kl.length-2?JASNY2:(i%2?'#fff':JASNY);g.fillRect(M,yk,kol,hw);g.fillStyle=i%2?'#fff':JASNY;if(jestP)g.fillRect(xR,yk,kol,hw);}else{g.fillStyle='#fff';g.fillRect(M,yk,kol,hw);if(jestP)g.fillRect(xR,yk,kol,hw);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yk+1,kol-2,hw-2);if(jestP)g.strokeRect(xR+1,yk+1,kol-2,hw-2);}
             const by=yk+Math.round(hw/2-(n-1)*D.lk/2+D.fk*0.36);
             g.fillStyle='#565B61';g.font=fk;a1.forEach((l,j)=>g.fillText(l,M+16,by+j*D.lk));a2.forEach((l,j)=>g.fillText(l,xR+16,by+j*D.lk));}
           yk+=hw+2;}
@@ -1756,9 +1766,10 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         {const ot=window.spOpcjeTekst&&window.spOpcjeTekst();if(ot)yL+=pole(ot,yL,M,true)+D.gb;} /* Artur 28.10: ekspres / sciany */
         /* Artur 27.10 01:52: klient zaznaczyl "Chce skorzystac z wykonania uslugi na podstawie tej oferty" */
         {const ch=window.spChce&&window.spChce();if(ch)yL+=pole('CHCE ZAMÓWIĆ na podstawie oferty - termin: '+ch.termin+' (do potwierdzenia)',yL,M,true)+D.gb;}
-        {const tT=(window.SP_ZAMOWIENIE?'Preferowane terminy (do potwierdzenia): ':'Termin: ')+(A.pole('terminKl')||'do ustalenia');
+        /* Artur 09.11: termin realizacji przeszedl do DANE KLIENTA (osobny pasek) - tu zostaja same prace dodatkowe / uwagi */
+        if(uwT){const tT='';
           const wT=kol-28,limit=(D.maxU+5)*D.lh;let f=D.fl,lh,lT,lU;
-          for(;;){lh=Math.round(f*1.25);lT=linie(g,tT,wT,'italic '+f+'px Arial',99);lU=uwT?linie(g,uwT,wT,f+'px Arial',999):[];
+          for(;;){lh=Math.round(f*1.25);lT=tT?linie(g,tT,wT,'italic '+f+'px Arial',99):[];lU=uwT?linie(g,uwT,wT,f+'px Arial',999):[];
             const hh=(lT.length+(uwT?lU.length+1:0))*lh;if(hh<=limit||f<=15)break;f--;}
           const hb=D.pd+(lT.length+(uwT?lU.length+1:0))*lh+6;
           if(rys){g.fillStyle=JASNY;g.fillRect(M,yL,kol,hb);let ty=yL+Math.round(D.pd/2)+f+2;
@@ -1953,7 +1964,8 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       try{const A=arkusz();ark={imie:pole('imieKl'),tel:pole('telKl'),mail:mail||pole('mailKl'),adres:A.adres,ulica:A.ulica,
         obiekt:A.obiekt,rodzaj:A.rodzaj,technika:A.technika,termin:pole('terminKl')+((window.spOpcje&&window.spOpcje().ekspres)?' | EKSPRES 48H':''),m2:A.a,uwagi:[window.spOpcjeTekst?window.spOpcjeTekst():'',pole('uwagiKl')].filter(Boolean).join(' | '),
         /* 30.10: pozycje do realizacji na gorze; 4. pole = cena katalogowa, gdy parkieciarz zmienil cene (Apps Script od wersji 30.10 pokazuje ja w kolumnie E) */
-        poz:sortPoz(A.poz).map(p=>[p[0],p[1],p[2],zmCena(p)?p[4]:null]),suma:A.suma,rabat:A.rabat||0,zakres:A.zakres.tak};}catch(e){}
+        poz:sortPoz(A.poz).map(p=>[p[0],p[1],p[2],zmCena(p)?p[4]:null]),suma:A.suma,rabat:A.rabat||0,zakres:A.zakres.tak,
+        info:window.spInfoDod?window.spInfoDod():''};}catch(e){} /* Artur 09.11: kolumna "Informacje dodatkowe" (pietro, winda, termin - bez ceny) */
       /* Artur 22.10: komplet pol i zdjec trafia do folderu "Oferty do poprawki" - mozna je potem
          wczytac w analizatorze, zmienic kwote i wyslac klientowi poprawiona oferte */
       let stan=null;try{stan=window.spZrzut?window.spZrzut():null;if(stan)stan.podpisy=(window.__podpisy||[]).slice();}catch(e){}
