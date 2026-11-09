@@ -30,7 +30,7 @@ s = s.replace('smartparkiet-www/wycena.html"', 'smartparkiet-www/zamow-online.ht
 s = re.sub(r'(<meta (?:property="og:title"|name="twitter:title") content=")[^"]*"', r'\1Zamów usługę SMART online | SMARTPARKIET"', s)
 s = re.sub(r'(<meta (?:property="og:description"|name="twitter:description") content=")[^"]*"', r'\1' + OPIS + '"', s)
 s = re.sub(r'(<meta property="og:image:alt" content=")[^"]*"', r'\1ZAMÓW USŁUGĘ SMART ONLINE"', s)
-s = s.replace('/og/wycena.jpg?v=2', '/img/og-smartparkiet-artur.jpg?v=2')
+s = s.replace('/og/wycena.jpg?v=3', '/img/og-smartparkiet-artur.jpg?v=2')
 # 04.11 audyt: okruszki wlasne (zamiast usuwania)
 OKR = ('<script type="application/ld+json" id="ld-okruszki">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": ['
        '{"@type": "ListItem", "position": 1, "name": "SMARTPARKIET", "item": "https://smartparkiet.com.pl/"}, '
