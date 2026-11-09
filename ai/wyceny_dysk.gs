@@ -80,6 +80,7 @@ function arkuszWyceny(folder, nazwa, a, kiedy) {
     ['Podłoga', a.rodzaj || ''],
     ['Wykończenie', a.technika || ''],
     ['Termin', a.termin || ''],
+    ['Informacje dodatkowe', a.info || ''], /* Artur 09.11: pietro, winda, termin - bez ceny */
     ['Uwagi', a.uwagi || '']
   ];
   sh.getRange(1, 1, dane.length, 2).setValues(dane);
@@ -179,6 +180,10 @@ function rejestr(a, kiedy, url, idStanu) {
       .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
     sh.getRange(2, k[1]).setValue(wZakresie(k[0]) ? 'TAK' : '').setBackground(null).setFontColor('#1A1A1A').setFontWeight('bold');
   });
+  /* Artur 09.11: kolumna N "Informacje dodatkowe" - pietro, winda, termin realizacji (informacje ogolne bez ceny) */
+  if (sh.getRange(1, 14).getValue() !== 'Informacje dodatkowe') sh.getRange(1, 14).setValue('Informacje dodatkowe')
+    .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
+  sh.getRange(2, 14).setValue(a.info || '').setBackground(null).setFontColor('#1A1A1A').setFontWeight('normal');
 }
 
 /* jednorazowo: poprawia stare wiersze rejestru (kolor + klikalne linki). Uruchomic recznie z edytora. */
@@ -323,6 +328,9 @@ function doPost(e) {
     if (d.ofertaKlientowi && mailOk && d.pdf) {
       const akapity = ['w załączniku przesyłamy ofertę renowacji parkietu przygotowaną na podstawie przesłanych informacji i zdjęć. Na ostatniej stronie znajdą Państwo zasady renowacji.',
         'W razie pytań albo chęci ustalenia terminu prosimy o kontakt telefoniczny lub odpowiedź na tę wiadomość.'];
+      /* Artur 09.11: informacje dodatkowe (pietro, winda, termin realizacji) tez w mailu z oferta */
+      const info = String((d.arkusz && d.arkusz.info) || '').replace(/[<>&"]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
+      if (info) akapity.splice(1, 0, 'Informacje dodatkowe: ' + info + '.');
       MailApp.sendEmail({
         to: mail,
         bcc: ARTUR, /* Artur 22.10: kopia maila do klienta w jego skrzynce */

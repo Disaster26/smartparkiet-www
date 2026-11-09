@@ -1669,6 +1669,12 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     const doReal=p=>typeof p[1]==='number'&&p[1]>0;
     const sortPoz=P=>P.filter(doReal).concat(P.filter(p=>!doReal(p)&&p[1]!==0&&p[1]!=='0'),P.filter(p=>p[1]===0||p[1]==='0'));
     const zmCena=p=>p[2]!=null&&p[4]!=null&&Math.abs(p[2]-p[4])>.004; /* parkieciarz zmienil cene jednostkowa */
+    /* Artur 09.11: informacje ogolne BEZ ceny (pietro, winda, termin) - pasek w PDF, kolumna "Informacje dodatkowe" w Rejestrze wycen, mail */
+    window.spPietroWinda=function(){const p=((document.getElementById('pietroKl')||{}).value||'').trim(),w=document.querySelector('input[name="winda"]:checked');
+      return 'Piętro: '+(p===''?'nie podano':(p==='0'?'parter':p))+' · winda: '+(w?w.value:'nie podano');};
+    window.spInfoDod=function(){const p=((document.getElementById('pietroKl')||{}).value||'').trim(),w=document.querySelector('input[name="winda"]:checked'),
+        t=((document.getElementById('terminKl')||{}).value||'').trim();
+      return [p!==''?'Piętro: '+(p==='0'?'parter':p):'',(p!==''||(w&&w.value==='tak'))&&w?'winda: '+w.value:'',t?(window.SP_ZAMOWIENIE?'preferowane terminy: ':'termin realizacji: ')+t:''].filter(Boolean).join(', ');};
     window.spArkusz=arkusz; /* 30.10: podglad kwoty netto/brutto przy cenach w trybie parkieciarza (blok ceny-3010) */
     /* PDF w ukladzie arkusza Artura (A4, 1240x1754 px na strone) */
     async function ofertaPdf(zdj){
@@ -1696,7 +1702,10 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       let g=nowa(); g.textBaseline='alphabetic';
       const kol=(W-2*M-40)/2, xR=M+kol+40;
       naglowek(g,'DANE KLIENTA',M,190); naglowek(g,'SMARTPARKIET',xR,190);
-      const kl=[A.pole('imieKl')||'Klient (imię nie podane)',A.ulica||'adres nie podany',A.pole('telKl')||'-',A.obiekt,A.pole('mailKl')||'-'];
+      /* Artur 09.11 11:4x: "zamiast nazwiska zrob ulice ... przesun wszystko w gore, a na dole pasek winda pietro i osobny pasek termin realizacji".
+         Wiersze: adres, telefon (imie tylko gdy wpisane), rodzaj obiektu, e-mail, Pietro / winda, Termin realizacji. */
+      const kl=[A.ulica||A.adres||'adres nie podany',[A.pole('telKl'),A.pole('imieKl')].filter(Boolean).join(' · ')||'-',A.pole('obiektKl'),A.pole('mailKl')||'-',
+        window.spPietroWinda(),(window.SP_ZAMOWIENIE?'Preferowane terminy: ':'Termin realizacji: ')+(A.pole('terminKl')||'do ustalenia')].filter(Boolean);
       const sp=['SMARTPARKIET','Artur Trembiński · +48 602 242 815','Suflerska 4','NIP 527 158 81 14','smartparkiet@gmail.com'];
       /* podzial na linie (najwyzej 2), slowa za dlugie lamane po znakach, nadmiar z wielokropkiem */
       const linie=(g,t,w,font,maks)=>{g.font=font;const sl=String(t).split(' ');const out=[];let l='';
@@ -1724,9 +1733,10 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         {fk:20,lk:24,hk:16,fl:18,lh:22,pd:12,gap:24,gb:2,fh:19,hd:40,maxU:2}];
       const uklad=(D,rys,k)=>{k=k||0;
         let yk=212;
-        for(let i=0;i<5;i++){
-          const fk='bold '+D.fk+'px Arial', a1=linie(g,kl[i],kol-32,fk,2), a2=linie(g,sp[i],kol-32,fk,2), n=Math.max(a1.length,a2.length), hw=D.hk+n*D.lk;
-          if(rys){if(EST){g.fillStyle=i%2?'#fff':JASNY;g.fillRect(M,yk,kol,hw);g.fillRect(xR,yk,kol,hw);}else{g.fillStyle='#fff';g.fillRect(M,yk,kol,hw);g.fillRect(xR,yk,kol,hw);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yk+1,kol-2,hw-2);g.strokeRect(xR+1,yk+1,kol-2,hw-2);}
+        for(let i=0;i<Math.max(kl.length,sp.length);i++){
+          const jestP=i<sp.length;
+          const fk='bold '+D.fk+'px Arial', a1=linie(g,kl[i]||'',kol-32,fk,2), a2=jestP?linie(g,sp[i],kol-32,fk,2):[], n=Math.max(a1.length,a2.length,1), hw=D.hk+n*D.lk;
+          if(rys){if(EST){g.fillStyle=i>=kl.length-2?JASNY2:(i%2?'#fff':JASNY);g.fillRect(M,yk,kol,hw);g.fillStyle=i%2?'#fff':JASNY;if(jestP)g.fillRect(xR,yk,kol,hw);}else{g.fillStyle='#fff';g.fillRect(M,yk,kol,hw);if(jestP)g.fillRect(xR,yk,kol,hw);g.strokeStyle=RAMKA;g.lineWidth=2;g.strokeRect(M+1,yk+1,kol-2,hw-2);if(jestP)g.strokeRect(xR+1,yk+1,kol-2,hw-2);}
             const by=yk+Math.round(hw/2-(n-1)*D.lk/2+D.fk*0.36);
             g.fillStyle='#565B61';g.font=fk;a1.forEach((l,j)=>g.fillText(l,M+16,by+j*D.lk));a2.forEach((l,j)=>g.fillText(l,xR+16,by+j*D.lk));}
           yk+=hw+2;}
@@ -1757,9 +1767,10 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         {const ot=window.spOpcjeTekst&&window.spOpcjeTekst();if(ot)yL+=pole(ot,yL,M,true)+D.gb;} /* Artur 28.10: ekspres / sciany */
         /* Artur 27.10 01:52: klient zaznaczyl "Chce skorzystac z wykonania uslugi na podstawie tej oferty" */
         {const ch=window.spChce&&window.spChce();if(ch)yL+=pole('CHCE ZAMÓWIĆ na podstawie oferty - termin: '+ch.termin+' (do potwierdzenia)',yL,M,true)+D.gb;}
-        {const tT=(window.SP_ZAMOWIENIE?'Preferowane terminy (do potwierdzenia): ':'Termin: ')+(A.pole('terminKl')||'do ustalenia');
+        /* Artur 09.11: termin realizacji przeszedl do DANE KLIENTA (osobny pasek) - tu zostaja same prace dodatkowe / uwagi */
+        if(uwT){const tT='';
           const wT=kol-28,limit=(D.maxU+5)*D.lh;let f=D.fl,lh,lT,lU;
-          for(;;){lh=Math.round(f*1.25);lT=linie(g,tT,wT,'italic '+f+'px Arial',99);lU=uwT?linie(g,uwT,wT,f+'px Arial',999):[];
+          for(;;){lh=Math.round(f*1.25);lT=tT?linie(g,tT,wT,'italic '+f+'px Arial',99):[];lU=uwT?linie(g,uwT,wT,f+'px Arial',999):[];
             const hh=(lT.length+(uwT?lU.length+1:0))*lh;if(hh<=limit||f<=15)break;f--;}
           const hb=D.pd+(lT.length+(uwT?lU.length+1:0))*lh+6;
           if(rys){g.fillStyle=JASNY;g.fillRect(M,yL,kol,hb);let ty=yL+Math.round(D.pd/2)+f+2;
@@ -1954,7 +1965,8 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
       try{const A=arkusz();ark={imie:pole('imieKl'),tel:pole('telKl'),mail:mail||pole('mailKl'),adres:A.adres,ulica:A.ulica,
         obiekt:A.obiekt,rodzaj:A.rodzaj,technika:A.technika,termin:pole('terminKl')+((window.spOpcje&&window.spOpcje().ekspres)?' | EKSPRES 48H':''),m2:A.a,uwagi:[window.spOpcjeTekst?window.spOpcjeTekst():'',pole('uwagiKl')].filter(Boolean).join(' | '),
         /* 30.10: pozycje do realizacji na gorze; 4. pole = cena katalogowa, gdy parkieciarz zmienil cene (Apps Script od wersji 30.10 pokazuje ja w kolumnie E) */
-        poz:sortPoz(A.poz).map(p=>[p[0],p[1],p[2],zmCena(p)?p[4]:null]),suma:A.suma,rabat:A.rabat||0,zakres:A.zakres.tak};}catch(e){}
+        poz:sortPoz(A.poz).map(p=>[p[0],p[1],p[2],zmCena(p)?p[4]:null]),suma:A.suma,rabat:A.rabat||0,zakres:A.zakres.tak,
+        info:window.spInfoDod?window.spInfoDod():''};}catch(e){} /* Artur 09.11: kolumna "Informacje dodatkowe" (pietro, winda, termin - bez ceny) */
       /* Artur 22.10: komplet pol i zdjec trafia do folderu "Oferty do poprawki" - mozna je potem
          wczytac w analizatorze, zmienic kwote i wyslac klientowi poprawiona oferte */
       let stan=null;try{stan=window.spZrzut?window.spZrzut():null;if(stan)stan.podpisy=(window.__podpisy||[]).slice();}catch(e){}
@@ -4049,10 +4061,20 @@ html.wu body{padding-bottom:96px}
 .wu-info{font:600 .88rem/1.45 Manrope,system-ui,sans-serif;color:#4A5058;margin:0 0 10px}
 .wu-wiersz{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 #wycena #wu .wu-wiersz button{width:auto;min-height:44px;margin:0;border-radius:11px;padding:10px 14px;font:800 .9rem Inter,system-ui,sans-serif;cursor:pointer}
-#wycena #wu .wu-gotowe{flex:1;border:0;background:#14110E;color:#fff}
+#wycena #wu .wu-gotowe{flex:1;border:0;background:#1A7F43;color:#fff}/* Artur 09.11: zielony przycisk Gotowe (bialy tekst, kontrast 5:1) */
 #wycena #wu .wu-usun{border:1.5px solid #E1E3E6;background:#fff;color:#B23B1E}
 #wycena #wu .wu-dodaj{flex:1;border:0;background:#FF6A13;color:#fff}
 #wycena #wu .wu-cena{border:0;background:none;color:#4A5058;text-decoration:underline;padding:10px 4px;font-weight:700}
+/* Artur 09.11: Pietro / winda i Termin realizacji zaraz pod danymi klienta (parkieciarz) - informacje bez ceny */
+.wu-pw{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:0 10px;margin:8px 0 0;padding:12px 12px 2px}
+.wu-pw>*{min-width:0}
+.wu-pw>div:has(#terminKl){grid-column:1/-1}
+#wycena #wu .wu-pw>.pyt{grid-column:auto!important;margin:0 0 10px!important}
+#wycena #wu .wu-pw .pyt .tn{display:grid!important;grid-template-columns:1fr 1fr;gap:6px!important;margin:0!important}
+#wycena #wu .wu-pw .pyt .tn label{position:relative;display:flex!important;align-items:center;justify-content:center;min-height:50px;margin:0!important;padding:0 6px!important;border:1.5px solid #C9CDD2;border-radius:10px;background:#fff;color:#14110E!important;font:800 .95rem Inter,system-ui,sans-serif!important;letter-spacing:.06em!important;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#wycena #wu .wu-pw .pyt .tn label:has(input:checked){border-color:#FF6A13;background:#FF6A13;color:#fff!important}
+#wycena #wu .wu-pw .pyt .tn input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+#wycena #wu .wu-pw .pyt .tn label:has(input:focus-visible){outline:2px solid #14110E;outline-offset:2px}
 /* termin i szczegoly */
 details.wu-wiecej{border:1.5px dashed #C9CDD2;border-radius:14px;background:#fff;margin:8px 0 0}
 details.wu-wiecej>summary{list-style:none;cursor:pointer;padding:14px 12px;font:800 .95rem Inter,system-ui,sans-serif;color:#14110E;display:flex;justify-content:space-between;gap:8px}
@@ -4295,9 +4317,10 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   wu.innerHTML=(PUB?'':'<button type="button" class="wu-fol" id="wuFolB" aria-expanded="false"><span class="wu-ik">'+SVG+IK.fol+'</svg></span><span><b>Zapisane wyceny</b><small>Folder ofert - szukaj po adresie lub telefonie</small></span><i id="wuFolN"></i></button><div class="wu-folp" id="wuFolP"></div>')+
    '<div class="wu-tabs" role="tablist"><button type="button" role="tab" data-t="a" aria-selected="false">'+SVG+IK.adr+'</svg>Adres</button><button type="button" role="tab" data-t="z" aria-selected="false">'+SVG+IK.zdj+'</svg>Wklej zdjęcia<i id="wuZn"></i></button></div>'+
    '<div class="wu-tabp" id="wuTA" role="tabpanel" hidden></div><div class="wu-tabp" id="wuTZ" role="tabpanel" hidden><p class="wu-info">'+(PUB?'Dodaj 4-6 zdjęć podłogi (przy naprawach do 12), także miejsca uszkodzeń.':'Zdjęcia podłogi klienta - trafią do PDF i do Folderu ofert.')+'</p></div>'+
+   (PUB?'':'<div class="wu-tabp wu-pw" id="wuPW"></div>')+
    '<p class="wu-h">Usługi <small>'+(PUB?'naciśnij, co mamy zrobić':'naciśnij i wpisz ilość')+'</small></p><div id="wuL"></div>'+
    (KOSZ?'<p class="wu-h">Preferowany termin <small>wymagany, 1-3 dni</small></p><div class="wu-tabp" id="wuTerm"></div>':'')+
-   '<details class="wu-wiecej" id="wuW"><summary><span>'+(KOSZ?'Szczegóły':'Termin i szczegóły')+'<small>'+(KOSZ?'miejscowość, piętro, imię - opcjonalnie':PUB?'termin, piętro, kod pocztowy - opcjonalnie':'termin, piętro, VAT, kopia - opcjonalnie')+'</small></span></summary><div class="wu-wiecej-in" id="wuWi"></div></details>'+
+   '<details class="wu-wiecej" id="wuW"><summary><span>'+(KOSZ||!PUB?'Szczegóły':'Termin i szczegóły')+'<small>'+(KOSZ?'miejscowość, piętro, imię - opcjonalnie':PUB?'termin, piętro, kod pocztowy - opcjonalnie':'kod, miasto, imię, VAT, kopia - opcjonalnie')+'</small></span></summary><div class="wu-wiecej-in" id="wuWi"></div></details>'+
    '<div class="wu-koniec" id="wuKon"></div>';
   form.insertBefore(wu,form.firstChild);
   [].forEach.call(wu.querySelectorAll('.wu-tabs button'),function(b){b.onclick=function(){zakladka(b.dataset.t);};});
@@ -4309,6 +4332,10 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   var TA=$('wuTA');['ulicaKl','telKl','mailKl'].forEach(function(f){var b=blok(f);if(b)TA.appendChild(b);});
   etykieta('ulicaKl',PUB?'Adres realizacji (ulica i numer)':'Adres (ulica i numer)');etykieta('telKl','Telefon');etykieta('mailKl',PUB?'E-mail (tu wyślemy wycenę)':'E-mail klienta (oferta PDF)');
   if(PUB){var pi=document.createElement('p');pi.className='wu-info';pi.textContent='Wystarczy telefon albo e-mail.';TA.appendChild(pi);}
+  /* Artur 09.11 11:47 "pasek pietro / dwa przyciski winda tak nie, a pod spodem termin" - zawsze widoczne pod danymi klienta */
+  else{var PW=$('wuPW');['pietroKl','@winda','terminKl'].forEach(function(f){var b=blok(f);if(b)PW.appendChild(b);});
+   etykieta('pietroKl','Piętro');etykieta('terminKl','Termin realizacji');
+   var pk=$('pietroKl');if(pk)pk.placeholder='0 = parter';var tk=$('terminKl');if(tk)tk.placeholder='np. 20.11.2026 albo grudzień';}
   var TZ=$('wuTZ');['drop','miniatury'].forEach(function(f){var b=blok(f);if(b)TZ.appendChild(b);});
   /* uslugi */
   var L=$('wuL');
@@ -4345,7 +4372,7 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   /* termin i szczegoly */
   if(KOSZ){var tb=$('terminyBlok');if(tb)$('wuTerm').appendChild(tb);}
   var W=$('wuWi');(KOSZ?['miastoKl','pietroKl','@winda','imieKl']:PUB?['terminKl','chceBlok','kodKl','miastoKl','dzielKl','pietroKl','@winda','obiektKl','imieKl','gatKl','montazKl']
-   :['terminKl','kodKl','miastoKl','dzielKl','pietroKl','@winda','imieKl','obiektKl','gatKl','montazKl','vatBlok','kopiaBlok']).forEach(function(f){var b=blok(f);if(b)W.appendChild(b);});
+   :['kodKl','miastoKl','dzielKl','imieKl','obiektKl','gatKl','montazKl','vatBlok','kopiaBlok']).forEach(function(f){var b=blok(f);if(b)W.appendChild(b);});
   /* koniec: blad, Turnstile, Podglad (JEDEN przycisk wysylki jest na dolnym pasku i w podgladzie), potwierdzenie wyslania */
   var kon=$('wuKon');
   var pg=document.createElement('button');pg.type='button';pg.className='wu-podg';pg.innerHTML=SVG+IK.oko+'</svg>'+(PUB?'Podgląd zgłoszenia':'Podgląd oferty (PDF)');pg.onclick=podglad;
