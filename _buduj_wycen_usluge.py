@@ -92,6 +92,10 @@ details.wu-wiecej>summary::after{content:"+";color:#FF6A13;font-size:1.3rem;line
 details.wu-wiecej[open]>summary::after{content:"−"}
 details.wu-wiecej>summary small{display:block;font:600 .8rem Manrope,system-ui,sans-serif;color:#6B7076;margin-top:2px}
 .wu-wiecej-in{padding:0 12px 4px}
+/* Artur 09.11 11:56-11:57: ramka Szczegoly w narzedziu parkieciarza szara jak Zapisane wyceny (aluminium z cieniem) */
+html.wu-strona details.wu-wiecej{border:1px solid #AEB4BB;background:linear-gradient(160deg,#ECEEF1 0%,#D9DCDF 45%,#B9BEC4 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 4px 12px rgba(20,17,14,.10)}
+html.wu-strona details.wu-wiecej>summary small{color:#3E434A}
+html.wu-strona details.wu-wiecej>summary::after{color:#14110E}
 .wu-wiecej-in>*{margin-bottom:10px}
 .wu-wiecej-in input,.wu-wiecej-in select,.wu-wiecej-in textarea{font-size:16px!important}
 /* zapisane wyceny (parkieciarz) */
@@ -116,7 +120,7 @@ html.wu .sms-box textarea#smsWklej{height:72px!important;min-height:0!important}
 #wuBar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:6px;align-items:center;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:#14110E;color:#fff;box-shadow:0 -6px 20px rgba(0,0,0,.18)}
 #wuBar.pub{grid-template-columns:minmax(0,1fr) auto auto}
 #wuBar.kosz{grid-template-columns:minmax(0,1fr) auto}
-#wuBar.wew{grid-template-columns:minmax(0,1fr) auto auto}
+#wuBar.wew{grid-template-columns:minmax(0,1fr) auto}
 html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
 /* parkieciarz: trzy kafelki wysylki (Artur 07.11 22:28) */
 .wu-trzy{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 8px}
@@ -401,7 +405,7 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   /* dolny pasek */
   var bar=document.createElement('div');bar.id='wuBar';bar.className=KOSZ?'kosz':(PUB?'pub':'wew');
   bar.innerHTML='<div style="min-width:0"><small>'+(PUB?'Orientacyjnie':'Netto')+'</small><b id="wuSum">'+(PUB?'-':'0 zł')+'</b></div>'+(PUB?'':'<button type="button" class="zap">Zapisz</button>')+
-   (KOSZ?'<button type="button" class="wys">Sprawdź zamówienie</button>':'<button type="button" class="pdf">Podgląd</button>'+(PUB?'<button type="button" class="wys">Wyślij</button>':''));
+   (KOSZ?'<button type="button" class="wys">Sprawdź zamówienie</button>':PUB?'<button type="button" class="pdf">Podgląd</button><button type="button" class="wys">Wyślij</button>':''); /* Artur 09.11 11:57: maly Podglad na pasku dublowal duzy kafel - u parkieciarza zostaje kafel */
   document.body.appendChild(bar);
   info=document.createElement('div');info.id='wuInfo';info.hidden=true;info.setAttribute('role','status');document.body.appendChild(info);
   info.onclick=function(){info.hidden=true;};
