@@ -22,6 +22,9 @@ Uzycie (od 28.10.2026):
 Piaty oddzial (Ursynow/Kabaty, 28.10.2026) nie ma jeszcze wizytowki Google:
 'cid' i 'opinia' = None, wtedy zamiast opinii idzie zdanie o wizytowce w przygotowaniu.
 Po zalozeniu wizytowki: wpisac cid i podmienic ten akapit na stronie recznie.
+UWAGA 09.11 (audyt SEO): kazda podstrona ma teraz WLASNY akapit lokalny (.odz-lokalnie), FAQ z pytaniem
+specyficznym dla dzielnicy (.odz-faq), FAQPage i makesOffer w JSON-LD. Przy --nowy te bloki przyjda z SIOSTRY
+(Mokotow) - trzeba je napisac od nowa dla nowej dzielnicy, inaczej powstanie duplikat tresci.
 """
 import sys
 import io
