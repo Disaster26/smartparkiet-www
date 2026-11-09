@@ -7,7 +7,7 @@
     {n:'Wywóz i utylizacja',                      j:'ryczałt', s:200, il:function(d){return d.m2zal>0?1:0}},
     {n:'Stabilizacja i naprawy',                  j:'m²',      s:65,  il:function(d){return d.u_odsp?d.m2zal:0}},
     {n:'Uzupełnienie klepki z odzysku',           j:'m²',      s:120, il:function(d){return d.u_spec?d.m2zal:0}},
-    {n:'Cyklinowanie bezpyłowe',                  j:'m²',      s:130, il:function(d){return d.m2}},
+    {n:'Cyklinowanie bezpyłowe',                  j:'m²',      s:120, il:function(d){return d.m2}},
     {n:'Lakierowanie lub olejowanie',             j:'m²',      s:0,   il:function(d){return d.m2}},
     {n:'Koloryzacja',                             j:'m²',      s:55,  il:function(d){return 0}},
     {n:'Listwy przypodłogowe',                    j:'mb',      s:52,  il:function(d){return d.u_listwy?Math.round(Math.sqrt(d.m2||0)*4):0}},
