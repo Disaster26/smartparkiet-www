@@ -2035,6 +2035,8 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         /* Artur 13.10 21:45: wyrazny komunikat WYSLANE! przy przycisku */
         if(ok){
           window.__spamInfo=!!mailOk;
+          /* 10.11: zdarzenie dla wyzwalacza w GTM (narzedzia Artura analizator/wycen-usluge pominiete - to nie leady) */
+          try{const fn=(location.pathname.split('/').pop()||'wycena').replace(/\.html$/,'')||'wycena';if(!/^(analizator|wycen-usluge)$/.test(fn)){window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'formularz_wyslany',formularz:fn});}}catch(e){}
           const bw=document.getElementById('wyslij');
           /* Artur 14.10 10:06: jeden klawisz z ptaszkiem i informacja, ze wycena dotrze na maila - bez drugiej ramki */
           if(bw){bw.classList.add('wyslane');bw.disabled=true;bw.style.cssText+=';height:auto!important;padding:16px 18px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:0!important';
