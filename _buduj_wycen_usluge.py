@@ -208,6 +208,7 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   oko:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'};
  /* uslugi: uz = kratka "Zakres prac" (uzgN, tylko parkieciarz), q = nazwa pozycji w arkuszu (p[6]), il = pole ilosci,
     f = pola parkieciarza, fp = pola klienta, r = radio tak/nie silnika, c = staly opis ceny (reszta z cennika silnika) */
+ var KOSZ_KOL=['pod','ek','sz','lw','ko','me','uw'];
  var K=[
   {id:'pod',t:'Cyklinowanie / odnowienie podłogi',j:'m²',uz:0,q:'Renowacja parkietu',il:'m2',f:['m2','typ','wyk'],info:'Lakier, olej i twardy wosk - bez dopłaty.'},
   {id:'lw',t:'Wymiana listew',j:'mb',uz:1,q:'Wymiana listew',r:'listwy',il:'listwyMb',f:['listwyMb','@listwy'],fp:['@listwy','listwyMb']},
@@ -221,7 +222,9 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   {id:'ek',t:'Tryb ekspres 48h',kosz:1,r:'zamEkspres',fp:['zamOpcje'],c:'start w 24-48 h, do 40 m²'},
   {id:'sz',t:'Wykończenie ścian',kosz:1,r:'zamSciany',fp:['zamSciany'],c:'SMART PLUS | ŚCIANY™ - osobna kalkulacja'},
   {id:'uw',t:'Inne prace / uwagi',j:'opisz, co jeszcze',pub:1,tekst:'uwagiKl',fp:['uwagiKl'],c:'opisz, co jeszcze trzeba zrobić'}
- ].filter(function(k){if(KOSZ)return ['pod','lw','ko','me','ek','sz','uw'].indexOf(k.id)>=0;return PUB?(!k.wew&&!k.kosz):(!k.pub&&!k.kosz);});
+ ].filter(function(k){if(KOSZ)return KOSZ_KOL.indexOf(k.id)>=0;return PUB?(!k.wew&&!k.kosz):(!k.pub&&!k.kosz);});
+ /* Artur 10.11 wieczor: w Koszyku "Tryb ekspres 48h" i "Wykonczenie scian" zaraz pod cyklinowaniem, nad Wymiana listew (wyrozniony kafel .wu-wyr) */
+ if(KOSZ)K.sort(function(a,b){return KOSZ_KOL.indexOf(a.id)-KOSZ_KOL.indexOf(b.id);});
  var $=function(i){return document.getElementById(i);};
  var zl=function(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' zł';};
  var esc=function(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
@@ -342,7 +345,7 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
    '<div class="wu-tabs" role="tablist"><button type="button" role="tab" data-t="a" aria-selected="false">'+SVG+IK.adr+'</svg>'+(PUB?'Adres':'ADRES | info')+'</button><button type="button" role="tab" data-t="z" aria-selected="false">'+SVG+IK.zdj+'</svg>Wklej zdjęcia<i id="wuZn"></i></button></div>'+
    '<div class="wu-tabp" id="wuTA" role="tabpanel" hidden></div><div class="wu-tabp" id="wuTZ" role="tabpanel" hidden><p class="wu-info">'+(PUB?'Dodaj 4-6 zdjęć podłogi (przy naprawach do 12), także miejsca uszkodzeń.':'Zdjęcia podłogi klienta - trafią do PDF i do Folderu ofert.')+'</p></div>'+
    '<p class="wu-h">Usługi <small>'+(PUB?'naciśnij, co mamy zrobić':'naciśnij i wpisz ilość')+'</small></p><div id="wuL"></div>'+
-   (KOSZ?'<p class="wu-h">Preferowany termin <small>wymagany, 1-3 dni</small></p><div class="wu-tabp" id="wuTerm"></div>':'')+
+   (KOSZ?'<p class="wu-h">Preferowany termin <small>wymagany, 1-2 dni</small></p><div class="wu-tabp" id="wuTerm"></div>':'')+
    (PUB||KOSZ?('<details class="wu-wiecej" id="wuW"><summary><span>'+(KOSZ||!PUB?'Szczegóły':'Termin i szczegóły')+'<small>'+(KOSZ?'miejscowość, piętro, imię - opcjonalnie':PUB?'termin, piętro, kod pocztowy - opcjonalnie':'kod, miasto, imię, VAT, kopia - opcjonalnie')+'</small></span></summary><div class="wu-wiecej-in" id="wuWi"></div></details>'):'')+
    '<div class="wu-koniec" id="wuKon"></div>';
   form.insertBefore(wu,form.firstChild);
@@ -367,7 +370,7 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   var TZ=$('wuTZ');['drop','miniatury'].forEach(function(f){var b=blok(f);if(b)TZ.appendChild(b);});
   /* uslugi */
   var L=$('wuL');
-  K.forEach(function(k){var d=document.createElement('div');d.className='wu-u';d.id='wu_'+k.id;
+  K.forEach(function(k){var d=document.createElement('div');d.className='wu-u'+(KOSZ&&k.kosz?' wu-wyr':'');d.id='wu_'+k.id;
    d.innerHTML='<button type="button" class="wu-ut" aria-expanded="false"><span class="wu-ik">'+SVG+IK[k.id]+'</svg></span><span class="wu-un">'+k.t+'<small>'+(k.c||k.j)+'</small></span><span class="wu-uk"><span class="wu-plus" aria-hidden="true">+</span></span></button><div class="wu-up"></div>';
    var P=d.querySelector('.wu-up');
    if(k.info){var i=document.createElement('p');i.className='wu-info';i.textContent=k.info;P.appendChild(i);}
