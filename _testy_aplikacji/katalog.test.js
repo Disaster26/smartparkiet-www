@@ -28,7 +28,7 @@ class Range {
   setRichTextValue(v) { this.sh.set(this.r, this.c, v.text); this.sh.links[this.r + ':' + this.c] = v.url; return this; }
   setFormula() { return this; }
 }
-['setFontWeight', 'setBackground', 'setFontColor', 'setNumberFormat'].forEach(m => { Range.prototype[m] = function () { return this; }; });
+['setFontWeight', 'setBackground', 'setFontColor', 'setNumberFormat', 'setWrap', 'setVerticalAlignment', 'setFontSize', 'merge', 'mergeAcross', 'setBorder'].forEach(m => { Range.prototype[m] = function () { return this; }; });
 
 class Sheet {
   constructor(name) { this.name = name; this.rows = []; this.links = {}; }
@@ -74,6 +74,7 @@ function swiat() {
     LockService: { getScriptLock: () => ({ tryLock: () => { lock.held++; lock.calls++; return true; }, waitLock: () => { lock.held++; lock.calls++; }, releaseLock: () => { lock.held--; } }) },
     SpreadsheetApp: {
       openById: id => { if (id !== 'SS1') throw new Error('brak'); return ss; }, open: () => ss, create: () => ss, flush() {},
+      BorderStyle: { SOLID_MEDIUM: 'SOLID_MEDIUM' },
       newRichTextValue: () => { const o = { text: '', url: '' }; return { setText(t) { o.text = t; return this; }, setLinkUrl(u) { o.url = u; return this; }, build: () => o }; }
     },
     DriveApp: {
@@ -208,6 +209,46 @@ test('zapis: status, notatka, wpis z ręki, sprawa, kafelek, ustawienia - i trwa
   /* czytelny opis w arkuszu Grafik */
   const g = w.ss.getSheetByName('Grafik');
   assert.match(g.get(2, 2), /^JAREK 2026-11-16 \(2 dni\) \| RYCERSKA 12 RADZYMIN \(60\) \/ WARSTWA \+ SCHODY/);
+});
+
+test('arkusz wyceny: ramka INFORMACJE DLA EKIPY - nadpisywana w tym samym miejscu, tylko przy zmianie', () => {
+  const { w, K } = zalogowany();
+  const Z = 'a_ARKUSZ1aaaaaaaaaaaaaaaaaaaa';
+  const wyc = new SS('ARKUSZ1aaaaaaaaaaaaaaaaaaaa', 'Wycena'); const sh = wyc.sheets[0]; sh.name = 'Wycena';
+  sh.rows = [['SMARTPARKIET - wstępna oferta renowacji parkietu', ''], ['Data', '2026-11-13'], ['Klient', 'Anna Nowak'], [], ['Pozycja', 'Ilość'], ['Cyklinowanie', 46], ['', '', 'Razem netto', 4370]];
+  let otw = 0; const stare = w.G.SpreadsheetApp.openById;
+  w.G.SpreadsheetApp.openById = id => { if (id === wyc.id) { otw++; return wyc; } return stare(id); };
+  const r = K({ akcja: 'katalog_zapisz', ops: [
+    { t: 'zap', id: Z, d: { st: 'termin', nt: 'klucze u sąsiada, lakier naturalny', hist: [] } },
+    { t: 'kaf', id: 'k1', d: { ul: 'PUŁAWSKA 10', mies: '4', m2: '46', info: 'LISTWY', tel: '600 100 200', kol: 'ok', br: 'b2', od: '2026-11-16', dni: 2, zid: Z } },
+    { t: 'wpis', id: 'w1', d: { dz: '2026-11-17', g: '11:30', x: 'odbiór lakieru', br: 'b2' } },
+    { t: 'wpis', id: 'w2', d: { dz: '2026-11-17', x: 'Dentysta', prv: true } }
+  ] });
+  assert.ok(r.ok, r.blad); eq(r.ark, [Z]); assert.strictEqual(otw, 1);
+  const st = sh.rows.findIndex(x => x[0] === 'INFORMACJE DLA EKIPY') + 1;
+  assert.strictEqual(st, 9); /* pod dotychczasową treścią, jeden wiersz odstępu */
+  const pole = n => { const i = sh.rows.findIndex(x => x[0] === n); return i < 0 ? null : sh.rows[i][1]; };
+  assert.strictEqual(pole('Termin realizacji'), 'JAREK: pon. 16.11 - wt. 17.11 (2 dni) 2026');
+  assert.strictEqual(pole('Zlecenie (grafik)'), 'PUŁAWSKA 10/4 (46) / LISTWY');
+  assert.strictEqual(pole('Informacje dla brygady'), 'wt. 17.11: 11:30 odbiór lakieru');
+  assert.strictEqual(pole('Notatka'), 'klucze u sąsiada, lakier naturalny');
+  assert.strictEqual(pole('Telefon klienta'), '600 100 200');
+  assert.ok(pole('Zaktualizowano'));
+  const wierszy = sh.getLastRow();
+  /* sam status bez zmian treści - arkusz nie jest otwierany */
+  const r2 = K({ akcja: 'katalog_zapisz', ops: [{ t: 'zap', id: Z, d: { st: 'zatw', nt: 'klucze u sąsiada, lakier naturalny', hist: [] } }] });
+  assert.ok(r2.ok); eq(r2.ark, []); assert.strictEqual(otw, 1);
+  /* zmiana notatki - ta sama ramka nadpisana, nic nie dopisane */
+  const r3 = K({ akcja: 'katalog_zapisz', ops: [{ t: 'zap', id: Z, d: { st: 'zatw', nt: 'klucze u sąsiadki', hist: [] } }] });
+  eq(r3.ark, [Z]); assert.strictEqual(pole('Notatka'), 'klucze u sąsiadki'); assert.strictEqual(sh.getLastRow(), wierszy);
+  assert.strictEqual(sh.rows.filter(x => x[0] === 'INFORMACJE DLA EKIPY').length, 1);
+  /* kafelek zdjęty z grafiku - ramka czyszczona (myślniki), zapis aplikacji dalej działa */
+  const r4 = K({ akcja: 'katalog_zapisz', ops: [{ t: 'kaf', id: 'k1', d: null }] });
+  assert.ok(r4.ok); assert.strictEqual(pole('Termin realizacji'), '-'); assert.strictEqual(pole('Notatka'), 'klucze u sąsiadki');
+  /* arkusz niedostępny - zapis i tak się udaje */
+  w.G.SpreadsheetApp.openById = () => { throw new Error('brak dostępu'); };
+  const r5 = K({ akcja: 'katalog_zapisz', ops: [{ t: 'zap', id: Z, d: { st: 'zatw', nt: 'inna', hist: [] } }] });
+  assert.ok(r5.ok); eq(r5.ark, []); assert.strictEqual(w.lock.held, 0);
 });
 
 test('zapis: aktualizacja i usuwanie rekordów, zapytania z Rejestru nie do usunięcia', () => {

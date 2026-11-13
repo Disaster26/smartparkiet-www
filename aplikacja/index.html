@@ -349,6 +349,7 @@ mark{background:#FFD9C2;color:inherit;border-radius:3px;padding:0 1px}
 .gk.gn .gw{display:block;width:100%;min-height:24px;height:auto;padding:4px 5px;font-size:10.5px;line-height:1.25;white-space:normal;overflow-wrap:anywhere;border-radius:5px}
 .gk.gn .gw svg.i{width:11px;height:11px;vertical-align:-1px;margin-right:2px}
 .gk.gn .gw b{margin-right:3px}
+.ark-ok{margin-top:8px;font-size:13px;color:var(--t-k)}
 .hd .kd-ts{color:var(--ink3);font-size:13px;font-weight:400}
 .hd-inf{margin:14px 0 0;padding:12px 14px;background:var(--karta);border-radius:12px;font-size:14.5px;gap:6px 14px}
 .hd-inf dt{font-size:13px;padding-top:2px}
@@ -732,6 +733,7 @@ function zapisz(){
   BRUD=true;planuj();
 }
 function planuj(){clearTimeout(tZap);sync('zap');tZap=setTimeout(wyslij,350);}
+var ARK_OK={}; /* zapytania, których arkusz wyceny serwer właśnie zaktualizował (ramka dla ekipy) */
 function wyslij(){
   if(LOT||!BAZA)return;
   var T=klon(D),ops=roznice(POCZ,T);BRUD=false;
@@ -740,6 +742,7 @@ function wyslij(){
   api('katalog_zapisz',{ops:ops}).then(function(st){
     if(!st||!st.ok)throw new Error((st&&st.blad)||'Błąd zapisu');
     przyjmij(st);LOT=null;
+    if(st.ark&&st.ark.length)st.ark.forEach(function(z){ARK_OK[z]=Date.now();});
     var poz=roznice(T,D);
     if(zajety()){POCZ=T;ODLOZ=true;}else{D=zastosuj(klon(BAZA),poz);POCZ=BAZA;render(true);}
     if(poz.length||BRUD){BRUD=false;planuj();}else sync('ok');
@@ -1016,7 +1019,8 @@ function detZapytanie(it){
   h+='<div class="sek"><h3>Notatka <span class="ok" id="ntOk">zapisano</span></h3><textarea id="nt" data-id="'+it.id+'" placeholder="Np. klucze u sąsiada, kolor lakieru, kiedy oddzwonić..."'+(OFF?' readonly':'')+'>'+esc(it.nt)+'</textarea></div>';
   if(!reczne){
     if(ark||anl)h+='<div class="sek"><h3>Wycena</h3>'+
-      ((ark||anl)?'<div class="linki" style="margin-top:0">'+(ark?'<a href="'+esc(ark)+'" target="_blank" rel="noopener noreferrer">'+ik('lista')+'Arkusz wyceny</a>':'')+(anl?'<a href="'+esc(anl)+'" target="_blank" rel="noopener noreferrer">'+ik('pdf')+'Otwórz w analizatorze</a>':'')+'</div>':'')+'</div>';
+      ((ark||anl)?'<div class="linki" style="margin-top:0">'+(ark?'<a href="'+esc(ark)+'" target="_blank" rel="noopener noreferrer">'+ik('lista')+'Arkusz wyceny</a>':'')+(anl?'<a href="'+esc(anl)+'" target="_blank" rel="noopener noreferrer">'+ik('pdf')+'Otwórz w analizatorze</a>':'')+'</div>':'')+
+      (ARK_OK[it.id]?'<div class="ark-ok">Arkusz zaktualizowany (ramka dla ekipy) '+('0'+new Date(ARK_OK[it.id]).getHours()).slice(-2)+':'+('0'+new Date(ARK_OK[it.id]).getMinutes()).slice(-2)+'</div>':'')+'</div>';
   }
   var hs=(reczne?[]:[{ts:it.ts,x:T.k+': zapytanie wpadło do katalogu'}]).concat(it.hist||[]);
   h+='<div class="sek"><h3>Historia</h3><ul class="hist">'+hs.slice().reverse().map(function(x){return '<li><time>'+kiedy(x.ts)+'</time> · '+esc(x.x)+'</li>';}).join('')+'</ul></div>';

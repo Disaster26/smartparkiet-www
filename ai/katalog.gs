@@ -370,11 +370,16 @@ function katCzyscUst(d) {
 function katZapisz(ops) {
   if (!Array.isArray(ops)) return { ok: false, blad: 'Brak zmian' };
   if (ops.length > KAT_MAX_OPS) return { ok: false, blad: 'Za dużo zmian naraz' };
+  const t0 = Date.now();
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(25000)) return { ok: false, blad: 'Serwer zajęty, spróbuj za chwilę.' };
+  let wynik, ek = null;
   try {
     const ss = katSS(), A = katArkusze(ss);
     const u = katUstCzytaj(A.ust);
+    /* stan przed zapisem - do ramki "INFORMACJE DLA EKIPY" (kafelek mógł zmienić zapytanie, info brygadę lub dzień) */
+    let przed = null;
+    try { if (ops.some(function (o) { return o && (o.t === 'kaf' || o.t === 'wpis'); })) przed = { gr: katCzytaj(A.grafik), sp: katCzytaj(A.sprawy) }; } catch (e) { przed = null; }
     const brNaz = {};
     (u.brygady || KAT_BRYGADY).forEach(function (b) { brNaz[b.id] = b.n; });
     const zs = [], zw = [], zg = [];
@@ -406,10 +411,115 @@ function katZapisz(ops) {
     if (ust) { katUstZapisz(A.ust, 'brygady', ust.br); katUstZapisz(A.ust, 'statusy', ust.kol); }
     katUstZapisz(A.ust, 'rev', Number(u.rev || 0) + 1);
     SpreadsheetApp.flush();
-    return katStan();
+    try { ek = katEkipaPrzygotuj(ops, przed, A, ust ? ust.br : (u.brygady || KAT_BRYGADY)); } catch (e) { ek = null; }
+    wynik = katStan();
   } finally {
     lock.releaseLock();
   }
+  /* arkusze wycen aktualizowane po zwolnieniu blokady; błąd arkusza nigdy nie psuje zapisu aplikacji */
+  if (ek && wynik && wynik.ok) { try { wynik.ark = katEkipaPisz(ek, t0); } catch (e) { console.error('ekipa: ' + e); } }
+  return wynik;
+}
+
+/* ------------------------------------------------------------------ arkusz wyceny: ramka INFORMACJE DLA EKIPY (Artur 15.11)
+   Stały blok 7 wierszy (A:E) na końcu zakładki "Wycena", znajdowany po tytule w kolumnie A i nadpisywany przy każdej zmianie.
+   Tylko zapytania z arkuszem (a_<id pliku>); treść porównywana skrótem, więc arkusz otwierany tylko, gdy coś się zmieniło. */
+const KAT_EK_TYT = 'INFORMACJE DLA EKIPY';
+const KAT_EK_MAX = 4;          /* arkuszy na jeden zapis */
+const KAT_EK_CZAS = 12000;     /* ms od początku zapisu - aplikacja czeka na odpowiedź max 30 s */
+const KAT_DNI_KR = ['niedz.', 'pon.', 'wt.', 'śr.', 'czw.', 'pt.', 'sob.'];
+function katIsoD(s) { const a = String(s).split('-'); return new Date(+a[0], a[1] - 1, +a[2]); }
+function katDIso(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function katDKr(s) { const d = katIsoD(s); return KAT_DNI_KR[d.getDay()] + ' ' + ('0' + d.getDate()).slice(-2) + '.' + ('0' + (d.getMonth() + 1)).slice(-2); }
+/* dni robocze kafelka pn-sb (niedziela pomijana) - jak segi() w aplikacji */
+function katDniKaf(k) {
+  const r = [];
+  if (!k || !k.od) return r;
+  let d = katIsoD(k.od);
+  if (d.getDay() === 0) d.setDate(d.getDate() + 1);
+  for (let i = 0; i < Math.max(1, k.dni || 1); i++) { r.push(katDIso(d)); d.setDate(d.getDate() + 1); if (d.getDay() === 0) d.setDate(d.getDate() + 1); }
+  return r;
+}
+function katTekstKaf(k) { return ((k.ul || '') + (k.mies ? '/' + k.mies : '') + (k.m2 ? ' (' + k.m2 + ')' : '') + (k.info ? ' / ' + k.info : '')).toUpperCase(); }
+function katEkipaPrzygotuj(ops, przed, A, br) {
+  const gr = katCzytaj(A.grafik), sp = katCzytaj(A.sprawy), st = katCzytaj(A.status);
+  const zid = {}, dodaj = function (z) { if (/^a_[\w-]{20,}$/.test(String(z || ''))) zid[z] = 1; };
+  const poBryg = function (b, dz) { if (!b || !dz) return; Object.keys(gr).forEach(function (id) { const k = gr[id].d; if (k && k.br === b && katDniKaf(k).indexOf(dz) >= 0) dodaj(k.zid); }); };
+  ops.forEach(function (o) {
+    if (!o) return;
+    if (o.t === 'zap') dodaj(o.id);
+    else if (o.t === 'kaf') { dodaj(o.d && o.d.zid); const s = przed && przed.gr[o.id]; if (s && s.d) dodaj(s.d.zid); }
+    else if (o.t === 'wpis') { if (o.d) poBryg(o.d.br, o.d.dz); const s = przed && przed.sp[o.id]; if (s && s.d) poBryg(s.d.br, s.d.dz); }
+    else if (o.t === 'ust') Object.keys(gr).forEach(function (id) { const k = gr[id].d; if (k && k.br) dodaj(k.zid); });
+  });
+  const p = PropertiesService.getScriptProperties();
+  let kolejka = [];
+  try { kolejka = JSON.parse(p.getProperty('KAT_EK_KOLEJKA') || '[]'); } catch (e) { kolejka = []; }
+  kolejka.forEach(dodaj);
+  const brNaz = {};
+  (br || []).forEach(function (b) { brNaz[b.id] = b.n; });
+  return Object.keys(zid).map(function (z) { return { zid: z, wiersze: katEkipaTresc(z, gr, sp, st, brNaz) }; });
+}
+function katEkipaTresc(zid, gr, sp, st, brNaz) {
+  const kaf = Object.keys(gr).map(function (id) { return gr[id].d; }).filter(function (k) { return k && k.zid === zid && k.br && k.od; })
+    .sort(function (a, b) { return a.od < b.od ? -1 : a.od > b.od ? 1 : 0; });
+  const termin = [], opis = [], info = [];
+  let tel = '';
+  kaf.forEach(function (k) {
+    const dni = katDniKaf(k), bn = brNaz[k.br] || k.br;
+    termin.push(bn + ': ' + (dni.length > 1 ? katDKr(dni[0]) + ' - ' + katDKr(dni[dni.length - 1]) + ' (' + dni.length + ' dni)' : katDKr(dni[0])) + ' ' + dni[0].slice(0, 4));
+    const t = katTekstKaf(k);
+    if (t && opis.indexOf(t) < 0) opis.push(t);
+    if (!tel && k.tel) tel = k.tel;
+    Object.keys(sp).map(function (id) { return sp[id].d; }).filter(function (w) { return w && w.br === k.br && dni.indexOf(w.dz) >= 0; })
+      .sort(function (a, b) { return (a.dz + (a.g || '')) < (b.dz + (b.g || '')) ? -1 : 1; })
+      .forEach(function (w) { const l = katDKr(w.dz) + ': ' + (w.g ? w.g + ' ' : '') + w.x; if (info.indexOf(l) < 0) info.push(l); });
+  });
+  const z = st[zid] && st[zid].d;
+  return [
+    ['Termin realizacji', termin.join('\n')],
+    ['Zlecenie (grafik)', opis.join('\n')],
+    ['Informacje dla brygady', info.join('\n')],
+    ['Notatka', (z && z.nt) || ''],
+    ['Telefon klienta', tel]
+  ];
+}
+function katEkipaPisz(lista, t0) {
+  const p = PropertiesService.getScriptProperties(), zrobione = [], zostaje = [];
+  let ile = 0;
+  lista.forEach(function (e) {
+    const pusto = e.wiersze.every(function (w) { return !w[1]; });
+    const klucz = 'KAT_EK_' + e.zid.slice(2, 60), skrot = katSha(JSON.stringify(e.wiersze)).slice(0, 24), byl = p.getProperty(klucz);
+    if (byl === skrot || (!byl && pusto)) return;          /* bez zmian albo nigdy nie było czego wpisać */
+    if (ile >= KAT_EK_MAX || Date.now() - t0 > KAT_EK_CZAS) { zostaje.push(e.zid); return; }
+    ile++;
+    try { katEkipaRamka(e.zid.slice(2), e.wiersze); p.setProperty(klucz, skrot); zrobione.push(e.zid); }
+    catch (x) { console.error('ekipa ' + e.zid + ': ' + x); }  /* np. arkusz usunięty - pomijamy */
+  });
+  if (zostaje.length) p.setProperty('KAT_EK_KOLEJKA', JSON.stringify(zostaje.slice(0, 50))); else p.deleteProperty('KAT_EK_KOLEJKA');
+  return zrobione;
+}
+function katEkipaRamka(plikId, wiersze) {
+  const ss = SpreadsheetApp.openById(plikId);
+  const sh = ss.getSheetByName('Wycena') || ss.getSheets()[0];
+  const n = sh.getLastRow();
+  let start = 0;
+  if (n > 0) {
+    const a = sh.getRange(1, 1, n, 1).getValues();
+    for (let i = 0; i < a.length; i++) if (String(a[i][0]).trim() === KAT_EK_TYT) { start = i + 1; break; }
+  }
+  if (!start) start = n + 2;
+  const teraz = Utilities.formatDate(new Date(), 'Europe/Warsaw', 'dd.MM.yyyy HH:mm');
+  const dane = [[KAT_EK_TYT, '', '', '', '']].concat(wiersze.map(function (w) { return [w[0], w[1] || '-', '', '', '']; }), [['Zaktualizowano', teraz + ' (aplikacja Katalog)', '', '', '']]);
+  const r = sh.getRange(start, 1, dane.length, 5);
+  r.setValues(dane).setWrap(true).setVerticalAlignment('top').setFontSize(11).setFontColor('#16120F').setBackground('#FFF4EC').setFontWeight('normal');
+  sh.getRange(start, 1, 1, 5).merge().setBackground('#FE6500').setFontColor('#FFFFFF').setFontWeight('bold').setFontSize(12);
+  sh.getRange(start + 1, 2, dane.length - 1, 4).mergeAcross();
+  sh.getRange(start + 1, 1, dane.length - 1, 1).setFontWeight('bold').setFontColor('#4A5058');
+  sh.getRange(start + 1, 2, 3, 1).setFontWeight('bold');      /* termin, zlecenie, info dla brygady */
+  sh.getRange(start + dane.length - 1, 1, 1, 5).setFontSize(9).setFontColor('#6B6560');
+  r.setBorder(true, true, true, true, false, true, '#FE6500', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  SpreadsheetApp.flush();
 }
 
 /* ------------------------------------------------------------------ PDF oferty (szukany przy kliknięciu) */
