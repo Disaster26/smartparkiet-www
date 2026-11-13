@@ -6,7 +6,9 @@ Skrypt podmienia warstwe danych (dane przykladowe -> backend Apps Script katalog
 synchronizacje, tryb offline i PWA. Kazda zamiana jest sprawdzana (assert) - gdy makieta sie zmieni
 i ktorys fragment nie pasuje, skrypt zatrzyma sie z nazwa fragmentu.
 
-Uruchomienie: python _buduj_aplikacje.py   (potem build.py w SMARTPARKIET_wdrozenie\\narzedzia)
+UWAGA (14.11): skrypt byl JEDNORAZOWA konwersja. Od 14.11 zrodlem jest aplikacja/index.html (sa w niej
+poprawki po testach, ktorych tu nie ma) - NIE uruchamiac ponownie, bo nadpisze aplikacje. Uwagi Artura nanosi sie
+wprost w aplikacja/index.html.
 """
 import os, re, sys
 
