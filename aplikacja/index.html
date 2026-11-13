@@ -1386,7 +1386,7 @@ var przew=lsGet('spk-katalog-przew')==='1';
 $('loginForm').addEventListener('submit',function(e){
   e.preventDefault();var h=$('haslo').value,b=$('loginBtn');if(!h)return;
   b.disabled=true;b.textContent='Sprawdzam...';$('loginErr').textContent='';
-  api('katalog_login',{haslo:h}).then(function(r){
+  api('katalog_login',{haslo:h,ua:navigator.userAgent}).then(function(r){
     if(!r||!r.ok)throw new Error((r&&r.blad)||'Nie udało się zalogować');
     TOK=r.token;lsSet(KL_TOK,TOK);$('haslo').value='';$('login').hidden=true;
     return pobierz().then(function(){if(!przew&&BAZA){przew=true;przewodnik(true);}});

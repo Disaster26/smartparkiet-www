@@ -20,7 +20,9 @@ const KAT_ARK = { status: 'Katalog_status', sprawy: 'Katalog_sprawy', grafik: 'G
 const KAT_NAGL = ['ID', 'Opis', 'Dane (zapis aplikacji - nie edytować)', 'Zmieniono'];
 const KAT_TOKEN_DNI = 180;
 const KAT_ITER = 400;          /* powtórzenia skrótu hasła */
-const KAT_PROBY = 8;           /* błędne hasła na 15 minut, potem blokada */
+const KAT_PROBY = 5;           /* 14.11: co 5 złych haseł blokada rosnąca (KAT_BLOKADY) */
+const KAT_BLOKADY = [1, 15, 30, 300]; /* minuty: 1 min, 15 min, 30 min, potem za każdym razem 5 h */
+const KAT_RESET_H = 24;        /* doba bez złych prób = licznik od zera */
 const KAT_MAX_REJESTR = 800;   /* tyle najnowszych wierszy Rejestru trafia do katalogu */
 const KAT_MAX_OPS = 200;
 const KAT_ID = /^[A-Za-z0-9_.:-]{1,80}$/;
@@ -39,7 +41,7 @@ function katalogObsluz(d) {
     d = d || {};
     const akcja = String(d.akcja || '');
     if (akcja === 'katalog_ping') return { ok: true, wersja: KAT_WERSJA };
-    if (akcja === 'katalog_login') return katLogin(d.haslo);
+    if (akcja === 'katalog_login') return katLogin(d.haslo, d.ua);
     if (!katTokenOk(d.token)) return { ok: false, kod: 'auth', blad: 'Sesja wygasła. Zaloguj się ponownie.' };
     if (akcja === 'katalog_stan') return katStan();
     if (akcja === 'katalog_zapisz') return katZapisz(d.ops);
@@ -87,24 +89,81 @@ function katalogWylogujWszystkich() {
   Object.keys(all).forEach(function (k) { if (k.indexOf('katTok_') === 0) p.deleteProperty(k); });
 }
 
-function katLogin(haslo) {
-  const c = CacheService.getScriptCache();
-  const bledy = Number(c.get('katBledy') || 0);
-  if (bledy >= KAT_PROBY) return { ok: false, blad: 'Za dużo prób. Spróbuj za 15 minut.' };
-  const zap = String(PropertiesService.getScriptProperties().getProperty('KATALOG_HASLO') || '');
-  const i = zap.indexOf(':');
-  if (i < 1) return { ok: false, blad: 'Hasło nie jest jeszcze ustawione (katalogUstawHaslo).' };
-  const h = String(haslo || '');
-  if (!h || h.length > 200 || !katRowne(katHashHasla(h, zap.slice(0, i)), zap.slice(i + 1))) {
-    c.put('katBledy', String(bledy + 1), 900);
-    Utilities.sleep(500);
-    return { ok: false, blad: 'Złe hasło' };
+function katLogin(haslo, ua) {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(15000)) return { ok: false, blad: 'Serwer zajęty, spróbuj za chwilę.' };
+  try {
+    const p = PropertiesService.getScriptProperties();
+    const teraz = Date.now();
+    let b = {};
+    try { b = JSON.parse(p.getProperty('KAT_BLOKADA') || '{}') || {}; } catch (e) { b = {}; }
+    if (b.ost && teraz - b.ost > KAT_RESET_H * 36e5) b = {};
+    if (b.do && b.do > teraz) {
+      katLogLogowania('BLOKADA (próba w czasie blokady)', ua);
+      return { ok: false, blokada: true, blad: 'Za dużo błędnych haseł. Logowanie zablokowane jeszcze ' + katIleCzasu(b.do - teraz) + '.' };
+    }
+    const zap = String(p.getProperty('KATALOG_HASLO') || '');
+    const i = zap.indexOf(':');
+    if (i < 1) return { ok: false, blad: 'Hasło nie jest jeszcze ustawione (katalogUstawHaslo).' };
+    const h = String(haslo || '');
+    if (!h || h.length > 200 || !katRowne(katHashHasla(h, zap.slice(0, i)), zap.slice(i + 1))) {
+      b.n = (b.n || 0) + 1; b.ost = teraz;
+      let msg = 'Złe hasło';
+      if (b.n >= KAT_PROBY) {
+        const min = KAT_BLOKADY[Math.min(b.etap || 0, KAT_BLOKADY.length - 1)];
+        b.do = teraz + min * 6e4; b.etap = (b.etap || 0) + 1; b.n = 0;
+        msg = 'Złe hasło. Za dużo prób - logowanie zablokowane na ' + katIleCzasu(min * 6e4) + '.';
+        katLogLogowania('ZŁE HASŁO -> blokada ' + katIleCzasu(min * 6e4), ua);
+      } else {
+        msg = 'Złe hasło. Zostało prób przed blokadą: ' + (KAT_PROBY - b.n) + '.';
+        katLogLogowania('ZŁE HASŁO', ua);
+      }
+      p.setProperty('KAT_BLOKADA', JSON.stringify(b));
+      Utilities.sleep(700);
+      return { ok: false, blad: msg };
+    }
+    p.deleteProperty('KAT_BLOKADA');
+    katSprzatnijTokeny(p);
+    const token = Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, '');
+    p.setProperty(katKluczTokenu(token), String(teraz + KAT_TOKEN_DNI * 864e5));
+    katLogLogowania('OK - zalogowano', ua);
+    return { ok: true, token: token };
+  } finally {
+    lock.releaseLock();
   }
-  const p = PropertiesService.getScriptProperties();
-  katSprzatnijTokeny(p);
-  const token = Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, '');
-  p.setProperty(katKluczTokenu(token), String(Date.now() + KAT_TOKEN_DNI * 864e5));
-  return { ok: true, token: token };
+}
+function katIleCzasu(ms) {
+  const m = Math.ceil(ms / 6e4);
+  if (m < 60) return m + ' min';
+  const g = Math.floor(m / 60), r = m % 60;
+  return g + ' h' + (r ? ' ' + r + ' min' : '');
+}
+/* dziennik logowań: zakładka Katalog_logowania (data, wynik, urządzenie) - widać, czy ktoś obcy próbuje */
+function katLogLogowania(wynik, ua) {
+  try {
+    const sh = katArkusz(katSS(), 'Katalog_logowania', ['Data', 'Wynik', 'Urządzenie (z przeglądarki)']);
+    sh.appendRow([Utilities.formatDate(new Date(), 'Europe/Warsaw', 'yyyy-MM-dd HH:mm:ss'), wynik, katUrz(ua)]);
+    const n = sh.getLastRow();
+    if (n > 1001) sh.deleteRows(2, n - 1001);
+  } catch (e) { console.error('log logowania: ' + e); }
+}
+function katUrz(ua) {
+  ua = String(ua || '').slice(0, 300);
+  if (!ua) return '?';
+  const sys = /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad' : /Android/.test(ua) ? 'Android' : /Windows/.test(ua) ? 'Windows' : /Mac OS X/.test(ua) ? 'Mac' : /Linux/.test(ua) ? 'Linux' : 'inne';
+  const prz = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /CriOS|Chrome\//.test(ua) ? 'Chrome' : /FxiOS|Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'inna';
+  return sys + ' / ' + prz + ' | ' + ua.slice(0, 160);
+}
+/* URUCHOMIĆ W EDYTORZE, gdy Artur sam się zablokował: zeruje licznik złych haseł */
+function katalogOdblokuj() {
+  PropertiesService.getScriptProperties().deleteProperty('KAT_BLOKADA');
+  Logger.log('Blokada logowania zdjęta.');
+}
+/* podgląd: ile aktywnych sesji (zalogowanych urządzeń) i stan blokady */
+function katalogStanBezpieczenstwa() {
+  const all = PropertiesService.getScriptProperties().getProperties(), t = Date.now();
+  const sesje = Object.keys(all).filter(function (k) { return k.indexOf('katTok_') === 0 && Number(all[k]) > t; }).length;
+  Logger.log('Aktywne sesje: ' + sesje + ' | blokada: ' + (all.KAT_BLOKADA || 'brak'));
 }
 function katKluczTokenu(t) { return 'katTok_' + katSha('tok|' + t).slice(0, 40); }
 function katTokenOk(t) {
