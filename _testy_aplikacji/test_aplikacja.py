@@ -62,6 +62,8 @@ def run(p, w, h, mobile):
     czekaj(lambda: pg.locator('#login').is_hidden(), 'zalogowanie')
     czekaj(lambda: 'Zapisane' in pg.inner_text('#syncTx'), 'pasek stanu po wczytaniu')
     pg.screenshot(path='%s/dzis_%d.png' % (ZRZ, w))
+    # --- 4. brygada (podwykonawca) dokladana raz do zapisanych ustawien
+    czekaj(lambda: [x['id'] for x in db()['ust'].get('brygady', [])] == ['b1', 'b2', 'b3', 'b4'], 'brygada b4 na serwerze')
     # --- lista
     pg.click(nav % 'lista'); pg.wait_for_timeout(150)
     assert pg.locator('.karta').count() == 12, pg.locator('.karta').count()
@@ -126,6 +128,18 @@ def run(p, w, h, mobile):
     pg.type('#fA', 'rycerska 12 radzymin'); pg.fill('#fM', '60'); pg.type('#fI', 'warstwa + schody')
     pg.click('.okno [data-g="zap"]')
     czekaj(lambda: any(v['ul'] == 'RYCERSKA 12 RADZYMIN' and v['info'] == 'WARSTWA + SCHODY' for v in db()['grafik'].values()), 'nowe zlecenie na serwerze')
+    # --- wyszukiwarka ofert w oknie kafelka (pusta kratka PODWYKONAWCA)
+    pg.locator('.gk[data-cel$="|b4"]').nth(2).click(); pg.wait_for_timeout(150)
+    pg.type('#fQ', 'pulaw')
+    czekaj(lambda: pg.locator('.okno .of').count() >= 1, 'trafienie w ofertach')
+    pg.locator('.okno .of', has_text='Puławska').first.click()
+    assert pg.input_value('#fA') == 'PUŁAWSKA 182' and pg.input_value('#fMi') == '14' and pg.input_value('#fM') == '46', pg.input_value('#fA')
+    pg.click('.okno [data-g="zap"]')
+    czekaj(lambda: any(v.get('zid') == zid and v.get('br') == 'b4' and v.get('ul') == 'PUŁAWSKA 182' for v in db()['grafik'].values()), 'kafelek z oferty na serwerze')
+    if mobile:
+        assert pg.evaluate('document.documentElement.scrollWidth - innerWidth') <= 0
+        gs = pg.evaluate("(()=>{var g=document.querySelector('.gsiat');return g.scrollWidth-g.clientWidth})()")
+        assert gs <= 0, ('grafik przewija sie w poziomie', gs)
     # --- eksport tygodnia
     with pg.expect_download() as dl:
         pg.click('[data-act=gxls]')

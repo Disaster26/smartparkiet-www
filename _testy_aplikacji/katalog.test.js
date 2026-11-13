@@ -176,7 +176,7 @@ test('stan: zapytania z Rejestru wycen, źródła rozpoznane, dane liczbowe', ()
   assert.strictEqual(new Date(a.ts).getHours(), 10); assert.strictEqual(new Date(a.ts).getDate(), 13);
   assert.strictEqual(stary.id, 'a_STARYxxxxxxxxxxxxxxxxxxxx'); /* link wpisany tekstem w starych wierszach */
   assert.strictEqual(a.st, 'luzne');
-  eq(s.graf.br.map(b => b.n), ['JARO.2', 'JAREK', 'MACIEK']);
+  eq(s.graf.br.map(b => b.n), ['JARO.2', 'JAREK', 'MACIEK', 'PODWYKONAWCA']);
   assert.ok(s.graf.kol.length >= 5);
 });
 
