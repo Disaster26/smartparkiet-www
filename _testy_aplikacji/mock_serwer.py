@@ -16,7 +16,7 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 KORZEN = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HASLO = os.environ.get('MOCK_HASLO', 'test-haslo-123')
 LOCK = threading.Lock()
-ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'wtoku', 'zrobione', 'odpadlo']
+ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'zatw', 'wtoku', 'zrobione', 'odpadlo']
 BRYGADY = [{'id': 'b1', 'n': 'JARO.2'}, {'id': 'b2', 'n': 'JAREK'}, {'id': 'b3', 'n': 'MACIEK'}]
 STATUSY = [{'id': 'ok', 'n': 'Potwierdzone', 'c': '#2E9E3A'}, {'id': 'mysli', 'n': 'Zastanawia się', 'c': '#FF8A00'},
            {'id': 'wst', 'n': 'Wstępnie', 'c': '#FFD60A'}, {'id': 'ogl', 'n': 'Oględziny / pomiar', 'c': '#A8D8F5'},
@@ -180,6 +180,7 @@ def obsluz(d):
                     DB['sprawy'].pop(i, None)
                 else:
                     DB['sprawy'][i] = {'dz': dzien(v.get('dz')) or datetime.date.today().isoformat(), 'g': godz(v.get('g')), 'x': txt(v.get('x'), 200), 'prv': bool(v.get('prv'))}
+                    if v.get('br') and re.match(r'^[A-Za-z0-9_.:-]{1,80}$', str(v.get('br'))): DB['sprawy'][i]['br'] = str(v.get('br'))
             elif op['t'] == 'kaf':
                 if v is None:
                     DB['grafik'].pop(i, None)

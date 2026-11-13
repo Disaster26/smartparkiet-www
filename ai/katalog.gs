@@ -33,7 +33,7 @@ const KAT_STATUSY = [
   { id: 'wst', n: 'Wstępnie', c: '#FFD60A' }, { id: 'ogl', n: 'Oględziny / pomiar', c: '#A8D8F5' },
   { id: 'term', n: 'Termin do potwierdzenia', c: '#1E63D6' }, { id: 'pilne', n: 'Pilne', c: '#E0262B' },
   { id: 'awaria', n: 'Awaria', c: '#6B2A5E' }, { id: 'gotowe', n: 'Zrobione', c: '#B6FF1A' }, { id: 'inne', n: 'Inne', c: '#FF6FAE' }];
-const KAT_ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'wtoku', 'zrobione', 'odpadlo'];
+const KAT_ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'zatw', 'wtoku', 'zrobione', 'odpadlo'];
 
 /* ------------------------------------------------------------------ wejście */
 function katalogObsluz(d) {
@@ -353,7 +353,11 @@ function katCzyscKaf(d) {
     dni: Math.min(30, Math.max(1, Math.round(Number(d.dni) || 1))), zid: d.zid ? katTxt(d.zid, 80) : null
   };
 }
-function katCzyscSprawa(d) { return { dz: katDzien(d.dz) || Utilities.formatDate(new Date(), 'Europe/Warsaw', 'yyyy-MM-dd'), g: katGodz(d.g), x: katTxt(d.x, 200), prv: !!d.prv }; }
+function katCzyscSprawa(d) {
+  const o = { dz: katDzien(d.dz) || Utilities.formatDate(new Date(), 'Europe/Warsaw', 'yyyy-MM-dd'), g: katGodz(d.g), x: katTxt(d.x, 200), prv: !!d.prv };
+  if (d.br && KAT_ID.test(String(d.br))) o.br = String(d.br); /* informacja dla brygady (pod kafelkami), opcjonalnie */
+  return o;
+}
 function katCzyscUst(d) {
   const br = (Array.isArray(d.br) ? d.br : []).slice(0, 12).map(function (b) { return { id: katTxt(b.id, 40), n: katTxt(b.n, 24) || 'BRYGADA' }; })
     .filter(function (b) { return KAT_ID.test(b.id); });
@@ -389,7 +393,7 @@ function katZapisz(ops) {
         zs.push({ id: id, d: c, opis: c ? [c.st, c.dz ? c.dz + (c.g ? ' ' + c.g : '') : '', reczne ? c.kl + ' ' + c.tel : '', c.nt.slice(0, 80)].filter(String).join(' | ') : '' });
       } else if (op.t === 'wpis') {
         const c = d === null ? null : katCzyscSprawa(d);
-        zw.push({ id: id, d: c, opis: c ? (c.dz + ' ' + (c.g || '') + ' ' + c.x + (c.prv ? ' (prywatne)' : '')).replace(/\s+/g, ' ') : '' });
+        zw.push({ id: id, d: c, opis: c ? (c.dz + ' ' + (c.g || '') + ' ' + (c.br ? (brNaz[c.br] || c.br) + ': ' : '') + c.x + (c.prv ? ' (prywatne)' : '')).replace(/\s+/g, ' ') : '' });
       } else if (op.t === 'kaf') {
         const c = d === null ? null : katCzyscKaf(d);
         zg.push({ id: id, d: c, opis: c ? [(c.br && c.od) ? (brNaz[c.br] || c.br) + ' ' + c.od + (c.dni > 1 ? ' (' + c.dni + ' dni)' : '') : 'DO ROZPLANOWANIA',

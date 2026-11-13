@@ -132,16 +132,16 @@ test('hasło: katalogUstawHaslo zapisuje tylko skrót i usuwa jawne hasło', () 
   assert.ok(w.props.KATALOG_HASLO.indexOf('Parkiet') < 0);
 });
 
-test('logowanie: złe hasło, blokada po 8 próbach, dobre hasło daje token', () => {
+test('logowanie: złe hasło, blokada po kilku próbach, dobre hasło daje token', () => {
   const w = swiat();
   w.props.KATALOG_NOWE_HASLO = 'Parkiet-2026'; w.G.katalogUstawHaslo();
-  assert.strictEqual(w.G.katalogObsluz({ akcja: 'katalog_login', haslo: 'zle' }).blad, 'Złe hasło');
+  assert.match(w.G.katalogObsluz({ akcja: 'katalog_login', haslo: 'zle' }).blad, /^Złe hasło/);
   const ok = w.G.katalogObsluz({ akcja: 'katalog_login', haslo: 'Parkiet-2026' });
   assert.ok(ok.ok); assert.match(ok.token, /^[a-f0-9]{64}$/);
   /* token przechowywany tylko jako skrót */
   assert.ok(!Object.keys(w.props).some(k => k.indexOf(ok.token) >= 0 || w.props[k].indexOf(ok.token) >= 0));
   for (let i = 0; i < 8; i++) w.G.katalogObsluz({ akcja: 'katalog_login', haslo: 'zle' + i });
-  assert.match(w.G.katalogObsluz({ akcja: 'katalog_login', haslo: 'Parkiet-2026' }).blad, /Za dużo prób/);
+  assert.match(w.G.katalogObsluz({ akcja: 'katalog_login', haslo: 'Parkiet-2026' }).blad, /Za dużo (prób|błędnych haseł)/);
 });
 
 test('token: bez tokenu, z obcym albo wylogowanym - brak dostępu', () => {
@@ -186,19 +186,20 @@ test('zapis: status, notatka, wpis z ręki, sprawa, kafelek, ustawienia - i trwa
     { t: 'zap', id: 'a_ARKUSZ1aaaaaaaaaaaaaaaaaaaa', d: { st: 'termin', nt: 'klucze u sąsiada', dz: '2026-11-16', g: '8:00', widz: true, hist: [{ ts: 1, x: 'Status: Termin' }], kl: 'NIE NADPISUJ' } },
     { t: 'zap', id: 'r1700000000000', d: { reczne: true, kl: 'Jan Kowalski', tel: '600 000 000', ul: 'Lipowa 1', ds: 'Wola', m2: '30', st: 'rozmowa', nt: 'dzwonił', hist: [] } },
     { t: 'wpis', id: 'w1', d: { dz: '2026-11-17', g: '11:30', x: 'Dentysta', prv: true } },
+    { t: 'wpis', id: 'w2', d: { dz: '2026-11-17', g: '', x: 'klucze u sąsiada', prv: false, br: 'b2' } },
     { t: 'kaf', id: 'k1', d: { ul: 'rycerska 12 radzymin', mies: '', m2: '60', info: 'warstwa + schody', tel: '600', kol: 'ok', c: '#FF6FAE', br: 'b2', od: '2026-11-16', dni: 2, zid: 'a_ARKUSZ1aaaaaaaaaaaaaaaaaaaa' } },
     { t: 'ust', d: { br: [{ id: 'b1', n: 'JARO.2' }, { id: 'b2', n: 'JAREK' }, { id: 'b3', n: 'MACIEK B' }, { id: 'b4', n: 'NOWA' }], kol: [{ id: 'ok', n: 'Potwierdzone', c: '#2E9E3A' }, { id: 'zly', n: 'x', c: 'red' }] } }
   ] });
   assert.ok(r.ok, r.blad);
   assert.strictEqual(w.lock.held, 0); assert.ok(w.lock.calls >= 1);
   /* Rejestr wycen zostaje pierwszym arkuszem */
-  eq(w.ss.getSheets().map(s => s.name), ['Arkusz1', 'Katalog_status', 'Katalog_sprawy', 'Grafik', 'Ustawienia_katalog']);
+  eq(w.ss.getSheets().map(s => s.name), ['Arkusz1', 'Katalog_logowania', 'Katalog_status', 'Katalog_sprawy', 'Grafik', 'Ustawienia_katalog']);
   const s = K({ akcja: 'katalog_stan' });
   const a = s.items.find(i => i.id === 'a_ARKUSZ1aaaaaaaaaaaaaaaaaaaa');
   assert.strictEqual(a.st, 'termin'); assert.strictEqual(a.nt, 'klucze u sąsiada'); assert.strictEqual(a.dz, '2026-11-16'); assert.strictEqual(a.kl, 'Anna Nowak');
   const rr = s.items.find(i => i.id === 'r1700000000000');
   assert.strictEqual(rr.typ, 'r'); assert.strictEqual(rr.kl, 'Jan Kowalski'); assert.strictEqual(rr.m2, 30);
-  eq(s.wpisy, [{ dz: '2026-11-17', g: '11:30', x: 'Dentysta', prv: true, id: 'w1' }]);
+  eq(s.wpisy, [{ dz: '2026-11-17', g: '11:30', x: 'Dentysta', prv: true, id: 'w1' }, { dz: '2026-11-17', g: '', x: 'klucze u sąsiada', prv: false, br: 'b2', id: 'w2' }]);
   const k = s.graf.k[0];
   assert.strictEqual(k.ul, 'RYCERSKA 12 RADZYMIN'); assert.strictEqual(k.info, 'WARSTWA + SCHODY'); assert.strictEqual(k.dni, 2); assert.strictEqual(k.c, '#FF6FAE');
   assert.strictEqual(s.graf.br[2].n, 'MACIEK B'); assert.strictEqual(s.graf.br.length, 4);
