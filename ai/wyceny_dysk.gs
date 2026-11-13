@@ -184,6 +184,10 @@ function rejestr(a, kiedy, url, idStanu) {
   if (sh.getRange(1, 14).getValue() !== 'Informacje dodatkowe') sh.getRange(1, 14).setValue('Informacje dodatkowe')
     .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
   sh.getRange(2, 14).setValue(a.info || '').setBackground(null).setFontColor('#1A1A1A').setFontWeight('normal');
+  /* 14.11: kolumna O "Źródło" (analizator / koszyk / wycena klienta) - katalog zapytań w aplikacji rozpoznaje po niej kolor */
+  if (sh.getRange(1, 15).getValue() !== 'Źródło') sh.getRange(1, 15).setValue('Źródło')
+    .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
+  sh.getRange(2, 15).setValue(a.zrodlo || '').setBackground(null).setFontColor('#1A1A1A').setFontWeight('normal');
 }
 
 /* jednorazowo: poprawia stare wiersze rejestru (kolor + klikalne linki). Uruchomic recznie z edytora. */
@@ -292,6 +296,8 @@ function mailPotwierdzenie(zamowienie, numer) {
 function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
+    /* 14.11: aplikacja Katalog + Grafik (katalog.gs) - osobne akcje "katalog_*", wyceny ponizej bez zmian */
+    if (typeof d.akcja === 'string' && d.akcja.indexOf('katalog_') === 0) return json(katalogObsluz(d));
     const kiedy = Utilities.formatDate(new Date(), 'Europe/Warsaw', 'yyyy-MM-dd HH-mm');
     /* Artur 06.11: przycisk "Zapisz" - sam zapis do Folderu ofert, bez PDF, arkusza, rejestru i bez zadnego maila */
     if (d.tryb === 'szkic') return json(zapiszSzkic(d, kiedy));
@@ -319,6 +325,7 @@ function doPost(e) {
       try {
         const a = d.arkusz;
         a.numer = numer;
+        a.zrodlo = katZrodloWyceny(d); /* 14.11: kolumna O "Źródło" dla katalogu zapytań */
         const tytul = String.fromCodePoint(0x1F4CD) + ' ' + czysc((a.ulica || a.imie || a.tel || 'wycena') + ' ' + kiedy.slice(0, 10));
         const url = arkuszWyceny(folder, tytul, a, kiedy);
         urlArkusza = url;
@@ -396,6 +403,7 @@ function doPost(e) {
                ?a=wczytaj&id=..&k=..  ->  pola formularza i zdjecia jednej oferty */
 function doGet(e) {
   const p = (e && e.parameter) || {};
+  if (typeof p.akcja === 'string' && p.akcja.indexOf('katalog_') === 0) return json(katalogObsluz(p)); /* 14.11: katalog.gs */
   if (p.a === 'klucz') {
     const c = CacheService.getScriptCache();
     const bledy = Number(c.get('bledyPin') || 0);

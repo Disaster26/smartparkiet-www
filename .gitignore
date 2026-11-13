@@ -12,3 +12,7 @@ audyt_konkurencji/
 _src_audyt/
 _buduj_analizator.bak_*.py
 _wa_0411/
+
+# 14.11: zrzuty i pliki z testow aplikacji
+_testy_aplikacji/zrzuty/
+_testy_aplikacji/__pycache__/
