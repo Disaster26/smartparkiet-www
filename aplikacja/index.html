@@ -560,7 +560,7 @@ var KL_TOK='spk-app-token',KL_KESZ='spk-app-stan',KL_OST='spk-app-ostatnie';
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
 var TOK=lsGet(KL_TOK)||'';
-var OSTATNIE=+lsGet(KL_OST)||(Date.now()-3*864e5);lsSet(KL_OST,String(Date.now()));
+/* 14.11: punkt startu ustawiany raz - nowe znikaja dopiero po otwarciu albo 'przejrzane' (synchronizowane), nie po samym wejsciu */ var OSTATNIE=+lsGet(KL_OST)||(Date.now()-3*864e5);if(!lsGet(KL_OST))lsSet(KL_OST,String(OSTATNIE));
 function m2(it){return +it.m2||0;}
 function kwotaTxt(it){return it.kwota>0?zl(it.kwota):'bez wyceny';}
 function adrTxt(it){return [it.ul,it.ds].filter(Boolean).join(', ');}
@@ -810,7 +810,7 @@ function widokDzis(){
   var d=DZIS,e=naDzien(DZIS_I),nowe=D.items.filter(czyNowe).sort(function(a,b){return b.ts-a.ts;});
   var czeka=D.items.filter(function(i){return !czyNowe(i)&&!i.dz&&(i.st==='luzne'||i.st==='rozmowa');}).sort(function(a,b){return a.ts-b.ts;});
   var h='<div class="top"><div class="top-r"><img src="img/logo-96.png" alt=""><h1>Dziś</h1><span class="sub">'+DNI_P[d.getDay()]+', '+d.getDate()+' '+MIES_D[d.getMonth()]+'</span></div></div><div class="dzis-w">';
-  h+='<div class="blok" id="gNowe"><h3>Nowe <small>od ostatniego wejścia</small> <span class="n'+(nowe.length?' pom':'')+'">'+nowe.length+'</span>'+(nowe.length?'<button type="button" class="lk" data-act="widzWsz">przejrzane</button>':'')+'</h3>'+
+  h+='<div class="blok" id="gNowe"><h3>Nowe <small>jeszcze nieotwierane</small> <span class="n'+(nowe.length?' pom':'')+'">'+nowe.length+'</span>'+(nowe.length?'<button type="button" class="lk" data-act="widzWsz">przejrzane</button>':'')+'</h3>'+
     (nowe.length?nowe.map(function(i){return wiersz(i);}).join(''):'<div class="pusto" style="padding:14px">Nic nowego. Nowe zapytania pojawią się tu same.</div>')+'</div>';
   h+='<div class="blok" id="gDzis"><h3>Plan na dziś <span class="n">'+e.length+'</span><button type="button" class="lk" data-act="dzien" data-d="'+DZIS_I+'">cały dzień</button></h3>'+
     (e.length?e.map(function(x){
