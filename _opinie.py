@@ -7,12 +7,13 @@ Skrypt podmienia liczby we wszystkich plikach .html (poza index-biale.html - zap
 """
 import os, re, glob
 
-OPINIE = 257        # 30.10.2026: Suflerska 218 + Belwederska 23 + Grojecka 15 + Turmoncka 1
+OPINIE = 264        # 13.11.2026: Artur "mamy 264 opinie" (suma wszystkich wizytowek; 30.10: 257)
 
 TU = os.path.dirname(os.path.abspath(__file__))
 WZORY = [
     (r'(z )\d+( opinii Google)', OPINIE),                 # gorny pasek + "srednia z N opinii Google"
     (r'(</span> )\d+( opinii klient)', OPINIE),           # hero
+    (r'(Zobacz )\d+( opinii klient)', OPINIE),           # 13.11: aria-label linku w hero (czytniki ekranu)
     (r'(<b>)\d+( opinii</b>)', OPINIE),                   # sekcja opinii
     (r'(przy )\d+( opiniach)', OPINIE),                   # artykul o tradycji
     (r'(<span>)\d+( opinii łącznie)', OPINIE),

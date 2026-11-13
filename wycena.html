@@ -955,7 +955,7 @@ figure{margin:0}
 
 <div class="topbar">
   <div class="wrap">
-    <span><span class="gw">★★★★★</span> <b>5,0</b> z 257 opinii Google<span class="tb-x"> &middot; pięć oddziałów w Warszawie</span></span>
+    <span><span class="gw">★★★★★</span> <b>5,0</b> z 264 opinii Google<span class="tb-x"> &middot; pięć oddziałów w Warszawie</span></span>
     <span class="tb-x">Wycena ze zdjęć w 2 godziny</span>
   </div>
 </div>
@@ -3889,7 +3889,7 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   oko:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'};
  /* uslugi: uz = kratka "Zakres prac" (uzgN, tylko parkieciarz), q = nazwa pozycji w arkuszu (p[6]), il = pole ilosci,
     f = pola parkieciarza, fp = pola klienta, r = radio tak/nie silnika, c = staly opis ceny (reszta z cennika silnika) */
- var KOSZ_KOL=['pod','ek','sz','lw','ko','me','uw'];
+ var KOSZ_KOL=['pod','lw','ko','me','uw','ek','sz']; /* Artur 13.11: "Tryb ekspres 48h" i "Wykonczenie scian" na koniec listy (po Inne prace / uwagi) */
  var K=[
   {id:'pod',t:'Cyklinowanie / odnowienie podłogi',j:'m²',uz:0,q:'Renowacja parkietu',il:'m2',f:['m2','typ','wyk'],info:'Lakier, olej i twardy wosk - bez dopłaty.'},
   {id:'lw',t:'Wymiana listew',j:'mb',uz:1,q:'Wymiana listew',r:'listwy',il:'listwyMb',f:['listwyMb','@listwy'],fp:['@listwy','listwyMb']},
@@ -3904,7 +3904,7 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
   {id:'sz',t:'Wykończenie ścian',kosz:1,r:'zamSciany',fp:['zamSciany'],c:'SMART PLUS | ŚCIANY™ - osobna kalkulacja'},
   {id:'uw',t:'Inne prace / uwagi',j:'opisz, co jeszcze',pub:1,tekst:'uwagiKl',fp:['uwagiKl'],c:'opisz, co jeszcze trzeba zrobić'}
  ].filter(function(k){if(KOSZ)return KOSZ_KOL.indexOf(k.id)>=0;return PUB?(!k.wew&&!k.kosz):(!k.pub&&!k.kosz);});
- /* Artur 10.11 wieczor: w Koszyku "Tryb ekspres 48h" i "Wykonczenie scian" zaraz pod cyklinowaniem, nad Wymiana listew (wyrozniony kafel .wu-wyr) */
+ /* Koszyk: kolejnosc kafli wg KOSZ_KOL (10.11 ekspres i sciany byly pod cyklinowaniem; od 13.11 na koncu listy, nadal wyroznione .wu-wyr) */
  if(KOSZ)K.sort(function(a,b){return KOSZ_KOL.indexOf(a.id)-KOSZ_KOL.indexOf(b.id);});
  var $=function(i){return document.getElementById(i);};
  var zl=function(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' zł';};
