@@ -78,6 +78,8 @@ def run(p, w, h, mobile):
     pg.locator('.szyb button', has_text='Jutro').click()
     czekaj(lambda: db()['status'].get(zid, {}).get('dz'), 'termin na serwerze')
     assert db()['status'][zid]['st'] == 'termin'  # przypisanie terminu ustawia "Termin ustalony"
+    pg.click('.stg button[data-s=zatw]')
+    czekaj(lambda: db()['status'][zid]['st'] == 'zatw', 'status Zatwierdzone na serwerze')
     pg.screenshot(path='%s/karta_%d.png' % (ZRZ, w))
     if mobile:
         pg.click('.det .wst'); pg.wait_for_timeout(350)
@@ -140,6 +142,11 @@ def run(p, w, h, mobile):
         assert pg.evaluate('document.documentElement.scrollWidth - innerWidth') <= 0
         gs = pg.evaluate("(()=>{var g=document.querySelector('.gsiat');return g.scrollWidth-g.clientWidth})()")
         assert gs <= 0, ('grafik przewija sie w poziomie', gs)
+    # --- informacja dla brygady pod kafelkami (sprawa z polem br)
+    pg.locator('.gk.gn[data-cel$="|N:b2"]').nth(3).click(); pg.wait_for_timeout(150)
+    pg.fill('#pX', 'klucze u sąsiada'); pg.click('.okno [data-g="zap"]')
+    czekaj(lambda: any(v.get('br') == 'b2' and v.get('x') == 'klucze u sąsiada' for v in db()['sprawy'].values()), 'info brygady na serwerze')
+    assert pg.locator('.gk.gn[data-cel$="|N:b2"] .gw', has_text='klucze u sąsiada').count() == 1
     # --- eksport tygodnia
     with pg.expect_download() as dl:
         pg.click('[data-act=gxls]')
