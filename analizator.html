@@ -2146,7 +2146,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     ov.querySelector('#podgladWa').onclick=async()=>{
       const f=window.__pdfPodglad; if(!f)return;
       if(window.spZapiszPodglad)window.spZapiszPodglad(f);
-      if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Oferta SMARTPARKIET',text:'W załączniku oferta renowacji parkietu. SMARTPARKIET, tel. 602 242 815'});}catch(e){}}
+      if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Oferta SMARTPARKIET',text:'W załączniku oferta renowacji parkietu. Po zapoznaniu się z ofertą zapraszamy do kontaktu telefonicznego w celu omówienia ewentualnych szczegółów realizacji i terminu. SMARTPARKIET, tel. 602 242 815'});}catch(e){}}
       else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();a.remove();
         alert('Ten telefon nie udostępnia plików bezpośrednio. PDF zapisany - dołącz go w WhatsApp z plików.');}
     };
@@ -2172,7 +2172,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         p.querySelector('#waK2').onclick=async()=>{
           let f=window.__karta; if(!f){alert('Najpierw wyślij wycenę.');return;}
           if(!(f instanceof File))f=new File([f],'Oferta_SMARTPARKIET.pdf',{type:'application/pdf'});
-          if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Oferta SMARTPARKIET',text:'W załączniku oferta renowacji parkietu. SMARTPARKIET, tel. 602 242 815'});}catch(e){}}
+          if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Oferta SMARTPARKIET',text:'W załączniku oferta renowacji parkietu. Po zapoznaniu się z ofertą zapraszamy do kontaktu telefonicznego w celu omówienia ewentualnych szczegółów realizacji i terminu. SMARTPARKIET, tel. 602 242 815'});}catch(e){}}
           else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();a.remove();
             alert('Ten telefon nie udostępnia plików bezpośrednio. PDF zapisany - dołącz go w WhatsApp z plików (spinacz > Dokument).');}
         };}
