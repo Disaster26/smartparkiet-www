@@ -27,7 +27,7 @@ const KAT_MAX_REJESTR = 800;   /* tyle najnowszych wierszy Rejestru trafia do ka
 const KAT_MAX_OPS = 200;
 const KAT_ID = /^[A-Za-z0-9_.:-]{1,80}$/;
 
-const KAT_BRYGADY = [{ id: 'b1', n: 'JARO.2' }, { id: 'b2', n: 'JAREK' }, { id: 'b3', n: 'MACIEK' }];
+const KAT_BRYGADY = [{ id: 'b1', n: 'JARO.2' }, { id: 'b2', n: 'JAREK' }, { id: 'b3', n: 'MACIEK' }, { id: 'b4', n: 'PODWYKONAWCA' }];
 const KAT_STATUSY = [
   { id: 'ok', n: 'Potwierdzone', c: '#2E9E3A' }, { id: 'mysli', n: 'Zastanawia się', c: '#FF8A00' },
   { id: 'wst', n: 'Wstępnie', c: '#FFD60A' }, { id: 'ogl', n: 'Oględziny / pomiar', c: '#A8D8F5' },
