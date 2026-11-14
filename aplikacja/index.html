@@ -381,6 +381,26 @@ mark{background:#FFD9C2;color:inherit;border-radius:3px;padding:0 1px}
 .pal .pk button{aspect-ratio:1;border-radius:50%;background:var(--kc);box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
 .form input.duze{text-transform:uppercase}
 .szo{margin:0 0 12px}
+.akc{position:sticky;top:-16px;z-index:3;display:flex;gap:8px;margin:14px -16px 4px;padding:10px 16px;background:var(--karta);box-shadow:0 1px 0 var(--linia)}
+.akc button{height:46px;border-radius:12px;font-weight:650;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .12s var(--ease)}
+.akc button:active{transform:scale(.97)}
+.akc .akc-n{flex:0 0 auto;padding:0 14px;background:var(--kosc);color:var(--ink)}
+.akc .akc-n.cz{color:#A2382D}
+.akc .akc-n svg.i{width:18px;height:18px}
+.akc .akc-z,.qi .akc-z{flex:1;background:var(--pom);color:#fff}
+.of-z .ofx{font-weight:500;color:var(--ink2);text-decoration:underline;text-underline-offset:2px;font-size:13px}
+.qi{display:flex;gap:8px}
+.qi input{flex:1;min-width:0;height:48px;border:1px solid var(--linia2);border-radius:12px;padding:0 12px;font-size:16px;background:var(--pole)}
+.qi .akc-z{flex:0 0 auto;height:48px;padding:0 18px;border-radius:12px;font-weight:650;font-size:15px}
+.qi-w{display:block;margin:10px 0 0;min-height:40px;font-size:14px;color:var(--ink2);font-weight:500}
+.kop-bar{position:fixed;left:12px;right:12px;bottom:calc(var(--tab) + var(--sb) + 10px);z-index:35;display:flex;align-items:center;gap:10px;padding:10px 10px 10px 14px;background:var(--graf);color:#fff;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:up .2s var(--ease)}
+.gsiat.cel .gk.gn,.gsiat.cel .gk.gsp{outline:none}
+body:has(.kop-bar) .toast{bottom:calc(var(--tab) + var(--sb) + 92px)}
+body:has(.okno) .toast{top:calc(var(--demo) + var(--st) + 12px);bottom:auto}
+.kop-bar span{flex:1;min-width:0;font-size:14px;line-height:1.3}
+.kop-bar b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kop-bar small{display:block;color:#BDB4A9;font-size:12.5px}
+.kop-bar button{flex:none;height:40px;padding:0 14px;border-radius:10px;background:rgba(255,255,255,.14);color:#fff;font-weight:600}
 .szo .szuk{margin-top:0;background:var(--pole);box-shadow:inset 0 0 0 1px var(--linia2)}
 .szo .szuk input::-webkit-search-cancel-button{filter:grayscale(1)}
 .szo .szuk:focus-within{box-shadow:inset 0 0 0 1.5px var(--pom)}
@@ -532,6 +552,8 @@ mark{background:#FFD9C2;color:inherit;border-radius:3px;padding:0 1px}
   .okno{align-items:center}
   .okno .in{border-radius:16px;padding:22px;max-height:88dvh}
   .toast{bottom:24px}
+  .kop-bar{left:auto;right:24px;bottom:24px;max-width:460px}
+  .akc{top:-22px;margin:14px -22px 4px;padding:10px 22px}
   .dzis-w{padding:6px 20px 20px;max-width:780px}
   .prz .dym{left:auto;right:auto}
 }
@@ -1083,6 +1105,12 @@ function naGrafik(it,s,b){
   if(kolor(k.kol).id!==k.kol)k.kol=D.graf.kol[0].id;
   D.graf.k.push(k);syncZap(k);zapisz();toast(tekstKaf(k).split(' / ')[0]+' → '+bryg(b).n+', '+krotko(s));
 }
+/* kopiuj/wklej kafelek (Artur 15.11): adres, mieszkanie, m2 i info; bez telefonu, statusu i powiązania z zapytaniem */
+function wklej(celStr){
+  var c=celStr.split('|'),s=c[0],b=c[1];if(!S.kop||!bryg(b))return;
+  var k={id:'k'+Date.now(),ul:S.kop.ul,mies:S.kop.mies,m2:S.kop.m2,info:S.kop.info,tel:'',kol:(D.graf.kol[0]||{}).id,c:'',br:b,od:niedz(s)?wdPlus(s,0):s,dni:1,zid:null};
+  D.graf.k.push(k);S.kop=null;zapisz();render(true);toast('Wklejono: '+tekstKaf(k).split(' / ')[0]+' → '+bryg(b).n+', '+krotko(k.od));
+}
 function dropGraf(kod,celStr){
   var c=celStr.split('|'),s=c[0],b=c[1],p=kod.split(':');
   var nb=b.indexOf('N:')===0;
@@ -1142,7 +1170,7 @@ function widokGraf(){
     '<div style="font-size:12px;color:var(--ink3);margin-top:6px">Przeciągnij na brygadę i dzień (palcem: przytrzymaj) albo stuknij i wskaż kratkę. Nowe zapytania ze strony wpadają tu same.</div></div>';
   if(S.gwyb){var nm=S.gwyb.split(':'),wn=nm[0]==='i'?(item(nm[1])||{}).kl||(item(nm[1])||{}).tel:tekstKaf(kaf(nm[1])||{});h+='<div class="wybor" style="margin:0 0 6px"><b>Stuknij kratkę (brygada i dzień) dla: '+esc(wn||'')+'</b><button type="button" data-act="gwybAnul">Anuluj</button></div>';}
   /* wiersze siatki liczone jawnie: --rm telefon (kafelki, info brygad, sprawy ogólne gdy są), --rd komputer (kafelki, info; Sprawy w ostatniej kolumnie) */
-  h+='<div class="gsiat'+(S.gwyb?' cel':'')+'" style="--nb:'+G.br.length+'"><div class="gh g0" style="--rm:1;--rd:1;grid-column:1"></div>'+G.br.map(function(b,j){return '<div class="gh" style="--rm:1;--rd:1;grid-column:'+(j+2)+'">'+esc(b.n)+'</div>';}).join('')+'<div class="gh gsp" style="--rm:1;--rd:1">Sprawy</div>';
+  h+='<div class="gsiat'+(S.gwyb||S.kop?' cel':'')+'" style="--nb:'+G.br.length+'"><div class="gh g0" style="--rm:1;--rd:1;grid-column:1"></div>'+G.br.map(function(b,j){return '<div class="gh" style="--rm:1;--rd:1;grid-column:'+(j+2)+'">'+esc(b.n)+'</div>';}).join('')+'<div class="gh gsp" style="--rm:1;--rd:1">Sprawy</div>';
   var rm=2;
   for(var i=0;i<6;i++){var d=plus(p,i),s=iso(d),dz=s===DZIS_I,rd=2+i*2;
     var wd=D.wpisy.filter(function(w){return w.dz===s;}).sort(function(a,b){return gMin(a.g)-gMin(b.g);});
@@ -1154,7 +1182,9 @@ function widokGraf(){
     h+='<div class="gk gsp'+(sp.length?'':' pusta')+'" style="--rm:'+(rm+2)+';--rd:'+rd+' / span 2" data-cel="'+s+'|S" data-act="gsp" data-d="'+s+'">'+sp.map(sprawaHtml).join('')+'<button type="button" class="pl" data-act="gsp" data-d="'+s+'" aria-label="Dodaj sprawę">'+ik('plus')+(sp.length?'':'sprawa')+'</button></div>';
     rm+=span;
   }
-  return h+'</div></div>';
+  h+='</div></div>';
+  if(S.kop)h+='<div class="kop-bar" role="status"><span>Skopiowano: <b>'+esc(tekstKaf(S.kop).split(' / ')[0])+'</b><small>Stuknij kratkę brygady, żeby wkleić</small></span><button type="button" data-act="kopAnul">Anuluj</button></div>';
+  return h;
 }
 
 /* okno: zlecenie na grafiku (uwagi Artura: ulica i numer / mieszkanie / m2 / info, wszystko wielkimi literami) */
@@ -1163,25 +1193,25 @@ function oknoKaf(k,pre){
   var x=k||{ul:'',mies:'',m2:'',info:'',tel:'',kol:(G.kol[0]||{}).id,c:'',br:pre.br||'',od:pre.od||'',dni:1,zid:null};
   var kol=x.kol,kc=x.c||'',dni=Math.max(1,x.dni||1),zid=x.zid||null;
   var o=okno('<h3><span>'+(nowy?'Nowe zlecenie':'Zlecenie na grafiku')+'</span><button type="button" class="zam" data-zam aria-label="Zamknij">'+ik('x')+'</button></h3>'+
-    '<div class="szo"><label class="szuk">'+ik('szuk')+'<input id="fQ" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="Szukaj w ofertach: adres, nazwisko, telefon" aria-label="Szukaj w ofertach"></label><div id="fQw" class="szo-w"></div></div>'+
+    '<div class="szo"><label class="szuk">'+ik('szuk')+'<input id="fQ" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="Szukaj w ofertach (nie trzeba)" aria-label="Szukaj w ofertach: adres, nazwisko, telefon"></label><div id="fQw" class="szo-w"></div></div>'+
     '<div class="kf" id="fPg" style="cursor:default;margin-bottom:4px"></div><div class="form">'+
     '<label for="fA">Ulica i numer (z miejscowością, jeśli spoza Warszawy)</label><input id="fA" class="duze" autocapitalize="characters" autocomplete="off" placeholder="np. RYCERSKA 12 RADZYMIN" value="'+esc(x.ul)+'">'+
     '<div class="r2"><div><label for="fMi">Mieszkanie</label><input id="fMi" class="duze" autocapitalize="characters" autocomplete="off" placeholder="np. 14" value="'+esc(x.mies)+'"></div><div><label for="fM">m² (orientacyjnie)</label><input id="fM" inputmode="decimal" placeholder="np. 60" value="'+esc(x.m2)+'"></div></div>'+
     '<label for="fI">Informacje dodatkowe w skrócie</label><input id="fI" class="duze" list="fRl" autocapitalize="characters" autocomplete="off" placeholder="np. WARSTWA + SCHODY" value="'+esc(x.info)+'"><datalist id="fRl">'+RODZAJE.map(function(r){return '<option value="'+r.toUpperCase()+'">';}).join('')+'</datalist>'+
+    '<div class="akc">'+(nowy?'<button type="button" class="akc-n" data-zam>Anuluj</button>':'<button type="button" class="akc-n cz" data-g="usun">Usuń</button><button type="button" class="akc-n" data-g="kop">'+ik('kop')+'Kopiuj</button>')+'<button type="button" class="akc-z" data-g="zap">'+(nowy?'Dodaj':'Zapisz')+'</button></div>'+
     '<label for="fT">Telefon klienta</label><input id="fT" type="tel" inputmode="tel" value="'+esc(x.tel)+'">'+
     '<label>Status</label><div class="sw">'+G.kol.map(function(c){return '<button type="button" data-kol="'+c.id+'" style="--kc:'+c.c+'" class="'+(c.id===kol?'on':'')+'"><i></i>'+esc(c.n)+'</button>';}).join('')+'</div>'+
     '<label>Kolor kafelka</label><div class="sw kolka"><button type="button" data-kc="" style="--kc:var(--pole);width:auto;padding:0 12px;border-radius:10px" class="'+(kc?'':'on')+'">jak status</button>'+PALETA.map(function(p){return '<button type="button" data-kc="'+p[0]+'" style="--kc:'+p[0]+'" class="'+(kc===p[0]?'on':'')+'" aria-label="'+p[1]+'" title="'+p[1]+'"><i></i></button>';}).join('')+'</div>'+
     '<div class="r2"><div><label for="fB">Brygada</label><select id="fB"><option value="">Do rozplanowania</option>'+G.br.map(function(b){return '<option value="'+b.id+'"'+(b.id===x.br?' selected':'')+'>'+esc(b.n)+'</option>';}).join('')+'</select></div>'+
     '<div><label for="fD">Od dnia</label><input id="fD" type="date" value="'+(x.od||'')+'"></div></div>'+
     '<label>Ile dni roboczych</label><div class="stp"><button type="button" data-dni="-1" aria-label="Mniej dni">−</button><b id="fN">'+dni+'</b><button type="button" data-dni="1" aria-label="Więcej dni">+</button></div>'+
-    '<button type="button" class="btn-p pom" data-g="zap">'+(nowy?'Dodaj zlecenie':'Zapisz')+'</button>'+
-    (nowy?'':'<div class="f-dr">'+(x.zid?'<button type="button" data-g="kat">Karta zapytania</button>':'')+(x.od&&x.br?'<button type="button" data-g="zdejmij">Do rozplanowania</button>':'')+'<button type="button" class="cz" data-g="usun">Usuń</button></div>')+
+    ((!nowy&&(x.zid||(x.od&&x.br)))?'<div class="f-dr">'+(x.zid?'<button type="button" data-g="kat">Karta zapytania</button>':'')+(x.od&&x.br?'<button type="button" data-g="zdejmij">Do rozplanowania</button>':'')+'</div>':'')+
     '</div>');
   var q=function(id){return o.querySelector('#'+id);};
   function podglad(){var y={ul:q('fA').value,mies:q('fMi').value,m2:q('fM').value.trim(),info:q('fI').value},c=kc||kolor(kol).c,pg=q('fPg');
     pg.style.setProperty('--kc',c);pg.style.setProperty('--kt',tekstNa(c));pg.innerHTML='<b style="padding-right:0">'+(esc(tekstKaf(y))||'PODGLĄD KAFELKA')+'</b>'+(q('fT').value?'<span class="tl">'+esc(q('fT').value)+'</span>':'');}
   podglad();
-  function zwiazek(){var it=zid&&item(zid);q('fQw').innerHTML=it?'<div class="of-z"><span>Z oferty: <b>'+esc(it.kl||it.tel)+'</b> · '+esc(adrKr(it))+'</span><button type="button" data-ofx>Odłącz</button></div>':'';}
+  function zwiazek(){var it=zid&&item(zid);q('fQw').innerHTML=it?'<div class="of-z"><span>Z oferty: <b>'+esc(it.kl||it.tel)+'</b> · '+esc(adrKr(it))+'</span><button type="button" class="ofx" data-ofx>odłącz</button></div>':'';}
   function szukOf(){var s=q('fQ').value,w=q('fQw');
     if(bezPl(s).trim().length<3){zwiazek();return;}
     var r=D.items.filter(function(i){return pasuje(i,s);}).sort(function(a,b){return b.ts-a.ts;}).slice(0,6);
@@ -1211,8 +1241,23 @@ function oknoKaf(k,pre){
     if(g==='zdejmij'){k.od=null;k.br='';syncZap(k);zapisz();o.remove();render(true);toast('Wróciło do rozplanowania');return;}
     if(g==='usun'){if(!confirm('Usunąć zlecenie z grafiku?'))return;G.k=G.k.filter(function(z){return z!==k;});if(k.zid){var it=item(k.zid);if(it){it.dz=null;log(it,'Usunięto z grafiku');}}zapisz();o.remove();render(true);toast('Usunięto');return;}
     if(g==='kat'){o.remove();S.v='lista';S.sel=k.zid;S.dzien=null;otworzPanel();render();return;}
+    if(g==='kop'){S.kop={ul:q('fA').value.trim().toUpperCase(),mies:q('fMi').value.trim().toUpperCase(),m2:q('fM').value.trim(),info:q('fI').value.trim().toUpperCase()};
+      if(!S.kop.ul){S.kop=null;toast('Najpierw wpisz adres');return;}S.gwyb=null;o.remove();render(true);return;}
   });
-  if(DESK.matches)q(nowy?'fQ':'fA').focus();
+  if(nowy||DESK.matches)q('fA').focus();
+}
+/* szybka informacja pod brygadą: jedno pole z klawiaturą, Enter = zapisz ("11:30 odbiór" -> godzina 11:30) */
+function szybkieInfo(s,b){
+  var br=bryg(b);if(!br)return;
+  var o=okno('<h3><span>Info: '+esc(br.n)+', '+krotko(s)+'</span><button type="button" class="zam" data-zam aria-label="Zamknij">'+ik('x')+'</button></h3>'+
+    '<form class="qi" action="#"><input id="qI" type="text" maxlength="200" autocomplete="off" enterkeyhint="done" placeholder="np. klucze u sąsiada, 11:30 odbiór" aria-label="Informacja dla brygady"><button type="submit" class="akc-z">Zapisz</button></form>'+
+    '<button type="button" class="qi-w" data-qw>Więcej opcji (godzina, dzień, prywatne)</button>');
+  var f=o.querySelector('form'),inp=o.querySelector('#qI');
+  f.addEventListener('submit',function(e){e.preventDefault();var t=inp.value.trim();if(!t){inp.focus();return;}
+    var g='',m=t.match(/^(\d{1,2})[:.](\d{2})\s+(.+)$/);if(m&&+m[1]<24){g=(+m[1])+':'+m[2];t=m[3];}
+    D.wpisy.push({id:'w'+Date.now(),dz:s,g:g,x:t,prv:false,br:b});zapisz();o.remove();render(true);toast('Dodano info: '+br.n);});
+  o.querySelector('[data-qw]').addEventListener('click',function(){o.remove();oknoSprawa(null,s,b);});
+  inp.focus();
 }
 /* okno: sprawa ogólna / prywatna */
 function oknoSprawa(w,s,br){
@@ -1391,7 +1436,7 @@ document.addEventListener('click',function(e){
   var b=e.target.closest('[data-act]');if(!b)return;
   var a=b.getAttribute('data-act'),id=b.getAttribute('data-id'),dd=b.getAttribute('data-d');
   switch(a){
-    case 'v':S.v=b.getAttribute('data-v');S.wyb=null;S.gwyb=null;if(!DESK.matches){S.sel=null;S.dzien=null;}else if(S.v!=='kal')S.dzien=null;render();if(S.v==='szuk'){var q=$('q');if(q&&DESK.matches)q.focus();}break;
+    case 'v':S.v=b.getAttribute('data-v');S.wyb=null;S.gwyb=null;S.kop=null;if(!DESK.matches){S.sel=null;S.dzien=null;}else if(S.v!=='kal')S.dzien=null;render();if(S.v==='szuk'){var q=$('q');if(q&&DESK.matches)q.focus();}break;
     case 'fT':S.fT=b.getAttribute('data-f');render(true);break;
     case 'fS':S.fS=b.getAttribute('data-f');render(true);break;
     case 'otworz':
@@ -1440,11 +1485,12 @@ document.addEventListener('click',function(e){
     case 'gdzis':S.gd=DZIS;render();break;
     case 'gwyb':e.stopPropagation();var gk=b.getAttribute('data-k');S.gwyb=S.gwyb===gk?null:gk;render(true);break;
     case 'gwybAnul':S.gwyb=null;render(true);break;
-    case 'gcel':if(S.gwyb){dropGraf(S.gwyb,b.getAttribute('data-cel'));S.gwyb=null;render(true);}else{var gp=b.getAttribute('data-cel').split('|');oknoKaf(null,{od:gp[0],br:gp[1]});}break;
+    case 'kopAnul':S.kop=null;render(true);break;
+    case 'gcel':if(S.kop){wklej(b.getAttribute('data-cel'));break;}if(S.gwyb){dropGraf(S.gwyb,b.getAttribute('data-cel'));S.gwyb=null;render(true);}else{var gp=b.getAttribute('data-cel').split('|');oknoKaf(null,{od:gp[0],br:gp[1]});}break;
     case 'gsp':if(S.gwyb){dropGraf(S.gwyb,(b.getAttribute('data-d')||'')+'|S');S.gwyb=null;render(true);}else oknoSprawa(null,b.getAttribute('data-d'));break;
     case 'gwp':oknoSprawa(wpis(id));break;
-    case 'gnot':if(S.gwyb){dropGraf(S.gwyb,dd+'|N:'+b.getAttribute('data-b'));S.gwyb=null;render(true);}else oknoSprawa(null,dd,b.getAttribute('data-b'));break;
-    case 'kf':if(S.gwyb){var kc=b.closest('[data-cel]');if(kc){dropGraf(S.gwyb,kc.getAttribute('data-cel'));S.gwyb=null;render(true);break;}}oknoKaf(kaf(id));break;
+    case 'gnot':if(S.kop){toast('Kafelek wklejasz w kratkę brygady (wyżej)');break;}if(S.gwyb){dropGraf(S.gwyb,dd+'|N:'+b.getAttribute('data-b'));S.gwyb=null;render(true);}else szybkieInfo(dd,b.getAttribute('data-b'));break;
+    case 'kf':if(S.kop){var kk2=b.closest('[data-cel]');if(kk2){wklej(kk2.getAttribute('data-cel'));break;}}if(S.gwyb){var kc=b.closest('[data-cel]');if(kc){dropGraf(S.gwyb,kc.getAttribute('data-cel'));S.gwyb=null;render(true);break;}}oknoKaf(kaf(id));break;
     case 'kkol':var kk=kaf(id);if(kk)paleta(kk,b);break;
     case 'gnowy':oknoKaf(null,{});break;
     case 'gxls':eksportGraf();break;
