@@ -567,6 +567,7 @@ body:has(.okno) .toast{top:calc(var(--demo) + var(--st) + 12px);bottom:auto}
   .arkusz,.arkusz *{visibility:visible}
   .arkusz{position:absolute;left:0;top:0;width:100%;border:0;box-shadow:none}
 }
+.st.st-nt{text-transform:none;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -676,6 +677,9 @@ var STATUSY=[
 ];
 var ST={};STATUSY.forEach(function(s){ST[s[0]]={n:s[1],c:s[2],b:s[3]};});
 function stPill(s){var o=ST[s];return '<span class="st" style="--sc:'+o.c+';--sb2:'+o.b+'">'+o.n+'</span>';}
+/* 14.11 Artur: pierwsza linia notatki zamiast nazwy statusu na listach (np. "rezerwacja na 26 listopada") */
+function skrNt(it){var t=String(it.nt||'').split(String.fromCharCode(10))[0].trim();return t.length>42?t.slice(0,41)+'…':t;}
+function pillIt(it){var o=ST[it.st],t=skrNt(it);return '<span class="st'+(t?' st-nt':'')+'" style="--sc:'+o.c+';--sb2:'+o.b+'" title="'+esc(o.n)+'">'+(t?esc(t):o.n)+'</span>';}
 
 /* ---------- dane z serwera (Apps Script katalog.gs) ---------- */
 var API=(function(){var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'){var q=new URLSearchParams(location.search).get('api');return q||location.origin+'/api';}return 'https://script.google.com/macros/s/AKfycbxC1j9MytYHxqD-ONdcd8Bar5SxnAVnmr8pxP1_pdEEIZzB1hbh9AXRDtXEg5hX0QXzDA/exec';})();
@@ -832,7 +836,7 @@ function karta(it,q){
   return '<button type="button" class="karta'+(S.sel===it.id?' sel':'')+'" style="--tc:'+T.c+'" data-act="otworz" data-id="'+it.id+'">'+
     '<div class="k1"><span class="nm">'+nm+'</span><span class="zl">'+kwotaTxt(it)+'</span></div>'+
     '<div class="k2">'+ad+dodTel+'</div>'+
-    '<div class="k3">'+(czyNowe(it)?'<span class="nowe">Nowe</span>':'')+stPill(it.st)+
+    '<div class="k3">'+(czyNowe(it)?'<span class="nowe">Nowe</span>':'')+pillIt(it)+
     (it.dz?'<span class="dz">'+ik('kal')+krotko(it.dz)+(it.g?' '+esc(it.g):'')+'</span>':'')+
     '<span class="kiedy"><span class="typ" style="--tc:'+T.c+'">'+T.k+'</span> · '+kiedy(it.ts)+'</span></div></button>';
 }
@@ -934,7 +938,7 @@ function widokKal(){
 function wiersz(it,lewa){
   var mm=m2(it);
   return '<div class="wier"><button type="button" class="w0" style="--tc:'+TYPY[it.typ].c+'" data-act="otworz" data-id="'+it.id+'">'+(lewa!=null?'<span class="gz">'+lewa+'</span>':'')+
-    '<span class="tx"><b>'+esc(it.kl)+(czyNowe(it)?' <span class="nowe">Nowe</span>':'')+'</b><span>'+esc(adrKr(it))+(mm?' · '+mm+' m²':'')+' · '+kwotaTxt(it)+'</span><span style="color:var(--ink3)">'+TYPY[it.typ].k+' · '+kiedy(it.ts)+'</span>'+stPill(it.st)+'</span></button>'+
+    '<span class="tx"><b>'+esc(it.kl)+(czyNowe(it)?' <span class="nowe">Nowe</span>':'')+'</b><span>'+esc(adrKr(it))+(mm?' · '+mm+' m²':'')+' · '+kwotaTxt(it)+'</span><span style="color:var(--ink3)">'+TYPY[it.typ].k+' · '+kiedy(it.ts)+'</span>'+pillIt(it)+'</span></button>'+
     '<a class="dzw" href="tel:+48'+cyfry(it.tel)+'" aria-label="Zadzwoń do '+esc(it.kl)+'">'+ik('tel')+'</a></div>';
 }
 function widokDzis(){
@@ -1039,7 +1043,7 @@ function detZapytanie(it){
   h+='<div class="sek"><h3>Termin w kalendarzu</h3>'+(it.dz?'<div class="term-info">'+ik('kal')+'<b>'+dlugo(it.dz)+(it.g?', '+esc(it.g):'')+'</b></div>':'')+
     '<div class="term"><input type="date" id="tDz" value="'+(it.dz||'')+'" aria-label="Dzień"><input type="time" id="tG" value="'+(it.g?('0'+it.g).slice(-5):'')+'" aria-label="Godzina"></div>'+
     '<div class="szyb">'+q.map(function(x){return '<button type="button" data-act="szybDz" data-id="'+it.id+'" data-d="'+x[1]+'">'+x[0]+'</button>';}).join('')+(it.dz?'<button type="button" class="usun" data-act="usunDz" data-id="'+it.id+'">Zdejmij z kalendarza</button>':'')+'</div></div>';
-  h+='<div class="sek"><h3>Notatka <span class="ok" id="ntOk">zapisano</span></h3><textarea id="nt" data-id="'+it.id+'" placeholder="Np. klucze u sąsiada, kolor lakieru, kiedy oddzwonić..."'+(OFF?' readonly':'')+'>'+esc(it.nt)+'</textarea></div>';
+  h+='<div class="sek"><h3>Notatka <small style="font-weight:400;color:var(--ink3)">(1. linia widoczna na liście)</small> <span class="ok" id="ntOk">zapisano</span></h3><textarea id="nt" data-id="'+it.id+'" placeholder="Pierwsza linia pokaże się na liście zamiast statusu, np. rezerwacja na 26 listopada. Niżej dowolne szczegóły."'+(OFF?' readonly':'')+'>'+esc(it.nt)+'</textarea></div>';
   if(!reczne){
     if(ark||anl)h+='<div class="sek"><h3>Wycena</h3>'+
       ((ark||anl)?'<div class="linki" style="margin-top:0">'+(ark?'<a href="'+esc(ark)+'" target="_blank" rel="noopener noreferrer">'+ik('lista')+'Arkusz wyceny</a>':'')+(anl?'<a href="'+esc(anl)+'" target="_blank" rel="noopener noreferrer">'+ik('pdf')+'Otwórz w analizatorze</a>':'')+'</div>':'')+
