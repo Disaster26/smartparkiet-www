@@ -144,9 +144,19 @@ def run(p, w, h, mobile):
         assert gs <= 0, ('grafik przewija sie w poziomie', gs)
     # --- informacja dla brygady pod kafelkami (sprawa z polem br)
     pg.locator('.gk.gn[data-cel$="|N:b2"]').nth(3).click(); pg.wait_for_timeout(150)
-    pg.fill('#pX', 'klucze u sąsiada'); pg.click('.okno [data-g="zap"]')
-    czekaj(lambda: any(v.get('br') == 'b2' and v.get('x') == 'klucze u sąsiada' for v in db()['sprawy'].values()), 'info brygady na serwerze')
+    pg.fill('#qI', '11:30 klucze u sąsiada'); pg.press('#qI', 'Enter')
+    czekaj(lambda: any(v.get('br') == 'b2' and v.get('x') == 'klucze u sąsiada' and v.get('g') == '11:30' for v in db()['sprawy'].values()), 'info brygady na serwerze')
     assert pg.locator('.gk.gn[data-cel$="|N:b2"] .gw', has_text='klucze u sąsiada').count() == 1
+    # --- kopiuj / wklej kafelek (bez telefonu, statusu i zapytania)
+    pg.locator('.kf[data-id="%s"]' % kid).first.click(); pg.wait_for_timeout(150)
+    pg.click('.okno [data-g="kop"]'); pg.wait_for_timeout(150)
+    assert pg.locator('.kop-bar').is_visible()
+    n0 = len(db()['grafik'])
+    pg.locator('.gk[data-cel$="|b1"]').nth(4).click()
+    czekaj(lambda: len(db()['grafik']) == n0 + 1, 'wklejony kafelek na serwerze')
+    nk = [v for v in db()['grafik'].values() if v['br'] == 'b1' and v['ul'] == 'DERENIOWA 9']
+    assert nk and nk[0]['tel'] == '' and not nk[0].get('zid') and nk[0]['mies'] == '33', nk
+    assert pg.locator('.kop-bar').count() == 0
     # --- eksport tygodnia
     with pg.expect_download() as dl:
         pg.click('[data-act=gxls]')
