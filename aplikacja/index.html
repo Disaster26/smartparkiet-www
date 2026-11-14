@@ -359,6 +359,7 @@ mark{background:#FFD9C2;color:inherit;border-radius:3px;padding:0 1px}
 .gdn.dzis{background:var(--pom);color:#FFE3D2}.gdn.dzis b{color:#fff}
 .gdn.min{color:#9A9590}.gdn.min b{color:var(--ink3)}
 .gk{background:var(--karta2);border-radius:7px;padding:2px;min-height:72px;display:flex;flex-direction:column;gap:3px;min-width:0;transition:background-color .12s,box-shadow .12s}
+.gk.sob{background:#D5D8DC}.gk.gn.sob{background:#DFE2E5}.gdn.sob{background:#D5D8DC;color:#3F444A}/* soboty lekko grafitowe - Artur 14.11 */
 .gk.dz{box-shadow:inset 0 0 0 1px rgba(255,106,19,.45)}
 .gk.gsp{grid-column:2/-1;gap:3px;min-height:34px;flex-direction:row;flex-wrap:wrap;align-items:center;padding:3px;background:rgba(23,19,15,.035);box-shadow:none}
 .gk.gsp .pl{height:28px;padding:0 8px;border-radius:6px;color:var(--ink3);display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600}
@@ -1172,13 +1173,13 @@ function widokGraf(){
   /* wiersze siatki liczone jawnie: --rm telefon (kafelki, info brygad, sprawy ogólne gdy są), --rd komputer (kafelki, info; Sprawy w ostatniej kolumnie) */
   h+='<div class="gsiat'+(S.gwyb||S.kop?' cel':'')+'" style="--nb:'+G.br.length+'"><div class="gh g0" style="--rm:1;--rd:1;grid-column:1"></div>'+G.br.map(function(b,j){return '<div class="gh" style="--rm:1;--rd:1;grid-column:'+(j+2)+'">'+esc(b.n)+'</div>';}).join('')+'<div class="gh gsp" style="--rm:1;--rd:1">Sprawy</div>';
   var rm=2;
-  for(var i=0;i<6;i++){var d=plus(p,i),s=iso(d),dz=s===DZIS_I,rd=2+i*2;
+  for(var i=0;i<6;i++){var d=plus(p,i),s=iso(d),dz=s===DZIS_I,rd=2+i*2,sb=d.getDay()===6?' sob':'';
     var wd=D.wpisy.filter(function(w){return w.dz===s;}).sort(function(a,b){return gMin(a.g)-gMin(b.g);});
     var sp=wd.filter(function(w){return !wBr(w);}),span=sp.length?3:2;
-    h+='<div class="gdn'+(dz?' dzis':'')+(d<DZIS?' min':'')+'" style="--rm:'+rm+' / span '+span+';--rd:'+rd+' / span 2">'+DNI[d.getDay()].replace('.','')+'<b>'+d.getDate()+'</b></div>';
-    G.br.forEach(function(b,j){h+='<div class="gk'+(dz?' dz':'')+'" style="--rm:'+rm+';--rd:'+rd+';grid-column:'+(j+2)+'" data-cel="'+s+'|'+b.id+'" data-act="gcel">'+kafNa(s,b.id).map(kafHtml).join('')+'</div>';});
+    h+='<div class="gdn'+sb+(dz?' dzis':'')+(d<DZIS?' min':'')+'" style="--rm:'+rm+' / span '+span+';--rd:'+rd+' / span 2">'+DNI[d.getDay()].replace('.','')+'<b>'+d.getDate()+'</b></div>';
+    G.br.forEach(function(b,j){h+='<div class="gk'+sb+(dz?' dz':'')+'" style="--rm:'+rm+';--rd:'+rd+';grid-column:'+(j+2)+'" data-cel="'+s+'|'+b.id+'" data-act="gcel">'+kafNa(s,b.id).map(kafHtml).join('')+'</div>';});
     G.br.forEach(function(b,j){var nb=wd.filter(function(w){return wBr(w)===b.id;});
-      h+='<div class="gk gn" style="--rm:'+(rm+1)+';--rd:'+(rd+1)+';grid-column:'+(j+2)+'" data-cel="'+s+'|N:'+b.id+'" data-act="gnot" data-d="'+s+'" data-b="'+b.id+'" aria-label="Informacja dla '+esc(b.n)+'">'+nb.map(sprawaHtml).join('')+(nb.length?'':'<span class="gn-p">'+ik('plus')+'info</span>')+'</div>';});
+      h+='<div class="gk gn'+sb+'" style="--rm:'+(rm+1)+';--rd:'+(rd+1)+';grid-column:'+(j+2)+'" data-cel="'+s+'|N:'+b.id+'" data-act="gnot" data-d="'+s+'" data-b="'+b.id+'" aria-label="Informacja dla '+esc(b.n)+'">'+nb.map(sprawaHtml).join('')+(nb.length?'':'<span class="gn-p">'+ik('plus')+'info</span>')+'</div>';});
     h+='<div class="gk gsp'+(sp.length?'':' pusta')+'" style="--rm:'+(rm+2)+';--rd:'+rd+' / span 2" data-cel="'+s+'|S" data-act="gsp" data-d="'+s+'">'+sp.map(sprawaHtml).join('')+'<button type="button" class="pl" data-act="gsp" data-d="'+s+'" aria-label="Dodaj sprawę">'+ik('plus')+(sp.length?'':'sprawa')+'</button></div>';
     rm+=span;
   }
