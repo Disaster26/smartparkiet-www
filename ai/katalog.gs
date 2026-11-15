@@ -7,7 +7,7 @@
    Dane:
    - zapytania czytane z pierwszego arkusza "Rejestr wycen" (tam zapisuje każda wycena i zamówienie ze strony),
    - w tym samym pliku osobne zakładki: Katalog_status (statusy, notatki, terminy, wpisy z ręki),
-     Katalog_sprawy (sprawy ogólne i prywatne), Grafik (kafelki brygad), Kalendarz (kafelki godzinowe, od 15.11), Ustawienia_katalog (brygady, statusy, kolumny kalendarza).
+     Katalog_sprawy (sprawy ogólne i prywatne), Grafik (kafelki brygad), Kalendarz (kafelki godzinowe, od 15.11), Katalog_maile (zapytania e-mail, od 15.11), Ustawienia_katalog (brygady, statusy, kolumny kalendarza).
      Kolumna "Dane" to zapis aplikacji - nie edytować ręcznie (kolumna "Opis" jest do czytania).
 
    Hasło Artura: tylko skrót (SHA-256 z solą, wielokrotnie) we właściwościach skryptu KATALOG_HASLO.
@@ -15,7 +15,7 @@
    -> w edytorze wybierz funkcję katalogUstawHaslo i Uruchom. Funkcja zapisze skrót i usunie jawne hasło.
    Aplikacja po zalogowaniu dostaje losowy token sesji (ważny 180 dni, na serwerze trzymany tylko jego skrót). */
 
-const KAT_WERSJA = '2026-11-15';
+const KAT_WERSJA = '2026-11-15m';
 const KAT_ARK = { status: 'Katalog_status', sprawy: 'Katalog_sprawy', grafik: 'Grafik', ust: 'Ustawienia_katalog', kal: 'Kalendarz' };
 const KAT_NAGL = ['ID', 'Opis', 'Dane (zapis aplikacji - nie edytować)', 'Zmieniono'];
 const KAT_TOKEN_DNI = 180;
@@ -48,6 +48,7 @@ function katalogObsluz(d) {
     if (akcja === 'katalog_stan') return katStan();
     if (akcja === 'katalog_zapisz') return katZapisz(d.ops);
     if (akcja === 'katalog_pdf') return katPdf(String(d.id || ''));
+    if (akcja === 'katalog_zal') return katZal(d.id, !!d.mini);   /* 15.11: zdjęcia z zapytań e-mail */
     if (akcja === 'katalog_wyloguj') { katUsunToken(d.token); return { ok: true }; }
     return { ok: false, blad: 'Nieznana akcja' };
   } catch (e) {
@@ -311,7 +312,7 @@ function katZapytania(ss) {
 function katStan() {
   const ss = katSS(), A = katArkusze(ss);
   const st = katCzytaj(A.status), sp = katCzytaj(A.sprawy), gr = katCzytaj(A.grafik), kl = katCzytaj(A.kal), u = katUstCzytaj(A.ust);
-  const items = katZapytania(ss).map(function (it) {
+  const items = katZapytania(ss).concat(katMaileItems(ss)).map(function (it) {
     const o = st[it.id] && st[it.id].d;
     it.st = 'luzne'; it.nt = ''; it.dz = null; it.g = ''; it.widz = false; it.hist = [];
     if (o) ['st', 'nt', 'dz', 'g', 'widz', 'hist'].forEach(function (k) { if (o[k] !== undefined) it[k] = o[k]; });
@@ -574,4 +575,280 @@ function katZrodloWyceny(d) {
   if (d.kopiaArtur || d.bezBcc) return 'analizator';
   if (d.zamowienie) return 'koszyk';
   return 'wycena klienta';
+}
+
+/* ------------------------------------------------------------------ ZAPYTANIA E-MAIL (Artur WA 15.11 20:54)
+   Maile pisane przez klientów wprost na smartparkiet@gmail.com. Artur ma w swoim Gmailu filtr
+   "Do: smartparkiet@gmail.com -> Przekaż do panbet77@gmail.com" (kopia zostaje u niego). Tu, na koncie panbet77,
+   wyzwalacz co 5 min (katalogPobierzMaile) zamienia przekazane maile w pozycje katalogu o źródle "E-mail":
+   - jedna pozycja = jeden wątek Gmaila (id m_<id wątku>), kolejne maile klienta w wątku dopisywane do tej samej pozycji,
+   - zdjęcia i PDF z załączników zapisane na Dysku: "SMARTPARKIET - wyceny/Zapytania e-mail/RRRR-MM",
+   - pomijane: powiadomienia (noreply, Google, Facebook...), newslettery (List-Unsubscribe), autorespondery,
+     maile z formularzy strony (formularz@smartparkiet.com.pl - te wyceny są już w Rejestrze) i maile z naszych kont,
+   - przetworzone wątki dostają etykietę "katalog-pobrane" (pominięte "katalog-pominiete") i wychodzą z Odebranych panbet77,
+   - deduplikacja po Message-ID (i id wiadomości Gmaila), więc ponowne przekazanie tego samego maila nic nie dubluje.
+   Dane: zakładka Katalog_maile (ID, Opis, Dane). Status, notatka i termin - jak przy innych zapytaniach (Katalog_status).
+   URUCHOMIĆ RAZ W EDYTORZE: katalogMaileUstaw (zakłada wyzwalacz; Google poprosi o zgodę na Gmail). */
+const KAT_MAIL_ADR = 'smartparkiet@gmail.com';
+const KAT_MAIL_ET = 'katalog-pobrane';
+const KAT_MAIL_ET_POM = 'katalog-pominiete';
+const KAT_MAIL_FOLDER = 'Zapytania e-mail';
+const KAT_MAIL_ARK = 'Katalog_maile';
+const KAT_MAIL_DNI = 10;        /* ile dni wstecz szukamy nieprzetworzonych */
+const KAT_MAIL_MAXW = 15;       /* wiadomości trzymanych na pozycję */
+const KAT_MAIL_ZAL = 12;        /* załączników z jednej wiadomości */
+const KAT_MAIL_MIN_B = 12000;   /* mniejsze obrazki = logo/ikony ze stopki */
+const KAT_MAIL_MAX_B = 20 * 1024 * 1024;
+const KAT_MAIL_POMIN = /(no-?reply|do-?not-?reply|nie-?odpowiadaj|mailer-daemon|postmaster|notification|powiadomieni|newsletter|marketing@|@(?:[\w-]+\.)*(?:google|googlemail|facebook|facebookmail|instagram|linkedin|youtube|olx|allegro|booking|microsoft|paypal|tiktok|twitter)\.(?:com|pl)$|@smartparkiet\.com\.pl$|^panbet77@gmail\.com$|^smartparkiet(?:\.kontakt)?@gmail\.com$)/i;
+const KAT_DZIELNICE = ['Bemowo', 'Białołęka', 'Bielany', 'Mokotów', 'Ochota', 'Praga-Południe', 'Praga-Północ', 'Rembertów', 'Śródmieście', 'Targówek', 'Ursus', 'Ursynów', 'Wawer', 'Wesoła', 'Wilanów', 'Włochy', 'Wola', 'Żoliborz', 'Kabaty', 'Gocław', 'Saska Kępa', 'Tarchomin', 'Piaseczno', 'Konstancin', 'Józefów', 'Otwock', 'Ząbki', 'Marki', 'Łomianki', 'Pruszków', 'Piastów', 'Legionowo', 'Wołomin', 'Raszyn', 'Kobyłka', 'Sulejówek', 'Milanówek'];
+
+function katMaileArk(ss) { return katArkusz(ss || katSS(), KAT_MAIL_ARK, KAT_NAGL); }
+/* pozycje e-mail do katStan */
+function katMaileItems(ss) {
+  const sh = ss.getSheetByName(KAT_MAIL_ARK);
+  if (!sh) return [];
+  const m = katCzytaj(sh);
+  return Object.keys(m).map(function (id) {
+    const d = m[id].d || {};
+    return {
+      id: id, typ: 'e', ts: Number(d.ts) || 0, kiedy: '', nr: '', kl: d.kl || '', tel: d.tel || '', ul: d.ul || '', ds: d.ds || '', em: d.em || '',
+      m2: Number(d.m2) || 0, kwota: 0, upust: 0, termin: '', arkusz: '', analizator: '', zakres: [], info: '',
+      temat: d.temat || '', ost: Number(d.ost) || Number(d.ts) || 0,
+      wiad: (Array.isArray(d.wiad) ? d.wiad : []).map(function (w) { return { ts: w.ts, od: w.od, em: w.em, x: w.x, zal: w.zal || [] }; })
+    };
+  });
+}
+
+/* nadawca "Jan Kowalski <jan@x.pl>" -> {n, em} */
+function katMailOsoba(s) {
+  s = String(s || '').trim();
+  const m = s.match(/^\s*"?([^"<]*?)"?\s*<([^>]+)>\s*$/);
+  const em = (m ? m[2] : s).trim().toLowerCase();
+  let n = m ? m[1].trim() : '';
+  if (!n || n.indexOf('@') >= 0) n = em.split('@')[0].replace(/[._-]+/g, ' ').replace(/\d+/g, ' ').replace(/\s+/g, ' ').trim()
+    .replace(/(^|\s)\S/g, function (x) { return x.toUpperCase(); });
+  return { n: n.slice(0, 120), em: em.slice(0, 120) };
+}
+/* treść bez cytatów, stopek i podpisów z telefonu */
+function katMailTresc(t) {
+  const linie = String(t || '').replace(/\r/g, '').split('\n'), out = [];
+  const koniec = /^\s*(W dniu .{5,160}(napisał|napisała|napisał\(a\)|pisze):?\s*$|On .{5,200} wrote:?\s*$|-{2,}\s*(Original Message|Wiadomość oryginalna|Oryginalna wiadomość|Forwarded message|Wiadomość przekazana)|_{8,}|(Od|From):\s.+@|Wysłane z (mojego )?(iPhone|iPada|telefonu|urządzenia|Samsung|aplikacji)|Sent from my |Pobierz Outlook|Get Outlook for|-- ?$)/i;
+  for (let i = 0; i < linie.length; i++) {
+    const l = linie[i];
+    if (koniec.test(l)) break;
+    if (/^\s*>/.test(l)) continue;
+    out.push(l.replace(/\s+$/, ''));
+  }
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim().slice(0, 3000);
+}
+function katBezPl(s) { return String(s || '').toLowerCase().replace(/[ąćęłńóśźż]/g, function (c) { return 'acelnoszz'['ąćęłńóśźż'.indexOf(c)]; }); }
+/* telefon, metraż, adres, dzielnica z tematu i treści (proste reguły - Artur i tak widzi całą treść) */
+function katMailDane(temat, tresc) {
+  const t = String(temat || '') + '\n' + String(tresc || ''), o = { tel: '', m2: 0, ul: '', ds: '' };
+  const tel = t.match(/(?:^|[^\d])(?:\+48|0048|48)?[\s.-]?\(?([1-9]\d{2})\)?[\s.-]?(\d{3})[\s.-]?(\d{3})(?!\d)/);
+  if (tel) o.tel = tel[1] + ' ' + tel[2] + ' ' + tel[3];
+  const m2 = t.match(/(\d{1,4}(?:[.,]\d{1,2})?)\s*(?:m2|m²|m\^2|mkw|m\.\s?kw|m\s?kw|metr(?:ów|y)?\s*kw)/i);
+  if (m2) o.m2 = katLiczba(m2[1]);
+  const ul = t.match(/(?:^|[\s,(])(?:ul\.?|ulica|ulicy|al\.|aleja|alei|os\.|osiedle|pl\.|plac)\s*([A-ZŁŚŻŹĆŃÓĘĄ0-9][A-Za-z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ.\- ]{1,40}?\s\d+[a-zA-Z]?(?:\s?\/\s?\d+[a-zA-Z]?)?(?:\s?m\.?\s?\d+)?)(?![\d])/);
+  if (ul) o.ul = ul[1].replace(/\s+/g, ' ').trim();
+  const bt = ' ' + katBezPl(t).replace(/[^a-z0-9]+/g, ' ') + ' ';
+  for (let i = 0; i < KAT_DZIELNICE.length; i++) {
+    const d = katBezPl(KAT_DZIELNICE[i]).replace(/[^a-z0-9]+/g, ' ');
+    /* odmiana: "na Mokotowie", "z Ursynowa" - rdzeń bez ostatniej litery dla dłuższych nazw */
+    const rdzen = d.length >= 6 ? d.slice(0, -1) : d;
+    if (bt.indexOf(' ' + d + ' ') >= 0 || (d.length >= 6 && bt.indexOf(' ' + rdzen) >= 0)) { o.ds = KAT_DZIELNICE[i]; break; }
+  }
+  return o;
+}
+function katMailPomin(msg, od) {
+  if (!od.em || KAT_MAIL_POMIN.test(od.em)) return true;
+  const h = function (n) { try { return String(msg.getHeader(n) || ''); } catch (e) { return ''; } };
+  if (h('List-Unsubscribe') || h('List-Id')) return true;
+  if (/^(bulk|list|junk)$/i.test(h('Precedence').trim())) return true;
+  const as = h('Auto-Submitted').trim();
+  if (as && !/^no$/i.test(as)) return true;
+  if (/^(Automatyczna odpowiedź|Auto(matic)? ?reply|Out of office|Poza biurem|Nieobecność|Undeliverable|Delivery Status|Niedostarczon)/i.test(msg.getSubject() || '')) return true;
+  return false;
+}
+function katMailFolder(kiedy) {
+  const g = glownyFolder();
+  let it = g.getFoldersByName(KAT_MAIL_FOLDER);
+  const z = it.hasNext() ? it.next() : g.createFolder(KAT_MAIL_FOLDER);
+  const nazwa = Utilities.formatDate(kiedy || new Date(), 'Europe/Warsaw', 'yyyy-MM');
+  it = z.getFoldersByName(nazwa);
+  return it.hasNext() ? it.next() : z.createFolder(nazwa);
+}
+function katMailZalaczniki(msg, kl, kiedy) {
+  const out = [];
+  let lista = [];
+  try { lista = msg.getAttachments({ includeInlineImages: true, includeAttachments: true }) || []; } catch (e) { lista = []; }
+  let folder = null, nr = 0;
+  for (let i = 0; i < lista.length && out.length < KAT_MAIL_ZAL; i++) {
+    const a = lista[i], typ = String(a.getContentType() || '').toLowerCase(), n = String(a.getName() || 'plik'), b = a.getSize();
+    const obraz = /^image\/(jpe?g|png|webp|heic|heif|gif)/.test(typ) || /\.(jpe?g|png|webp|heic|heif)$/i.test(n), pdf = typ === 'application/pdf' || /\.pdf$/i.test(n);
+    if (!obraz && !pdf) continue;
+    if (b > KAT_MAIL_MAX_B || (obraz && b < KAT_MAIL_MIN_B)) continue;
+    folder = folder || katMailFolder(kiedy);
+    nr++;
+    const nazwa = Utilities.formatDate(kiedy, 'Europe/Warsaw', 'yyyy-MM-dd HH-mm') + ' ' + String(kl || 'e-mail').replace(/[\\/:*?"<>|]+/g, ' ').slice(0, 60) + ' - ' + nr + ' - ' + n.replace(/[\\/:*?"<>|]+/g, '_').slice(0, 80);
+    const f = folder.createFile(a.copyBlob().setName(nazwa));
+    out.push({ id: f.getId(), n: n.slice(0, 80), t: obraz ? 'z' : 'p', b: b });
+  }
+  return out;
+}
+function katMailOpis(d) {
+  const zal = (d.wiad || []).reduce(function (s, w) { return s + (w.zal || []).length; }, 0);
+  return [d.kl, d.em, d.tel, d.temat, (d.wiad || []).length + ' wiad.', zal + ' zał.'].filter(String).join(' | ');
+}
+/* skraca zapis, gdy przekroczyłby limit komórki arkusza (50 000 znaków) */
+function katMailPrzytnij(d) {
+  d.wiad = d.wiad.slice(-KAT_MAIL_MAXW);
+  let s = JSON.stringify(d), lim = 2500;
+  while (s.length > 45000 && lim > 200) { d.wiad.forEach(function (w) { w.x = String(w.x || '').slice(0, lim); }); lim = Math.floor(lim / 2); s = JSON.stringify(d); }
+  while (s.length > 45000 && d.wiad.length > 1) { d.wiad.shift(); s = JSON.stringify(d); }
+  return d;
+}
+function katMailZapisz(ss, sh, zmiany) {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(25000)) throw new Error('Arkusz zajęty - spróbuję w następnym przebiegu');
+  try {
+    katZapiszRekordy(sh, zmiany);
+    const A = katArkusze(ss), u = katUstCzytaj(A.ust);
+    katUstZapisz(A.ust, 'rev', Number(u.rev || 0) + 1);
+    SpreadsheetApp.flush();
+  } finally { lock.releaseLock(); }
+}
+
+/* WYZWALACZ co 5 min (można też uruchomić ręcznie w edytorze) */
+function katalogPobierzMaile() {
+  const lockI = LockService.getUserLock();
+  if (!lockI.tryLock(1000)) return 'zajęte';
+  const t0 = Date.now(), wynik = { nowe: 0, dopisane: 0, pominiete: 0 };
+  try {
+    const etOk = GmailApp.getUserLabelByName(KAT_MAIL_ET) || GmailApp.createLabel(KAT_MAIL_ET);
+    const etPom = GmailApp.getUserLabelByName(KAT_MAIL_ET_POM) || GmailApp.createLabel(KAT_MAIL_ET_POM);
+    const q = '{to:' + KAT_MAIL_ADR + ' cc:' + KAT_MAIL_ADR + ' deliveredto:' + KAT_MAIL_ADR + '} -label:' + KAT_MAIL_ET + ' -label:' + KAT_MAIL_ET_POM + ' newer_than:' + KAT_MAIL_DNI + 'd';
+    const watki = GmailApp.search(q, 0, 30);
+    if (!watki.length) return wynik;
+    const ss = katSS(), sh = katMaileArk(ss);
+    const byly = katCzytaj(sh), znane = {};
+    Object.keys(byly).forEach(function (id) { ((byly[id].d || {}).wiad || []).forEach(function (w) { if (w.mid) znane[w.mid] = 1; if (w.gid) znane[w.gid] = 1; }); });
+    const zmiany = [];
+    for (let i = 0; i < watki.length; i++) {
+      if (Date.now() - t0 > 240000) break;          /* zapas do limitu 6 min - reszta w następnym przebiegu */
+      const th = watki[i], id = 'm_' + th.getId();
+      const rec = byly[id] ? byly[id].d : null;
+      let d = rec ? JSON.parse(JSON.stringify(rec)) : null, zm = false, dodane = 0;
+      th.getMessages().forEach(function (msg) {
+        const gid = msg.getId();
+        let mid = '';
+        try { mid = String(msg.getHeader('Message-ID') || '').replace(/[<>\s]/g, '').slice(0, 200); } catch (e) {}
+        if (znane[gid] || (mid && znane[mid])) return;
+        if (msg.isInTrash()) return;
+        const od = katMailOsoba(msg.getFrom());
+        if (katMailPomin(msg, od)) return;
+        const kiedy = msg.getDate(), x = katMailTresc(msg.getPlainBody());
+        const rt = katMailOsoba(msg.getReplyTo() || '');
+        const em = rt.em && rt.em.indexOf('@') > 0 && !KAT_MAIL_POMIN.test(rt.em) ? rt.em : od.em;
+        if (!d) {
+          const dane = katMailDane(msg.getSubject(), x);
+          d = { typ: 'e', ts: kiedy.getTime(), kl: od.n, em: em, tel: dane.tel, ul: dane.ul, ds: dane.ds, m2: dane.m2, temat: String(msg.getSubject() || '').slice(0, 200), wiad: [] };
+          wynik.nowe++;
+        } else {
+          dodane++;
+          if (!d.tel || !d.m2 || !d.ul || !d.ds) { const dn = katMailDane(msg.getSubject(), x); d.tel = d.tel || dn.tel; d.m2 = d.m2 || dn.m2; d.ul = d.ul || dn.ul; d.ds = d.ds || dn.ds; }
+        }
+        d.wiad.push({ ts: kiedy.getTime(), od: od.n, em: od.em, x: x, zal: katMailZalaczniki(msg, d.kl, kiedy), mid: mid, gid: gid });
+        d.ost = Math.max(Number(d.ost) || 0, kiedy.getTime());
+        znane[gid] = 1; if (mid) znane[mid] = 1;
+        zm = true;
+      });
+      if (zm) {
+        d.wiad.sort(function (a, b) { return a.ts - b.ts; });
+        katMailPrzytnij(d);
+        zmiany.push({ id: id, d: d, opis: katMailOpis(d) });
+        wynik.dopisane += rec ? dodane : 0;
+        th.addLabel(etOk);
+      } else if (!d) { th.addLabel(etPom); wynik.pominiete++; }
+      else th.addLabel(etOk);                          /* wątek znany, nic nowego (np. ten sam mail drugi raz) */
+      th.moveToArchive();
+    }
+    if (zmiany.length) katMailZapisz(ss, sh, zmiany);
+    return wynik;
+  } finally {
+    lockI.releaseLock();
+  }
+}
+
+/* URUCHOMIĆ RAZ W EDYTORZE: wyzwalacz co 5 min + pierwsze pobranie */
+function katalogMaileUstaw() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'katalogPobierzMaile') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('katalogPobierzMaile').timeBased().everyMinutes(5).create();
+  Logger.log('Wyzwalacz co 5 min założony. Pierwsze pobranie: ' + JSON.stringify(katalogPobierzMaile()));
+}
+/* wyłączenie (gdyby Artur zrezygnował) */
+function katalogMaileWylacz() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'katalogPobierzMaile') ScriptApp.deleteTrigger(t); });
+  Logger.log('Wyzwalacz maili usunięty.');
+}
+
+/* zdjęcie / PDF z maila dla aplikacji: tylko pliki zapisane przy pozycjach e-mail (lista z arkusza); miniatura albo całość */
+function katZal(id, mini) {
+  id = String(id || '');
+  if (!/^[\w-]{20,80}$/.test(id)) return { ok: false, blad: 'Złe ID pliku' };
+  const sh = katSS().getSheetByName(KAT_MAIL_ARK);
+  if (!sh) return { ok: false, blad: 'Brak pliku' };
+  let z = null;
+  const m = katCzytaj(sh);
+  Object.keys(m).some(function (k) { return ((m[k].d || {}).wiad || []).some(function (w) { return (w.zal || []).some(function (a) { if (a.id === id) { z = a; return true; } return false; }); }); });
+  if (!z) return { ok: false, blad: 'Brak pliku' };
+  const f = DriveApp.getFileById(id);
+  if (z.t === 'p') return { ok: true, url: f.getUrl(), n: z.n };
+  const c = CacheService.getScriptCache(), kc = 'katMini_' + id;
+  if (mini) {
+    const zc = c.get(kc);
+    if (zc) return { ok: true, typ: 'image/jpeg', b64: zc, mini: true };
+    let t = null;
+    try { t = f.getThumbnail(); } catch (e) { t = null; }
+    if (t && t.getBytes().length > 500) {
+      const b64 = Utilities.base64Encode(t.getBytes());
+      try { if (b64.length < 95000) c.put(kc, b64, 21600); } catch (e) {}
+      return { ok: true, typ: t.getContentType() || 'image/jpeg', b64: b64, mini: true };
+    }
+  }
+  const bl = f.getBlob();
+  return { ok: true, typ: bl.getContentType() || 'image/jpeg', b64: Utilities.base64Encode(bl.getBytes()), url: f.getUrl(), n: z.n };
+}
+
+/* TEST bez wysyłania maili: pozycja przykładowa m_TEST (zdjęcie = kopia JPG z folderu ofert, jeśli jest) i jej usunięcie */
+function katalogMaileTest() {
+  const kiedy = new Date(), ss = katSS(), sh = katMaileArk(ss);
+  const temat = 'TEST 48 m² Warszawa Mokotów';
+  const x = 'Dzień dobry, proszę o wycenę cyklinowania i lakierowania parkietu, ok. 48 m2, ul. Puławska 182 m. 14, Mokotów. Tel. 512 000 000.\nPozdrawiam';
+  const dane = katMailDane(temat, x), zal = [];
+  try {
+    const pl = folderPoprawek().getFilesByType(MimeType.JPEG);
+    if (pl.hasNext()) { const f = pl.next().makeCopy('TEST e-mail - do usunięcia.jpg', katMailFolder(kiedy)); zal.push({ id: f.getId(), n: 'test.jpg', t: 'z', b: f.getSize() }); }
+  } catch (e) { Logger.log('bez zdjęcia: ' + e); }
+  const d = { typ: 'e', ts: kiedy.getTime(), ost: kiedy.getTime(), kl: 'TEST Jan Testowy', em: 'test@example.com', tel: dane.tel, ul: dane.ul, ds: dane.ds, m2: dane.m2, temat: temat,
+    wiad: [{ ts: kiedy.getTime(), od: 'TEST Jan Testowy', em: 'test@example.com', x: x, zal: zal, mid: 'test', gid: 'test' }] };
+  katMailZapisz(ss, sh, [{ id: 'm_TEST', d: d, opis: katMailOpis(d) }]);
+  Logger.log('Dodano pozycję testową m_TEST: ' + JSON.stringify(dane) + ', zdjęć: ' + zal.length);
+}
+function katalogMaileTestUsun() {
+  const ss = katSS(), sh = katMaileArk(ss), m = katCzytaj(sh), A = katArkusze(ss);
+  const lock = LockService.getScriptLock(); lock.waitLock(25000);
+  try {
+    if (m.m_TEST) {
+      ((m.m_TEST.d || {}).wiad || []).forEach(function (w) { (w.zal || []).forEach(function (a) { try { DriveApp.getFileById(a.id).setTrashed(true); } catch (e) {} }); });
+      katZapiszRekordy(sh, [{ id: 'm_TEST', d: null }]);
+    }
+    if (katCzytaj(A.status).m_TEST) katZapiszRekordy(A.status, [{ id: 'm_TEST', d: null }]);
+    const kal = katCzytaj(A.kal);
+    katZapiszRekordy(A.kal, Object.keys(kal).filter(function (k) { return kal[k].d && kal[k].d.zid === 'm_TEST'; }).map(function (k) { return { id: k, d: null }; }));
+    const gr = katCzytaj(A.grafik);
+    katZapiszRekordy(A.grafik, Object.keys(gr).filter(function (k) { return gr[k].d && gr[k].d.zid === 'm_TEST'; }).map(function (k) { return { id: k, d: null }; }));
+    const u = katUstCzytaj(A.ust); katUstZapisz(A.ust, 'rev', Number(u.rev || 0) + 1);
+  } finally { lock.releaseLock(); }
+  Logger.log('Pozycja testowa usunięta.');
 }

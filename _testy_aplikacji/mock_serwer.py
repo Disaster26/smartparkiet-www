@@ -8,6 +8,7 @@ POST /api               akcje katalog_* (text/plain JSON, jak Apps Script)
 POST /mock/awaria       {"on": true}  -> kolejne katalog_zapisz koncza sie bledem HTTP 500 (test cofania zmian)
 POST /mock/nowa         dopisuje nowa wycene do "Rejestru" (jak wycena ze strony)
 POST /mock/reset        stan poczatkowy
+POST /mock/mail         dopisuje nowe zapytanie e-mail (jak z wyzwalacza katalogPobierzMaile)
 GET  /mock/stan         podglad stanu (testy)
 """
 import json, os, re, sys, threading, uuid, time, datetime, hashlib
@@ -55,6 +56,36 @@ def rejestr_poczatkowy():
     return out
 
 
+ZDJ_KOLORY = [(184, 134, 82), (150, 104, 60), (205, 170, 120), (120, 84, 50), (170, 120, 70), (90, 70, 55)]
+
+
+def maile_poczatkowe():
+    """zapytania e-mail (15.11) - format jak katMaileItems() w katalog.gs"""
+    t1 = ts(0, 19, 54)
+    zal = [{'id': 'MOCKZDJ%02d%s' % (i, 'z' * 16), 'n': 'IMG_07%02d.JPG' % (i + 10), 't': 'z', 'b': 2400000} for i in range(6)]
+    return [{'id': 'm_18c1a2b3c4d5e6f7', 'typ': 'e', 'ts': t1, 'ost': t1, 'kiedy': '', 'nr': '', 'kl': 'Paweł Dorawa', 'tel': '', 'ul': '', 'ds': 'Mokotów',
+             'em': 'paweldorawa02@gmail.com', 'm2': 45, 'kwota': 0, 'upust': 0, 'termin': '', 'arkusz': '', 'analizator': '', 'zakres': [], 'info': '',
+             'temat': '45 m² Warszawa Mokotów',
+             'wiad': [{'ts': t1, 'od': 'Paweł Dorawa', 'em': 'paweldorawa02@gmail.com',
+                       'x': 'Dzień dobry, proszę o wycenę cyklinowania i lakierowania parkietu w mieszkaniu na Mokotowie, ok. 45 m². W załączniku zdjęcia podłogi.\n\nPozdrawiam\nPaweł Dorawa',
+                       'zal': zal + [{'id': 'MOCKPDF00%s' % ('p' * 16), 'n': 'rzut mieszkania.pdf', 't': 'p', 'b': 120000}]}]}]
+
+
+def zdjecie(i, mini):
+    from PIL import Image, ImageDraw
+    import io
+    w, h = (220, 165) if mini else (1600, 1200)
+    c = ZDJ_KOLORY[i % len(ZDJ_KOLORY)]
+    im = Image.new('RGB', (w, h), c)
+    dr = ImageDraw.Draw(im)
+    for k in range(0, w, max(8, w // 16)):
+        dr.line([(k, 0), (k, h)], fill=tuple(max(0, x - 30) for x in c), width=max(1, w // 120))
+    dr.text((w // 20, h // 20), 'ZDJ %d' % (i + 1), fill=(255, 255, 255))
+    b = io.BytesIO()
+    im.save(b, 'JPEG', quality=70)
+    return b.getvalue()
+
+
 def stan_poczatkowy():
     pn = datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday())
     d = lambda n: (pn + datetime.timedelta(days=n)).isoformat()
@@ -68,7 +99,7 @@ def stan_poczatkowy():
     for i, k in enumerate(K):
         graf['k%d' % (i + 1)] = {'ul': k[0], 'mies': k[1], 'm2': k[2], 'info': k[3], 'tel': k[4], 'kol': k[5], 'c': '', 'br': k[6],
                                  'od': d(k[7]) if k[7] is not None else None, 'dni': k[8], 'zid': None}
-    return {'rejestr': rejestr_poczatkowy(), 'status': {}, 'sprawy': {'w1': {'dz': d(1), 'g': '11:30', 'x': 'Dentysta', 'prv': True}},
+    return {'rejestr': rejestr_poczatkowy(), 'maile': maile_poczatkowe(), 'status': {}, 'sprawy': {'w1': {'dz': d(1), 'g': '11:30', 'x': 'Dentysta', 'prv': True}},
             'grafik': graf, 'kal': {}, 'ust': {}, 'rev': 0, 'tokeny': {}, 'awaria': False, 'bledy': 0, 'zapisy': 0}
 
 
@@ -127,7 +158,7 @@ def czysc_kal(d):
 def stan():
     items = []
     st = dict(DB['status'])
-    for r in DB['rejestr']:
+    for r in DB['rejestr'] + DB['maile']:
         it = dict(r, st='luzne', nt='', dz=None, g='', widz=False, hist=[])
         o = st.pop(r['id'], None)
         if o:
@@ -171,6 +202,16 @@ def obsluz(d):
         if not i.startswith('a_'):
             return {'ok': False, 'blad': 'Brak PDF dla tego zapytania'}
         return {'ok': True, 'url': 'https://drive.google.com/file/d/MOCKPDF/view', 'nazwa': 'mock.pdf'}
+    if a == 'katalog_zal':
+        import base64
+        i = str(d.get('id') or '')
+        zal = [z for m in DB['maile'] for w in m['wiad'] for z in w['zal'] if z['id'] == i]
+        if not zal:
+            return {'ok': False, 'blad': 'Brak pliku'}
+        if zal[0]['t'] == 'p':
+            return {'ok': True, 'url': 'https://drive.google.com/file/d/%s/view' % i, 'n': zal[0]['n']}
+        nr = int(i[7:9]) if i[7:9].isdigit() else 0
+        return {'ok': True, 'typ': 'image/jpeg', 'b64': base64.b64encode(zdjecie(nr, bool(d.get('mini')))).decode(), 'mini': bool(d.get('mini'))}
     if a == 'katalog_zapisz':
         ops = d.get('ops')
         if not isinstance(ops, list) or len(ops) > 200:
@@ -272,6 +313,13 @@ class H(SimpleHTTPRequestHandler):
                           'tel': '700 000 001', 'typ': 'k', 'nr': 'SMART/2026/1114/009'})
                 DB['rejestr'].insert(0, r)
                 return self._json({'ok': True, 'id': r['id']})
+            if self.path == '/mock/mail':
+                t = int(time.time() * 1000)
+                m = {'id': 'm_%s' % uuid.uuid4().hex[:16], 'typ': 'e', 'ts': t, 'ost': t, 'kiedy': '', 'nr': '', 'kl': d.get('kl', 'Anna Mail'), 'tel': '601 000 222',
+                     'ul': 'Odyńca 10/4', 'ds': 'Mokotów', 'em': 'anna@example.com', 'm2': 30, 'kwota': 0, 'upust': 0, 'termin': '', 'arkusz': '', 'analizator': '',
+                     'zakres': [], 'info': '', 'temat': 'Wycena 30 m2', 'wiad': [{'ts': t, 'od': d.get('kl', 'Anna Mail'), 'em': 'anna@example.com', 'x': 'Proszę o wycenę.', 'zal': []}]}
+                DB['maile'].insert(0, m)
+                return self._json({'ok': True, 'id': m['id']})
             if self.path != '/api':
                 return self._json({'ok': False}, 404)
             if d.get('akcja') == 'katalog_zapisz' and DB['awaria']:
