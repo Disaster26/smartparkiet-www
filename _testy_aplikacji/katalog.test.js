@@ -194,7 +194,7 @@ test('zapis: status, notatka, wpis z ręki, sprawa, kafelek, ustawienia - i trwa
   assert.ok(r.ok, r.blad);
   assert.strictEqual(w.lock.held, 0); assert.ok(w.lock.calls >= 1);
   /* Rejestr wycen zostaje pierwszym arkuszem */
-  eq(w.ss.getSheets().map(s => s.name), ['Arkusz1', 'Katalog_logowania', 'Katalog_status', 'Katalog_sprawy', 'Grafik', 'Ustawienia_katalog']);
+  eq(w.ss.getSheets().map(s => s.name), ['Arkusz1', 'Katalog_logowania', 'Katalog_status', 'Katalog_sprawy', 'Grafik', 'Kalendarz', 'Ustawienia_katalog']);
   const s = K({ akcja: 'katalog_stan' });
   const a = s.items.find(i => i.id === 'a_ARKUSZ1aaaaaaaaaaaaaaaaaaaa');
   assert.strictEqual(a.st, 'termin'); assert.strictEqual(a.nt, 'klucze u sąsiada'); assert.strictEqual(a.dz, '2026-11-16'); assert.strictEqual(a.kl, 'Anna Nowak');
@@ -283,7 +283,7 @@ test('PDF: znajduje plik po dacie wyceny w folderze arkusza', () => {
 test('routing: doPost/doGet przekazują katalog_*, reszta wycen bez zmian', () => {
   const w = swiat();
   const p = w.G.doPost({ postData: { contents: JSON.stringify({ akcja: 'katalog_ping' }) } });
-  assert.strictEqual(JSON.parse(p.getContent()).wersja, '2026-11-14');
+  assert.strictEqual(JSON.parse(p.getContent()).wersja, w.G.KAT_WERSJA || vm.runInContext('KAT_WERSJA', w.G));
   assert.strictEqual(JSON.parse(w.G.doGet({ parameter: { akcja: 'katalog_ping' } }).getContent()).ok, true);
   assert.strictEqual(w.G.doGet({ parameter: {} }).getContent(), 'SMARTPARKIET wyceny - dziala');
   assert.strictEqual(JSON.parse(w.G.doGet({ parameter: { a: 'wersja' } }).getContent()).wersja, '2026-11-07');
@@ -300,4 +300,109 @@ test('rejestr(): nowa kolumna O "Źródło" i źródło wyceny z doPost', () => 
   assert.strictEqual(w.G.katZrodloWyceny({ bezBcc: true }), 'analizator');
   assert.strictEqual(w.G.katZrodloWyceny({ zamowienie: true }), 'koszyk');
   assert.strictEqual(w.G.katZrodloWyceny({}), 'wycena klienta');
+});
+
+/* ---------------- zapytania e-mail (15.11) ---------------- */
+function gmailSwiat(w, watki) {
+  const etykiety = {}, utworzone = [], szukane = [];
+  const lab = n => ({ n, getName: () => n });
+  w.G.GmailApp = {
+    getUserLabelByName: n => etykiety[n] || null,
+    createLabel: n => (etykiety[n] = lab(n)),
+    search: q => { szukane.push(q); return watki.filter(t => !t.labels.some(l => q.indexOf('-label:' + l) >= 0)); }
+  };
+  w.G.LockService.getUserLock = () => ({ tryLock: () => true, releaseLock() {} });
+  /* Dysk: glowny folder -> Zapytania e-mail -> RRRR-MM */
+  const foldery = {};
+  const folder = name => foldery[name] || (foldery[name] = {
+    name, pliki: [], getName: () => name,
+    getFoldersByName: n => iter(foldery[name + '/' + n] ? [foldery[name + '/' + n]] : []),
+    createFolder: n => folder(name + '/' + n),
+    createFile: blob => { const id = 'PLIK' + String(utworzone.length + 1).padStart(20, '0'); const f = { id, blob, getId: () => id, getUrl: () => 'https://drive/' + id, getThumbnail: () => null, getBlob: () => ({ getContentType: () => blob.typ, getBytes: () => [1, 2, 3] }) }; utworzone.push(f); w.files[id] = f; return f; }
+  });
+  const g = folder('G');
+  w.G.DriveApp.getFoldersByName = () => iter([Object.assign(g, { getFilesByName: n => iter(n === 'Rejestr wycen' ? [{ getId: () => 'SS1' }] : []), addEditor() {} })]);
+  w.G.Utilities.base64Encode = b => Buffer.from(b).toString('base64');
+  return { etykiety, utworzone, szukane };
+}
+function wiad(o) {
+  return {
+    getId: () => o.gid, getHeader: n => (o.h || {})[n] || (n === 'Message-ID' ? '<' + o.gid + '@mail.gmail.com>' : ''),
+    getFrom: () => o.od, getReplyTo: () => o.rt || '', getSubject: () => o.temat || '', getDate: () => new Date(o.ts || Date.now()),
+    getPlainBody: () => o.x || '', isInTrash: () => false,
+    getAttachments: () => (o.zal || []).map(z => ({ getContentType: () => z.typ, getName: () => z.n, getSize: () => z.b, copyBlob: () => ({ typ: z.typ, setName(n) { this.n = n; return this; } }) }))
+  };
+}
+function watek(id, msgs) {
+  const t = { id, msgs, labels: [], arch: false, getId: () => id, getMessages: () => t.msgs, addLabel: l => t.labels.push(l.n), moveToArchive: () => { t.arch = true; } };
+  return t;
+}
+const IPHONE = 'Wysłane z iPhone' + String.fromCharCode(39) + 'a';
+
+test('maile: dane z treści (telefon, metraż, adres, dzielnica), czyszczenie cytatów i podpisów', () => {
+  const w = swiat();
+  const d = w.G.katMailDane('Cyklinowanie 48 m² Warszawa Mokotów', 'Dzień dobry, mieszkanie przy ul. Puławska 182 m. 14, tel. +48 512-384-207');
+  eq(d, { tel: '512 384 207', m2: 48, ul: 'Puławska 182 m. 14', ds: 'Mokotów' });
+  assert.strictEqual(w.G.katMailDane('', 'mieszkam na Ursynowie, 35,5 m2').ds, 'Ursynów');
+  assert.strictEqual(w.G.katMailDane('', 'mieszkam na Ursynowie, 35,5 m2').m2, 35.5);
+  assert.strictEqual(w.G.katMailDane('', 'kod 02-677, nr 1234567890123').tel, '');
+  const t = w.G.katMailTresc('Dzień dobry,\nproszę o wycenę.\n\nPozdrawiam\nPaweł\n\n' + IPHONE + '\n\nW dniu 15.11.2026 o 10:00 SMARTPARKIET <x@y.pl> napisał:\n> stara treść');
+  assert.strictEqual(t, 'Dzień dobry,\nproszę o wycenę.\n\nPozdrawiam\nPaweł');
+  eq(w.G.katMailOsoba('"Paweł Dorawa" <PawelDorawa02@gmail.com>'), { n: 'Paweł Dorawa', em: 'paweldorawa02@gmail.com' });
+  assert.strictEqual(w.G.katMailOsoba('jan.kowalski77@wp.pl').n, 'Jan Kowalski');
+});
+
+test('maile: przekazany mail -> pozycja E-mail ze zdjęciami, pominięte powiadomienia i formularze, dopisanie odpowiedzi, bez dubli', () => {
+  const { w, K } = zalogowany();
+  const zdj = n => ({ typ: 'image/jpeg', n, b: 2500000 });
+  const t1 = watek('18c1a2b3c4d5e6f7', [wiad({ gid: 'g1', od: 'Paweł Dorawa <paweldorawa02@gmail.com>', temat: '45 m² Warszawa Mokotów', ts: Date.UTC(2026, 10, 15, 19, 54),
+    x: 'Dzień dobry, proszę o wycenę cyklinowania. Tel. 600 700 800\n\n' + IPHONE, zal: [zdj('IMG_1.JPG'), zdj('IMG_2.JPG'), { typ: 'image/png', n: 'logo.png', b: 3000 }, { typ: 'application/zip', n: 'a.zip', b: 50000 }] })]);
+  const tPow = watek('18c000000000000a', [wiad({ gid: 'g2', od: 'Google <no-reply@accounts.google.com>', temat: 'Alert bezpieczeństwa' })]);
+  const tForm = watek('18c000000000000b', [wiad({ gid: 'g3', od: 'SMARTPARKIET <formularz@smartparkiet.com.pl>', rt: 'klient@wp.pl', temat: 'Nowa wycena SMARTPARKIET' })]);
+  const tNews = watek('18c000000000000c', [wiad({ gid: 'g4', od: 'Sklep <sklep@parkiety.pl>', temat: 'Promocja', h: { 'List-Unsubscribe': '<mailto:x>' } })]);
+  const watki = [t1, tPow, tForm, tNews];
+  const g = gmailSwiat(w, watki);
+  const r = w.G.katalogPobierzMaile();
+  eq(r, { nowe: 1, dopisane: 0, pominiete: 3 });
+  assert.match(g.szukane[0], /to:smartparkiet@gmail\.com/); assert.match(g.szukane[0], /-label:katalog-pobrane/);
+  eq(t1.labels, ['katalog-pobrane']); eq(tPow.labels, ['katalog-pominiete']); eq(tForm.labels, ['katalog-pominiete']); eq(tNews.labels, ['katalog-pominiete']);
+  assert.ok(t1.arch);
+  assert.strictEqual(g.utworzone.length, 2); /* logo i zip pominięte */
+  assert.match(g.utworzone[0].blob.n, /Paweł Dorawa - 1 - IMG_1\.JPG$/);
+  let s = K({ akcja: 'katalog_stan' });
+  const e = s.items.find(i => i.typ === 'e');
+  assert.ok(e, 'brak pozycji e-mail');
+  assert.strictEqual(e.id, 'm_18c1a2b3c4d5e6f7'); assert.strictEqual(e.kl, 'Paweł Dorawa'); assert.strictEqual(e.em, 'paweldorawa02@gmail.com');
+  assert.strictEqual(e.tel, '600 700 800'); assert.strictEqual(e.m2, 45); assert.strictEqual(e.ds, 'Mokotów'); assert.strictEqual(e.temat, '45 m² Warszawa Mokotów');
+  assert.strictEqual(e.wiad.length, 1); assert.strictEqual(e.wiad[0].x, 'Dzień dobry, proszę o wycenę cyklinowania. Tel. 600 700 800');
+  assert.strictEqual(e.wiad[0].zal.length, 2); assert.strictEqual(e.wiad[0].gid, undefined); /* wewnętrzne id nie idą do aplikacji */
+  assert.strictEqual(e.st, 'luzne');
+  /* status, notatka i kafelek kalendarza jak przy innych zapytaniach; usunięcie z aplikacji niemożliwe */
+  assert.ok(K({ akcja: 'katalog_zapisz', ops: [{ t: 'zap', id: e.id, d: { st: 'rozmowa', nt: 'oddzwonić', hist: [] } }, { t: 'kal', id: 'kk1', d: { dz: '2026-11-17', g: '10:00', min: 60, ko: 'c1', x: 'Dorawa', zid: e.id } }] }).ok);
+  assert.ok(K({ akcja: 'katalog_zapisz', ops: [{ t: 'zap', id: e.id, d: null }] }).ok);
+  s = K({ akcja: 'katalog_stan' });
+  const e2 = s.items.find(i => i.id === e.id);
+  assert.strictEqual(e2.st, 'rozmowa'); assert.strictEqual(e2.nt, 'oddzwonić'); assert.strictEqual(s.kal.k[0].zid, e.id);
+  /* drugi przebieg: nic nowego (etykiety) */
+  eq(w.G.katalogPobierzMaile(), { nowe: 0, dopisane: 0, pominiete: 0 });
+  /* klient odpisał w tym samym wątku + ten sam mail przekazany drugi raz (Message-ID) */
+  t1.msgs.push(wiad({ gid: 'g5', od: 'Paweł Dorawa <paweldorawa02@gmail.com>', temat: 'Re: 45 m²', ts: Date.UTC(2026, 10, 16, 8, 0), x: 'Mieszkanie na 3 piętrze, ul. Odyńca 10/4\n\nW dniu 15.11.2026 SMARTPARKIET napisał:\n> oferta' }));
+  t1.labels = [];
+  const t1b = watek('18c1a2b3c4d5e6ff', [wiad({ gid: 'g6', od: 'Paweł Dorawa <paweldorawa02@gmail.com>', h: { 'Message-ID': '<g1@mail.gmail.com>' } })]);
+  watki.push(t1b);
+  const r2 = w.G.katalogPobierzMaile();
+  assert.strictEqual(r2.nowe, 0); assert.strictEqual(r2.dopisane, 1);
+  s = K({ akcja: 'katalog_stan' });
+  const e3 = s.items.filter(i => i.typ === 'e');
+  assert.strictEqual(e3.length, 1);
+  assert.strictEqual(e3[0].wiad.length, 2); assert.strictEqual(e3[0].wiad[1].x, 'Mieszkanie na 3 piętrze, ul. Odyńca 10/4');
+  assert.strictEqual(e3[0].ul, 'Odyńca 10/4'); assert.strictEqual(e3[0].st, 'rozmowa');
+  /* zdjęcia: tylko pliki z pozycji e-mail, miniatura -> pełny plik gdy brak miniatury */
+  const z = K({ akcja: 'katalog_zal', id: e.wiad[0].zal[0].id, mini: true });
+  assert.ok(z.ok, z.blad); assert.strictEqual(z.typ, 'image/jpeg'); assert.strictEqual(z.b64, 'AQID');
+  assert.strictEqual(K({ akcja: 'katalog_zal', id: 'ARKUSZ1aaaaaaaaaaaaaaaaaaaa' }).ok, false);
+  assert.strictEqual(w.G.katalogObsluz({ akcja: 'katalog_zal', id: e.wiad[0].zal[0].id }).kod, 'auth');
+  assert.strictEqual(w.lock.held, 0);
+  /* Rejestr wycen dalej pierwszym arkuszem */
+  assert.strictEqual(w.ss.getSheets()[0].name, 'Arkusz1'); assert.ok(w.ss.getSheetByName('Katalog_maile'));
 });

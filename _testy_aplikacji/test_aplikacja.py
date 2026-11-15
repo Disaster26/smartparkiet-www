@@ -66,19 +66,21 @@ def run(p, w, h, mobile):
     czekaj(lambda: [x['id'] for x in db()['ust'].get('brygady', [])] == ['b1', 'b2', 'b3', 'b4'], 'brygada b4 na serwerze')
     # --- lista
     pg.click(nav % 'lista'); pg.wait_for_timeout(150)
-    assert pg.locator('.karta').count() == 12, pg.locator('.karta').count()
+    assert pg.locator('.karta').count() == 13, pg.locator('.karta').count()  # 12 z Rejestru + 1 e-mail (15.11)
     pg.screenshot(path='%s/lista_%d.png' % (ZRZ, w))
     # --- karta: status, notatka, termin
     pg.locator('.karta', has_text='Wróblewska').click(); pg.wait_for_timeout(350)
     zid = 'a_MOCKARKUSZ00' + 'x' * 14
     pg.click('.stg button[data-s=rozmowa]')
+    assert db()['status'].get(zid, {}).get('st') != 'rozmowa'  # 15.11: bez zatwierdzenia nic sie nie zapisuje
+    pg.click('.st-ok')
     czekaj(lambda: db()['status'].get(zid, {}).get('st') == 'rozmowa', 'status na serwerze')
     pg.fill('#nt', 'Klucze u sąsiadki, kolor naturalny')
     czekaj(lambda: db()['status'].get(zid, {}).get('nt') == 'Klucze u sąsiadki, kolor naturalny', 'notatka na serwerze')
     pg.locator('.szyb button', has_text='Jutro').click()
     czekaj(lambda: db()['status'].get(zid, {}).get('dz'), 'termin na serwerze')
     assert db()['status'][zid]['st'] == 'termin'  # przypisanie terminu ustawia "Termin ustalony"
-    pg.click('.stg button[data-s=zatw]')
+    pg.click('.stg button[data-s=zatw]'); pg.click('.st-ok')
     czekaj(lambda: db()['status'][zid]['st'] == 'zatw', 'status Zatwierdzone na serwerze')
     pg.screenshot(path='%s/karta_%d.png' % (ZRZ, w))
     if mobile:
@@ -185,7 +187,7 @@ def run(p, w, h, mobile):
     post('/mock/awaria', {'on': True})
     pg.click(nav % 'lista'); pg.wait_for_timeout(150)
     pg.locator('.karta', has_text='Joanna Lis').click(); pg.wait_for_timeout(350)
-    pg.click('.stg button[data-s=odpadlo]')
+    pg.click('.stg button[data-s=odpadlo]'); pg.click('.st-ok')
     czekaj(lambda: pg.locator('.stg button.on').get_attribute('data-s') == 'luzne', 'cofnięcie statusu po błędzie')
     assert 'cofnięta' in pg.inner_text('#toast') or 'Nie zapisano' in pg.inner_text('#syncTx')
     post('/mock/awaria', {'on': False})
@@ -195,7 +197,7 @@ def run(p, w, h, mobile):
     pg.evaluate('window.spkApp.pobierz()')
     czekaj(lambda: 'Brak internetu' in pg.inner_text('#syncTx'), 'pasek offline')
     przed = db()['zapisy']
-    pg.click('.stg button[data-s=ogledziny]'); pg.wait_for_timeout(500)
+    pg.click('.stg button[data-s=ogledziny]'); pg.click('.st-ok'); pg.wait_for_timeout(500)
     assert pg.locator('.stg button.on').get_attribute('data-s') == 'luzne' and db()['zapisy'] == przed, 'offline nie zmienia danych'
     ctx.set_offline(False)
     pg.evaluate('window.spkApp.pobierz()'); czekaj(lambda: 'Zapisane' in pg.inner_text('#syncTx'), 'online po offline')
