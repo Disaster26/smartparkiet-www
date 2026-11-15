@@ -69,7 +69,7 @@ def stan_poczatkowy():
         graf['k%d' % (i + 1)] = {'ul': k[0], 'mies': k[1], 'm2': k[2], 'info': k[3], 'tel': k[4], 'kol': k[5], 'c': '', 'br': k[6],
                                  'od': d(k[7]) if k[7] is not None else None, 'dni': k[8], 'zid': None}
     return {'rejestr': rejestr_poczatkowy(), 'status': {}, 'sprawy': {'w1': {'dz': d(1), 'g': '11:30', 'x': 'Dentysta', 'prv': True}},
-            'grafik': graf, 'ust': {}, 'rev': 0, 'tokeny': {}, 'awaria': False, 'bledy': 0, 'zapisy': 0}
+            'grafik': graf, 'kal': {}, 'ust': {}, 'rev': 0, 'tokeny': {}, 'awaria': False, 'bledy': 0, 'zapisy': 0}
 
 
 DB = stan_poczatkowy()
@@ -110,6 +110,20 @@ def czysc_kaf(d):
             'br': txt(d.get('br'), 40), 'od': dzien(d.get('od')), 'dni': min(30, max(1, int(round(liczba(d.get('dni')) or 1)))), 'zid': txt(d.get('zid'), 80) if d.get('zid') else None}
 
 
+KAL_KOL = [{'id': 'c1', 'n': 'KONTAKT'}, {'id': 'c2', 'n': 'OGLĘDZINY'}, {'id': 'c3', 'n': 'ZLECENIA'}]
+
+
+def czysc_kal(d):
+    g = godz(d.get('g')) or '8:00'
+    h, mi = g.split(':')
+    m = min(19 * 60 + 30, max(7 * 60, round((int(h) * 60 + int(mi)) / 30) * 30))
+    ko = str(d.get('ko') or '')
+    return {'dz': dzien(d.get('dz')) or datetime.date.today().isoformat(), 'g': '%d:%02d' % (m // 60, m % 60),
+            'min': min(780, max(30, round((liczba(d.get('min')) or 60) / 30) * 30)), 'ko': ko if re.match(r'^[A-Za-z0-9_.:-]{1,80}$', ko) else '',
+            'x': txt(d.get('x'), 300), 'c': d.get('c') if re.match(r'^#[0-9A-Fa-f]{6}$', str(d.get('c') or '')) else '',
+            'zid': str(d.get('zid')) if d.get('zid') and re.match(r'^[A-Za-z0-9_.:-]{1,80}$', str(d.get('zid'))) else None}
+
+
 def stan():
     items = []
     st = dict(DB['status'])
@@ -127,7 +141,8 @@ def stan():
     return {'ok': True, 'wersja': 'mock', 'rev': DB['rev'], 'czas': int(time.time() * 1000), 'items': items,
             'wpisy': [dict(v, id=k) for k, v in DB['sprawy'].items()],
             'graf': {'v': 2, 'br': DB['ust'].get('brygady', BRYGADY), 'kol': DB['ust'].get('statusy', STATUSY),
-                     'k': [dict(v, id=k) for k, v in DB['grafik'].items()]}}
+                     'k': [dict(v, id=k) for k, v in DB['grafik'].items()]},
+            'kal': {'kol': DB['ust'].get('kalKol', KAL_KOL), 'k': [dict(v, id=k) for k, v in DB['kal'].items()]}}
 
 
 def obsluz(d):
@@ -165,6 +180,9 @@ def obsluz(d):
                 DB['ust']['brygady'] = [{'id': txt(b.get('id'), 40), 'n': txt(b.get('n'), 24)} for b in op['d']['br']]
                 DB['ust']['statusy'] = [{'id': txt(c.get('id'), 40), 'n': txt(c.get('n'), 30), 'c': c.get('c')} for c in op['d']['kol']]
                 continue
+            if op.get('t') == 'kalust':
+                DB['ust']['kalKol'] = [{'id': txt(c.get('id'), 40), 'n': txt(c.get('n'), 24) or 'KOLUMNA'} for c in op['d']['kol']][:8]
+                continue
             i = str(op.get('id') or '')
             if not re.match(r'^[A-Za-z0-9_.:-]{1,80}$', i):
                 return {'ok': False, 'blad': 'Złe ID'}
@@ -186,6 +204,11 @@ def obsluz(d):
                     DB['grafik'].pop(i, None)
                 else:
                     DB['grafik'][i] = czysc_kaf(v)
+            elif op['t'] == 'kal':
+                if v is None:
+                    DB['kal'].pop(i, None)
+                else:
+                    DB['kal'][i] = czysc_kal(v)
             else:
                 return {'ok': False, 'blad': 'Nieznana zmiana'}
         DB['rev'] += 1
