@@ -973,6 +973,17 @@ function pobierz(){
   });
 }
 setInterval(function(){if(document.visibilityState==='visible')pobierz();},60000);
+/* 15.11: telefon (ikona na ekranie) potrafi trzymac stara wersje strony w pamieci - po powrocie do aplikacji sprawdzamy wersje i przeladowujemy */
+var APP_W='2026-11-15e';
+function sprawdzWersje(){
+  if(!window.fetch)return;
+  fetch('./?w='+Date.now(),{cache:'no-store',credentials:'omit'}).then(function(r){return r.ok?r.text():'';}).then(function(t){
+    var m=/APP_W='([^']+)'/.exec(t||'');
+    if(m&&m[1]!==APP_W){if(zajety()||LOT||BRUD){setTimeout(sprawdzWersje,20000);return;}location.reload();}
+  }).catch(function(){});
+}
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')sprawdzWersje();});
+setInterval(function(){if(document.visibilityState==='visible')sprawdzWersje();},15*60000);
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')pobierz();});
 window.addEventListener('online',function(){pobierz();});
 /* 15.11: dodatkowa brygada podwykonawcy (b4) - dokładana raz, jeśli w zapisanych ustawieniach jej nie ma */
@@ -1571,14 +1582,14 @@ window.spkGrafXlsx=grafXlsx;
 /* ---------- KALENDARZ GODZINOWY (Artur 15.11: "kafelki ruchome, tylko godziny stałe", kolorowe, wpis z klawiatury albo wklejony) ----------
    Dane: D.kal.kol (kolumny, nazwy edytowalne), D.kal.k (kafelki: dz, g start, min długość, ko kolumna, x tekst, c kolor, zid zapytanie).
    Zapis jak reszta aplikacji: różnice -> Apps Script katalog.gs (zakładka "Kalendarz" w Rejestrze wycen). */
-var KH0=7*60,KSL=30,KNS=26; /* 7:00-20:00, kratki po 30 min */
+var KH0=10*60,KSL=30,KNS=20; /* 15.11 Artur 22:32: 10:00-20:00 (wczesniej 7:00), kratki po 30 min; starsze kafelki sprzed 10 pokazane od 10:00 */
 var KPAL=[['#FFE135','żółty'],['#34C759','zielony'],['#6FA8F5','niebieski'],['#FF5FCB','różowy'],['#FF9F1C','pomarańczowy'],['#F0322D','czerwony'],['#2FD9E0','turkus'],['#C9CDD2','szary']];
 var KED=null,KHOV=null;
 function kalKolumny(){return (D.kal&&D.kal.kol&&D.kal.kol.length)?D.kal.kol:KAL_KOL_DOM;}
 function kalK(id){var a=D.kal.k;for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];return null;}
 function kalKolIdx(ko){var K=kalKolumny();for(var i=0;i<K.length;i++)if(K[i].id===ko)return i;return 0;}
 function kalKolN(ko){return kalKolumny()[kalKolIdx(ko)].n;}
-function gNaSl(g){var m=gMin(g);if(m>=9999)return 2;return Math.max(0,Math.min(KNS-1,Math.round((m-KH0)/KSL)));}
+function gNaSl(g){var m=gMin(g);if(m>=9999)return 0;return Math.max(0,Math.min(KNS-1,Math.round((m-KH0)/KSL)));}
 function slNaG(s){var m=KH0+s*KSL;return Math.floor(m/60)+':'+('0'+m%60).slice(-2);}
 function kalDl(k){return Math.max(1,Math.round((+k.min||60)/KSL));}
 function kalOdDo(k){var a=gNaSl(k.g);return slNaG(a)+'-'+slNaG(Math.min(KNS,a+kalDl(k)));}
@@ -1780,8 +1791,11 @@ function renderDet(){
   zalMiniatury();
 }
 function otworzPanel(){if(!DESK.matches){try{history.pushState({p:1},'');}catch(e){}}}
-function zamknijPanel(){S.sel=null;S.dzien=null;render(true);}
-window.addEventListener('popstate',function(){if(S.sel||S.dzien){S.sel=null;S.dzien=null;render(true);}});
+/* 15.11 Artur 22:30: wybrany, a niezatwierdzony status - przy wyjsciu z karty pytanie, zeby zmiana nie przepadla */
+function stOczekuje(){var w=S.stWyb;S.stWyb=null;if(!w)return;var it=item(w.id);if(!it||it.st===w.s||!ST[w.s])return;
+  if(confirm('Zatwierdzić zmianę statusu na: '+ST[w.s].n+'?')){it.st=w.s;log(it,'Status: '+ST[it.st].n);zapisz();toast('Status: '+ST[it.st].n);}else toast('Status bez zmian');}
+function zamknijPanel(){stOczekuje();S.sel=null;S.dzien=null;render(true);}
+window.addEventListener('popstate',function(){if(S.sel||S.dzien){stOczekuje();S.sel=null;S.dzien=null;render(true);}});
 
 /* ---------- akcje ---------- */
 function przypisz(id,s,g){
@@ -1897,10 +1911,11 @@ document.addEventListener('click',function(e){
   var b=e.target.closest('[data-act]');if(!b)return;
   var a=b.getAttribute('data-act'),id=b.getAttribute('data-id'),dd=b.getAttribute('data-d');
   switch(a){
-    case 'v':S.v=b.getAttribute('data-v');S.wyb=null;S.gwyb=null;S.kop=null;S.kalWst=null;if(!DESK.matches){S.sel=null;S.dzien=null;}else if(S.v!=='kal')S.dzien=null;render();if(S.v==='szuk'){var q=$('q');if(q&&DESK.matches)q.focus();}break;
+    case 'v':if(S.stWyb)stOczekuje();S.v=b.getAttribute('data-v');S.wyb=null;S.gwyb=null;S.kop=null;S.kalWst=null;if(!DESK.matches){S.sel=null;S.dzien=null;}else if(S.v!=='kal')S.dzien=null;render();if(S.v==='szuk'){var q=$('q');if(q&&DESK.matches)q.focus();}break;
     case 'fT':S.fT=b.getAttribute('data-f');render(true);break;
     case 'fS':S.fS=b.getAttribute('data-f');render(true);break;
     case 'otworz':
+      if(S.stWyb&&S.stWyb.id!==id)stOczekuje();
       if(S.wyb&&b.closest('[data-day]')){e.stopPropagation();var dy=b.closest('[data-day]').getAttribute('data-day');przypisz(S.wyb,dy);S.wyb=null;render(true);break;}
       e.stopPropagation();var bylo=!!(S.sel||S.dzien);S.sel=id;S.dzien=null;var io=item(id);if(io&&!io.widz){io.widz=true;zapisz();}if(!bylo)otworzPanel();render(true);break;
     case 'zamknij':if(!DESK.matches&&history.state&&history.state.p){history.back();}else zamknijPanel();break;

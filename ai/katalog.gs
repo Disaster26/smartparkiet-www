@@ -820,14 +820,14 @@ function katZal(id, mini) {
   return { ok: true, typ: bl.getContentType() || 'image/jpeg', b64: Utilities.base64Encode(bl.getBytes()), url: f.getUrl(), n: z.n };
 }
 
-/* TEST bez wysyłania maili: pozycja przykładowa m_TEST (zdjęcie = kopia JPG z folderu ofert, jeśli jest) i jej usunięcie */
+/* TEST bez wysyłania maili: pozycja przykładowa m_TEST (zdjęcie = kopia pierwszego JPG z Dysku) i jej usunięcie */
 function katalogMaileTest() {
   const kiedy = new Date(), ss = katSS(), sh = katMaileArk(ss);
   const temat = 'TEST 48 m² Warszawa Mokotów';
   const x = 'Dzień dobry, proszę o wycenę cyklinowania i lakierowania parkietu, ok. 48 m2, ul. Puławska 182 m. 14, Mokotów. Tel. 512 000 000.\nPozdrawiam';
   const dane = katMailDane(temat, x), zal = [];
   try {
-    const pl = folderPoprawek().getFilesByType(MimeType.JPEG);
+    const pl = DriveApp.searchFiles("mimeType = 'image/jpeg' and trashed = false");
     if (pl.hasNext()) { const f = pl.next().makeCopy('TEST e-mail - do usunięcia.jpg', katMailFolder(kiedy)); zal.push({ id: f.getId(), n: 'test.jpg', t: 'z', b: f.getSize() }); }
   } catch (e) { Logger.log('bez zdjęcia: ' + e); }
   const d = { typ: 'e', ts: kiedy.getTime(), ost: kiedy.getTime(), kl: 'TEST Jan Testowy', em: 'test@example.com', tel: dane.tel, ul: dane.ul, ds: dane.ds, m2: dane.m2, temat: temat,

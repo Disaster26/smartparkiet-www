@@ -55,7 +55,7 @@ def run(p, w, h, mobile, ciemny=False):
     assert pg.locator('.kgr').count() == 1, bledy
     pg.screenshot(path='%s/kal_pusty_%d.png' % (ZRZ, w))
     # 1) wpis z klawiatury w kratce 11:00 kolumna 1
-    cel = pg.locator('[data-kk$="|c1|8"]')
+    cel = pg.locator('[data-kk$="|c1|2"]')
     cel.click(); pg.wait_for_timeout(100)
     pg.keyboard.type('Kontakt Kowalski')
     pg.keyboard.press('Enter')
@@ -65,21 +65,21 @@ def run(p, w, h, mobile, ciemny=False):
     assert k1['g'] == '11:00' and k1['ko'] == 'c1' and k1['min'] == 60, k1
     # 2) wklejenie w edytorze (schowek)
     pg.evaluate("navigator.clipboard.writeText('Grójecka 12/4, Ochota (54 m²) · Nowak')")
-    pg.locator('[data-kk$="|c2|12"]').click(); pg.wait_for_timeout(100)
+    pg.locator('[data-kk$="|c2|6"]').click(); pg.wait_for_timeout(100)
     pg.keyboard.press('Control+V'); pg.wait_for_timeout(100)
     pg.keyboard.press('Enter')
     czekaj(lambda: any('Grójecka' in v['x'] for v in kal().values()), 'wklejony kafelek')
     # 3) Ctrl+V nad kratką (tylko komputer)
     if not mobile:
         pg.evaluate("navigator.clipboard.writeText('Odbiór lakieru')")
-        pg.locator('[data-kk$="|c3|4"]').hover(); pg.wait_for_timeout(80)
+        pg.locator('[data-kk$="|c3|0"]').hover(); pg.wait_for_timeout(80)
         pg.keyboard.press('Control+V')
-        czekaj(lambda: any(v['x'] == 'Odbiór lakieru' and v['g'] == '9:00' and v['ko'] == 'c3' for v in kal().values()), 'Ctrl+V nad kratką')
+        czekaj(lambda: any(v['x'] == 'Odbiór lakieru' and v['g'] == '10:00' and v['ko'] == 'c3' for v in kal().values()), 'Ctrl+V nad kratką')
     pg.wait_for_timeout(300)
     pg.screenshot(path='%s/kal_3kafle_%d.png' % (ZRZ, w))
     # 4) przeciągnięcie kafelka Kowalski do kolumny 3, 14:00
     kt = pg.locator('.kt', has_text='Kontakt Kowalski')
-    bb = kt.bounding_box(); cb = pg.locator('[data-kk$="|c3|14"]').bounding_box()
+    bb = kt.bounding_box(); cb = pg.locator('[data-kk$="|c3|8"]').bounding_box()
     sx, sy = bb['x'] + bb['width'] / 2, bb['y'] + 8
     tx, ty = cb['x'] + cb['width'] / 2, cb['y'] + 8
     if mobile:
@@ -133,8 +133,8 @@ def run(p, w, h, mobile, ciemny=False):
     pg.locator('.k-dok').scroll_into_view_if_needed(); pg.click('.k-dok'); pg.wait_for_timeout(300)
     assert pg.locator('.kop-bar').is_visible()
     pg.screenshot(path='%s/kal_wstaw_%d.png' % (ZRZ, w))
-    pg.locator('[data-kk$="|c2|2"]').click()
-    czekaj(lambda: any(v.get('zid') and v['g'] == '8:00' for v in kal().values()), 'kafelek z zapytania')
+    pg.locator('[data-kk$="|c2|1"]').click()
+    czekaj(lambda: any(v.get('zid') and v['g'] == '10:30' for v in kal().values()), 'kafelek z zapytania')
     # 9) tydzień
     pg.click('.kseg button[data-k=tg]'); pg.wait_for_timeout(300)
     assert pg.locator('.kdn').count() >= 6

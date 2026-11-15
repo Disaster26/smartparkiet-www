@@ -116,6 +116,19 @@ def run(p, w, h, mobile, ciemny=False):
     pg.reload(); czekaj(lambda: 'Zapisane' in pg.inner_text('#syncTx'), 'po odświeżeniu')
     pg.click(nav % 'lista'); pg.wait_for_timeout(200)
     assert pg.locator('.karta', has_text='Anna Nowa').count() == 1
+    # niezatwierdzony status przy wyjsciu z karty -> pytanie (Artur 22:30)
+    pg.click(nav % 'lista'); pg.wait_for_timeout(200)
+    pg.locator('.karta', has_text='Paweł Dorawa').click(); pg.wait_for_timeout(300)
+    pg.locator('#det .stg button[data-s=ogledziny]').click()
+    pg.once('dialog', lambda d: d.accept())
+    if mobile:
+        pg.locator('#det [data-act=zamknij]').click()
+    else:
+        pg.locator('.karta', has_text='Wróblewska').click()  # na komputerze: przejscie do innej karty
+    czekaj(lambda: db()['status'].get(EID, {}).get('st') == 'ogledziny', 'status po pytaniu przy wyjsciu')
+    pg.wait_for_timeout(300)
+    if not mobile:
+        assert 'kst' in pg.locator('.karta', has_text='Paweł Dorawa').get_attribute('class')
     # Szybki wpis: przycisk Powrot zamyka okno (Artur 21:37)
     pg.locator('[data-act=szybki]:visible').first.click(); pg.wait_for_timeout(250)
     assert pg.locator('.okno .btn-powrot').is_visible()
