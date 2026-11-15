@@ -7,7 +7,7 @@
    Dane:
    - zapytania czytane z pierwszego arkusza "Rejestr wycen" (tam zapisuje każda wycena i zamówienie ze strony),
    - w tym samym pliku osobne zakładki: Katalog_status (statusy, notatki, terminy, wpisy z ręki),
-     Katalog_sprawy (sprawy ogólne i prywatne), Grafik (kafelki brygad), Ustawienia_katalog (brygady, statusy).
+     Katalog_sprawy (sprawy ogólne i prywatne), Grafik (kafelki brygad), Kalendarz (kafelki godzinowe, od 15.11), Ustawienia_katalog (brygady, statusy, kolumny kalendarza).
      Kolumna "Dane" to zapis aplikacji - nie edytować ręcznie (kolumna "Opis" jest do czytania).
 
    Hasło Artura: tylko skrót (SHA-256 z solą, wielokrotnie) we właściwościach skryptu KATALOG_HASLO.
@@ -15,8 +15,8 @@
    -> w edytorze wybierz funkcję katalogUstawHaslo i Uruchom. Funkcja zapisze skrót i usunie jawne hasło.
    Aplikacja po zalogowaniu dostaje losowy token sesji (ważny 180 dni, na serwerze trzymany tylko jego skrót). */
 
-const KAT_WERSJA = '2026-11-14';
-const KAT_ARK = { status: 'Katalog_status', sprawy: 'Katalog_sprawy', grafik: 'Grafik', ust: 'Ustawienia_katalog' };
+const KAT_WERSJA = '2026-11-15';
+const KAT_ARK = { status: 'Katalog_status', sprawy: 'Katalog_sprawy', grafik: 'Grafik', ust: 'Ustawienia_katalog', kal: 'Kalendarz' };
 const KAT_NAGL = ['ID', 'Opis', 'Dane (zapis aplikacji - nie edytować)', 'Zmieniono'];
 const KAT_TOKEN_DNI = 180;
 const KAT_ITER = 400;          /* powtórzenia skrótu hasła */
@@ -33,6 +33,8 @@ const KAT_STATUSY = [
   { id: 'wst', n: 'Wstępnie', c: '#FFD60A' }, { id: 'ogl', n: 'Oględziny / pomiar', c: '#A8D8F5' },
   { id: 'term', n: 'Termin do potwierdzenia', c: '#1E63D6' }, { id: 'pilne', n: 'Pilne', c: '#E0262B' },
   { id: 'awaria', n: 'Awaria', c: '#6B2A5E' }, { id: 'gotowe', n: 'Zrobione', c: '#B6FF1A' }, { id: 'inne', n: 'Inne', c: '#FF6FAE' }];
+/* 15.11 Artur: kalendarz godzinowy (kafelki ruchome, godziny stałe) - kolumny edytowalne */
+const KAT_KAL_KOL = [{ id: 'c1', n: 'KONTAKT' }, { id: 'c2', n: 'OGLĘDZINY' }, { id: 'c3', n: 'ZLECENIA' }];
 const KAT_ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'zatw', 'wtoku', 'zrobione', 'odpadlo'];
 
 /* ------------------------------------------------------------------ wejście */
@@ -218,6 +220,7 @@ function katArkusze(ss) {
     status: katArkusz(ss, KAT_ARK.status, KAT_NAGL),
     sprawy: katArkusz(ss, KAT_ARK.sprawy, KAT_NAGL),
     grafik: katArkusz(ss, KAT_ARK.grafik, KAT_NAGL),
+    kal: katArkusz(ss, KAT_ARK.kal, KAT_NAGL),
     ust: katArkusz(ss, KAT_ARK.ust, ['Klucz', 'Wartość (zapis aplikacji)', 'Zmieniono'])
   };
 }
@@ -307,7 +310,7 @@ function katZapytania(ss) {
 /* ------------------------------------------------------------------ stan dla aplikacji */
 function katStan() {
   const ss = katSS(), A = katArkusze(ss);
-  const st = katCzytaj(A.status), sp = katCzytaj(A.sprawy), gr = katCzytaj(A.grafik), u = katUstCzytaj(A.ust);
+  const st = katCzytaj(A.status), sp = katCzytaj(A.sprawy), gr = katCzytaj(A.grafik), kl = katCzytaj(A.kal), u = katUstCzytaj(A.ust);
   const items = katZapytania(ss).map(function (it) {
     const o = st[it.id] && st[it.id].d;
     it.st = 'luzne'; it.nt = ''; it.dz = null; it.g = ''; it.widz = false; it.hist = [];
@@ -322,6 +325,10 @@ function katStan() {
     graf: {
       v: 2, br: u.brygady || KAT_BRYGADY, kol: u.statusy || KAT_STATUSY,
       k: Object.keys(gr).map(function (id) { const o = gr[id].d; o.id = id; return o; })
+    },
+    kal: {
+      kol: u.kalKol || KAT_KAL_KOL,
+      k: Object.keys(kl).map(function (id) { const o = kl[id].d; o.id = id; return o; })
     }
   };
 }
@@ -358,6 +365,21 @@ function katCzyscSprawa(d) {
   if (d.br && KAT_ID.test(String(d.br))) o.br = String(d.br); /* informacja dla brygady (pod kafelkami), opcjonalnie */
   return o;
 }
+/* kafelek kalendarza: dzień, godzina startu (7:00-19:30 co 30 min), długość w minutach, kolumna, tekst, kolor, powiązane zapytanie */
+function katCzyscKal(d) {
+  const g = katGodz(d.g) || '8:00', p = g.split(':'), m = Math.min(19 * 60 + 30, Math.max(7 * 60, Math.round((+p[0] * 60 + +p[1]) / 30) * 30));
+  return {
+    dz: katDzien(d.dz) || Utilities.formatDate(new Date(), 'Europe/Warsaw', 'yyyy-MM-dd'), g: Math.floor(m / 60) + ':' + ('0' + m % 60).slice(-2),
+    min: Math.min(780, Math.max(30, Math.round((Number(d.min) || 60) / 30) * 30)), ko: KAT_ID.test(String(d.ko || '')) ? String(d.ko) : '',
+    x: katTxt(d.x, 300), c: katKolor(d.c), zid: d.zid && KAT_ID.test(String(d.zid)) ? String(d.zid) : null
+  };
+}
+function katCzyscKalKol(d) {
+  const kol = (Array.isArray(d.kol) ? d.kol : []).slice(0, 8).map(function (c) { return { id: katTxt(c.id, 40), n: katTxt(c.n, 24) || 'KOLUMNA' }; })
+    .filter(function (c) { return KAT_ID.test(c.id); });
+  if (!kol.length) throw new Error('Pusta lista kolumn kalendarza');
+  return kol;
+}
 function katCzyscUst(d) {
   const br = (Array.isArray(d.br) ? d.br : []).slice(0, 12).map(function (b) { return { id: katTxt(b.id, 40), n: katTxt(b.n, 24) || 'BRYGADA' }; })
     .filter(function (b) { return KAT_ID.test(b.id); });
@@ -382,11 +404,14 @@ function katZapisz(ops) {
     try { if (ops.some(function (o) { return o && (o.t === 'kaf' || o.t === 'wpis'); })) przed = { gr: katCzytaj(A.grafik), sp: katCzytaj(A.sprawy) }; } catch (e) { przed = null; }
     const brNaz = {};
     (u.brygady || KAT_BRYGADY).forEach(function (b) { brNaz[b.id] = b.n; });
-    const zs = [], zw = [], zg = [];
-    let ust = null;
+    const zs = [], zw = [], zg = [], zk = [];
+    let ust = null, kalKol = null;
+    const kolNaz = {};
+    (u.kalKol || KAT_KAL_KOL).forEach(function (c) { kolNaz[c.id] = c.n; });
     ops.forEach(function (op) {
       if (!op || typeof op !== 'object') return;
       if (op.t === 'ust') { ust = katCzyscUst(op.d || {}); ust.br.forEach(function (b) { brNaz[b.id] = b.n; }); return; }
+      if (op.t === 'kalust') { kalKol = katCzyscKalKol(op.d || {}); kalKol.forEach(function (c) { kolNaz[c.id] = c.n; }); return; }
       const id = String(op.id || '');
       if (!KAT_ID.test(id)) throw new Error('Złe ID: ' + id.slice(0, 20));
       const d = op.d;
@@ -403,11 +428,16 @@ function katZapisz(ops) {
         const c = d === null ? null : katCzyscKaf(d);
         zg.push({ id: id, d: c, opis: c ? [(c.br && c.od) ? (brNaz[c.br] || c.br) + ' ' + c.od + (c.dni > 1 ? ' (' + c.dni + ' dni)' : '') : 'DO ROZPLANOWANIA',
           c.ul + (c.mies ? '/' + c.mies : '') + (c.m2 ? ' (' + c.m2 + ')' : '') + (c.info ? ' / ' + c.info : ''), c.tel].filter(String).join(' | ') : '' });
+      } else if (op.t === 'kal') {
+        const c = d === null ? null : katCzyscKal(d);
+        zk.push({ id: id, d: c, opis: c ? (c.dz + ' ' + c.g + ' (' + c.min + ' min) ' + (kolNaz[c.ko] || '') + ': ' + c.x).replace(/\s+/g, ' ') : '' });
       } else throw new Error('Nieznana zmiana: ' + String(op.t).slice(0, 20));
     });
     katZapiszRekordy(A.status, zs);
     katZapiszRekordy(A.sprawy, zw);
     katZapiszRekordy(A.grafik, zg);
+    katZapiszRekordy(A.kal, zk);
+    if (kalKol) katUstZapisz(A.ust, 'kalKol', kalKol);
     if (ust) { katUstZapisz(A.ust, 'brygady', ust.br); katUstZapisz(A.ust, 'statusy', ust.kol); }
     katUstZapisz(A.ust, 'rev', Number(u.rev || 0) + 1);
     SpreadsheetApp.flush();

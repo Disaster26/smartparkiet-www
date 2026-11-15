@@ -626,6 +626,76 @@ html[data-motyw="ciemny"] .det-pusto svg.i{color:#55555C}
 }
 }
 @media(min-width:960px) and (hover:hover){.side .motyw-s:hover{background:#221D19;color:#E8E1D8}}
+
+/* 15.11 kalendarz godzinowy (Artur: kafelki ruchome, godziny stałe) */
+.kseg{margin-top:10px}
+.kseg button{padding:0 6px}
+.kal-lb{position:relative;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;text-align:center;height:38px;border-radius:9px;white-space:nowrap;overflow:hidden}
+.kal-lb svg.i{width:16px;height:16px;color:var(--ink3)}
+.kal-lb input{position:absolute;inset:0;opacity:0;width:100%;height:100%;border:0;padding:0;margin:0;cursor:pointer;font-size:16px}
+.kal-g{padding:10px 10px 0}
+.kdn{margin:0 0 18px}
+.kal-g.tg .kgr{--kh:23px}
+.kal-g.tg .kt{padding-top:2px;font-size:11px}
+.kal-g.tg .kdn{margin-bottom:22px}
+.kd-t{font-size:15px;font-weight:600;margin:2px 2px 8px;display:flex;gap:6px;align-items:baseline;color:var(--ink2)}
+.kd-t b{color:var(--ink);font-weight:700}
+.kd-t span{font-size:12px;font-weight:700;color:#fff;background:var(--pom);border-radius:6px;padding:1px 6px}
+.kgr{--kh:28px;display:grid;grid-template-columns:38px repeat(var(--nk),minmax(0,1fr));grid-template-rows:auto repeat(26,var(--kh));column-gap:3px;position:relative}
+.ks-h{position:sticky;top:var(--toph,0px);z-index:4;background:var(--graf);color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.01em;text-align:center;padding:7px 2px;border-radius:6px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ks-h.ks-0{background:none}
+.ks-g{grid-column:1;font-size:11px;font-weight:700;color:var(--ink2);text-align:right;padding-right:5px;line-height:1;transform:translateY(-5px);font-variant-numeric:tabular-nums;pointer-events:none}
+.ks-k{background:var(--karta2);border-top:1px solid var(--linia);min-width:0;transition:background-color .12s}
+.ks-k.pel{border-top-color:var(--linia2)}
+.kdn.sob .ks-k{background:#D5D8DC}
+@media(hover:hover){.ks-k:hover{background:var(--pole)}}
+.kal-g.cel .ks-k{box-shadow:inset 0 0 0 1px rgba(255,106,19,.28)}
+.kt{justify-self:stretch;align-self:stretch;position:relative;z-index:2;margin:1px 0;min-width:0;border-radius:6px;padding:3px 5px 9px;background:var(--kc);color:var(--kt);font-size:11.5px;line-height:1.22;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08);touch-action:pan-x pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab;text-align:left}
+.kt[style*="width"]{justify-self:start}
+.kt-g{display:flex;align-items:center;gap:3px;font-size:10px;font-weight:700;opacity:.78;font-variant-numeric:tabular-nums;white-space:nowrap}
+.kt-g svg.i{width:11px;height:11px;stroke-width:2.2}
+.kt-x{display:block;font-weight:650;overflow-wrap:anywhere;white-space:pre-line}
+.kt.s1{padding-top:5px;padding-bottom:5px}
+.kt.s1 .kt-g{display:none}
+.kt.s1 .kt-x{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kt-roz{position:absolute;left:0;right:0;bottom:0;height:11px;cursor:ns-resize;touch-action:none}
+.kt-roz::after{content:"";position:absolute;left:50%;bottom:3px;width:18px;height:3px;margin-left:-9px;border-radius:2px;background:currentColor;opacity:.4}
+@media(pointer:coarse){.kt-roz{height:15px}.kt-roz::after{width:22px}}
+.kt.roz{box-shadow:0 0 0 2px var(--pom),0 6px 16px rgba(0,0,0,.18);z-index:5}
+body.k-drag .kt,body.k-drag .kt-ed,body.k-drag .ks-teraz{pointer-events:none}
+body.k-roz,body.k-roz *{cursor:ns-resize!important}
+.kt.zrod{opacity:.3}
+.duch.kt-duch{transform:rotate(-1.2deg);border-radius:6px;margin:0}
+.kt-ed{z-index:6;margin:1px 0;min-width:0}
+.kt-ed textarea{display:block;width:100%;height:100%;min-height:54px;resize:none;border:2px solid var(--pom);border-radius:6px;padding:4px 6px;font-size:16px;line-height:1.25;background:var(--pole);color:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.kt-ed textarea:focus{outline:none}
+.kc-cien{z-index:3;margin:1px 0;border-radius:6px;background:rgba(255,106,19,.16);box-shadow:inset 0 0 0 2px var(--pom);pointer-events:none;font-size:10px;font-weight:700;color:var(--pom-ink);padding:3px 5px;font-variant-numeric:tabular-nums}
+.ks-teraz{grid-column:2/-1;align-self:start;height:2px;background:#E0262B;z-index:3;pointer-events:none;position:relative}
+.ks-teraz::before{content:"";position:absolute;left:-5px;top:-3px;width:8px;height:8px;border-radius:50%;background:#E0262B}
+.k-pom{font-size:12.5px;color:var(--ink3);margin:0 14px 16px;line-height:1.45}
+.k-pal{display:flex;gap:9px;flex-wrap:wrap}
+.k-pal button{width:40px;height:40px;border-radius:50%;background:var(--kc);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);transition:transform .12s var(--ease)}
+.k-pal button:active{transform:scale(.92)}
+.k-pal button.on{box-shadow:0 0 0 2px var(--karta),0 0 0 4px var(--ink)}
+.k-wkl{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:44px;margin-top:8px;border-radius:10px;background:var(--kosc);font-weight:600;font-size:14.5px;color:var(--ink)}
+.k-wkl svg.i{width:18px;height:18px}
+.k-zap{margin-top:14px;justify-content:flex-start;padding:0 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.k-kol{display:flex;gap:6px;margin-top:8px}.k-kol input{flex:1;text-transform:uppercase}
+.k-dok{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:44px;margin-top:10px;border-radius:10px;background:var(--pom-bg);color:var(--pom-ink);font-weight:650;font-size:14.5px}
+.k-dok svg.i{width:18px;height:18px}
+@media(min-width:960px){
+  .kal-g{padding:14px 24px 0;max-width:1180px}
+  .kal-g.tg .kgr{--kh:26px}
+  .kgr{--kh:30px;grid-template-columns:54px repeat(var(--nk),minmax(0,1fr));column-gap:5px}
+  .ks-h{font-size:12px;padding:8px 4px}
+  .ks-g{font-size:12px;padding-right:8px}
+  .kt{font-size:13px;padding:4px 7px 10px}
+  .kt-g{font-size:11px}
+  .k-pom{margin:0 24px 20px;max-width:900px}
+}
+html[data-motyw="ciemny"] .kdn.sob .ks-k{background:#18181A}
+html[data-motyw="ciemny"] .ks-h:not(.ks-0){background:#2C2C2E}
+html[data-motyw="ciemny"] .k-pal button.on{box-shadow:0 0 0 2px var(--karta),0 0 0 4px #F4F4F5}
 </style>
 </head>
 <body>
@@ -750,12 +820,13 @@ function m2(it){return +it.m2||0;}
 function kwotaTxt(it){return it.kwota>0?zl(it.kwota):'bez wyceny';}
 function adrTxt(it){return [it.ul,it.ds].filter(Boolean).join(', ');}
 function adrKr(it){return it.ds||String(it.ul||'').split(',')[0];}
-function pusty(){return {items:[],wpisy:[],graf:{v:2,br:[],kol:[],k:[]},rev:0};}
-function zStanu(st){return {items:st.items||[],wpisy:st.wpisy||[],graf:st.graf||{v:2,br:[],kol:[],k:[]},rev:st.rev||0};}
+var KAL_KOL_DOM=[{id:'c1',n:'KONTAKT'},{id:'c2',n:'OGLĘDZINY'},{id:'c3',n:'ZLECENIA'}];
+function pusty(){return {items:[],wpisy:[],graf:{v:2,br:[],kol:[],k:[]},kal:{kol:klon(KAL_KOL_DOM),k:[]},rev:0};}
+function zStanu(st){var kl=st.kal||{};return {items:st.items||[],wpisy:st.wpisy||[],graf:st.graf||{v:2,br:[],kol:[],k:[]},kal:{kol:(kl.kol&&kl.kol.length)?kl.kol:JSON.parse(JSON.stringify(KAL_KOL_DOM)),k:kl.k||[]},rev:st.rev||0};}
 function klon(o){return JSON.parse(JSON.stringify(o));}
 var BAZA=null,POCZ=null,D=pusty();
 (function(){var k=lsGet(KL_KESZ);if(TOK&&k){try{BAZA=zStanu(JSON.parse(k));POCZ=BAZA;D=klon(BAZA);}catch(e){}}})();
-var S={v:'dzis',sel:null,dzien:null,fT:'all',fS:'otwarte',kt:'tydz',kd:DZIS,q:'',wyb:null};
+var S={v:'dzis',sel:null,dzien:null,fT:'all',fS:'otwarte',kt:(function(){var t=lsGet('spk-kal-tryb');return /^(dzien|tg|tydz|mies)$/.test(t||'')?t:'dzien';})(),kalWst:null,kd:DZIS,q:'',wyb:null};
 var OTWARTE=function(i){return i.st!=='zrobione'&&i.st!=='odpadlo';};
 function item(id){for(var i=0;i<D.items.length;i++)if(D.items[i].id===id)return D.items[i];return null;}
 function wpis(id){for(var i=0;i<D.wpisy.length;i++)if(D.wpisy[i].id===id)return D.wpisy[i];return null;}
@@ -772,14 +843,16 @@ function roznice(A,B){
   function por(t,a,b,f){var ma={},mb={};(a||[]).forEach(function(x){ma[x.id]=x;});(b||[]).forEach(function(x){mb[x.id]=x;});
     Object.keys(mb).forEach(function(id){var nb=f(mb[id]);if(!ma[id]||JSON.stringify(f(ma[id]))!==JSON.stringify(nb))ops.push({t:t,id:id,d:nb});});
     Object.keys(ma).forEach(function(id){if(!mb[id])ops.push({t:t,id:id,d:null});});}
-  por('zap',A.items,B.items,rekZap);por('wpis',A.wpisy,B.wpisy,bezId);por('kaf',A.graf.k,B.graf.k,bezId);
+  por('zap',A.items,B.items,rekZap);por('wpis',A.wpisy,B.wpisy,bezId);por('kaf',A.graf.k,B.graf.k,bezId);por('kal',A.kal.k,B.kal.k,bezId);
+  if(JSON.stringify(A.kal.kol)!==JSON.stringify(B.kal.kol))ops.push({t:'kalust',d:{kol:B.kal.kol}});
   if(JSON.stringify([A.graf.br,A.graf.kol])!==JSON.stringify([B.graf.br,B.graf.kol]))ops.push({t:'ust',d:{br:B.graf.br,kol:B.graf.kol}});
   return ops;
 }
 function zastosuj(B,ops){
   ops.forEach(function(op){
     if(op.t==='ust'){B.graf.br=klon(op.d.br);B.graf.kol=klon(op.d.kol);return;}
-    var arr=op.t==='zap'?B.items:op.t==='wpis'?B.wpisy:B.graf.k,i=-1;
+    if(op.t==='kalust'){B.kal.kol=klon(op.d.kol);return;}
+    var arr=op.t==='zap'?B.items:op.t==='wpis'?B.wpisy:op.t==='kal'?B.kal.k:B.graf.k,i=-1;
     arr.forEach(function(x,j){if(x.id===op.id)i=j;});
     if(op.d===null){if(i>=0)arr.splice(i,1);return;}
     var n=Object.assign({},i>=0?arr[i]:{},klon(op.d),{id:op.id});if(i>=0)arr[i]=n;else arr.push(n);
@@ -963,8 +1036,8 @@ function wpisHtml(e){
 }
 function doPrzyp(){return D.items.filter(function(i){return !i.dz&&i.st!=='zrobione'&&i.st!=='odpadlo';}).sort(function(a,b){return b.ts-a.ts;});}
 function widokKal(){
-  var h='<div class="top"><div class="top-r"><img src="img/logo-96.png" alt=""><h1>Kalendarz</h1>'+
-    '<div class="seg"><button type="button" data-act="kt" data-k="tydz" class="'+(S.kt==='tydz'?'on':'')+'">Tydzień</button><button type="button" data-act="kt" data-k="mies" class="'+(S.kt==='mies'?'on':'')+'">Miesiąc</button></div></div>';
+  if(S.kt==='dzien'||S.kt==='tg')return widokKalG();
+  var h='<div class="top"><div class="top-r"><img src="img/logo-96.png" alt=""><h1>Kalendarz</h1></div>'+kalSeg();
   var lb;
   if(S.kt==='tydz'){var p0=pon(S.kd),p6=plus(p0,6);lb=p0.getMonth()===p6.getMonth()?p0.getDate()+'-'+p6.getDate()+' '+MIES_D[p6.getMonth()]:p0.getDate()+' '+MIES_D[p0.getMonth()].slice(0,3)+'. - '+p6.getDate()+' '+MIES_D[p6.getMonth()].slice(0,3)+'.';}
   else lb=MIES_M[S.kd.getMonth()].charAt(0).toUpperCase()+MIES_M[S.kd.getMonth()].slice(1)+' '+S.kd.getFullYear();
@@ -1000,16 +1073,17 @@ function wiersz(it,lewa){
     '<a class="dzw" href="tel:+48'+cyfry(it.tel)+'" aria-label="Zadzwoń do '+esc(it.kl)+'">'+ik('tel')+'</a></div>';
 }
 function widokDzis(){
-  var d=DZIS,e=naDzien(DZIS_I),nowe=D.items.filter(czyNowe).sort(function(a,b){return b.ts-a.ts;});
+  var d=DZIS,e=naDzien(DZIS_I),kd=kalNa(DZIS_I),nowe=D.items.filter(czyNowe).sort(function(a,b){return b.ts-a.ts;});
   var czeka=D.items.filter(function(i){return !czyNowe(i)&&!i.dz&&(i.st==='luzne'||i.st==='rozmowa');}).sort(function(a,b){return a.ts-b.ts;});
   var h='<div class="top"><div class="top-r"><img src="img/logo-96.png" alt=""><h1>Dziś</h1><span class="sub">'+DNI_P[d.getDay()]+', '+d.getDate()+' '+MIES_D[d.getMonth()]+'</span></div></div><div class="dzis-w">';
   h+='<div class="blok" id="gNowe"><h3>Nowe <small>jeszcze nieotwierane</small> <span class="n'+(nowe.length?' pom':'')+'">'+nowe.length+'</span>'+(nowe.length?'<button type="button" class="lk" data-act="widzWsz">przejrzane</button>':'')+'</h3>'+
     (nowe.length?nowe.map(function(i){return wiersz(i);}).join(''):'<div class="pusto" style="padding:14px">Nic nowego. Nowe zapytania pojawią się tu same.</div>')+'</div>';
-  h+='<div class="blok" id="gDzis"><h3>Plan na dziś <span class="n">'+e.length+'</span><button type="button" class="lk" data-act="dzien" data-d="'+DZIS_I+'">cały dzień</button></h3>'+
+  h+='<div class="blok" id="gDzis"><h3>Plan na dziś <span class="n">'+(e.length+kd.length)+'</span><button type="button" class="lk" data-act="dzien" data-d="'+DZIS_I+'">cały dzień</button></h3>'+
     (e.length?e.map(function(x){
       if(x.k==='i')return wiersz(x.o,x.g?esc(x.g):'<small>cały dzień</small>');
       return '<div class="wier"><button type="button" class="w0" style="--tc:var(--t-r)" data-act="dzien" data-d="'+DZIS_I+'"><span class="gz">'+(x.g?esc(x.g):'<small>-</small>')+'</span><span class="tx"><b>'+esc(x.o.x)+'</b><span>'+(wBr(x.o)?'informacja dla brygady '+esc(bryg(x.o.br).n):'wpis z ręki')+'</span></span></button></div>';
-    }).join(''):'<div class="pusto" style="padding:14px">Na dziś nic nie zaplanowane.</div>')+'</div>';
+    }).join(''):'')+kd.map(function(k){var c=k.c||KPAL[0][0];return '<div class="wier"><button type="button" class="w0" style="--tc:'+c+'" data-act="kdz" data-d="'+DZIS_I+'"><span class="gz">'+esc(k.g)+'<small>do '+slNaG(Math.min(KNS,gNaSl(k.g)+kalDl(k)))+'</small></span><span class="tx"><b>'+esc(k.x)+'</b><span>'+esc(kalKolN(k.ko))+' · kalendarz</span></span></button></div>';}).join('')+
+    (e.length||kd.length?'':'<div class="pusto" style="padding:14px">Na dziś nic nie zaplanowane.</div>')+'</div>';
   h+='<div class="blok"><h3>Czeka na Twój ruch <span class="n">'+czeka.length+'</span></h3>'+
     czeka.slice(0,6).map(function(i){var dn=Math.max(0,Math.round((DZIS-new Date(new Date(i.ts).toDateString()))/864e5));return wiersz(i,'<span class="czek">'+(dn===0?'dziś':dn+' '+(dn===1?'dzień':'dni'))+'</span><small>czeka</small>');}).join('')+
     (czeka.length>6?'<button type="button" class="przew-lk" style="margin-top:6px" data-act="v" data-v="lista">pokaż wszystkie ('+czeka.length+')</button>':'')+'</div>';
@@ -1046,7 +1120,8 @@ var KROKI=[
   {cel:function(){return document.querySelector(DESK.matches?'.side button[data-v=dzis]':'.tabs button[data-v=dzis]');},v:'dzis',t:'Podgląd dnia',x:'Po wejściu od razu widzisz: co nowego wpadło, co masz dziś i kto czeka na odpowiedź. Słuchawka po prawej = dzwonisz jednym stuknięciem.'},
   {cel:function(){return $('gNowe');},v:'dzis',t:'Tu wpadają zapytania',x:'Wyceny z analizatora, wyceny klientów ze strony i zamówienia z koszyka wpadają same (z Rejestru wycen), z oznaczeniem Nowe, źródłem i godziną. Klient zadzwonił? Przycisk z plusem i dopisujesz z ręki.'},
   {cel:function(){return document.querySelector('.stg');},v:'det',t:'Tak zmieniasz status',x:'Stukasz zapytanie, otwiera się karta. Status zmieniasz jednym kliknięciem, niżej termin, notatka, PDF oferty, arkusz wyceny i dane klienta. Wszystko zapisuje się samo i widać to też na komputerze.'},
-  {cel:function(){return document.querySelector('.tray');},v:'kal',t:'Tak przypisujesz do dnia',x:'W kalendarzu przeciągasz zapytanie z paska „Do przypisania” na dzień (na telefonie: przytrzymaj i przesuń) albo stukasz je i potem dzień. W kratce widać nazwisko, dzielnicę i metraż.'},
+  {cel:function(){return document.querySelector('#kalG .kdn');},v:'kal',kt:'dzien',t:'Kalendarz godzinowy',x:'Godziny stałe, kafelki ruchome. Stuknij pustą kratkę i wpisz albo wklej adres. Kafelek przesuwasz palcem (przytrzymaj) albo myszą, pasek na dole wydłuża, stuknięcie zmienia kolor. Widok Tydzień to dni jeden pod drugim, jak w arkuszu.'},
+  {cel:function(){return document.querySelector('.tray');},v:'kal',kt:'tydz',t:'Tak przypisujesz do dnia',x:'W kalendarzu (widok Terminy) przeciągasz zapytanie z paska „Do przypisania” na dzień (na telefonie: przytrzymaj i przesuń) albo stukasz je i potem dzień. W kratce widać nazwisko, dzielnicę i metraż.'},
   {cel:function(){return document.querySelector('.gtray');},v:'graf',t:'Grafik brygad',x:'Szachownica tygodnia: dni w wierszach, brygady w kolumnach. Zlecenia z „Do rozplanowania” przeciągasz palcem (przytrzymaj) na brygadę i dzień. Kółko w rogu kafelka otwiera paletę (status albo sam kolor), przycisk Excel pobiera cały tydzień.'}
 ];
 var pk=-1,przEl=null;
@@ -1060,7 +1135,7 @@ function konPrz(){if(przEl)przEl.remove();przEl=null;pk=-1;try{localStorage.setI
 function krok(){
   var k=KROKI[pk];
   if(k.v==='det'){var pi=D.items.filter(czyNowe)[0]||D.items[0];if(!pi){pk++;if(pk>=KROKI.length){konPrz();return;}krok();return;}S.v='lista';S.sel=S.sel||pi.id;S.dzien=null;}
-  else{S.v=k.v;S.sel=null;S.dzien=null;}
+  else{S.v=k.v;if(k.kt)S.kt=k.kt;S.sel=null;S.dzien=null;}
   render();
   setTimeout(function(){
     var el=k.cel();if(!el||!przEl)return;
@@ -1100,7 +1175,8 @@ function detZapytanie(it){
   h+='<div class="sek"><h3>Status</h3><div class="stg">'+STATUSY.map(function(x){return '<button type="button" style="--sc:'+x[2]+'" class="'+(it.st===x[0]?'on':'')+'" data-act="st" data-id="'+it.id+'" data-s="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div></div>';
   h+='<div class="sek"><h3>Termin w kalendarzu</h3>'+(it.dz?'<div class="term-info">'+ik('kal')+'<b>'+dlugo(it.dz)+(it.g?', '+esc(it.g):'')+'</b></div>':'')+
     '<div class="term"><input type="date" id="tDz" value="'+(it.dz||'')+'" aria-label="Dzień"><input type="time" id="tG" value="'+(it.g?('0'+it.g).slice(-5):'')+'" aria-label="Godzina"></div>'+
-    '<div class="szyb">'+q.map(function(x){return '<button type="button" data-act="szybDz" data-id="'+it.id+'" data-d="'+x[1]+'">'+x[0]+'</button>';}).join('')+(it.dz?'<button type="button" class="usun" data-act="usunDz" data-id="'+it.id+'">Zdejmij z kalendarza</button>':'')+'</div></div>';
+    '<div class="szyb">'+q.map(function(x){return '<button type="button" data-act="szybDz" data-id="'+it.id+'" data-d="'+x[1]+'">'+x[0]+'</button>';}).join('')+(it.dz?'<button type="button" class="usun" data-act="usunDz" data-id="'+it.id+'">Zdejmij z kalendarza</button>':'')+'</div>'+
+    '<button type="button" class="k-dok" data-act="kdok" data-id="'+it.id+'">'+ik('zeg')+'Do kalendarza godzinowego (kafelek)</button></div>';
   h+='<div class="sek"><h3>Notatka <small style="font-weight:400;color:var(--ink3)">(1. linia widoczna na liście)</small> <span class="ok" id="ntOk">zapisano</span></h3><textarea id="nt" data-id="'+it.id+'" placeholder="Pierwsza linia pokaże się na liście zamiast statusu, np. rezerwacja na 26 listopada. Niżej dowolne szczegóły."'+(OFF?' readonly':'')+'>'+esc(it.nt)+'</textarea></div>';
   if(!reczne){
     if(ark||anl)h+='<div class="sek"><h3>Wycena</h3>'+
@@ -1268,7 +1344,7 @@ function oknoKaf(k,pre){
     '<div class="r2"><div><label for="fB">Brygada</label><select id="fB"><option value="">Do rozplanowania</option>'+G.br.map(function(b){return '<option value="'+b.id+'"'+(b.id===x.br?' selected':'')+'>'+esc(b.n)+'</option>';}).join('')+'</select></div>'+
     '<div><label for="fD">Od dnia</label><input id="fD" type="date" value="'+(x.od||'')+'"></div></div>'+
     '<label>Ile dni roboczych</label><div class="stp"><button type="button" data-dni="-1" aria-label="Mniej dni">−</button><b id="fN">'+dni+'</b><button type="button" data-dni="1" aria-label="Więcej dni">+</button></div>'+
-    ((!nowy&&(x.zid||(x.od&&x.br)))?'<div class="f-dr">'+(x.zid?'<button type="button" data-g="kat">Karta zapytania</button>':'')+(x.od&&x.br?'<button type="button" data-g="zdejmij">Do rozplanowania</button>':'')+'</div>':'')+
+    (!nowy?'<div class="f-dr">'+(x.zid?'<button type="button" data-g="kat">Karta zapytania</button>':'')+(x.od&&x.br?'<button type="button" data-g="zdejmij">Do rozplanowania</button>':'')+'<button type="button" data-g="kal">Do kalendarza</button></div>':'')+
     '</div>');
   var q=function(id){return o.querySelector('#'+id);};
   function podglad(){var y={ul:q('fA').value,mies:q('fMi').value,m2:q('fM').value.trim(),info:q('fI').value},c=kc||kolor(kol).c,pg=q('fPg');
@@ -1303,6 +1379,7 @@ function oknoKaf(k,pre){
       if(nowy)G.k.push(y);syncZap(y);zapisz();o.remove();render(true);toast(nowy?'Dodano zlecenie':'Zapisano');return;}
     if(g==='zdejmij'){k.od=null;k.br='';syncZap(k);zapisz();o.remove();render(true);toast('Wróciło do rozplanowania');return;}
     if(g==='usun'){if(!confirm('Usunąć zlecenie z grafiku?'))return;G.k=G.k.filter(function(z){return z!==k;});if(k.zid){var it=item(k.zid);if(it){it.dz=null;log(it,'Usunięto z grafiku');}}zapisz();o.remove();render(true);toast('Usunięto');return;}
+    if(g==='kal'){o.remove();kalWstawStart({x:tekstKaf(k)+(k.tel?' · '+k.tel:''),zid:k.zid||null,dz:k.od});return;}
     if(g==='kat'){o.remove();S.v='lista';S.sel=k.zid;S.dzien=null;otworzPanel();render();return;}
     if(g==='kop'){S.kop={ul:q('fA').value.trim().toUpperCase(),mies:q('fMi').value.trim().toUpperCase(),m2:q('fM').value.trim(),info:q('fI').value.trim().toUpperCase()};
       if(!S.kop.ul){S.kop=null;toast('Najpierw wpisz adres');return;}S.gwyb=null;o.remove();render(true);return;}
@@ -1441,12 +1518,205 @@ function eksportGraf(){
 }
 window.spkGrafXlsx=grafXlsx;
 
+/* ---------- KALENDARZ GODZINOWY (Artur 15.11: "kafelki ruchome, tylko godziny stałe", kolorowe, wpis z klawiatury albo wklejony) ----------
+   Dane: D.kal.kol (kolumny, nazwy edytowalne), D.kal.k (kafelki: dz, g start, min długość, ko kolumna, x tekst, c kolor, zid zapytanie).
+   Zapis jak reszta aplikacji: różnice -> Apps Script katalog.gs (zakładka "Kalendarz" w Rejestrze wycen). */
+var KH0=7*60,KSL=30,KNS=26; /* 7:00-20:00, kratki po 30 min */
+var KPAL=[['#FFE135','żółty'],['#34C759','zielony'],['#6FA8F5','niebieski'],['#FF5FCB','różowy'],['#FF9F1C','pomarańczowy'],['#F0322D','czerwony'],['#2FD9E0','turkus'],['#C9CDD2','szary']];
+var KED=null,KHOV=null;
+function kalKolumny(){return (D.kal&&D.kal.kol&&D.kal.kol.length)?D.kal.kol:KAL_KOL_DOM;}
+function kalK(id){var a=D.kal.k;for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];return null;}
+function kalKolIdx(ko){var K=kalKolumny();for(var i=0;i<K.length;i++)if(K[i].id===ko)return i;return 0;}
+function kalKolN(ko){return kalKolumny()[kalKolIdx(ko)].n;}
+function gNaSl(g){var m=gMin(g);if(m>=9999)return 2;return Math.max(0,Math.min(KNS-1,Math.round((m-KH0)/KSL)));}
+function slNaG(s){var m=KH0+s*KSL;return Math.floor(m/60)+':'+('0'+m%60).slice(-2);}
+function kalDl(k){return Math.max(1,Math.round((+k.min||60)/KSL));}
+function kalOdDo(k){var a=gNaSl(k.g);return slNaG(a)+'-'+slNaG(Math.min(KNS,a+kalDl(k)));}
+function kalNa(s){return D.kal.k.filter(function(k){return k.dz===s;}).sort(function(a,b){return gMin(a.g)-gMin(b.g);});}
+function dlTxt(m){var h=Math.floor(m/60),r=m%60;return (h?h+' h':'')+(h&&r?' ':'')+(r?r+' min':'');}
+function kalKolor(){var c=lsGet('spk-kal-kolor');return KPAL.some(function(x){return x[0]===c;})?c:KPAL[0][0];}
+/* nachodzące kafelki w jednej kolumnie stają obok siebie */
+function kalUklad(lst){
+  var t=lst.map(function(k){var a=gNaSl(k.g);return {k:k,a:a,b:Math.min(KNS,a+kalDl(k))};}).sort(function(x,y){return x.a-y.a||y.b-x.b;});
+  var g=null,kon=-1,gr=[];
+  t.forEach(function(e){if(!g||e.a>=kon){g={el:[],tory:[]};gr.push(g);kon=-1;}
+    var l=0;while(g.tory[l]!=null&&g.tory[l]>e.a)l++;g.tory[l]=e.b;e.l=l;g.el.push(e);kon=Math.max(kon,e.b);});
+  gr.forEach(function(g){g.el.forEach(function(e){e.n=g.tory.length;});});
+  return t;
+}
+function kalKafHtml(e,j){
+  var k=e.k,c=k.c||KPAL[0][0],n=e.b-e.a,z=k.zid&&item(k.zid);
+  var st='grid-row:'+(e.a+2)+' / span '+n+';grid-column:'+(j+2)+';--kc:'+c+';--kt:'+tekstNa(c)+(e.n>1?';width:calc(100% / '+e.n+' - 2px);margin-left:calc(100% * '+e.l+' / '+e.n+')':'');
+  return '<div class="kt'+(n===1?' s1':'')+'" role="button" tabindex="0" style="'+st+'" data-act="kkf" data-id="'+k.id+'" data-drag="c:'+k.id+'" title="'+esc(kalOdDo(k)+' '+k.x)+'">'+
+    '<span class="kt-g">'+kalOdDo(k)+(z?' · '+ik('lista'):'')+'</span><span class="kt-x">'+esc(k.x||'(bez opisu)')+'</span><i class="kt-roz" data-roz="'+k.id+'" aria-hidden="true"></i></div>';
+}
+function kalDzienHtml(s,tyg){
+  var K=kalKolumny(),d=zIso(s),lst=kalNa(s),h='<section class="kdn'+(s===DZIS_I?' dzis':'')+(d.getDay()===6?' sob':'')+'" data-dz="'+s+'">';
+  if(tyg)h+='<h3 class="kd-t"><b>'+DNI_P[d.getDay()]+'</b> '+d.getDate()+' '+MIES_D[d.getMonth()]+(s===DZIS_I?' <span>dziś</span>':'')+'</h3>';
+  h+='<div class="kgr" style="--nk:'+K.length+'"><div class="ks-h ks-0" style="grid-row:1;grid-column:1"></div>'+
+    K.map(function(c,j){return '<div class="ks-h" style="grid-row:1;grid-column:'+(j+2)+'">'+esc(c.n)+'</div>';}).join('');
+  for(var i=0;i<KNS;i++){var pel=i%2===0;
+    h+='<div class="ks-g'+(pel?' pel':'')+'" style="grid-row:'+(i+2)+'">'+(pel?slNaG(i):'')+'</div>';
+    for(var j=0;j<K.length;j++)h+='<div class="ks-k'+(pel?' pel':'')+'" style="grid-row:'+(i+2)+';grid-column:'+(j+2)+'" data-kk="'+s+'|'+K[j].id+'|'+i+'" data-act="kcel"></div>';}
+  K.forEach(function(c,j){kalUklad(lst.filter(function(k){return kalKolIdx(k.ko)===j;})).forEach(function(e){h+=kalKafHtml(e,j);});});
+  if(s===DZIS_I){var t=new Date(),m=t.getHours()*60+t.getMinutes()-KH0;if(m>=0&&m<KNS*KSL){var sl=Math.floor(m/KSL);
+    h+='<div class="ks-teraz" style="grid-row:'+(sl+2)+';margin-top:calc(var(--kh) * '+((m%KSL)/KSL).toFixed(3)+')"></div>';}}
+  return h+'</div></section>';
+}
+function kalSeg(){return '<div class="seg pelny kseg">'+[['dzien','Dzień'],['tg','Tydzień'],['tydz','Terminy'],['mies','Miesiąc']].map(function(x){return '<button type="button" data-act="kt" data-k="'+x[0]+'" class="'+(S.kt===x[0]?'on':'')+'">'+x[1]+'</button>';}).join('')+'</div>';}
+function widokKalG(){
+  var tyg=S.kt==='tg',d=S.kd,lb=tyg?tydzLb(pon(d)):DNI_P[d.getDay()]+', '+d.getDate()+' '+MIES_D[d.getMonth()];
+  var h='<div class="top"><div class="top-r"><img src="img/logo-96.png" alt=""><h1>Kalendarz</h1><button type="button" class="ib" data-act="kust" aria-label="Nazwy kolumn kalendarza" title="Nazwy kolumn">'+ik('ust')+'</button></div>'+kalSeg()+
+    '<div class="kal-nav"><button type="button" class="ib" data-act="kn" data-n="-1" aria-label="'+(tyg?'Poprzedni tydzień':'Poprzedni dzień')+'">'+ik('l')+'</button>'+
+    '<label class="lb kal-lb">'+lb+ik('kal')+'<input type="date" id="kalData" value="'+iso(d)+'" aria-label="Wybierz datę"></label>'+
+    '<button type="button" class="dzis-b" data-act="kdzis">Dziś</button><button type="button" class="ib" data-act="kn" data-n="1" aria-label="'+(tyg?'Następny tydzień':'Następny dzień')+'">'+ik('p')+'</button></div></div>';
+  h+='<div class="kal-g'+(S.kalWst?' cel':'')+(tyg?' tg':'')+'" id="kalG">';
+  if(tyg){var p=pon(d);for(var i=0;i<7;i++){var s=iso(plus(p,i));if(i===6&&!kalNa(s).length)break;h+=kalDzienHtml(s,true);}}
+  else h+=kalDzienHtml(iso(d),false);
+  h+='</div><p class="k-pom">Stuknij pustą kratkę i wpisz albo wklej tekst (adres, nagłówek zlecenia). Kafelek przesuwasz między godzinami, kolumnami i dniami: palcem przytrzymaj i przeciągnij, myszą po prostu przeciągnij. Pasek na dole kafelka wydłuża go. Stuknięcie kafelka: kolor, czas, kopiuj, usuń.'+(DESK.matches?' Na komputerze: najedź na kratkę i Ctrl+V wkleja kafelek, Ctrl+C na kafelku go kopiuje.':'')+'</p>';
+  if(S.kalWst)h+='<div class="kop-bar" role="status"><span>Do kalendarza: <b>'+esc(S.kalWst.x)+'</b><small>Stuknij godzinę i kolumnę, żeby wstawić</small></span><button type="button" data-act="kwAnul">Anuluj</button></div>';
+  return h;
+}
+function kalDodaj(o){
+  var sl=Math.max(0,Math.min(KNS-1,o.sl)),n=Math.min(Math.max(1,Math.round((o.min||60)/KSL)),KNS-sl);
+  var k={id:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),dz:o.dz,g:slNaG(sl),min:n*KSL,ko:o.ko,x:String(o.x||'').slice(0,300),c:o.c||kalKolor(),zid:o.zid||null};
+  D.kal.k.push(k);zapisz();render(true);toast('Dodano: '+krotko(k.dz)+' '+k.g+', '+kalKolN(k.ko));return k;
+}
+/* wpis prosto w kratce: Enter zapisuje (Shift+Enter nowa linia), Esc anuluje, wyjście z pola też zapisuje */
+function kalEdytor(cel){
+  if(KED)kalZapiszEd();
+  var p=cel.getAttribute('data-kk').split('|'),sl=+p[2],e=document.createElement('div');
+  e.className='kt-ed';e.style.gridRow=(sl+2)+' / span '+Math.min(2,KNS-sl);e.style.gridColumn=cel.style.gridColumn;
+  e.innerHTML='<textarea maxlength="300" enterkeyhint="done" placeholder="Wpisz albo wklej" aria-label="Tekst kafelka '+slNaG(sl)+'"></textarea>';
+  cel.parentNode.appendChild(e);var t=e.firstChild;KED={el:e,dz:p[0],ko:p[1],sl:sl};
+  t.addEventListener('keydown',function(ev){if(ev.key==='Enter'&&!ev.shiftKey){ev.preventDefault();kalZapiszEd();}else if(ev.key==='Escape'){ev.preventDefault();KED=null;e.remove();}});
+  t.addEventListener('blur',function(){setTimeout(function(){if(KED&&KED.el===e)kalZapiszEd();},120);});
+  t.focus();
+}
+function kalZapiszEd(){
+  if(!KED)return;var e=KED,x=e.el.querySelector('textarea').value.trim();KED=null;e.el.remove();
+  if(x)kalDodaj({dz:e.dz,ko:e.ko,sl:e.sl,x:x});
+}
+function kalWstawStart(w){
+  S.kalWst={x:w.x,zid:w.zid||null,c:w.c||null,min:w.min||60};S.v='kal';if(S.kt!=='dzien'&&S.kt!=='tg')S.kt='dzien';
+  if(w.dz)S.kd=zIso(w.dz);if(!DESK.matches){S.sel=null;S.dzien=null;}
+  render();toast('Stuknij godzinę w kalendarzu');
+}
+function kalWstaw(kk){var p=kk.split('|'),w=S.kalWst;S.kalWst=null;kalDodaj({dz:p[0],ko:p[1],sl:+p[2],x:w.x,zid:w.zid,c:w.c,min:w.min});}
+/* tekst kafelka z zapytania: adres (metraż) · klient · telefon */
+function kalTxtZ(it){var mm=m2(it);return [adrTxt(it)+(mm?' ('+mm+' m²)':''),it.kl,it.tel].filter(function(x){return String(x||'').trim();}).join(' · ');}
+function oknoKal(k){
+  if(!k)return;var c=k.c||KPAL[0][0],K=kalKolumny(),a=gNaSl(k.g),dl=[30,60,90,120,150,180,210,240,300,360,420,480,600,780];
+  if(dl.indexOf(+k.min)<0)dl.push(+k.min);dl.sort(function(x,y){return x-y;});
+  var og='';for(var i=0;i<KNS;i++)og+='<option value="'+i+'"'+(i===a?' selected':'')+'>'+slNaG(i)+'</option>';
+  var z=k.zid&&item(k.zid);
+  var o=okno('<h3><span>Kafelek w kalendarzu</span><button type="button" class="zam" data-zam aria-label="Zamknij">'+ik('x')+'</button></h3><div class="form">'+
+    '<label for="kxT" style="margin-top:0">Tekst</label><textarea id="kxT" maxlength="300">'+esc(k.x)+'</textarea>'+
+    '<button type="button" class="k-wkl" data-k="wkl">'+ik('kop')+'Wklej ze schowka</button>'+
+    '<label>Kolor</label><div class="k-pal">'+KPAL.map(function(x){return '<button type="button" data-kp="'+x[0]+'" style="--kc:'+x[0]+'" aria-label="'+x[1]+'" title="'+x[1]+'" class="'+(c===x[0]?'on':'')+'"></button>';}).join('')+'</div>'+
+    '<div class="r2"><div><label for="kxD">Dzień</label><input id="kxD" type="date" value="'+k.dz+'"></div><div><label for="kxG">Od godziny</label><select id="kxG">'+og+'</select></div></div>'+
+    '<div class="r2"><div><label for="kxL">Ile trwa</label><select id="kxL">'+dl.map(function(m){return '<option value="'+m+'"'+(m===+k.min?' selected':'')+'>'+dlTxt(m)+'</option>';}).join('')+'</select></div>'+
+    '<div><label for="kxK">Kolumna</label><select id="kxK">'+K.map(function(q,j){return '<option value="'+q.id+'"'+(j===kalKolIdx(k.ko)?' selected':'')+'>'+esc(q.n)+'</option>';}).join('')+'</select></div></div>'+
+    (z?'<button type="button" class="k-wkl k-zap" data-k="zap">'+ik('lista')+'Otwórz zapytanie: '+esc(z.kl||z.tel)+'</button>':'')+
+    '<div class="akc"><button type="button" class="akc-n cz" data-k="usun">'+ik('kosz')+'Usuń</button><button type="button" class="akc-n" data-k="kop">'+ik('kop')+'Kopiuj</button><button type="button" class="akc-z" data-k="ok">Zapisz</button></div></div>');
+  o.addEventListener('click',function(e){
+    var t=e.target.closest('[data-kp],[data-k]');if(!t)return;
+    if(t.dataset.kp){c=t.dataset.kp;o.querySelectorAll('[data-kp]').forEach(function(b){b.classList.toggle('on',b===t);});return;}
+    var g=t.dataset.k,tx=o.querySelector('#kxT');
+    if(g==='wkl'){(navigator.clipboard&&navigator.clipboard.readText?navigator.clipboard.readText():Promise.reject()).then(function(v){v=String(v||'').trim();if(!v){toast('Schowek jest pusty');return;}tx.value=(tx.value.trim()?tx.value.trim()+' ':'')+v;tx.focus();},function(){toast('Przytrzymaj pole Tekst i wybierz Wklej');tx.focus();});return;}
+    if(g==='zap'){o.remove();S.sel=k.zid;S.dzien=null;otworzPanel();render(true);return;}
+    if(g==='usun'){if(!confirm('Usunąć kafelek z kalendarza?'))return;D.kal.k=D.kal.k.filter(function(x){return x.id!==k.id;});zapisz();o.remove();render(true);toast('Usunięto kafelek');return;}
+    if(g==='kop'){S.kalWst={x:tx.value.trim()||k.x,c:c,min:+o.querySelector('#kxL').value,zid:k.zid||null};
+      try{navigator.clipboard.writeText(S.kalWst.x).catch(function(){});}catch(x){}
+      o.remove();render(true);toast('Skopiowano. Stuknij kratkę, żeby wkleić');return;}
+    if(g==='ok'){var sl=+o.querySelector('#kxG').value,mn=+o.querySelector('#kxL').value;
+      k.x=tx.value.trim().slice(0,300);k.c=c;k.dz=o.querySelector('#kxD').value||k.dz;k.g=slNaG(sl);k.min=Math.min(mn,(KNS-sl)*KSL);k.ko=o.querySelector('#kxK').value;
+      lsSet('spk-kal-kolor',c);zapisz();o.remove();render(true);toast('Zapisano kafelek');}
+  });
+}
+function oknoKalKol(){
+  var K=klon(kalKolumny());
+  var o=okno('<h3><span>Kolumny kalendarza</span><button type="button" class="zam" data-zam aria-label="Zamknij">'+ik('x')+'</button></h3><div class="form" id="kkL"></div>');
+  function rys(){
+    o.querySelector('#kkL').innerHTML='<p style="margin:0 0 6px;font-size:14px;color:var(--ink2)">Nazwy kolumn widać nad godzinami (np. kontakt, oględziny, brygada). Kafelki z usuniętej kolumny przejdą do pierwszej.</p>'+
+      K.map(function(c,j){return '<div class="dp k-kol"><input data-kn="'+j+'" maxlength="24" autocapitalize="characters" value="'+esc(c.n)+'" aria-label="Kolumna '+(j+1)+'">'+(K.length>1?'<button type="button" class="ib" data-ku="'+j+'" aria-label="Usuń kolumnę">'+ik('kosz')+'</button>':'')+'</div>';}).join('')+
+      (K.length<6?'<button type="button" class="k-wkl" data-kd="1">'+ik('plus')+'Dodaj kolumnę</button>':'')+
+      '<button type="button" class="btn-p pom" data-kz="1">Zapisz</button>';
+  }
+  function czytaj(){o.querySelectorAll('[data-kn]').forEach(function(i){K[+i.dataset.kn].n=i.value.trim().toUpperCase().slice(0,24)||'KOLUMNA';});}
+  rys();
+  o.addEventListener('click',function(e){
+    var t=e.target.closest('[data-ku],[data-kd],[data-kz]');if(!t)return;czytaj();
+    if(t.dataset.ku){K.splice(+t.dataset.ku,1);rys();return;}
+    if(t.dataset.kd){var nid='c'+Date.now().toString(36);K.push({id:nid,n:'KOLUMNA '+(K.length+1)});rys();var w=o.querySelectorAll('[data-kn]');w[w.length-1].select();return;}
+    var ids=K.map(function(c){return c.id;});
+    D.kal.k.forEach(function(k){if(ids.indexOf(k.ko)<0)k.ko=ids[0];});
+    D.kal.kol=K;zapisz();o.remove();render(true);toast('Zapisano kolumny');
+  });
+}
+/* przeciąganie kafelka: cień pokazuje, gdzie wyląduje (kratka pod górną krawędzią kafelka) */
+function kalCel(x,y){
+  var t=document.elementFromPoint(x,Math.max(1,y-dr.oy+8));var c=t&&t.closest('[data-kk]');
+  if(!c){t=document.elementFromPoint(x,y);c=t&&t.closest('[data-kk]');}
+  return c;
+}
+function kalCien(c){
+  var s=document.querySelector('.kc-cien');
+  if(!c){if(s)s.remove();return;}
+  var k=kalK(dr.kid),p=c.getAttribute('data-kk').split('|'),sl=+p[2],n=Math.min(kalDl(k),KNS-sl);
+  if(!s){s=document.createElement('div');s.className='kc-cien';}
+  if(s.parentNode!==c.parentNode)c.parentNode.appendChild(s);
+  s.style.gridRow=(sl+2)+' / span '+n;s.style.gridColumn=c.style.gridColumn;s.textContent=slNaG(sl)+'-'+slNaG(sl+n);
+}
+function kalUpusc(c){
+  var k=kalK(dr.kid);if(!k||!c)return;var p=c.getAttribute('data-kk').split('|'),sl=+p[2];
+  var n=Math.min(kalDl(k),KNS-sl);
+  if(k.dz===p[0]&&k.ko===p[1]&&gNaSl(k.g)===sl)return;
+  k.dz=p[0];k.ko=p[1];k.g=slNaG(sl);k.min=n*KSL;zapisz();toast(krotko(k.dz)+' '+kalOdDo(k)+', '+kalKolN(k.ko));
+}
+/* wydłużanie: pasek na dole kafelka */
+function kalRozStart(e,el){
+  var t=el.closest('.kt'),k=kalK(el.getAttribute('data-roz'));if(!t||!k)return false;
+  var kom=t.parentNode.querySelector('.ks-k');
+  dr={roz:true,on:true,id:e.pointerId,kid:k.id,el:t,y:e.clientY,a:gNaSl(k.g),n0:kalDl(k),n:kalDl(k),kh:kom?kom.getBoundingClientRect().height:28,touch:e.pointerType!=='mouse'};
+  t.classList.add('roz');document.body.classList.add('k-roz');e.preventDefault();return true;
+}
+function kalRozMove(e){
+  var n=Math.max(1,Math.min(KNS-dr.a,dr.n0+Math.round((e.clientY-dr.y)/dr.kh)));
+  if(n!==dr.n){dr.n=n;dr.el.style.gridRow=(dr.a+2)+' / span '+n;dr.el.classList.toggle('s1',n===1);var g=dr.el.querySelector('.kt-g');if(g)g.textContent=slNaG(dr.a)+'-'+slNaG(dr.a+n);}
+}
+function kalRozKoniec(){
+  var k=kalK(dr.kid);document.body.classList.remove('k-roz');
+  if(k&&dr.n!==dr.n0){k.min=dr.n*KSL;zapisz();toast(kalOdDo(k)+' ('+dlTxt(k.min)+')');ostatniDrag=Date.now();}
+  else if(Math.abs((dr.lyR||dr.y)-dr.y)>4)ostatniDrag=Date.now();
+  dr=null;render(true);
+}
+/* komputer: Ctrl+V nad kratką = nowy kafelek ze schowka, Ctrl+C nad kafelkiem = kopia */
+document.addEventListener('pointerover',function(e){if(e.pointerType==='mouse'&&e.target.closest)KHOV=e.target.closest('[data-kk],.kt');});
+function kalPisze(){var ae=document.activeElement;return !!(KED||document.querySelector('.okno')||(ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)&&ae.id!=='kalData'));}
+document.addEventListener('paste',function(e){
+  if(S.v!=='kal'||(S.kt!=='dzien'&&S.kt!=='tg')||kalPisze())return;
+  var tx=String(((e.clipboardData||window.clipboardData)||{getData:function(){return '';}}).getData('text')||'').trim();if(!tx)return;
+  var c=KHOV&&document.body.contains(KHOV)&&KHOV.hasAttribute('data-kk')?KHOV:null;
+  if(!c){toast('Najedź myszą na pustą kratkę i wklej (Ctrl+V)');return;}
+  e.preventDefault();var p=c.getAttribute('data-kk').split('|'),w=S.kalWst&&S.kalWst.x===tx?S.kalWst:null;S.kalWst=null;
+  kalDodaj({dz:p[0],ko:p[1],sl:+p[2],x:tx,c:w&&w.c,min:w&&w.min,zid:w&&w.zid});
+});
+document.addEventListener('copy',function(e){
+  if(S.v!=='kal'||kalPisze())return;var sel=window.getSelection&&String(window.getSelection());if(sel)return;
+  var t=KHOV&&document.body.contains(KHOV)&&KHOV.classList.contains('kt')?KHOV:null,k=t&&kalK(t.getAttribute('data-id'));if(!k)return;
+  e.preventDefault();e.clipboardData.setData('text/plain',k.x);S.kalWst={x:k.x,c:k.c,min:k.min,zid:k.zid||null};render(true);toast('Skopiowano kafelek. Najedź na kratkę i Ctrl+V');
+});
+document.addEventListener('change',function(e){if(e.target.id==='kalData'&&e.target.value){S.kd=zIso(e.target.value);render();}});
+document.addEventListener('click',function(e){if(e.target.id==='kalData'&&e.target.showPicker){try{e.target.showPicker();}catch(x){}}},true);
+
 /* ---------- render ---------- */
 function render(zach){
   zamknijPal();nav();$('app').className='app v-'+S.v;
   var v=$('view'),sc=v.scrollTop;
   v.innerHTML=S.v==='dzis'?widokDzis():S.v==='lista'?widokLista():S.v==='kal'?widokKal():S.v==='graf'?widokGraf():widokSzuk();
   if(zach)v.scrollTop=sc;
+  if(S.v==='kal'){var tp=v.querySelector('.top');document.documentElement.style.setProperty('--toph',(tp&&getComputedStyle(tp).position==='sticky'?tp.offsetHeight:0)+'px');}
   renderDet();
 }
 function renderDet(){
@@ -1499,7 +1769,7 @@ document.addEventListener('click',function(e){
   var b=e.target.closest('[data-act]');if(!b)return;
   var a=b.getAttribute('data-act'),id=b.getAttribute('data-id'),dd=b.getAttribute('data-d');
   switch(a){
-    case 'v':S.v=b.getAttribute('data-v');S.wyb=null;S.gwyb=null;S.kop=null;if(!DESK.matches){S.sel=null;S.dzien=null;}else if(S.v!=='kal')S.dzien=null;render();if(S.v==='szuk'){var q=$('q');if(q&&DESK.matches)q.focus();}break;
+    case 'v':S.v=b.getAttribute('data-v');S.wyb=null;S.gwyb=null;S.kop=null;S.kalWst=null;if(!DESK.matches){S.sel=null;S.dzien=null;}else if(S.v!=='kal')S.dzien=null;render();if(S.v==='szuk'){var q=$('q');if(q&&DESK.matches)q.focus();}break;
     case 'fT':S.fT=b.getAttribute('data-f');render(true);break;
     case 'fS':S.fS=b.getAttribute('data-f');render(true);break;
     case 'otworz':
@@ -1527,8 +1797,14 @@ document.addEventListener('click',function(e){
     case 'dane':oknoDane(item(id));break;
     case 'kopiuj':var i3=item(id),tx=[i3.kl,i3.tel,adrTxt(i3),i3.em].filter(Boolean).join('\n');
       (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(tx):Promise.reject()).then(function(){toast('Skopiowano dane klienta');},function(){toast('Skopiowano dane klienta');});break;
-    case 'kt':S.kt=b.getAttribute('data-k');render();break;
-    case 'kn':var n=+b.getAttribute('data-n');S.kd=S.kt==='tydz'?plus(S.kd,7*n):new Date(S.kd.getFullYear(),S.kd.getMonth()+n,1);render();break;
+    case 'kt':S.kt=b.getAttribute('data-k');lsSet('spk-kal-tryb',S.kt);render();break;
+    case 'kn':var n=+b.getAttribute('data-n');S.kd=S.kt==='dzien'?plus(S.kd,n):(S.kt==='tydz'||S.kt==='tg')?plus(S.kd,7*n):new Date(S.kd.getFullYear(),S.kd.getMonth()+n,1);render();break;
+    case 'kcel':if(S.kalWst){kalWstaw(b.getAttribute('data-kk'));break;}kalEdytor(b);break;
+    case 'kkf':if(S.kalWst){toast('Stuknij pustą kratkę, żeby wstawić');break;}oknoKal(kalK(id));break;
+    case 'kwAnul':S.kalWst=null;render(true);break;
+    case 'kust':oknoKalKol();break;
+    case 'kdok':var ik2=item(id);if(ik2)kalWstawStart({x:kalTxtZ(ik2),zid:ik2.id,dz:ik2.dz});break;
+    case 'kdz':S.v='kal';S.kt='dzien';S.kd=zIso(dd);S.sel=null;S.dzien=null;render();break;
     case 'kdzis':S.kd=DZIS;render();break;
     case 'wyb':e.stopPropagation();S.wyb=S.wyb===id?null:id;render(true);break;
     case 'wybAnul':S.wyb=null;render(true);break;
@@ -1579,15 +1855,19 @@ document.addEventListener('focusout',function(e){if(e.target.id==='nt'){var it=i
 /* ---------- przeciąganie (mysz i palec) ---------- */
 var dr=null;
 document.addEventListener('pointerdown',function(e){
+  var rz=e.target.closest&&e.target.closest('[data-roz]');if(rz&&e.button<=0&&kalRozStart(e,rz))return;
   var el=e.target.closest('[data-drag]');if(!el||e.button>0)return;
   dr={el:el,x:e.clientX,y:e.clientY,id:e.pointerId,on:false,touch:e.pointerType!=='mouse',tm:null,cel:null};
+  if(el.getAttribute('data-drag').indexOf('c:')===0){var rr=el.getBoundingClientRect();dr.kal=true;dr.kid=el.getAttribute('data-id');dr.ox=e.clientX-rr.left;dr.oy=e.clientY-rr.top;}
   if(dr.touch)dr.tm=setTimeout(function(){if(dr)start(dr.x,dr.y);},300);
 });
 function start(x,y){
   dr.on=true;var g=dr.el.cloneNode(true);g.className+=' duch';g.style.width=Math.min(dr.el.offsetWidth,220)+'px';g.removeAttribute('data-act');
+  if(dr.kal){g.className+=' kt-duch';g.style.width=dr.el.offsetWidth+'px';g.style.height=dr.el.offsetHeight+'px';g.style.gridRow='';g.style.marginLeft='0';dr.el.classList.add('zrod');document.body.classList.add('k-drag');if(KED)kalZapiszEd();}
   document.body.appendChild(g);dr.g=g;move(x,y);$('kalSiatka')&&$('kalSiatka').classList.add('cel');var gs=document.querySelector('.gsiat');if(gs)gs.classList.add('cel');autoPrzew();
 }
 function move(x,y){
+  if(dr.kal){dr.lx=x;dr.ly=y;dr.g.style.left=(x-dr.ox)+'px';dr.g.style.top=(y-dr.oy)+'px';dr.g.style.visibility='hidden';var kc=kalCel(x,y);dr.g.style.visibility='';dr.cel=kc;kalCien(kc);return;}
   dr.lx=x;dr.ly=y;dr.g.style.left=x+'px';dr.g.style.top=y+'px';
   dr.g.style.visibility='hidden';var t=document.elementFromPoint(x,y);dr.g.style.visibility='';
   var c=t&&t.closest('[data-day],[data-cel]');
@@ -1596,6 +1876,7 @@ function move(x,y){
 }
 document.addEventListener('pointermove',function(e){
   if(!dr||e.pointerId!==dr.id)return;
+  if(dr.roz){e.preventDefault();dr.lyR=e.clientY;kalRozMove(e);return;}
   var dx=e.clientX-dr.x,dy=e.clientY-dr.y,odl=Math.sqrt(dx*dx+dy*dy);
   if(!dr.on){
     if(dr.touch){if(odl>10){clearTimeout(dr.tm);dr=null;}else{dr.x=e.clientX;dr.y=e.clientY;}return;}
@@ -1614,6 +1895,8 @@ function autoPrzew(){
 }
 function koniec(e){
   if(!dr)return;clearTimeout(dr.tm);
+  if(dr.roz){kalRozKoniec();return;}
+  if(dr.kal&&dr.on){dr.g.remove();kalCien(null);document.body.classList.remove('k-drag');ostatniDrag=Date.now();if(dr.cel&&e.type==='pointerup')kalUpusc(dr.cel);dr=null;render(true);return;}
   if(dr.on){
     var cel=dr.cel,kod=dr.el.getAttribute('data-drag');dr.g.remove();if(cel)cel.classList.remove('nad');
     ostatniDrag=Date.now();
