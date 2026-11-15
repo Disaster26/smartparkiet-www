@@ -2080,3 +2080,8 @@ html.pwa .sp-dok{transition:opacity .25s ease!important;bottom:calc(var(--pasek,
 @media (min-width:1920px){html body header.nav nav{gap:20px!important}}
 </style>
 <style id="im-cala-0511">/* Artur 05.11 16:08: kafel deski warstwowej - cala podloga, nie wycinek (proporcje zdjecia zamiast 16:9) */html body .ar-karta .im.im-cala{aspect-ratio:1206/846;background-size:cover!important;background-position:center!important}</style>
+
+<style id="stopka-wylinka-1511">/* 15.11: na telefonie plywajacy ZAMOW ONLINE (44-46 px nad dolnym paskiem) zaslanial ostatnia linie stopki (znak Wylinka).
+   Stopka ma 18 px dolnego odstepu (blok qa), body 62 px pod dolny pasek - dokladamy wysokosc doku + zapas, z safe-area. */
+@media(max-width:900px){html body footer.site{padding-bottom:calc(max(env(safe-area-inset-bottom,0px),4px) + 74px)!important}}
+</style>

@@ -2133,3 +2133,8 @@ html.pwa .sp-dok{transition:opacity .25s ease!important;bottom:calc(var(--pasek,
 @media (min-width:1450px) and (max-width:1639px){html body header.nav .wrap{padding-left:16px!important;padding-right:16px!important;gap:8px!important;max-width:none!important}html body header.nav nav{gap:1px!important;margin-left:4px!important}html body header.nav nav a{font-size:11.5px!important}html body header.nav .brand-t{font-size:16px!important}html body header.nav .brand{flex:0 0 auto!important;margin-right:auto!important}}
 @media (min-width:1920px){html body header.nav nav{gap:20px!important}}
 </style>
+
+<style id="stopka-wylinka-1511">/* 15.11: na telefonie plywajacy ZAMOW ONLINE (44-46 px nad dolnym paskiem) zaslanial ostatnia linie stopki (znak Wylinka).
+   Stopka ma 18 px dolnego odstepu (blok qa), body 62 px pod dolny pasek - dokladamy wysokosc doku + zapas, z safe-area. */
+@media(max-width:900px){html body footer.site{padding-bottom:calc(max(env(safe-area-inset-bottom,0px),4px) + 74px)!important}}
+</style>
