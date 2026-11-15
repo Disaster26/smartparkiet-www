@@ -2172,3 +2172,8 @@ html body .pt-haslo2{margin:16px 0 0;font-weight:800;font-size:1.08rem;line-heig
 @media (min-width:1920px){html body header.nav nav{gap:20px!important}}
 </style>
 <style id="pt-wiecej-platyna-0711">/* Artur 07.11 22:35: "zrob tutaj platynowe tlo" - jasna platyna (delikatny srebrny gradient), lewa pomaranczowa krawedz zostaje */html body .pt-wiecej{background:linear-gradient(160deg,#F6F7F9 0%,#E6E9ED 42%,#D6DADF 68%,#EDEFF2 100%)!important;border-color:#C9CED5!important;border-left-color:#F8580E!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 6px 18px rgba(20,17,14,.08)}html body .pt-wiecej p{color:#1B1E23}html body .pt-wiecej .pt-haslo{color:#B54400}</style>
+
+<style id="stopka-wylinka-1511">/* 15.11: na telefonie plywajacy ZAMOW ONLINE (44-46 px nad dolnym paskiem) zaslanial ostatnia linie stopki (znak Wylinka).
+   Stopka ma 18 px dolnego odstepu (blok qa), body 62 px pod dolny pasek - dokladamy wysokosc doku + zapas, z safe-area. */
+@media(max-width:900px){html body footer.site{padding-bottom:calc(max(env(safe-area-inset-bottom,0px),4px) + 74px)!important}}
+</style>

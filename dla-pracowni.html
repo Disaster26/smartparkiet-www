@@ -1948,3 +1948,8 @@ html.pwa .sp-dok{transition:opacity .25s ease!important;bottom:calc(var(--pasek,
 @media (min-width:1920px){html body header.nav nav{gap:20px!important}}
 </style>
 <style id="czw-0511">/* Artur 05.11 15:58: CZWARTEK SMART zaokraglony z biala obwodka jak pigulka "Zamów online" na zamow-online.html */html body a.btn.btn-czw{border-radius:999px!important;border:0!important;box-shadow:0 0 0 2px #fff,0 0 0 4px #FF6A13!important;padding:14px 26px!important;margin:4px}html body a.btn.btn-czw:hover{box-shadow:0 0 0 2px #fff,0 0 0 4px #E85A08!important}</style>
+
+<style id="stopka-wylinka-1511">/* 15.11: na telefonie plywajacy ZAMOW ONLINE (44-46 px nad dolnym paskiem) zaslanial ostatnia linie stopki (znak Wylinka).
+   Stopka ma 18 px dolnego odstepu (blok qa), body 62 px pod dolny pasek - dokladamy wysokosc doku + zapas, z safe-area. */
+@media(max-width:900px){html body footer.site{padding-bottom:calc(max(env(safe-area-inset-bottom,0px),4px) + 74px)!important}}
+</style>

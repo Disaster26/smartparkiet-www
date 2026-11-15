@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="theme-color" content="#16120F">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -18,6 +18,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+<script>try{var q=(location.search.match(/[?&]motyw=(ciemny|jasny)/)||[])[1];if(q)localStorage.setItem("spk-motyw",q);if(localStorage.getItem("spk-motyw")==="ciemny"){document.documentElement.setAttribute("data-motyw","ciemny");document.querySelector('meta[name="theme-color"]').setAttribute("content","#000000");}}catch(e){}</script>
 <style>
 :root{
   --pom:#FF6A13;--pom-ink:#C2470A;--pom-bg:#FCE4D4;
@@ -568,6 +569,63 @@ body:has(.okno) .toast{top:calc(var(--demo) + var(--st) + 12px);bottom:auto}
   .arkusz{position:absolute;left:0;top:0;width:100%;border:0;box-shadow:none}
 }
 .st.st-nt{text-transform:none;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ---------- 15.11 Artur: motyw ciemny ("czarne tło, negatyw") - przełącznik w nagłówku, zapamiętany na urządzeniu ---------- */
+.motyw-b{width:40px;height:40px;border-radius:10px;background:var(--kosc);display:flex;align-items:center;justify-content:center;flex:none;color:var(--ink);margin-left:auto}
+.top-r h1+.motyw-b,.top-r .sub+.motyw-b{margin-left:0}
+.motyw-b svg.i{width:20px;height:20px}
+.motyw-b .ks,.motyw-s .ks{display:none}
+.side .motyw-s{display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:9px;color:#BDB4A9;font-weight:550;font-size:14.5px;width:100%;text-align:left;margin:10px 0 14px}
+.side .motyw-s svg.i{color:#8A8178}
+@media screen{
+html[data-motyw="ciemny"]{color-scheme:dark;
+  --pom-ink:#FF8A45;--pom-bg:#3A1D0B;
+  --graf:#2C2C2E;--graf2:#1C1C1E;--ink:#F4F4F5;--ink2:#C9C9CE;--ink3:#9B9BA2;
+  --tlo:#000;--karta:#141415;--karta2:#1B1B1D;--pole:#232326;--linia:rgba(255,255,255,.10);--linia2:rgba(255,255,255,.18);--kosc:rgba(255,255,255,.09);
+  --t-w:#5FA8F0;--t-k:#3FC383;--t-r:#A9A39C}
+html[data-motyw="ciemny"] .motyw-b .ks,html[data-motyw="ciemny"] .motyw-s .ks{display:block}html[data-motyw="ciemny"] .motyw-b .km,html[data-motyw="ciemny"] .motyw-s .km{display:none}
+html[data-motyw="ciemny"] .top{background:rgba(0,0,0,.86)}
+html[data-motyw="ciemny"] .det-h{background:rgba(0,0,0,.9)}
+html[data-motyw="ciemny"] .tabs{background:rgba(16,16,17,.94)}
+html[data-motyw="ciemny"] .bdg{box-shadow:0 0 0 2px #101011}
+html[data-motyw="ciemny"] .demo{background:#000;border-bottom:.5px solid rgba(255,255,255,.08)}
+html[data-motyw="ciemny"] .login{background:#000}
+/* wybrane filtry i elementy: jasne na czarnym (negatyw grafitowych przycisków) */
+html[data-motyw="ciemny"] .chip.on,html[data-motyw="ciemny"] .ch.wyb{background:#F4F4F5;color:#0B0B0C}
+html[data-motyw="ciemny"] .chip.on .n{color:#55555C}
+html[data-motyw="ciemny"] .karta.sel{box-shadow:inset 0 0 0 1.5px #F4F4F5}
+html[data-motyw="ciemny"] .sw button.on{box-shadow:inset 0 0 0 2px #F4F4F5}
+html[data-motyw="ciemny"] .pal .ps button.on,html[data-motyw="ciemny"] .pal .pk button.on{box-shadow:0 0 0 2px var(--pole),0 0 0 4px #F4F4F5}
+html[data-motyw="ciemny"] .btn-p,html[data-motyw="ciemny"] .dp button{background:#F4F4F5;color:#0B0B0C}
+html[data-motyw="ciemny"] .toast,html[data-motyw="ciemny"] .kop-bar{background:#2C2C2E;box-shadow:0 8px 24px rgba(0,0,0,.6),0 0 0 .5px rgba(255,255,255,.12)}
+html[data-motyw="ciemny"] .gh{background:#2C2C2E}
+/* statusy: kolorowe etykiety (tło w kolorze statusu, jasny tekst) - czytelne na czarnym */
+html[data-motyw="ciemny"] .st{padding:2px 8px 2px 7px;border-radius:6px;font-weight:600;background:rgba(255,255,255,.08);background:color-mix(in srgb,var(--sc) 26%,#0E0E0F);color:#F4F4F5;color:color-mix(in srgb,var(--sc) 38%,#FFFFFF)}
+html[data-motyw="ciemny"] .stg button.on{color:#fff}
+html[data-motyw="ciemny"] .typ{color:var(--ink2)}
+html[data-motyw="ciemny"] mark{background:#6A3410;color:#FFE6D6}
+html[data-motyw="ciemny"] .okno{background:rgba(0,0,0,.66)}
+html[data-motyw="ciemny"] .okno .in{box-shadow:0 0 0 .5px rgba(255,255,255,.12)}
+/* grafik: soboty lekko jaśniejsze od tła, kafelki kolorowe bez zmian (automatyczny kontrast tekstu) */
+html[data-motyw="ciemny"] .gk.sob,html[data-motyw="ciemny"] .gdn.sob{background:#1A1B1E}
+html[data-motyw="ciemny"] .gk.gn.sob{background:#1E1F22}
+html[data-motyw="ciemny"] .gdn.sob{color:#B9BEC6}
+html[data-motyw="ciemny"] .gdn.dzis{color:#FFE3D2}
+html[data-motyw="ciemny"] .kf,html[data-motyw="ciemny"] .pal .ps button{box-shadow:inset 0 0 0 1px rgba(255,255,255,.10)}
+html[data-motyw="ciemny"] .gw.prv{color:#E4CCF7;background:#3A2452}
+html[data-motyw="ciemny"] .det-pusto svg.i{color:#55555C}
+@media(hover:hover){
+  html[data-motyw="ciemny"] .karta:hover,html[data-motyw="ciemny"] .wier:hover,html[data-motyw="ciemny"] .dzien:hover,html[data-motyw="ciemny"] .kom:hover{background-color:#1F1F22}
+  html[data-motyw="ciemny"] .stg button:not(.on):hover,html[data-motyw="ciemny"] .szyb button:not(.usun):hover,html[data-motyw="ciemny"] .akcje a:not(.tel):hover,html[data-motyw="ciemny"] .akcje button:not(.tel):hover{background:#2A2A2E}
+  html[data-motyw="ciemny"] .gk:not(.gsp):hover{background-color:#1C1C1F}
+}
+@media(min-width:960px){
+  html[data-motyw="ciemny"] .side{background:#0B0B0C;border-right:.5px solid rgba(255,255,255,.08)}
+  html[data-motyw="ciemny"] .side button.nv.on{background:#232326}
+  html[data-motyw="ciemny"] .det{background:#0E0E0F}
+  html[data-motyw="ciemny"] .det-h{background:#0E0E0F}
+}
+}
+@media(min-width:960px) and (hover:hover){.side .motyw-s:hover{background:#221D19;color:#E8E1D8}}
 </style>
 </head>
 <body>
@@ -1590,6 +1648,34 @@ render();
 if(TOK){if(!BAZA)$('view').innerHTML='<div class="ladow">Wczytuję zapytania...</div>';pobierz();}
 if('serviceWorker' in navigator&&location.protocol!=='file:'){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 window.spkApp={stan:function(){return {D:D,BAZA:BAZA,POCZ:POCZ,LOT:!!LOT,BRUD:BRUD,OFF:OFF};},pobierz:pobierz};
+})();
+</script>
+<script>
+/* 15.11: przełącznik motywu jasny/ciemny - przycisk w nagłówku każdego widoku (telefon) i w panelu bocznym (komputer), wybór w localStorage */
+(function(){
+var K='spk-motyw',de=document.documentElement;
+var SV='<svg class="i km" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>'+
+  '<svg class="i ks" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>';
+function ciemny(){return de.getAttribute('data-motyw')==='ciemny';}
+function opis(){return ciemny()?'Jasny motyw':'Ciemny motyw';}
+function meta(){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',ciemny()?'#000000':'#16120F');}
+function odswiez(){document.querySelectorAll('.motyw-b,.motyw-s').forEach(function(b){b.setAttribute('aria-label',opis());b.title=opis();b.setAttribute('aria-pressed',ciemny()?'true':'false');});
+  var s=document.querySelector('.side .motyw-s span');if(s)s.textContent=opis();meta();}
+function przelacz(){if(ciemny())de.removeAttribute('data-motyw');else de.setAttribute('data-motyw','ciemny');
+  try{localStorage.setItem(K,ciemny()?'ciemny':'jasny');}catch(e){}odswiez();}
+function wstaw(){
+  document.querySelectorAll('.top .top-r').forEach(function(r){if(r.querySelector('.motyw-b'))return;
+    var b=document.createElement('button');b.type='button';b.className='motyw-b';b.innerHTML=SV;
+    /* w nagłówkach z przyciskami (Kalendarz, Grafik) - przed nimi; inaczej na końcu */
+    var ib=r.querySelector('.ib,.dzis-b,.seg');if(ib&&ib.parentNode===r)r.insertBefore(b,ib);else r.appendChild(b);});
+  var sd=document.querySelector('.side');
+  if(sd&&!sd.querySelector('.motyw-s')){var s=document.createElement('button');s.type='button';s.className='motyw-s';s.innerHTML=SV+'<span></span>';
+    var lg=sd.querySelector('.leg');sd.insertBefore(s,lg||null);}
+  odswiez();}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.motyw-b,.motyw-s');if(b){e.preventDefault();przelacz();}});
+var v=document.getElementById('view');
+if(v&&window.MutationObserver)new MutationObserver(wstaw).observe(v,{childList:true,subtree:true});
+wstaw();
 })();
 </script>
 </body>

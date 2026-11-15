@@ -2052,7 +2052,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
         if(ok){
           window.__spamInfo=!!mailOk;
           /* 10.11: zdarzenie dla wyzwalacza w GTM (narzedzia Artura analizator/wycen-usluge pominiete - to nie leady) */
-          try{const fn=(location.pathname.split('/').pop()||'wycena').replace(/\.html$/,'')||'wycena';if(!/^(analizator|wycen-usluge)$/.test(fn)){window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'formularz_wyslany',formularz:fn});}}catch(e){}
+          try{const fn=(location.pathname.split('/').pop()||'wycena').replace(/\.html$/,'')||'wycena';if(!/^(analizator|wycen-usluge)$/.test(fn)){window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'formularz_wyslany',formularz:fn});if(typeof window.gtag==='function')window.gtag('event','Formularz',{send_to:'G-2N3MR874KB',formularz:fn});/* 15.11: GA4 - nazwa jak w GTM agencji (tamten wyzwalacz na link 'Wyslij' nigdy nie strzelal) */}}catch(e){}
           const bw=document.getElementById('wyslij');
           /* Artur 14.10 10:06: jeden klawisz z ptaszkiem i informacja, ze wycena dotrze na maila - bez drugiej ramki */
           if(bw){bw.classList.add('wyslane');bw.disabled=true;bw.style.cssText+=';height:auto!important;padding:16px 18px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:0!important';
@@ -3825,6 +3825,11 @@ html body #wycena .sticky.zam-gora ol.zam-kroki li{font-size:.78rem!important;li
 html body #wycena .sticky.zam-gora ol.zam-kroki li::before{width:16px!important;height:16px!important;font-size:.62rem!important;top:0!important}
 html body #wycena .sticky.zam-gora p.zam-uwaga{margin-top:4px!important;font-size:.74rem!important;line-height:1.3!important}
 }
+</style>
+
+<style id="stopka-wylinka-1511">/* 15.11: na telefonie plywajacy ZAMOW ONLINE (44-46 px nad dolnym paskiem) zaslanial ostatnia linie stopki (znak Wylinka).
+   Stopka ma 18 px dolnego odstepu (blok qa), body 62 px pod dolny pasek - dokladamy wysokosc doku + zapas, z safe-area. */
+@media(max-width:900px){html body footer.site{padding-bottom:calc(max(env(safe-area-inset-bottom,0px),4px) + 74px)!important}}
 </style>
 <style>/* analizator: okienko SMS wyroznione (Artur 21.10 17:27) */
 html body .sms-box{background:#3A3D42!important;border:1.5px solid #3A3D42!important;color:#F4EFE8;box-shadow:0 6px 18px rgba(20,17,14,.18)}

@@ -3272,3 +3272,8 @@ html body section.akr .akr-zamkniecie{background:#F1F2F4!important;border:1px so
 /* "5 lokalizacji. Jeden standard SMART." w jednym pasku na telefonie */
 @media(max-width:600px){html body section.oddzialy-home .wrap h2{font-size:min(21px,calc((100vw - 48px) / 18.9))!important;max-width:none!important}}
 </style>
+
+<style id="stopka-wylinka-1511">/* 15.11: na telefonie plywajacy ZAMOW ONLINE (44-46 px nad dolnym paskiem) zaslanial ostatnia linie stopki (znak Wylinka).
+   Stopka ma 18 px dolnego odstepu (blok qa), body 62 px pod dolny pasek - dokladamy wysokosc doku + zapas, z safe-area. */
+@media(max-width:900px){html body footer.site{padding-bottom:calc(max(env(safe-area-inset-bottom,0px),4px) + 74px)!important}}
+</style>
