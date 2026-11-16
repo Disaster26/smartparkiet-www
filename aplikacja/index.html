@@ -734,6 +734,9 @@ html[data-motyw="ciemny"] .gk.gpw{background:rgba(255,111,174,.24);box-shadow:in
 .sw-w.ciag>.wier{transition:none}
 .blok .sw-w,.dzis-w .sw-w{margin-bottom:6px;border-radius:12px}
 .karta .dub{font-size:11.5px;color:var(--ink3);margin-left:6px}
+/* 16.11 Artur 13:01: to samo zapytanie z kolejnego maila */
+.karta .nmail{display:inline-block;margin-left:6px;font-size:11.5px;font-weight:750;color:#fff;background:#E0262B;border-radius:5px;padding:1px 6px;vertical-align:1px;line-height:1.35}
+.karta.kst .nmail{background:#E0262B!important;color:#fff!important}
 .karta.kst::before{background:rgba(0,0,0,.22);width:4px}
 .karta.kst:hover,html[data-motyw="ciemny"] .karta.kst:hover{background-color:var(--kst);filter:brightness(1.06)}
 .term .t-pole{display:flex;flex-direction:column;gap:4px;min-width:0}
@@ -878,7 +881,7 @@ var STATUSY=[
   ['luzne','Luźne zapytanie','#8A8178','#EFEBE6'],
   ['rozmowa','Była rozmowa','#2F6E9E','#E6EFF7'],
   ['ogledziny','Oględziny','#7A3E9D','#F1E8F6'],
-  ['termin','Termin ustalony','#C25A0C','#FDEBDD'],
+  ['termin','Wstępny termin','#1FD61F','#E2FBE2'], /* 16.11 Artur 12:58: neonowy zielony = Wstępny termin */
   ['zatw','Zatwierdzone','#1F8A4C','#E3F2EA'],
   ['wtoku','W toku','#E05A0A','#FFE6D6'],
   ['zrobione','Zrobione','#5C5650','#E8E6E3'],
@@ -908,8 +911,8 @@ function kalKolMigr(kol){return (kol||[]).map(function(c){return KOL_STARE[c.n]?
 function zielMigr(o){if(!o)return o;['c','kol'].forEach(function(k){if(typeof o[k]==='string'&&o[k].toUpperCase()==='#B6FF1A')o[k]='#1FD61F';});return o;}
 function pusty(){return {items:[],wpisy:[],graf:{v:2,br:[],kol:[],k:[]},kal:{kol:klon(KAL_KOL_DOM),k:[]},rev:0};}
 /* 16.11 Artur WA 11:20-11:21: nowe nazwy statusow grafiku; tylko domyslne id ze stara nazwa (bez lancuchow) */
-var GKOL_NAZWY={mysli:['Zastanawia się','W toku'],ogl:['Oględziny / pomiar','Naprawy / inne'],term:['Termin do potwierdzenia','Cudze zlecenia'],pilne:['Pilne','Pilne / awaria'],gotowe:['Zrobione','Termin do potwierdzenia'],awaria:['Awaria','Inne'],inne:['Inne','Podwykonawca']};
-function gKolMigr(c){var m=c&&GKOL_NAZWY[c.id];if(m&&c.n===m[0])c.n=m[1];return c;}
+var GKOL_NAZWY={mysli:['Zastanawia się','W toku'],ogl:['Oględziny / pomiar','Naprawy / inne'],term:['Termin do potwierdzenia','Cudze zlecenia'],pilne:['Pilne','Pilne / awaria'],gotowe:[['Zrobione','Termin do potwierdzenia'],'Wstępny termin'],awaria:['Awaria','Inne'],inne:['Inne','Podwykonawca']};
+function gKolMigr(c){var m=c&&GKOL_NAZWY[c.id];if(m&&([].concat(m[0]).indexOf(c.n)>=0))c.n=m[1];return c;}
 function zStanu(st){var kl=st.kal||{};return {items:st.items||[],wpisy:st.wpisy||[],graf:(function(g){(g.k||[]).forEach(zielMigr);(g.kol||[]).forEach(function(c){zielMigr(c);gKolMigr(c);});return g;})(st.graf||{v:2,br:[],kol:[],k:[]}),kal:{kol:(kl.kol&&kl.kol.length)?kalKolMigr(kl.kol):JSON.parse(JSON.stringify(KAL_KOL_DOM)),k:(kl.k||[]).map(zielMigr)},rev:st.rev||0};}
 function klon(o){return JSON.parse(JSON.stringify(o));}
 var BAZA=null,POCZ=null,D=pusty();
@@ -1036,7 +1039,7 @@ function pobierz(){
 }
 setInterval(function(){if(document.visibilityState==='visible')pobierz();},60000);
 /* 15.11: telefon (ikona na ekranie) potrafi trzymac stara wersje strony w pamieci - po powrocie do aplikacji sprawdzamy wersje i przeladowujemy */
-var APP_W='2026-11-16d';
+var APP_W='2026-11-16e';
 function sprawdzWersje(){
   if(!window.fetch)return;
   fetch('./?w='+Date.now(),{cache:'no-store',credentials:'omit'}).then(function(r){return r.ok?r.text():'';}).then(function(t){
@@ -1086,7 +1089,7 @@ function karta(it,q){
   return '<button type="button" class="karta'+(S.sel===it.id?' sel':'')+(stK?' kst':'')+'" style="--tc:'+T.c+(stK?';--kst:'+stK+';--kstt:'+tekstNa(stK):'')+'" data-act="otworz" data-id="'+it.id+'">'+
     '<div class="k1"><span class="nm">'+nm+'</span><span class="zl">'+kwotaTxt(it)+'</span></div>'+
     '<div class="k2">'+ad+dodTel+'</div>'+
-    '<div class="k3">'+(czyNowe(it)?'<span class="nowe">Nowe</span>':'')+pillIt(it)+(DUBLE_N[it.id]&&!q?'<span class="dub">+'+DUBLE_N[it.id]+' starsz'+(DUBLE_N[it.id]===1?'a wersja':'e wersje')+'</span>':'')+
+    '<div class="k3">'+(czyNowe(it)?'<span class="nowe">Nowe</span>':'')+pillIt(it)+(DUBLE_N[it.id]&&!q?'<span class="nmail">nowe! mail</span><span class="dub">+'+DUBLE_N[it.id]+' starsz'+(DUBLE_N[it.id]===1?'a wersja':'e wersje')+'</span>':'')+
     (it.dz?'<span class="dz">'+ik('kal')+krotko(it.dz)+(it.g?' '+esc(it.g):'')+'</span>':'')+
     '<span class="kiedy"><span class="typ" style="--tc:'+T.c+'">'+T.k+'</span> · '+kiedy(it.ts)+(it.typ==='e'?mailIle(it):'')+'</span></div></button>';
 }
