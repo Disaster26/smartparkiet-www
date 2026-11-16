@@ -650,14 +650,14 @@ html[data-motyw="ciemny"] .det-pusto svg.i{color:#55555C}
 .kdn.sob .ks-k{background:#D5D8DC}
 @media(hover:hover){.ks-k:hover{background:var(--pole)}}
 .kal-g.cel .ks-k{box-shadow:inset 0 0 0 1px rgba(255,106,19,.28)}
-.kt{justify-self:stretch;align-self:stretch;position:relative;z-index:2;margin:1px 0;min-width:0;border-radius:6px;padding:3px 5px 9px;background:var(--kc);color:var(--kt);font-size:11.5px;line-height:1.22;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08);touch-action:pan-x pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab;text-align:left}
+.kt{justify-self:stretch;align-self:stretch;position:relative;z-index:2;margin:1px 0;min-width:0;border-radius:6px;padding:2px 4px 8px;background:var(--kc);color:var(--kt);font-size:10px;line-height:1.15;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08);touch-action:pan-x pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab;text-align:left}
 .kt[style*="width"]{justify-self:start}
-.kt-g{display:flex;align-items:center;gap:3px;font-size:10px;font-weight:700;opacity:.78;font-variant-numeric:tabular-nums;white-space:nowrap}
+.kt-g{display:flex;align-items:center;gap:3px;font-size:9px;font-weight:700;opacity:.78;font-variant-numeric:tabular-nums;white-space:nowrap}
 .kt-g svg.i{width:11px;height:11px;stroke-width:2.2}
 .kt-x{display:block;font-weight:650;overflow-wrap:anywhere;white-space:pre-line}
-.kt.s1{padding-top:5px;padding-bottom:5px}
+.kt.s1{padding-top:1px;padding-bottom:1px}
 .kt.s1 .kt-g{display:none}
-.kt.s1 .kt-x{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kt.s1 .kt-x{white-space:normal;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:9.5px;line-height:1.08}
 .kt-roz{position:absolute;left:0;right:0;bottom:0;height:11px;cursor:ns-resize;touch-action:none}
 .kt-roz::after{content:"";position:absolute;left:50%;bottom:3px;width:18px;height:3px;margin-left:-9px;border-radius:2px;background:currentColor;opacity:.4}
 @media(pointer:coarse){.kt-roz{height:15px}.kt-roz::after{width:22px}}
@@ -689,8 +689,8 @@ body.k-roz,body.k-roz *{cursor:ns-resize!important}
   .kgr{--kh:30px;grid-template-columns:54px repeat(var(--nk),minmax(0,1fr));column-gap:5px}
   .ks-h{font-size:12px;padding:8px 4px}
   .ks-g{font-size:12px;padding-right:8px}
-  .kt{font-size:13px;padding:4px 7px 10px}
-  .kt-g{font-size:11px}
+  .kt{font-size:11.5px;padding:3px 6px 9px}
+  .kt-g{font-size:10px}
   .k-pom{margin:0 24px 20px;max-width:900px}
 }
 html[data-motyw="ciemny"] .kdn.sob .ks-k{background:#18181A}
@@ -698,9 +698,13 @@ html[data-motyw="ciemny"] .ks-h:not(.ks-0){background:#2C2C2E}
 html[data-motyw="ciemny"] .k-pal button.on{box-shadow:0 0 0 2px var(--karta),0 0 0 4px #F4F4F5}
 
 /* 15.11 Artur: status po zatwierdzeniu, kafelek w kolorze statusu */
-.karta.kst{background:color-mix(in srgb,var(--kst) 16%,var(--karta));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--kst) 45%,transparent)}
+.karta.kst{background:var(--kst);color:var(--kstt);box-shadow:none}
+.karta.kst *{color:inherit!important}
+.karta.kst .st{background:rgba(0,0,0,.16)!important}
+.karta.kst svg{stroke:currentColor}
 .karta.kst.sel{box-shadow:inset 0 0 0 1.5px var(--graf)}
-.karta.kst::before{background:var(--kst);width:4px}
+.karta.kst::before{background:rgba(0,0,0,.22);width:4px}
+.karta.kst:hover,html[data-motyw="ciemny"] .karta.kst:hover{background-color:var(--kst);filter:brightness(1.06)}
 .term .t-pole{display:flex;flex-direction:column;gap:4px;min-width:0}
 .term .t-pole>span{font-size:12.5px;color:var(--ink3);font-weight:500}
 .term .t-dz{flex:1 1 150px}.term .t-g{flex:0 0 116px}
@@ -711,7 +715,7 @@ html[data-motyw="ciemny"] .k-pal button.on{box-shadow:0 0 0 2px var(--karta),0 0
 .st-zatw .st-ok{flex:1;min-height:48px;border-radius:10px;background:var(--sc);color:#fff;font-weight:700;font-size:15px;padding:0 12px}
 .st-zatw .st-an{min-height:48px;border-radius:10px;background:var(--karta);padding:0 16px;font-weight:500}
 .det .st-zatw .st-an{background:var(--pole)}
-html[data-motyw="ciemny"] .karta.kst.sel{box-shadow:inset 0 0 0 1.5px #F4F4F5}
+html[data-motyw="ciemny"] .karta.kst.sel{box-shadow:inset 0 0 0 2px #F4F4F5}
 /* 15.11 Artur 21:37: Powrót w Szybkim wpisie */
 .btn-p.btn-powrot{margin-top:8px;background:var(--pole);color:var(--ink);box-shadow:inset 0 0 0 1px var(--linia2)}
 html[data-motyw="ciemny"] .okno .btn-p.btn-powrot{background:#232326!important;color:#F4F4F5!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
@@ -1021,7 +1025,7 @@ function karta(it,q){
   var adT=it.typ==='e'&&!it.ul&&it.temat?String(it.temat):adrTxt(it),nm=q?hl(it.kl,q):esc(it.kl), ad=q?hl(adT,q):esc(adT);
   var dodTel=q&&cyfry(q).length>=3&&cyfry(it.tel).indexOf(cyfry(q))>=0?' · '+hl(it.tel,q):'';
   var stK=it.st&&it.st!=='luzne'&&ST[it.st]?ST[it.st].c:'';
-  return '<button type="button" class="karta'+(S.sel===it.id?' sel':'')+(stK?' kst':'')+'" style="--tc:'+T.c+(stK?';--kst:'+stK:'')+'" data-act="otworz" data-id="'+it.id+'">'+
+  return '<button type="button" class="karta'+(S.sel===it.id?' sel':'')+(stK?' kst':'')+'" style="--tc:'+T.c+(stK?';--kst:'+stK+';--kstt:'+tekstNa(stK):'')+'" data-act="otworz" data-id="'+it.id+'">'+
     '<div class="k1"><span class="nm">'+nm+'</span><span class="zl">'+kwotaTxt(it)+'</span></div>'+
     '<div class="k2">'+ad+dodTel+'</div>'+
     '<div class="k3">'+(czyNowe(it)?'<span class="nowe">Nowe</span>':'')+pillIt(it)+
