@@ -869,9 +869,13 @@ function m2(it){return +it.m2||0;}
 function kwotaTxt(it){return it.kwota>0?zl(it.kwota):'bez wyceny';}
 function adrTxt(it){return [it.ul,it.ds].filter(Boolean).join(', ');}
 function adrKr(it){return it.ds||String(it.ul||'').split(',')[0];}
-var KAL_KOL_DOM=[{id:'c1',n:'KONTAKT'},{id:'c2',n:'OGLĘDZINY'},{id:'c3',n:'ZLECENIA'}];
+var KAL_KOL_DOM=[{id:'c1',n:'WIZYTA'},{id:'c2',n:'KONTAKTY'},{id:'c3',n:'INNE'}];
+/* 16.11 Artur: stare domyślne nazwy kolumn -> nowe; neonowa limonka -> soczysty zielony */
+var KOL_STARE={'KONTAKT':'WIZYTA','OGLĘDZINY':'KONTAKTY','ZLECENIA':'INNE'};
+function kalKolMigr(kol){return (kol||[]).map(function(c){return KOL_STARE[c.n]?{id:c.id,n:KOL_STARE[c.n]}:c;});}
+function zielMigr(o){if(!o)return o;['c','kol'].forEach(function(k){if(typeof o[k]==='string'&&o[k].toUpperCase()==='#B6FF1A')o[k]='#1FD61F';});return o;}
 function pusty(){return {items:[],wpisy:[],graf:{v:2,br:[],kol:[],k:[]},kal:{kol:klon(KAL_KOL_DOM),k:[]},rev:0};}
-function zStanu(st){var kl=st.kal||{};return {items:st.items||[],wpisy:st.wpisy||[],graf:st.graf||{v:2,br:[],kol:[],k:[]},kal:{kol:(kl.kol&&kl.kol.length)?kl.kol:JSON.parse(JSON.stringify(KAL_KOL_DOM)),k:kl.k||[]},rev:st.rev||0};}
+function zStanu(st){var kl=st.kal||{};return {items:st.items||[],wpisy:st.wpisy||[],graf:(function(g){(g.k||[]).forEach(zielMigr);(g.kol||[]).forEach(zielMigr);return g;})(st.graf||{v:2,br:[],kol:[],k:[]}),kal:{kol:(kl.kol&&kl.kol.length)?kalKolMigr(kl.kol):JSON.parse(JSON.stringify(KAL_KOL_DOM)),k:(kl.k||[]).map(zielMigr)},rev:st.rev||0};}
 function klon(o){return JSON.parse(JSON.stringify(o));}
 var BAZA=null,POCZ=null,D=pusty();
 (function(){var k=lsGet(KL_KESZ);if(TOK&&k){try{BAZA=zStanu(JSON.parse(k));POCZ=BAZA;D=klon(BAZA);}catch(e){}}})();
@@ -978,7 +982,7 @@ function pobierz(){
 }
 setInterval(function(){if(document.visibilityState==='visible')pobierz();},60000);
 /* 15.11: telefon (ikona na ekranie) potrafi trzymac stara wersje strony w pamieci - po powrocie do aplikacji sprawdzamy wersje i przeladowujemy */
-var APP_W='2026-11-16a';
+var APP_W='2026-11-16b';
 function sprawdzWersje(){
   if(!window.fetch)return;
   fetch('./?w='+Date.now(),{cache:'no-store',credentials:'omit'}).then(function(r){return r.ok?r.text():'';}).then(function(t){
@@ -1267,7 +1271,7 @@ function detDzien(s){
 
 /* ---------- GRAFIK brygad ---------- */
 var RODZAJE=['warstwa','mozaika','klepka','jodełka','egzotyk','schody','listwy','olejowanie','stabilizacja','malowanie ścian'];
-var PALETA=[['#FFD60A','żółty'],['#FF8A00','pomarańczowy'],['#1E63D6','niebieski'],['#A8D8F5','błękitny'],['#B6FF1A','limonkowy (neon)'],['#2E9E3A','zielony trawiasty'],['#FF6FAE','różowy'],['#6B2A5E','śliwkowy (awaria)'],['#E0262B','czerwony']];
+var PALETA=[['#FFD60A','żółty'],['#FF8A00','pomarańczowy'],['#1E63D6','niebieski'],['#A8D8F5','błękitny'],['#1FD61F','zielony (neon)'],['#2E9E3A','zielony trawiasty'],['#FF6FAE','różowy'],['#6B2A5E','śliwkowy (awaria)'],['#E0262B','czerwony']];
 function hexRgb(h){var m=/^#?([0-9a-f]{6})$/i.exec(h||'');var v=m?parseInt(m[1],16):0x888888;return [v>>16,(v>>8)&255,v&255];}
 function lum(h){var w=[.2126,.7152,.0722];return hexRgb(h).reduce(function(a,x,i){x/=255;return a+w[i]*(x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4));},0);}
 /* kolor tekstu dobierany automatycznie: ciemny albo biały, ten z większym kontrastem */
