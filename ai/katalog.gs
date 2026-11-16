@@ -15,7 +15,7 @@
    -> w edytorze wybierz funkcję katalogUstawHaslo i Uruchom. Funkcja zapisze skrót i usunie jawne hasło.
    Aplikacja po zalogowaniu dostaje losowy token sesji (ważny 180 dni, na serwerze trzymany tylko jego skrót). */
 
-const KAT_WERSJA = '2026-11-15m';
+const KAT_WERSJA = '2026-11-16g';
 const KAT_ARK = { status: 'Katalog_status', sprawy: 'Katalog_sprawy', grafik: 'Grafik', ust: 'Ustawienia_katalog', kal: 'Kalendarz' };
 const KAT_NAGL = ['ID', 'Opis', 'Dane (zapis aplikacji - nie edytować)', 'Zmieniono'];
 const KAT_TOKEN_DNI = 180;
@@ -35,7 +35,7 @@ const KAT_STATUSY = [
   { id: 'awaria', n: 'Awaria', c: '#6B2A5E' }, { id: 'gotowe', n: 'Zrobione', c: '#B6FF1A' }, { id: 'inne', n: 'Inne', c: '#FF6FAE' }];
 /* 15.11 Artur: kalendarz godzinowy (kafelki ruchome, godziny stałe) - kolumny edytowalne */
 const KAT_KAL_KOL = [{ id: 'c1', n: 'KONTAKT' }, { id: 'c2', n: 'OGLĘDZINY' }, { id: 'c3', n: 'ZLECENIA' }];
-const KAT_ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'zatw', 'wtoku', 'zrobione', 'odpadlo'];
+const KAT_ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'zatw', 'wtoku', 'zrobione', 'asap', 'odpadlo'];
 
 /* ------------------------------------------------------------------ wejście */
 function katalogObsluz(d) {
@@ -350,7 +350,7 @@ function katCzyscZap(d, reczne) {
   if (reczne) {
     o.reczne = true; o.typ = 'r'; o.ts = Number(d.ts) || Date.now(); o.nr = katTxt(d.nr, 30);
     o.kl = katTxt(d.kl, 120); o.tel = katTxt(d.tel, 40); o.ul = katTxt(d.ul, 200); o.ds = katTxt(d.ds, 60); o.em = katTxt(d.em, 120);
-    o.m2 = katLiczba(d.m2); o.kwota = 0; o.zakres = []; o.info = katTxt(d.info, 300);
+    o.m2 = katLiczba(d.m2); o.kwota = 0; o.zakres = []; o.info = katTxt(d.info, 300); o.zr = katTxt(d.zr, 80); /* 16.11 Artur: zrodlo wpisu z reki (telefon, SMS...) */
   }
   return o;
 }

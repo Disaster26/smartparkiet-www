@@ -821,6 +821,8 @@ html[data-motyw="ciemny"] .akcje a.odp,html[data-motyw="ciemny"] .det .akcje a.o
 "use strict";
 /* ---------- ikony (własne SVG) ---------- */
 var IK={
+  olowek:'<path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="m13.5 6.5 4 4"/>',
+  anl:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h1M15 11h1M8 14.5h2M12 14.5h1M15 14.5h1M8 18h2M12 18h4"/>',
   mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/>',
   dom:'<path d="M3.5 11 12 4l8.5 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/>',
   lista:'<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
@@ -850,6 +852,9 @@ function ik(n){return '<svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+I
 
 /* ---------- daty ---------- */
 var DNI=['niedz.','pon.','wt.','śr.','czw.','pt.','sob.'];
+var MIES_SK=['STY','LUT','MAR','KWI','MAJ','CZE','LIP','SIE','WRZ','PAŹ','LIS','GRU'];
+/* 16.11 Artur 13:48: data słownie, np. 14 GRU */
+function dataSl(s){var d=zIso(s);return DNI[d.getDay()]+' '+d.getDate()+' '+MIES_SK[d.getMonth()];}
 var DNI_P=['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
 var MIES_D=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
 var MIES_M=['styczeń','luty','marzec','kwiecień','maj','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień'];
@@ -878,13 +883,14 @@ var TYPY={
   e:{n:'Mail na smartparkiet@gmail.com',k:'E-mail',c:'var(--t-e)'}
 };
 var STATUSY=[
-  ['luzne','Luźne zapytanie','#8A8178','#EFEBE6'],
+  ['luzne','Luźne zapytanie','#FFD43B','#FFF6CC'], /* 16.11 Artur 13:45: luźne = żółty kafelek (nic się jeszcze nie dzieje) */
   ['rozmowa','Była rozmowa','#2F6E9E','#E6EFF7'],
   ['ogledziny','Oględziny','#7A3E9D','#F1E8F6'],
   ['termin','Wstępny termin','#1FD61F','#E2FBE2'], /* 16.11 Artur 12:58: neonowy zielony = Wstępny termin */
   ['zatw','Zatwierdzone','#1F8A4C','#E3F2EA'],
   ['wtoku','W toku','#E05A0A','#FFE6D6'],
   ['zrobione','Zrobione','#5C5650','#E8E6E3'],
+  ['asap','ASAP!','#E0262B','#FDE2E2'], /* 16.11 Artur 14:39: Express / ASAP - czerwony kafelek */
   ['odpadlo','Odpadło','#A2382D','#F7E4E1']
 ];
 var ST={};STATUSY.forEach(function(s){ST[s[0]]={n:s[1],c:s[2],b:s[3]};});
@@ -1039,7 +1045,7 @@ function pobierz(){
 }
 setInterval(function(){if(document.visibilityState==='visible')pobierz();},60000);
 /* 15.11: telefon (ikona na ekranie) potrafi trzymac stara wersje strony w pamieci - po powrocie do aplikacji sprawdzamy wersje i przeladowujemy */
-var APP_W='2026-11-16e';
+var APP_W='2026-11-16g';
 function sprawdzWersje(){
   if(!window.fetch)return;
   fetch('./?w='+Date.now(),{cache:'no-store',credentials:'omit'}).then(function(r){return r.ok?r.text():'';}).then(function(t){
@@ -1076,8 +1082,10 @@ function nav(){
   var b=[['dzis','Dziś','dom'],['lista','Zapytania','lista'],['kal','Kalendarz','kal'],['graf','Grafik','graf'],['szuk','Szukaj','szuk']];
   var tb=b.map(function(x){return '<button type="button" data-act="v" data-v="'+x[0]+'" class="'+(S.v===x[0]?'on':'')+'">'+ik(x[2])+x[1]+(x[0]==='lista'&&nowe?'<span class="bdg">'+nowe+'</span>':'')+'</button>';});
   tb.splice(2,0,'<button type="button" class="plus-t" data-act="szybki" aria-label="Szybki wpis"><span>'+ik('plus')+'</span>Dodaj</button>');
+  /* 16.11 Artur 13:59: Analizator na pasku - całe narzędzie w jednym miejscu (kalkulator dla klientów zostaje na stronie) */
+  tb.push('<a class="tab-anl" href="/analizator.html">'+ik('anl')+'Analizator</a>');
   $('tabs').innerHTML=tb.join('');
-  $('sideNav').innerHTML=b.map(function(x){return '<button type="button" class="nv '+(S.v===x[0]?'on':'')+'" data-act="v" data-v="'+x[0]+'">'+ik(x[2])+x[1]+(x[0]==='lista'&&nowe?'<span class="bdg">'+nowe+'</span>':'')+'</button>';}).join('')+'<button type="button" class="nv plus-s" data-act="szybki">'+ik('plus')+'Szybki wpis</button><button type="button" class="wyl" data-act="wyloguj">Wyloguj</button>';
+  $('sideNav').innerHTML=b.map(function(x){return '<button type="button" class="nv '+(S.v===x[0]?'on':'')+'" data-act="v" data-v="'+x[0]+'">'+ik(x[2])+x[1]+(x[0]==='lista'&&nowe?'<span class="bdg">'+nowe+'</span>':'')+'</button>';}).join('')+'<button type="button" class="nv plus-s" data-act="szybki">'+ik('plus')+'Szybki wpis</button><a class="nv" href="/analizator.html">'+ik('anl')+'Analizator</a><button type="button" class="wyl" data-act="wyloguj">Wyloguj</button>';
 }
 
 /* ---------- karta na liście ---------- */
@@ -1085,12 +1093,12 @@ function karta(it,q){
   var T=TYPY[it.typ];
   var adT=it.typ==='e'&&!it.ul&&it.temat?String(it.temat):adrTxt(it),nm=q?hl(it.kl,q):esc(it.kl), ad=q?hl(adT,q):esc(adT);
   var dodTel=q&&cyfry(q).length>=3&&cyfry(it.tel).indexOf(cyfry(q))>=0?' · '+hl(it.tel,q):'';
-  var stK=it.st&&it.st!=='luzne'&&ST[it.st]?ST[it.st].c:'';
+  var stK=it.st&&ST[it.st]?ST[it.st].c:'';
   return '<button type="button" class="karta'+(S.sel===it.id?' sel':'')+(stK?' kst':'')+'" style="--tc:'+T.c+(stK?';--kst:'+stK+';--kstt:'+tekstNa(stK):'')+'" data-act="otworz" data-id="'+it.id+'">'+
     '<div class="k1"><span class="nm">'+nm+'</span><span class="zl">'+kwotaTxt(it)+'</span></div>'+
     '<div class="k2">'+ad+dodTel+'</div>'+
     '<div class="k3">'+(czyNowe(it)?'<span class="nowe">Nowe</span>':'')+pillIt(it)+(DUBLE_N[it.id]&&!q?'<span class="nmail">nowe! mail</span><span class="dub">+'+DUBLE_N[it.id]+' starsz'+(DUBLE_N[it.id]===1?'a wersja':'e wersje')+'</span>':'')+
-    (it.dz?'<span class="dz">'+ik('kal')+krotko(it.dz)+(it.g?' '+esc(it.g):'')+'</span>':'')+
+    (it.dz?'<span class="dz dzr" data-act="kdz" data-id="'+it.id+'">'+ik('kal')+dataSl(it.dz)+(it.g?' '+esc(it.g):'')+'</span>':(it.st==='termin'||it.st==='zatw'?'<span class="dz dzr pust" data-act="kdz" data-id="'+it.id+'">'+ik('kal')+'+ data</span>':''))+
     '<span class="kiedy"><span class="typ" style="--tc:'+T.c+'">'+T.k+'</span> · '+kiedy(it.ts)+(it.typ==='e'?mailIle(it):'')+'</span></div></button>';
 }
 
@@ -1152,7 +1160,7 @@ function naDzien(s){
   return a.concat(b).sort(function(x,y){return gMin(x.g)-gMin(y.g);});
 }
 function gMin(g){if(!g)return 9999;var p=g.split(':');return (+p[0])*60+(+p[1]||0);}
-function kolIt(it){return it.st&&it.st!=='luzne'&&ST[it.st]?ST[it.st].c:TYPY[it.typ].c;}
+function kolIt(it){return it.st&&ST[it.st]?ST[it.st].c:TYPY[it.typ].c;}
 function wpisHtml(e){
   if(e.k==='i'){var it=e.o,mm=m2(it);return '<button type="button" class="wpis" style="--tc:'+kolIt(it)+'" data-act="otworz" data-id="'+it.id+'" data-drag="i:'+it.id+'">'+(e.g?'<span class="g">'+esc(e.g)+'</span>':'')+'<span class="x">'+esc(String(it.kl||it.tel).split(' ').slice(-1)[0])+' <small>'+esc(adrKr(it))+(mm?' · '+mm+' m²':'')+'</small></span></button>';}
   var w=e.o;return '<button type="button" class="wpis reka" data-act="dzien" data-d="'+w.dz+'" data-drag="w:'+w.id+'">'+(e.g?'<span class="g">'+esc(e.g)+'</span>':'')+'<span class="x">'+(wBr(w)?'<small>'+esc(bryg(w.br).n)+':</small> ':'')+esc(w.x)+'</span></button>';
@@ -1192,7 +1200,7 @@ function widokKal(){
 function pelny(c){return c?' pel" style="--pc:'+c+';--pt:'+tekstNa(c):'';}
 function swOpak(html,id,t){return '<div class="sw-w" data-sw="'+esc(id)+'"><button type="button" class="sw-del" data-act="swUsun" data-id="'+esc(id)+'" data-t="'+t+'" tabindex="-1">'+(t==='plan'?'Z planu':'Usuń')+'</button>'+html+'</div>';}
 function wiersz(it,lewa,t){
-  var mm=m2(it),stK=it.st&&it.st!=='luzne'&&ST[it.st]?ST[it.st].c:'';
+  var mm=m2(it),stK=it.st&&ST[it.st]?ST[it.st].c:'';
   var h='<div class="wier'+pelny(stK)+'"><button type="button" class="w0" style="--tc:'+kolIt(it)+'" data-act="otworz" data-id="'+it.id+'">'+(lewa!=null?'<span class="gz">'+lewa+'</span>':'')+
     '<span class="tx"><b>'+esc(it.kl)+(czyNowe(it)?' <span class="nowe">Nowe</span>':'')+'</b><span>'+esc(adrKr(it))+(mm?' · '+mm+' m²':'')+' · '+kwotaTxt(it)+'</span><span style="color:var(--ink3)">'+TYPY[it.typ].k+' · '+kiedy(it.ts)+'</span>'+pillIt(it)+'</span></button>'+
     '<a class="dzw" href="tel:+48'+cyfry(it.tel)+'" aria-label="Zadzwoń do '+esc(it.kl)+'">'+ik('tel')+'</a></div>';
@@ -1288,7 +1296,7 @@ function detZapytanie(it){
   var ark=bezpLink(it.arkusz,/^https:\/\/(docs|drive)\.google\.com\//),anl=bezpLink(it.analizator,/^https:\/\/(smartparkiet\.com\.pl|disaster26\.github\.io)\//);
   var mapa=String(it.ul||it.ds||'').replace(/ m\. \d+/,'');if(mapa.indexOf(',')<0)mapa+=', Warszawa';var eMail=it.typ==='e';
   var h='<div class="det-h"><button type="button" class="wst" data-act="zamknij">'+ik('wst')+'Wróć</button><span class="t">'+esc(it.nr||T.k)+' · '+kiedy(it.ts)+'</span></div><div class="det-b">';
-  h+='<div class="hd"><h2>'+esc(it.kl||'Bez nazwiska')+'</h2><div class="adr">'+esc(adrTxt(it))+'</div><div class="src"><span class="typ" style="--tc:'+T.c+'">'+T.n+'</span>'+(it.ts?'<span class="kd-ts"> · '+pelnaData(it.ts)+'</span>':'')+'</div>'+
+  h+='<div class="hd"><h2>'+esc(it.kl||'Bez nazwiska')+'</h2><div class="adr">'+esc(adrTxt(it))+'</div><div class="src">'+(it.typ==='r'?'<button type="button" class="typ zr-ed" style="--tc:'+T.c+'" data-act="zrEd" data-id="'+it.id+'">'+(it.zr?esc(it.zr):T.n)+' '+ik('olowek')+'</button>':'<span class="typ" style="--tc:'+T.c+'">'+T.n+'</span>')+(it.ts?'<span class="kd-ts"> · '+pelnaData(it.ts)+'</span>':'')+'</div>'+
     '<div class="kw"><b>'+kwotaTxt(it)+'</b><span>'+(it.kwota>0?'netto':'')+(m2(it)?(it.kwota>0?' · ':'')+m2(it)+' m²':'')+'</span></div>';
   var inf=[['Termin klienta',it.termin],['Zakres',(it.zakres||[]).join(', ')],['Informacje',it.info],['Upust',it.upust?zl(Math.abs(it.upust)):''],['Nr zamówienia',it.nr]].filter(function(x){return x[1];});
   if(inf.length)h+='<dl class="dane hd-inf">'+inf.map(function(x){return '<dt>'+x[0]+'</dt><dd'+(x[0]==='Termin klienta'?' class="wazne"':'')+'>'+esc(x[1])+'</dd>';}).join('')+'</dl>';
@@ -1419,6 +1427,7 @@ function sprawaHtml(w){
 }
 function tydzLb(p){var p5=plus(p,5);return p.getMonth()===p5.getMonth()?p.getDate()+'-'+p5.getDate()+' '+MIES_D[p5.getMonth()]:p.getDate()+' '+MIES_D[p.getMonth()].slice(0,3)+'. - '+p5.getDate()+' '+MIES_D[p5.getMonth()].slice(0,3)+'.';}
 function gPw(b){return /PODWYKON/i.test(b&&b.n||'')?' gpw':'';}
+var GTYG=4;
 function widokGraf(){
   var G=D.graf,p=pon(S.gd),cz=plus(p,3);
   var mies=MIES_M[cz.getMonth()].toUpperCase()+' '+cz.getFullYear();
@@ -1439,8 +1448,10 @@ function widokGraf(){
   if(S.gwyb){var nm=S.gwyb.split(':'),wn=nm[0]==='i'?(item(nm[1])||{}).kl||(item(nm[1])||{}).tel:tekstKaf(kaf(nm[1])||{});h+='<div class="wybor" style="margin:0 0 6px"><b>Stuknij kratkę (brygada i dzień) dla: '+esc(wn||'')+'</b><button type="button" data-act="gwybAnul">Anuluj</button></div>';}
   /* wiersze siatki liczone jawnie: --rm telefon (kafelki, info brygad, sprawy ogólne gdy są), --rd komputer (kafelki, info; Sprawy w ostatniej kolumnie) */
   h+='<div class="gsiat'+(S.gwyb||S.kop?' cel':'')+'" style="--nb:'+G.br.length+'"><div class="gh g0" style="--rm:1;--rd:1;grid-column:1"></div>'+G.br.map(function(b,j){return '<div class="gh'+gPw(b)+'" style="--rm:1;--rd:1;grid-column:'+(j+2)+'">'+esc(b.n)+'</div>';}).join('')+'<div class="gh gsp" style="--rm:1;--rd:1">Sprawy</div>';
-  var rm=2;
-  for(var i=0;i<6;i++){var d=plus(p,i),s=iso(d),dz=s===DZIS_I,rd=2+i*2,sb=d.getDay()===6?' sob':'';
+  var rm=2,rdn=2;
+  /* 16.11 Artur 13:52: zamiast przycisku - kolejne tygodnie pod spodem, przewijane w dół */
+  for(var tw=0;tw<GTYG;tw++){if(tw>0){var pw=plus(p,tw*7);h+='<div class="gtyd" style="--rm:'+rm+';--rd:'+rdn+';grid-column:1 / -1">'+tydzLb(pw)+'</div>';rm++;rdn++;}
+  for(var i=tw*7;i<tw*7+6;i++){var d=plus(p,i),s=iso(d),dz=s===DZIS_I,rd=rdn,sb=d.getDay()===6?' sob':'';rdn+=2;
     var wd=D.wpisy.filter(function(w){return w.dz===s;}).sort(function(a,b){return gMin(a.g)-gMin(b.g);});
     var sp=wd.filter(function(w){return !wBr(w);}),span=sp.length?3:2;
     h+='<div class="gdn'+sb+(dz?' dzis':'')+(d<DZIS?' min':'')+'" style="--rm:'+rm+' / span '+span+';--rd:'+rd+' / span 2">'+DNI[d.getDay()].replace('.','')+'<b>'+d.getDate()+'</b></div>';
@@ -1449,7 +1460,7 @@ function widokGraf(){
       h+='<div class="gk gn'+gPw(b)+sb+'" style="--rm:'+(rm+1)+';--rd:'+(rd+1)+';grid-column:'+(j+2)+'" data-cel="'+s+'|N:'+b.id+'" data-act="gnot" data-d="'+s+'" data-b="'+b.id+'" aria-label="Informacja dla '+esc(b.n)+'">'+nb.map(sprawaHtml).join('')+(nb.length?'':'<span class="gn-p">'+ik('plus')+'info</span>')+'</div>';});
     h+='<div class="gk gsp'+(sp.length?'':' pusta')+'" style="--rm:'+(rm+2)+';--rd:'+rd+' / span 2" data-cel="'+s+'|S" data-act="gsp" data-d="'+s+'">'+sp.map(sprawaHtml).join('')+'<button type="button" class="pl" data-act="gsp" data-d="'+s+'" aria-label="Dodaj sprawę">'+ik('plus')+(sp.length?'':'sprawa')+'</button></div>';
     rm+=span;
-  }
+  }}
   h+='</div></div>';
   if(S.kop)h+='<div class="kop-bar" role="status"><span>Skopiowano: <b>'+esc(tekstKaf(S.kop).split(' / ')[0])+'</b><small>Stuknij kratkę brygady, żeby wkleić</small></span><button type="button" data-act="kopAnul">Anuluj</button></div>';
   return h;
@@ -1984,6 +1995,26 @@ function otworzPdf(it){
     if(r.brakPdf)toast('Nie znalazłem PDF, otwieram arkusz wyceny');
   }).catch(function(e){if(w)w.close();if(String(e.message)!=='auth')toast('Brak połączenia');});
 }
+/* 16.11 Artur 13:41-14:30: czerwony kafelek z datą na karcie - stuknięcie = wpisanie/zmiana daty */
+function oknoDzKarta(it){
+  var o=okno('<h3><span>'+(it.st==='zatw'?'Termin':'Wstępny termin')+'</span><button type="button" class="zam" data-zam aria-label="Zamknij">'+ik('x')+'</button></h3>'+
+    '<p style="margin:0 0 10px;font-size:14px;color:var(--ink2)">'+esc(it.kl||adrTxt(it)||'')+'</p>'+
+    '<div class="term"><label class="t-pole"><span>Dzień</span><input type="date" id="kdzD" value="'+(it.dz||'')+'"></label><label class="t-pole"><span>Godzina (nie musi być)</span><input type="time" id="kdzG" value="'+(it.g?('0'+it.g).slice(-5):'')+'"></label></div>'+
+    '<button type="button" class="btn-p pom" id="kdzOk" style="margin-top:14px">Zapisz datę</button>'+(it.dz?'<button type="button" class="btn-p" id="kdzUs" style="margin-top:8px">Usuń datę</button>':''));
+  o.querySelector('#kdzOk').addEventListener('click',function(){var v=o.querySelector('#kdzD').value;if(!v){toast('Wybierz dzień');return;}przypisz(it.id,v,o.querySelector('#kdzG').value.replace(/^0/,''));o.remove();render(true);});
+  var us=o.querySelector('#kdzUs');if(us)us.addEventListener('click',function(){it.dz=null;it.g='';log(it,'Usunięto datę terminu');zapisz();o.remove();render(true);});
+}
+/* 16.11 Artur 14:46: skąd jest wpis z ręki - wpisywane ręcznie (telefon, SMS, cokolwiek) */
+function oknoZrodlo(it){
+  var gotowe=['Telefon','SMS','WhatsApp','E-mail','Polecenie','Facebook'];
+  var o=okno('<h3><span>Skąd to zapytanie</span><button type="button" class="zam" data-zam aria-label="Zamknij">'+ik('x')+'</button></h3>'+
+    '<div class="zr-ch">'+gotowe.map(function(g){return '<button type="button" data-g="'+g+'">'+g+'</button>';}).join('')+'</div>'+
+    '<label for="zrT" style="display:block;margin:12px 0 4px;font-size:13px;color:var(--ink3)">Albo wpisz sam</label><input id="zrT" maxlength="80" value="'+esc(it.zr||'')+'" placeholder="np. telefon od pani z Bielan" style="width:100%;height:46px">'+
+    '<button type="button" class="btn-p pom" id="zrOk" style="margin-top:14px">Zapisz</button>');
+  var inp=o.querySelector('#zrT');
+  o.querySelectorAll('.zr-ch button').forEach(function(b){b.addEventListener('click',function(){var g=b.getAttribute('data-g');inp.value=inp.value.trim()&&inp.value.indexOf(g)<0?inp.value.trim()+', '+g:g;});});
+  o.querySelector('#zrOk').addEventListener('click',function(){var v=inp.value.trim().slice(0,80);if(v!==(it.zr||'')){it.zr=v;log(it,'Źródło: '+(v||TYPY.r.n));zapisz();}o.remove();render(true);});
+}
 function oknoDane(it){
   okno('<h3><span>Dane klienta</span><button type="button" class="zam" data-zam aria-label="Zamknij">'+ik('x')+'</button></h3>'+
   '<dl class="dane"><dt>Klient</dt><dd>'+esc(it.kl||'-')+'</dd><dt>Telefon</dt><dd>'+(it.tel?'<a href="tel:+48'+cyfry(it.tel)+'">'+esc(it.tel)+'</a>':'-')+'</dd><dt>Adres</dt><dd>'+esc(adrTxt(it)||'-')+'</dd>'+
@@ -2078,6 +2109,8 @@ document.addEventListener('click',function(e){
     case 'v':if(S.stWyb)stOczekuje();S.v=b.getAttribute('data-v');S.wyb=null;S.gwyb=null;S.kop=null;S.kalWst=null;if(!DESK.matches){S.sel=null;S.dzien=null;}else if(S.v!=='kal')S.dzien=null;render();if(S.v==='szuk'){var q=$('q');if(q&&DESK.matches)q.focus();}break;
     case 'fT':S.fT=b.getAttribute('data-f');render(true);break;
     case 'fS':S.fS=b.getAttribute('data-f');render(true);break;
+    case 'zrEd':{var itz=item(id);if(itz)oknoZrodlo(itz);break;}
+    case 'kdz':{e.stopPropagation();var itd=item(id);if(itd)oknoDzKarta(itd);break;}
     case 'otworz':
       if(S.stWyb&&S.stWyb.id!==id)stOczekuje();
       if(S.wyb&&b.closest('[data-day]')){e.stopPropagation();var dy=b.closest('[data-day]').getAttribute('data-day');przypisz(S.wyb,dy);S.wyb=null;render(true);break;}
@@ -2274,5 +2307,32 @@ if(v&&window.MutationObserver)new MutationObserver(wstaw).observe(v,{childList:t
 wstaw();
 })();
 </script>
+<style id="artur-1611f">
+/* 16.11 Artur 14:24: węższe paski - więcej kart na ekranie */
+.lista{gap:5px;padding:10px 10px}
+.karta{padding:8px 12px 8px 15px}
+.karta::before{top:8px;bottom:8px}
+.k1 .nm{font-size:15px}.k1 .zl{font-size:14.5px}
+.k2{font-size:13.5px;margin-top:1px}
+.k3{margin-top:5px;gap:4px 8px}
+/* 16.11 Artur 13:48-14:30: data terminu na czerwonym kafelku */
+.karta .dz.dzr,.karta.kst .dz.dzr{background:#E0262B!important;color:#fff!important;border-radius:6px;padding:2px 8px 2px 6px;font-weight:750;letter-spacing:.02em;line-height:1.35;cursor:pointer}
+.karta .dz.dzr svg.i{color:#fff!important;stroke:#fff}
+.karta .dz.dzr.pust{background:rgba(224,38,43,.85)!important;font-weight:650}
+/* 16.11 Artur 13:59: Analizator w dolnym pasku */
+.tabs a.tab-anl{flex:1;min-width:0;height:var(--tab);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10.5px;font-weight:600;color:var(--ink3);text-decoration:none;letter-spacing:-.01em;white-space:nowrap}
+.tabs a.tab-anl svg.i{width:24px;height:24px;stroke-width:1.7}
+@media(max-width:400px){.tabs button,.tabs a.tab-anl{font-size:9.5px}}
+#sideNav a.nv{display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:9px;color:#BDB4A9;font-weight:550;font-size:14.5px;width:100%;text-decoration:none;margin-top:4px}
+#sideNav a.nv svg.i{color:#8A8178;width:20px;height:20px}
+#sideNav a.nv:hover{background:#221D19;color:#E8E1D8}
+/* 16.11 Artur 14:46: źródło wpisu z ręki do wpisania */
+.hd .src .zr-ed{font-size:13px;display:inline-flex;align-items:center;gap:6px;padding:2px 0;color:var(--ink2);text-decoration:underline dotted;text-underline-offset:3px}
+.hd .src .zr-ed svg.i{width:14px;height:14px}
+.zr-ch{display:flex;flex-wrap:wrap;gap:6px}.zr-ch button{height:38px;padding:0 14px;border-radius:19px;background:var(--kosc);font-weight:600;font-size:14px}
+/* 16.11 Artur 13:52: kolejne tygodnie w grafiku */
+.gtyd{grid-column:1 / -1;margin-top:10px;padding:7px 10px;border-radius:7px;background:var(--graf);color:#fff;font-size:12px;font-weight:700;letter-spacing:.02em}
+html[data-motyw="ciemny"] .gtyd{background:#2C2C2E}
+</style>
 </body>
 </html>

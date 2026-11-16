@@ -17,7 +17,7 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 KORZEN = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HASLO = os.environ.get('MOCK_HASLO', 'test-haslo-123')
 LOCK = threading.Lock()
-ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'zatw', 'wtoku', 'zrobione', 'odpadlo']
+ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'zatw', 'wtoku', 'zrobione', 'asap', 'odpadlo']
 BRYGADY = [{'id': 'b1', 'n': 'JARO.2'}, {'id': 'b2', 'n': 'JAREK'}, {'id': 'b3', 'n': 'MACIEK'}]
 STATUSY = [{'id': 'ok', 'n': 'Potwierdzone', 'c': '#2E9E3A'}, {'id': 'mysli', 'n': 'Zastanawia się', 'c': '#FF8A00'},
            {'id': 'wst', 'n': 'Wstępnie', 'c': '#FFD60A'}, {'id': 'ogl', 'n': 'Oględziny / pomiar', 'c': '#A8D8F5'},
@@ -131,7 +131,7 @@ def czysc_zap(d, reczne):
     if reczne:
         o.update({'reczne': True, 'typ': 'r', 'ts': int(d.get('ts') or time.time() * 1000), 'nr': txt(d.get('nr'), 30), 'kl': txt(d.get('kl'), 120),
                   'tel': txt(d.get('tel'), 40), 'ul': txt(d.get('ul'), 200), 'ds': txt(d.get('ds'), 60), 'em': txt(d.get('em'), 120),
-                  'm2': liczba(d.get('m2')), 'kwota': 0, 'zakres': [], 'info': txt(d.get('info'), 300)})
+                  'm2': liczba(d.get('m2')), 'kwota': 0, 'zakres': [], 'info': txt(d.get('info'), 300), 'zr': txt(d.get('zr'), 80)})
     return o
 
 
