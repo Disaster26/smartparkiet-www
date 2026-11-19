@@ -144,6 +144,15 @@ FOLDER_JS = r"""<style>
   if(!j)return;if(!j.ok){info(j.blad||'Nie udało się pobrać listy.');if(j.blad==='Brak dostępu')pokazPin();return;}
   WSZ0=(j.lista||[]).slice().sort(function(x,y){return (y.t||0)-(x.t||0);});WSZ_T=Date.now();window.spFolderNieaktualny=false;pokazListe();
   info(j.lista.length?'':'Folder jest pusty.');} /* Artur 09.11 12:08: bez tekstu pomocniczego */
+ function telZ(t){var m=String(t||'').replace(/[\s-]/g,'').match(/(\+?48)?(\d{9})(?!.*\d{9})/);return m?m[2]:'';}
+ async function zdjeciaZInnej(id,o){
+  if(!swieza())await odswiez();
+  var tel=telZ(o.opis);if(!tel){var w0=WSZ0.filter(function(x){return x.id===id;})[0];tel=w0?telZ(w0.opis):'';}
+  if(!tel)return null;
+  var kand=WSZ0.filter(function(x){return x.id!==id&&!/^a_|^lok_/.test(x.id)&&telZ(x.opis)===tel;}).sort(function(a,b){return (b.t||0)-(a.t||0);}).slice(0,10);
+  for(var i=0;i<kand.length;i++){var r=null;try{r=await api('a=wczytaj&id='+encodeURIComponent(kand[i].id));}catch(e){}
+   var oo=r&&r.ok&&r.oferta;if(oo&&(oo.zdjecia||[]).length)return {z:oo.zdjecia,pd:(oo.stan&&oo.stan.podpisy)||[],kiedy:rozbierz(kand[i]).kiedy||String(oo.kiedy||'')};}
+  return null;}
  async function wczytaj(id){info('Wczytuję ofertę...');var j;
   /* 06.11: wycena zapisana tylko w tym telefonie (brak internetu przy Zapisz) - bez serwera */
   if(/^lok_/.test(id)){var L=window.spSzkicLokalny?window.spSzkicLokalny(id.slice(4)):null;if(!L){info('Nie ma już tej wyceny na telefonie.');return;}
@@ -159,11 +168,18 @@ FOLDER_JS = r"""<style>
   var mini=document.getElementById('miniatury'),b,n=0;
   while(mini&&(b=mini.querySelector('button[data-i]'))&&n++<20)b.click();
   window.spWczytaj(o.stan||{});
+  /* 18.11 Artur 22:45 "nowa oferta jest ale nie zapisaly sie zdjecia": wersja wczytana z karty (np. wycena klienta albo wersja zapisana bez zdjec)
+     nie miala zdjec, wiec kazda kolejna wersja tez szla bez nich. Teraz: gdy wczytana wersja nie ma zdjec, szukamy innej wersji tego samego
+     klienta (telefon z opisu) w Folderze ofert, najnowsza najpierw, i dolaczamy jej zdjecia - kolejny zapis/wysylka juz je zachowa. */
+  var zDod=null;
+  if(!(o.zdjecia||[]).length){try{zDod=await zdjeciaZInnej(id,o);}catch(e){zDod=null;}
+   if(zDod){o.zdjecia=zDod.z;o.stan=o.stan||{};if(!(o.stan.podpisy||[]).length)o.stan.podpisy=zDod.pd||[];}}
   var fi=document.getElementById('file');
   if(fi&&o.zdjecia&&o.zdjecia.length){var dt=new DataTransfer();o.zdjecia.forEach(function(z,i){dt.items.add(plik(z,i));});
    fi.files=dt.files;fi.dispatchEvent(new Event('change',{bubbles:true}));
    var pd=(o.stan&&o.stan.podpisy)||[];setTimeout(function(){[].slice.call(document.querySelectorAll('#miniatury input.podp')).forEach(function(p,i){
     if(pd[i]){p.value=pd[i];p.dispatchEvent(new Event('input',{bubbles:true}));}});},300);}
+  if(zDod){info('Wczytana oferta z '+String(o.kiedy||'').replace(/^\d{4}-(\d\d)-(\d\d) (\d\d)-(\d\d)$/,'$2.$1 $3:$4')+'. Ta wersja nie miała zdjęć - dołączyłem '+zDod.z.length+' zdj. z wersji z '+zDod.kiedy+'. Popraw, co trzeba, i wyślij albo zapisz - zdjęcia zostaną w nowej wersji.');var ok0=document.getElementById('ofertaKl');if(ok0&&o.mailKlienta)ok0.checked=true;return;}
   var ok=document.getElementById('ofertaKl');if(ok&&o.mailKlienta)ok.checked=true;
   if(o.szkic||(o.stan&&o.stan.szkic)){info('Wczytana zapisana wycena z '+String(o.kiedy||'').replace(/^\d{4}-(\d\d)-(\d\d) (\d\d)-(\d\d)$/,'$2.$1 $3:$4')+((o.zdjecia||[]).length?' ('+o.zdjecia.length+' zdj.)':'')+'. Uzupełnij, co trzeba, i naciśnij Wyślij - albo Zapisz, żeby wrócić do niej później.');return;}
   /* Artur 01.11 21:16 "jest tylko bez zdjec": wersje zapisane przed poprawka z 29.10 nie maja zdjec w folderze (zdjecia sa tylko w starym PDF) -

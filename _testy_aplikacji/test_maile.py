@@ -92,7 +92,7 @@ def run(p, w, h, mobile, ciemny=False):
     czekaj(lambda: pg.locator('.gal').count() == 0, 'zamknięcie galerii')
     # status Zatwierdzone zapisuje sie (uwaga Artura 21:23)
     det.locator('.stg button[data-s=zatw]').click()
-    assert det.locator('.st-ok').inner_text().startswith('Zatwierdź zmianę statusu'), 'brak przycisku zatwierdzenia'
+    assert det.locator('.st-ok').inner_text().upper().startswith('ZATWIERDŹ'), 'brak przycisku zatwierdzenia'
     pg.screenshot(path='%s/status_wybor_%d%s.png' % (ZRZ, w, '_c' if ciemny else ''))
     det.locator('.st-ok').click()
     czekaj(lambda: db()['status'].get(EID, {}).get('st') == 'zatw', 'status zatw na serwerze')

@@ -7,7 +7,7 @@ Skrypt podmienia liczby we wszystkich plikach .html (poza index-biale.html - zap
 """
 import os, re, glob
 
-OPINIE = 264        # 13.11.2026: Artur "mamy 264 opinie" (suma wszystkich wizytowek; 30.10: 257)
+OPINIE = 272        # 18.11.2026 ~18:05: Google Maps 228 Suflerska + 23 + 15 + 6 (nowa opinia Piotra 14:46); wczesniej 271
 
 TU = os.path.dirname(os.path.abspath(__file__))
 WZORY = [
