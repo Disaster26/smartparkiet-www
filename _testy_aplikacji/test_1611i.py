@@ -6,6 +6,7 @@ from playwright.sync_api import sync_playwright
 TU = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, TU)
 import mock_serwer as M
+import kafnav  # 19.11: nawigacja przez ekran z kafelkami
 
 ZRZ = os.path.join(TU, 'zrzuty'); os.makedirs(ZRZ, exist_ok=True)
 srv = ThreadingHTTPServer(('127.0.0.1', 0), M.H)
@@ -57,9 +58,9 @@ with sync_playwright() as p:
             if mob:
                 return pg.evaluate("()=>{var b=document.getElementById('wstecz');return b.classList.contains('on')&&b.classList.contains('off')}")
             return pg.locator('#wstS').is_disabled()
-        # Dzis: przycisk widoczny, wyszarzony
-        assert pg.locator(WS).is_visible(), 'brak przycisku Wstecz na Dziś'
-        assert wyl(), 'na Dziś przycisk powinien być wyszarzony'
+        # 19.11: start = ekran kafelkow; telefon - Wstecz schowany, komputer - wyszarzony
+        assert st()['v'] == 'start', st()
+        assert (pg.locator(WS).is_hidden() if mob else wyl()), 'Wstecz na starcie'
         pg.screenshot(path=os.path.join(ZRZ, '1611i_dzis_%d.png' % w))
         # Dzis > Zapytania > karta > Wstecz > Wstecz
         pg.click(nav % 'lista'); pg.wait_for_timeout(500)
@@ -69,8 +70,8 @@ with sync_playwright() as p:
         assert pg.locator(WS).is_visible(), 'Wstecz niewidoczny w karcie'
         pg.screenshot(path=os.path.join(ZRZ, '1611i_karta_%d.png' % w))
         wstecz(); s2 = st(); assert s2['v'] == 'lista' and not s2['sel'], s2
-        wstecz(); s3 = st(); assert s3['v'] == 'dzis' and s3['h'] == 0, s3
-        assert wyl()
+        wstecz(); s3 = st(); assert s3['v'] == 'start' and s3['h'] == 0, s3
+        assert (pg.locator(WS).is_hidden() if mob else wyl())
         # Kalendarz > dzien > Wstecz (widok Miesiac)
         pg.click(nav % 'kal'); pg.wait_for_timeout(500)
         pg.evaluate("()=>{var X=__spk();X.S.kt='mies';X.render()}"); pg.wait_for_timeout(300)
@@ -89,20 +90,20 @@ with sync_playwright() as p:
         pg.click(nav % 'lista'); pg.wait_for_timeout(400)
         pg.locator('.karta').first.click(); pg.wait_for_timeout(500)
         pg.go_back(); pg.wait_for_timeout(500); g1 = st(); assert g1['v'] == 'lista' and not g1['sel'], g1
-        pg.go_back(); pg.wait_for_timeout(500); g2 = st(); assert g2['v'] == 'graf', g2
-        pg.go_back(); pg.wait_for_timeout(500); g3 = st(); assert g3['v'] == 'szuk', g3
+        pg.go_back(); pg.wait_for_timeout(500); g2 = st(); assert g2['v'] == ('start' if mob else 'graf'), g2  # telefon: przez kafelki
+        if not mob: pg.go_back(); pg.wait_for_timeout(500); g3 = st(); assert g3['v'] == 'szuk', g3
         assert pg.url.startswith(BASE + '/aplikacja/'), pg.url
         # okno zamykane gestem wstecz
         pg.evaluate("()=>{__spk().okno('<h3><span>Test</span></h3>')}"); pg.wait_for_timeout(200)
         pg.go_back(); pg.wait_for_timeout(400)
         assert pg.locator('.okno').count() == 0, 'okno nie zamknięte gestem'
-        assert st()['v'] == 'szuk'
+        assert st()['v'] == ('start' if mob else 'szuk')
         # wyjscie do Dzis i dalej z aplikacji nie wyrzuca bez potrzeby
         for _ in range(6):
-            if st()['v'] == 'dzis' and not st()['sel']:
+            if st()['v'] == 'start' and not st()['sel']:
                 break
             pg.go_back(); pg.wait_for_timeout(400)
-        assert st()['v'] == 'dzis', st()
+        assert st()['v'] == 'start', st()
         assert pg.url.startswith(BASE + '/aplikacja/'), pg.url
 
         # ---- Kopiuj -> Kalendarz (godzinowy) ----

@@ -6,6 +6,7 @@ from playwright.sync_api import sync_playwright
 TU = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, TU)
 import mock_serwer as M
+import kafnav  # 19.11: nawigacja przez ekran z kafelkami
 
 ZRZ = os.path.join(TU, 'zrzuty'); os.makedirs(ZRZ, exist_ok=True)
 srv = ThreadingHTTPServer(('127.0.0.1', 0), M.H)
@@ -51,8 +52,10 @@ with sync_playwright() as p:
         nav = ('.tabs' if mob else '.side') + ' button[data-v=%s]'
         pg.click(nav % 'lista'); pg.wait_for_timeout(600)
         # Analizator w pasku / menu
-        sel = '.tabs a.tab-anl' if mob else '#sideNav a[href="/analizator.html"]'
+        sel = '.kaf[data-v=anl][href="/analizator.html"]' if mob else '#sideNav a[href="/analizator.html"]'
+        if mob: kafnav.do_kafelkow(pg); pg.wait_for_timeout(300)
         assert pg.locator(sel).count() == 1, 'brak Analizatora'
+        if mob: pg.click(nav % 'lista'); pg.wait_for_timeout(600)
         # luzne zolte
         kol = pg.evaluate("""()=>{var k=[...document.querySelectorAll('.karta.kst')].map(e=>getComputedStyle(e).getPropertyValue('--kst').trim());return k}""")
         assert any(c.upper() == '#FFD43B' for c in kol), ('brak żółtej karty', kol[:5])

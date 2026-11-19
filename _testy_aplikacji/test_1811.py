@@ -4,6 +4,7 @@ from http.server import ThreadingHTTPServer
 from playwright.sync_api import sync_playwright
 TU = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, TU)
 import mock_serwer as M
+import kafnav  # 19.11: nawigacja przez ekran z kafelkami
 
 # kopia sytuacji ze zrzutow Artura: ten sam adres kilka razy (Analizator + Wycena klienta) + wpis z reki
 _rej = M.rejestr_poczatkowy

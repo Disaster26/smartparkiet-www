@@ -4,6 +4,7 @@ from http.server import ThreadingHTTPServer
 from playwright.sync_api import sync_playwright
 TU = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, TU)
 import mock_serwer as M
+import kafnav  # 19.11: nawigacja przez ekran z kafelkami
 srv = ThreadingHTTPServer(('127.0.0.1', 0), M.H); threading.Thread(target=srv.serve_forever, daemon=True).start()
 BASE = 'http://127.0.0.1:%d' % srv.server_address[1]; APP = BASE + '/aplikacja/'; bledy = []
 urllib.request.urlopen(urllib.request.Request(BASE + '/mock/reset', data=b'{}', method='POST'))
@@ -24,7 +25,7 @@ with sync_playwright() as p:
     pg.screenshot(path=os.path.join(TU, 'zrzuty', '1911a_status.png'))
     ok.click(); pg.wait_for_timeout(600)
     st = pg.evaluate("(z)=>window.__spk().item(z).st", r0['id']); print('status', st); assert st == 'wtoku'
-    pg.evaluate("document.querySelector('.tabs button[data-v=graf]').click()"); pg.wait_for_timeout(700); pg.click('.gdr-kaf'); pg.wait_for_timeout(400)
+    pg.click('.det .wst'); pg.wait_for_timeout(400); pg.click('.tabs button[data-v=graf]'); pg.wait_for_timeout(700); pg.click('.gdr-kaf'); pg.wait_for_timeout(400)
     n = pg.locator('.gtray .chips .ch.chst').count(); print('kolorowe pozycje', n); assert n > 0
     pg.screenshot(path=os.path.join(TU, 'zrzuty', '1911a_graf.png'))
     print('BLEDY:', bledy); assert not bledy
