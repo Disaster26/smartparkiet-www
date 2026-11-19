@@ -57,6 +57,17 @@ function folderMiesiaca() {
 }
 
 function glownyFolder() {
+  /* 19.11: skrypt przeniesiony na konto Artura (smartparkiet@gmail.com), a folder z wycenami nalezy do panbet77
+     i jest Arturowi tylko udostepniony - szukanie po nazwie moglo zalozyc drugi, pusty folder. Dlatego najpierw
+     po ID (wlasciwosc FOLDER_ID), a gdy jej brak - folder, w ktorym lezy Rejestr wycen (KATALOG_SS_ID). */
+  const p = PropertiesService.getScriptProperties();
+  const idF = p.getProperty('FOLDER_ID');
+  if (idF) try { return DriveApp.getFolderById(idF); } catch (e) { console.error('FOLDER_ID: ' + e); }
+  const idR = p.getProperty('KATALOG_SS_ID');
+  if (idR) try {
+    const rodzice = DriveApp.getFileById(idR).getParents();
+    if (rodzice.hasNext()) { const f = rodzice.next(); p.setProperty('FOLDER_ID', f.getId()); return f; }
+  } catch (e) { console.error('folder Rejestru: ' + e); }
   const it = DriveApp.getFoldersByName(FOLDER);
   if (it.hasNext()) return it.next();
   const f = DriveApp.createFolder(FOLDER);
