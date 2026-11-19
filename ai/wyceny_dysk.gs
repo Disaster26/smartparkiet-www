@@ -442,8 +442,8 @@ function doPost(e) {
           .map(function (t) { return String(t).replace(/[<>&"]/g, ' '); });
         if (urlArkusza) ak.push('Arkusz: ' + urlArkusza);
         MailApp.sendEmail({
-          /* 19.11: testKopia = kopia na konto, na ktorym dziala skrypt (panbet77), nie do Artura - tylko do testow */
-          to: d.testKopia ? Session.getEffectiveUser().getEmail() : ARTUR,
+          /* 19.11: testKopia = kopia na adres testowy z wlasciwosci skryptu TEST_KOPIA (nie do Artura); bez wlasciwosci test nic nie wysyla */
+          to: d.testKopia ? (PropertiesService.getScriptProperties().getProperty('TEST_KOPIA') || '') : ARTUR,
           name: 'SMARTPARKIET wyceny',
           subject: 'Kopia: ' + (d.temat || 'Wycena SMARTPARKIET'),
           body: ak.join('\n\n'),
