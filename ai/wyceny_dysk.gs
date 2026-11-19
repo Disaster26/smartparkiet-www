@@ -16,6 +16,9 @@ const POTWIERDZENIE = true;   // false = klient nie dostaje maila z potwierdzeni
 /* 21.10: skrypt dziala na koncie pomocniczym (panbet77) - odpowiedzi klientow ida do Artura,
    a folder z wycenami jest mu udostepniony do edycji */
 const ARTUR = 'smartparkiet.kontakt@gmail.com';
+/* 19.11 (decyzja usera): kopie wycen i ukryte kopie maili do klientow na smartparkiet@gmail.com - na tym koncie dziala
+   teraz skrypt i to konto Artur czyta. Odpowiedzi klientow (replyTo) nadal na ARTUR (kontakt@), jak dotad. */
+const KOPIE_DO = 'smartparkiet@gmail.com';
 /* 21.10 Artur oglada rejestr z konta smartparkiet@gmail.com - dostep dla obu adresow */
 const ARTUR_WSZYSTKIE = ['smartparkiet.kontakt@gmail.com', 'smartparkiet@gmail.com'];
 
@@ -460,7 +463,7 @@ function doPost(e) {
     const mail = String(d.mailKlienta || '').trim();
     const mailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail);
     /* 19.11: test (d.testKopia) - kopie i bcc ida na adres testowy z wlasciwosci TEST_KOPIA zamiast do Artura */
-    const doArtura = d.testKopia ? (PropertiesService.getScriptProperties().getProperty('TEST_KOPIA') || '') : ARTUR;
+    const doArtura = d.testKopia ? (PropertiesService.getScriptProperties().getProperty('TEST_KOPIA') || '') : KOPIE_DO;
     let wyslanoBcc = false; /* Artur 09.11: czy Artur dostal juz ten mail w ukrytej kopii */
     if (d.ofertaKlientowi && mailOk && d.pdf) {
       const akapity = ['w załączniku przesyłamy ofertę renowacji parkietu przygotowaną na podstawie przesłanych informacji i zdjęć. Na ostatniej stronie znajdą Państwo zasady renowacji.',
