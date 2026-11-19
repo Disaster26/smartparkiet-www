@@ -127,7 +127,10 @@ function arkuszWyceny(folder, nazwa, a, kiedy) {
     const [nz, j] = jm(p[0]);
     const cena = (p[2] === null || p[2] === undefined) ? '' : p[2];
     sh.getRange(w, 1, 1, 4).setValues([[nz, p[1], j, cena]]);
-    sh.getRange(w, 5).setFormula('=IF(AND(ISNUMBER(B' + w + '),ISNUMBER(D' + w + ')),B' + w + '*D' + w + ',"")');
+    /* 19.11: wartosci liczone w skrypcie, nie formula - na koncie Artura arkusze sa w polskich ustawieniach
+       i formula z przecinkami dawala #ERROR! (to samo co HYPERLINK 22.10) */
+    const wart = (typeof p[1] === 'number' && typeof cena === 'number') ? Math.round(p[1] * cena * 100) / 100 : '';
+    sh.getRange(w, 5).setValue(wart);
     if (katalog && typeof p[3] === 'number') sh.getRange(w, 6).setValue(p[3]).setFontColor('#6B5E52');
     const r = sh.getRange(w, 1, 1, K).setVerticalAlignment('middle')
       .setBorder(null, null, true, null, null, null, LINIA, SpreadsheetApp.BorderStyle.SOLID);
@@ -143,7 +146,8 @@ function arkuszWyceny(folder, nazwa, a, kiedy) {
   /* 4. suma (+ upust) */
   const wSuma = start + 1 + poz.length;
   sh.getRange(wSuma, 1, 1, 4).merge().setValue('Razem netto').setHorizontalAlignment('right');
-  sh.getRange(wSuma, 5).setFormula(poz.length ? '=SUM(E' + (start + 1) + ':E' + (wSuma - 1) + ')' : '=0')
+  const suma = poz.reduce((x, p) => x + ((typeof p[1] === 'number' && typeof p[2] === 'number') ? p[1] * p[2] : 0), 0);
+  sh.getRange(wSuma, 5).setValue(Math.round(suma * 100) / 100)
     .setNumberFormat(ZL).setHorizontalAlignment('right');
   sh.getRange(wSuma, 1, 1, K).setFontWeight('bold').setFontSize(12).setBackground(JASNY).setVerticalAlignment('middle')
     .setBorder(true, null, true, null, null, null, POM, SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
