@@ -293,6 +293,53 @@ function mailPotwierdzenie(zamowienie, numer) {
   return { html: html, text: text };
 }
 
+/* Artur 19.11 22:44: kopia "Kopia: <adres>..." na smartparkiet.kontakt@ tylko przy PIERWSZEJ wycenie danego klienta.
+   Klient = ten sam telefon (ostatnie 9 cyfr) albo ten sam adres (bez spacji i znakow). Szukamy w Rejestrze wycen
+   z ostatnich KOPIA_DNI dni - po tym czasie ten sam adres traktujemy jak nowe zapytanie. */
+const KOPIA_DNI = 60;
+function kluczeKlienta(tel, adres) {
+  const k = [];
+  const t = String(tel || '').replace(/\D/g, '');
+  if (t.length >= 9) k.push('t' + t.slice(-9));
+  const ad = String(adres || '').toLowerCase().replace(/[^0-9a-ząćęłńóśźż]/g, '');
+  if (ad.length >= 5) k.push('a' + ad);
+  return k;
+}
+function bylaWRejestrze(a) {
+  const moje = kluczeKlienta(a.tel, a.adres);
+  if (!moje.length) return false;
+  const it = glownyFolder().getFilesByName('Rejestr wycen');
+  if (!it.hasNext()) return false;
+  const sh = SpreadsheetApp.open(it.next()).getSheets()[0];
+  const n = Math.min(sh.getLastRow() - 1, 1500);
+  if (n < 1) return false;
+  const rng = sh.getRange(2, 1, n, 4);
+  const v = rng.getValues(), dv = rng.getDisplayValues();
+  const granica = Date.now() - KOPIA_DNI * 864e5;
+  for (let i = 0; i < n; i++) {
+    const ts = katData(v[i][0], dv[i][0]);
+    if (ts && ts < granica) continue;
+    const ich = kluczeKlienta(dv[i][2], dv[i][3]);
+    if (ich.some(function (k) { return moje.indexOf(k) >= 0; })) return true;
+  }
+  return false;
+}
+function kluczKopii(k) {
+  return 'kopia_' + Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, k, Utilities.Charset.UTF_8)
+    .map(function (b) { return ('0' + (b & 255).toString(16)).slice(-2); }).join('');
+}
+/* czy kopia dla tego klienta poszla w ciagu ostatnich 30 min (wtedy oferta do klienta tej samej wersji moze isc bez bcc) */
+function kopiaNiedawno(a) {
+  const p = PropertiesService.getScriptProperties();
+  return kluczeKlienta(a.tel, a.adres).some(function (k) { return Date.now() - Number(p.getProperty(kluczKopii(k)) || 0) < 30 * 60000; });
+}
+function zapamietajKopie(a) {
+  const p = PropertiesService.getScriptProperties();
+  const teraz = Date.now(), wszystkie = p.getProperties();
+  Object.keys(wszystkie).forEach(function (k) { if (k.indexOf('kopia_') === 0 && teraz - Number(wszystkie[k]) > 864e5) p.deleteProperty(k); });
+  kluczeKlienta(a.tel, a.adres).forEach(function (k) { p.setProperty(kluczKopii(k), String(teraz)); });
+}
+
 function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
@@ -321,6 +368,7 @@ function doPost(e) {
     } catch (e) { console.error('folder poprawek: ' + e); }
     /* 22.10: blad arkusza/rejestru nie moze zablokowac maila do klienta (tak bylo 16:01-16:20) */
     let urlArkusza = ''; /* Artur 09.11: link do arkusza w kopii dla Artura */
+    let nowaWycena = true; /* Artur 19.11: false = ten klient (telefon / adres) jest juz w Rejestrze z ostatnich KOPIA_DNI dni */
     if (d.arkusz) {
       try {
         const a = d.arkusz;
@@ -329,7 +377,14 @@ function doPost(e) {
         const tytul = String.fromCodePoint(0x1F4CD) + ' ' + czysc((a.ulica || a.imie || a.tel || 'wycena') + ' ' + kiedy.slice(0, 10));
         const url = arkuszWyceny(folder, tytul, a, kiedy);
         urlArkusza = url;
-        rejestr(a, kiedy, url, idStanu);
+        /* Artur 19.11 22:44: sprawdzenie "czy to nowa wycena" i wpis do rejestru pod jedna blokada - zapis z podgladu
+           i "Wyslij" tej samej nowej oferty ida niemal rownoczesnie i bez blokady oba uznalyby sie za pierwsze */
+        const blokada = LockService.getScriptLock();
+        const mamBlokade = blokada.tryLock(20000);
+        try {
+          try { nowaWycena = !bylaWRejestrze(a); } catch (e) { console.error('nowa wycena?: ' + e); }
+          rejestr(a, kiedy, url, idStanu);
+        } finally { if (mamBlokade) blokada.releaseLock(); }
       } catch (e) { console.error('arkusz/rejestr: ' + e); }
     }
     const mail = String(d.mailKlienta || '').trim();
@@ -351,9 +406,12 @@ function doPost(e) {
         htmlBody: mailHtml(akapity),
         attachments: [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Oferta_SMARTPARKIET.pdf')]
       };
-      if (d.bezBcc) delete opcjeOferty.bcc;
+      /* 19.11: "bez bcc" tylko wtedy, gdy kopia tej oferty naprawde poszla do Artura przed chwila (nowa wycena z podgladu).
+         Po poprawce kopii z podgladu juz nie ma, wiec oferta wyslana klientowi idzie do Artura w bcc jak dawniej. */
+      const bezBcc = !!d.bezBcc && kopiaNiedawno(d.arkusz || {});
+      if (bezBcc) delete opcjeOferty.bcc;
       MailApp.sendEmail(opcjeOferty);
-      wyslanoBcc = !d.bezBcc;
+      wyslanoBcc = !bezBcc;
     } else if (POTWIERDZENIE && mailOk) {
       /* 27.10 02:36-02:44 Artur: nowa tresc potwierdzenia (zamowienie online / "Chce zamowic" vs zwykla wycena) */
       const m = mailPotwierdzenie(!!d.zamowienie, numer);
@@ -370,8 +428,12 @@ function doPost(e) {
       wyslanoBcc = true;
     }
     /* Artur 09.11 12:19: kazda wycena z narzedzia parkieciarza (podglad, WhatsApp, mail) na smartparkiet.kontakt@gmail.com,
-       takze gdy klient nie podal maila. Gdy wyzej poszla oferta / potwierdzenie z bcc do Artura - drugiego maila nie wysylamy. */
-    if (d.kopiaArtur && !wyslanoBcc) {
+       takze gdy klient nie podal maila. Gdy wyzej poszla oferta / potwierdzenie z bcc do Artura - drugiego maila nie wysylamy.
+       Artur 19.11 22:44 ("za kazdym razem jak cos grzebie w arkuszu albo wysylam pracownikom, arkusz znowu laduje na poczcie"):
+       kopia TYLKO przy pierwszej wycenie danego klienta. Poprawki, ponowne podglady i wysylki PDF pracownikom zapisuja sie
+       na Dysku i w Rejestrze jak dotad, ale bez maila. Oferta wyslana mailem klientowi dalej idzie do Artura w bcc (wyzej). */
+    let kopiaWyslana = false;
+    if (d.kopiaArtur && !wyslanoBcc && nowaWycena) {
       try {
         const a = d.arkusz || {};
         const ak = ['Kopia wyceny z narzędzia samodzielna wycena online (' + kiedy + ').',
@@ -380,18 +442,21 @@ function doPost(e) {
           .map(function (t) { return String(t).replace(/[<>&"]/g, ' '); });
         if (urlArkusza) ak.push('Arkusz: ' + urlArkusza);
         MailApp.sendEmail({
-          to: ARTUR,
+          /* 19.11: testKopia = kopia na konto, na ktorym dziala skrypt (panbet77), nie do Artura - tylko do testow */
+          to: d.testKopia ? Session.getEffectiveUser().getEmail() : ARTUR,
           name: 'SMARTPARKIET wyceny',
           subject: 'Kopia: ' + (d.temat || 'Wycena SMARTPARKIET'),
           body: ak.join('\n\n'),
           htmlBody: mailHtml(ak),
           attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Oferta_SMARTPARKIET.pdf')] : []
         });
+        kopiaWyslana = true;
+        try { zapamietajKopie(a); } catch (e) { console.error('zapamietaj kopie: ' + e); }
       } catch (e) { console.error('kopia dla Artura: ' + e); }
     }
     /* 07.11: oferta wyslana na podstawie zapisanej wyceny - szkic nie jest juz potrzebny (wyslana wersja jest w folderze) */
     if (d.szkicUsun) try { usunSzkic(d.szkicUsun); } catch (e) { console.error('usun szkic: ' + e); }
-    return json({ ok: true, plik: nazwa, id: idStanu, nr: numer });
+    return json({ ok: true, plik: nazwa, id: idStanu, nr: numer, kopia: kopiaWyslana });
   } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({ ok: false, blad: String(err) }))
       .setMimeType(ContentService.MimeType.JSON);
