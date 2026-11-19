@@ -316,6 +316,61 @@ function mailHtml(akapity) {
     '</td></tr></table></div>';
 }
 
+/* 20.11 (user: "bez motywu robisz te maile?"): kopia wyceny dla Artura w szacie SMARTPARKIET - te same dane co dawniej
+   (data, adres, telefon, e-mail klienta, kwota netto, informacje dodatkowe, link do arkusza, PDF w zalaczniku), ale
+   w czytelnej tabelce: pasek marki z logo, status, wyrozniona kwota, przyciski do arkusza / analizatora / telefonu, stopka.
+   Kolory podane wprost (karty biale, tekst grafit), zeby ciemny tryb Gmaila nie robil szarej plamy.
+   Tekst "Kopia wyceny z narzedzia" zostaje w wersji tekstowej - po nim automat kopie_kosz rozpoznaje kopie. */
+function mailKopia(a, kiedy, urlArkusza, idStanu, temat) {
+  const e = t => String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const zl = n => (Math.round((n || 0) * 100) / 100).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' zł';
+  const tel = String(a.tel || '').trim();
+  const telNr = tel.replace(/[^\d+]/g, '');
+  const telLink = tel ? '<a href="tel:' + e(telNr) + '" style="color:#FE6500;font-weight:700;text-decoration:none">' + e(tel) + '</a>' : '-';
+  const mailK = String(a.mail || '').trim();
+  const wiersze = [
+    ['Klient', e(a.imie || '-')], ['Telefon', telLink],
+    ['E-mail', mailK ? '<a href="mailto:' + e(mailK) + '" style="color:#1F2328">' + e(mailK) + '</a>' : '-'],
+    ['Adres', e(a.adres || a.ulica || '-')], ['Metraż', a.m2 ? e(a.m2) + ' m²' : ''],
+    ['Informacje', e(a.info || '')], ['Termin', e(a.termin || '')]
+  ].filter(r => r[1] !== '');
+  const tab = wiersze.map((r, i) => {
+    const bg = i % 2 ? '#ffffff' : '#FFF5EC';
+    return '<tr><td style="padding:9px 12px;background:' + bg + ';color:#6B5E52;font-size:13px;font-weight:700;width:96px;vertical-align:top">' + r[0] +
+      '</td><td style="padding:9px 12px;background:' + bg + ';color:#1F2328;font-size:14px;vertical-align:top">' + r[1] + '</td></tr>';
+  }).join('');
+  const btn = (href, txt, pelny) => '<a href="' + e(href) + '" style="display:inline-block;margin:0 8px 8px 0;padding:11px 18px;border-radius:4px;font-size:14px;font-weight:700;text-decoration:none;' +
+    (pelny ? 'background:#FE6500;color:#ffffff;border:1.5px solid #FE6500' : 'background:#ffffff;color:#FE6500;border:1.5px solid #FE6500') + '">' + txt + '</a>';
+  const przyciski = (urlArkusza ? btn(urlArkusza, 'Otwórz arkusz wyceny', true) : '') +
+    (idStanu ? btn('https://smartparkiet.com.pl/analizator.html#oferta=' + idStanu, 'Popraw w analizatorze', false) : '') +
+    (telNr ? btn('tel:' + telNr, 'Zadzwoń do klienta', false) : '');
+  return '<div style="background:#F4EFE9;padding:20px 10px;font-family:Arial,Helvetica,sans-serif">' +
+    '<div style="display:none;max-height:0;overflow:hidden;opacity:0">' + e((a.adres || a.ulica || '') + ' · ' + zl(a.suma) + ' netto · ' + tel) + '</div>' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;border-collapse:collapse">' +
+    '<tr><td style="background:#14110E;padding:16px 20px;border-bottom:3px solid #FE6500">' +
+      '<img src="https://smartparkiet.com.pl/img/logo-znak.png" width="28" height="28" alt="SP" style="vertical-align:middle;border:0">' +
+      '<span style="vertical-align:middle;margin-left:10px;color:#ffffff;font-size:17px;font-weight:800;letter-spacing:.06em">SMART<span style="color:#FE6500">PARKIET</span>&trade;</span>' +
+      '<span style="vertical-align:middle;margin-left:8px;color:#B9B0A6;font-size:12px;font-weight:700;letter-spacing:.06em">| NOWA WYCENA</span></td></tr>' +
+    '<tr><td style="background:#ffffff;padding:20px 20px 6px;color:#1F2328">' +
+      '<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:0 0 12px"><tr><td style="background:#FE6500;color:#ffffff;font-size:12px;font-weight:800;letter-spacing:.08em;padding:6px 11px;border-radius:4px">KOPIA WYCENY &middot; ' + e(kiedy) + '</td></tr></table>' +
+      '<div style="font-size:17px;font-weight:800;line-height:1.35;margin:0 0 4px;color:#1F2328">' + e(temat || 'Wycena SMARTPARKIET') + '</div>' +
+      '<div style="font-size:13px;color:#6B5E52;margin:0 0 14px">Kopia wyceny z narzędzia (pierwsza wycena tego klienta). Kolejne poprawki zapisują się w Rejestrze i Folderze ofert bez nowego maila.</div>' +
+    '</td></tr>' +
+    '<tr><td style="background:#ffffff;padding:0 20px 14px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #F3D2BC">' + tab + '</table></td></tr>' +
+    '<tr><td style="background:#ffffff;padding:0 20px 16px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse"><tr>' +
+      '<td style="background:#14110E;color:#ffffff;padding:12px 14px;font-size:14px;font-weight:700">Kwota netto</td>' +
+      '<td style="background:#14110E;color:#FE6500;padding:12px 14px;font-size:20px;font-weight:800;text-align:right;white-space:nowrap">' + zl(a.suma) + '</td></tr>' +
+      (a.rabat > 0 ? '<tr><td style="padding:6px 14px;font-size:13px;color:#B03C0A;background:#ffffff">w tym upust</td><td style="padding:6px 14px;font-size:13px;color:#B03C0A;text-align:right;background:#ffffff">-' + zl(a.rabat) + '</td></tr>' : '') +
+    '</table></td></tr>' +
+    (przyciski ? '<tr><td style="background:#ffffff;padding:0 20px 14px">' + przyciski + '</td></tr>' : '') +
+    '<tr><td style="background:#ffffff;padding:0 20px 18px;color:#6B5E52;font-size:12px">Oferta PDF w załączniku.</td></tr>' +
+    '<tr><td style="background:#14110E;padding:16px 20px;color:#DDD5CB;font-size:12px;line-height:1.6">' +
+      '<div style="color:#ffffff;font-weight:800;letter-spacing:.08em;font-size:13px">SMARTPARKIET TREMBIŃSKI</div>' +
+      '<div><a href="https://smartparkiet.com.pl" style="color:#DDD5CB;text-decoration:none">smartparkiet.com.pl</a> &middot; <a href="tel:+48602242815" style="color:#FE6500;text-decoration:none;font-weight:700">602 242 815</a></div>' +
+      '<div style="font-style:italic;color:#B9B0A6">Twój parkiet. Twój termin. Twoja wycena. My tylko robimy robotę!</div>' +
+    '</td></tr></table></div>';
+}
+
 /* 29.10 17:42 Artur: zdanie 'Zapraszamy do kontaktu...' przed podziekowaniem (oba warianty); 13.11 18:12: 'Po zapoznaniu się z ofertą zapraszamy do kontaktu telefonicznego - ...'.
    27.10 02:36-02:44 Artur: tresc maila do klienta po wycenie / zamowieniu online - dokladnie jego slowa.
    zamowienie=true: zamow-online.html albo zaznaczone "Chce skorzystac z wykonania uslugi" w wycena.html. */
@@ -516,13 +571,14 @@ function doPost(e) {
           'Kwota netto: ' + (Math.round((a.suma || 0) * 100) / 100) + ' zł' + (a.info ? ' · ' + a.info : '')]
           .map(function (t) { return String(t).replace(/[<>&"]/g, ' '); });
         if (urlArkusza) ak.push('Arkusz: ' + urlArkusza);
+        if (idStanu) ak.push('Popraw w analizatorze: https://smartparkiet.com.pl/analizator.html#oferta=' + idStanu);
         MailApp.sendEmail({
           /* 19.11: testKopia = kopia na adres testowy z wlasciwosci skryptu TEST_KOPIA (nie do Artura); bez wlasciwosci test nic nie wysyla */
           to: doArtura,
           name: 'SMARTPARKIET wyceny',
           subject: 'Kopia: ' + (d.temat || 'Wycena SMARTPARKIET'),
           body: ak.join('\n\n'),
-          htmlBody: mailHtml(ak),
+          htmlBody: mailKopia(a, kiedy, urlArkusza, idStanu, d.temat),
           attachments: d.pdf ? [Utilities.newBlob(Utilities.base64Decode(d.pdf), 'application/pdf', d.nazwaPdf || 'Oferta_SMARTPARKIET.pdf')] : []
         });
         kopiaWyslana = true;
