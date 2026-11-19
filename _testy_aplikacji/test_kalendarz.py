@@ -8,6 +8,7 @@ T = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, T)
 os.chdir(os.path.dirname(T))
 import mock_serwer as M
+import kafnav  # 19.11: nawigacja przez ekran z kafelkami
 ZRZ = os.path.join(T, 'zrzuty', 'kalendarz'); os.makedirs(ZRZ, exist_ok=True)
 srv = ThreadingHTTPServer(('127.0.0.1', 0), M.H)
 threading.Thread(target=srv.serve_forever, daemon=True).start()

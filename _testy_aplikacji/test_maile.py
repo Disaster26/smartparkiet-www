@@ -9,6 +9,7 @@ T = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, T)
 os.chdir(os.path.dirname(T))
 import mock_serwer as M
+import kafnav  # 19.11: nawigacja przez ekran z kafelkami
 ZRZ = os.path.join(T, 'zrzuty', 'maile'); os.makedirs(ZRZ, exist_ok=True)
 srv = ThreadingHTTPServer(('127.0.0.1', 0), M.H)
 threading.Thread(target=srv.serve_forever, daemon=True).start()
@@ -130,11 +131,12 @@ def run(p, w, h, mobile, ciemny=False):
     if not mobile:
         assert 'kst' in pg.locator('.karta', has_text='Paweł Dorawa').get_attribute('class')
     # Szybki wpis: przycisk Powrot zamyka okno (Artur 21:37)
-    pg.locator('[data-act=szybki]:visible').first.click(); pg.wait_for_timeout(250)
+    (pg.click('.tabs [data-act=szybki]') if mobile else pg.locator('[data-act=szybki]:visible').first.click()); pg.wait_for_timeout(250)
     assert pg.locator('.okno .btn-powrot').is_visible()
     pg.screenshot(path='%s/szybki_%d.png' % (ZRZ, w))
     pg.click('.okno .btn-powrot'); czekaj(lambda: pg.locator('.okno').count() == 0, 'zamkniecie szybkiego wpisu')
     # inne zrodla dalej dzialaja: karta z analizatora ma PDF oferty
+    if mobile: pg.click(nav % 'lista'); pg.wait_for_timeout(300)  # 19.11: z ekranu kafelkow
     pg.click('[data-act=fT][data-f=all]'); pg.wait_for_timeout(150)
     pg.locator('.karta', has_text='Wróblewska').click(); pg.wait_for_timeout(300)
     assert pg.locator('#det [data-act=pdf]').count() == 1 and pg.locator('#det .mail-s').count() == 0

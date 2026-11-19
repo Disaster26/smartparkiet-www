@@ -895,7 +895,9 @@ var IK={
   ll:'<path d="m12 5-7 7 7 7M19 5l-7 7 7 7"/>',
   pp:'<path d="m5 5 7 7-7 7M12 5l7 7-7 7"/>',
   zeg:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
-  prv:'<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM5 20.5a7 7 0 0 1 14 0"/>'
+  prv:'<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM5 20.5a7 7 0 0 1 14 0"/>',
+  kafle:'<rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/>',
+  slo:'<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/>'
 };
 function ik(n){return '<svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+IK[n]+'</svg>';}
 
@@ -988,7 +990,7 @@ function zStanu(st){var kl=st.kal||{};return {w:st.w||st.wersja||'',items:(st.it
 function klon(o){return JSON.parse(JSON.stringify(o));}
 var BAZA=null,POCZ=null,D=pusty();
 (function(){var k=lsGet(KL_KESZ);if(TOK&&k){try{BAZA=zStanu(JSON.parse(k));POCZ=BAZA;D=klon(BAZA);}catch(e){}}})();
-var S={v:'dzis',sel:null,dzien:null,fT:'all',fS:'otwarte',kt:(function(){var t=lsGet('spk-kal-tryb');return /^(dzien|tg|tydz|mies)$/.test(t||'')?t:'dzien';})(),kalWst:null,kd:DZIS,q:'',wyb:null};
+var S={v:'start',sel:null,dzien:null,fT:'all',fS:'otwarte',kt:(function(){var t=lsGet('spk-kal-tryb');return /^(dzien|tg|tydz|mies)$/.test(t||'')?t:'dzien';})(),kalWst:null,kd:DZIS,q:'',wyb:null};
 /* 19.11 Artur 01:19: pasek aplikacji w Wycen usluge prowadzi do konkretnego widoku (#v=lista, #v=graf, #v=dodaj ...) */
 (function(){var m=/[#&]v=(dzis|lista|szuk|graf|kal|dodaj)/.exec(location.hash||'');if(!m)return;if(m[1]==='dodaj')S.hDodaj=1;else S.v=m[1];if(m[1]==='graf')S.gd=DZIS;try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}})();
 var OTWARTE=function(i){return !ST_ZAMK[i.st]&&!DUBLE[i.id];};
@@ -1122,7 +1124,7 @@ function pobierz(){
 }
 setInterval(function(){if(document.visibilityState==='visible')pobierz();},60000);
 /* 15.11: telefon (ikona na ekranie) potrafi trzymac stara wersje strony w pamieci - po powrocie do aplikacji sprawdzamy wersje i przeladowujemy */
-var APP_W='2026-11-19b';
+var APP_W='2026-11-19c';
 function sprawdzWersje(){
   if(!window.fetch)return;
   fetch('./?w='+Date.now(),{cache:'no-store',credentials:'omit'}).then(function(r){return r.ok?r.text():'';}).then(function(t){
@@ -1164,7 +1166,7 @@ function nav(){
   /* 16.11 Artur 13:59: Analizator na pasku - całe narzędzie w jednym miejscu (kalkulator dla klientów zostaje na stronie) */
   tb.push('<a class="tab-anl" href="/analizator.html">'+ik('anl')+'Analizator</a>');
   $('tabs').innerHTML=tb.join('');
-  $('sideNav').innerHTML='<button type="button" class="wst-s" id="wstS" aria-label="Wstecz">'+ik('wst')+'Wstecz</button>'+b.map(function(x){return '<button type="button" class="nv '+(S.v===x[0]?'on':'')+'" data-act="v" data-v="'+x[0]+'">'+ik(x[2])+x[1]+(x[0]==='lista'&&nowe?'<span class="bdg">'+nowe+'</span>':'')+'</button>';}).join('')+'<button type="button" class="nv plus-s" data-act="szybki">'+ik('plus')+'Szybki wpis</button><a class="nv" href="/analizator.html">'+ik('anl')+'Analizator</a><button type="button" class="wyl" data-act="wyloguj">Wyloguj</button>';
+  $('sideNav').innerHTML='<button type="button" class="wst-s" id="wstS" aria-label="Wstecz">'+ik('wst')+'Wstecz</button>'+'<button type="button" class="nv nv-start '+(S.v==='start'?'on':'')+'" data-act="v" data-v="start">'+ik('kafle')+'Ekran główny</button>'+b.map(function(x){return '<button type="button" class="nv '+(S.v===x[0]?'on':'')+'" data-act="v" data-v="'+x[0]+'">'+ik(x[2])+x[1]+(x[0]==='lista'&&nowe?'<span class="bdg">'+nowe+'</span>':'')+'</button>';}).join('')+'<button type="button" class="nv plus-s" data-act="szybki">'+ik('plus')+'Szybki wpis</button><a class="nv" href="/analizator.html">'+ik('anl')+'Analizator</a><button type="button" class="wyl" data-act="wyloguj">Wyloguj</button>';
 }
 
 /* ---------- karta na liście ---------- */
@@ -1184,6 +1186,26 @@ function karta(it,q){
 /* 18.11: kafelek zapytania w opakowaniu do przesuwania w lewo (Usun) + kosz przy najechaniu mysza */
 function swKarta(i,q){var id=esc(i.id);return '<div class="sw-w sw-pel" data-sw="'+id+'"><button type="button" class="sw-del" data-act="swUsun" data-id="'+id+'" tabindex="-1"><span>'+ik('kosz')+'Usuń</span></button>'+karta(i,q)+
   '<button type="button" class="sw-kosz" data-act="swUsun" data-id="'+id+'" aria-label="Usuń kafelek" title="Usuń kafelek">'+ik('kosz')+'</button></div>';}
+
+/* ---------- 19.11 Artur: ekran glowny SMART OFFICE - kafelki zamiast dolnego paska ---------- */
+function widokStart(){
+  var nowe=WID().filter(czyNowe).length,otw=WID().filter(OTWARTE).length,plan=naDzien(DZIS_I).length+kalNa(DZIS_I).length,d=DZIS;
+  var K=[
+    ['dzis','Dziś','slo','#FF6A13',plan?plan+' w planie na dziś':DNI_P[d.getDay()]+', '+d.getDate()+' '+MIES_D[d.getMonth()]],
+    ['lista','Zapytania','lista','#1E5F9E',nowe?nowe+' now'+(nowe===1?'e':(nowe%10>=2&&nowe%10<=4&&(nowe%100<10||nowe%100>=20)?'e':'ych'))+' · '+otw+' otwartych':otw+' otwartych'],
+    ['szuk','Szukaj','szuk','#5E5852','Nazwisko, telefon, adres'],
+    ['graf','Grafik','graf','#1F7A4D','Brygady na tydzień'],
+    ['kal','Kalendarz','kal','#0E7C86','Godziny i terminy'],
+    ['anl','Analizator','anl','#16120F','Oferta, arkusz, PDF']
+  ];
+  var h='<div class="top st-top"><div class="top-r"><span class="st-logo"><img src="img/logo-96.png" alt="" width="44" height="44"></span><h1 class="st-nazwa">SMART OFFICE</h1></div></div>';
+  h+='<div class="st-w"><button type="button" class="kaf kaf-dod" data-act="szybki" aria-label="Dodaj - szybki wpis"><span class="kaf-i">'+ik('plus')+'</span><span class="kaf-t"><b>Dodaj</b><small>Szybki wpis: telefon, SMS, notatka</small></span></button>';
+  h+='<div class="st-siatka">'+K.map(function(k){
+    var w='<span class="kaf-i" style="--kc:'+k[3]+'">'+ik(k[2])+'</span><span class="kaf-t"><b>'+k[1]+'</b><small>'+esc(k[4])+'</small></span>'+(k[0]==='lista'&&nowe?'<span class="bdg kaf-bdg">'+nowe+'</span>':'');
+    return k[0]==='anl'?'<a class="kaf" href="/analizator.html" data-v="anl">'+w+'</a>':'<button type="button" class="kaf" data-act="v" data-v="'+k[0]+'">'+w+'</button>';
+  }).join('')+'</div></div>';
+  return h;
+}
 
 /* ---------- widok: lista ---------- */
 function widokLista(){
@@ -1334,7 +1356,7 @@ function oknoSzybki(tryb){
 
 /* ---------- przewodnik ---------- */
 var KROKI=[
-  {cel:function(){return document.querySelector(DESK.matches?'.side button[data-v=dzis]':'.tabs button[data-v=dzis]');},v:'dzis',t:'Podgląd dnia',x:'Po wejściu od razu widzisz: co nowego wpadło, co masz dziś i kto czeka na odpowiedź. Słuchawka po prawej = dzwonisz jednym stuknięciem.'},
+  {cel:function(){return document.querySelector('.kaf[data-v=dzis]');},v:'start',t:'Podgląd dnia',x:'Po wejściu od razu widzisz: co nowego wpadło, co masz dziś i kto czeka na odpowiedź. Słuchawka po prawej = dzwonisz jednym stuknięciem.'},
   {cel:function(){return $('gNowe');},v:'dzis',t:'Tu wpadają zapytania',x:'Wyceny z analizatora, wyceny klientów ze strony i zamówienia z koszyka wpadają same (z Rejestru wycen), z oznaczeniem Nowe, źródłem i godziną. Klient zadzwonił? Przycisk z plusem i dopisujesz z ręki.'},
   {cel:function(){return document.querySelector('.stg');},v:'det',t:'Tak zmieniasz status',x:'Stukasz zapytanie, otwiera się karta. Status zmieniasz jednym kliknięciem, niżej termin, notatka, PDF oferty, arkusz wyceny i dane klienta. Wszystko zapisuje się samo i widać to też na komputerze.'},
   {cel:function(){return document.querySelector('#kalG .kdn');},v:'kal',kt:'dzien',t:'Kalendarz godzinowy',x:'Godziny stałe, kafelki ruchome. Stuknij pustą kratkę i wpisz albo wklej adres. Kafelek przesuwasz palcem (przytrzymaj) albo myszą, pasek na dole wydłuża, stuknięcie zmienia kolor. Widok Tydzień to dni jeden pod drugim, jak w arkuszu.'},
@@ -1348,7 +1370,7 @@ function przewodnik(start){
   krok();
 }
 function konPrz(){if(przEl)przEl.remove();przEl=null;pk=-1;try{localStorage.setItem('spk-katalog-przew','1');}catch(e){}
-  if(!DESK.matches&&(S.sel||S.dzien)){S.sel=null;S.dzien=null;}S.v='dzis';render();}
+  if(!DESK.matches&&(S.sel||S.dzien)){S.sel=null;S.dzien=null;}S.v='start';render();}
 function krok(){
   var k=KROKI[pk];
   if(k.v==='det'){var pi=WID().filter(czyNowe)[0]||WID()[0];if(!pi){pk++;if(pk>=KROKI.length){konPrz();return;}krok();return;}S.v='lista';S.sel=S.sel||pi.id;S.dzien=null;}
@@ -1989,14 +2011,17 @@ document.addEventListener('click',function(e){if(e.target.id==='kalData'&&e.targ
 
 /* ---------- render ---------- */
 function render(zach){
-  if(S.zKop&&!item(S.zKop))S.zKop=null;liczDuble();histNotuj();zamknijPal();nav();$('app').className='app v-'+S.v+(S.zKop?' zk':'');zkopPasek();
+  if(S.zKop&&!item(S.zKop))S.zKop=null;liczDuble();histNotuj();zamknijPal();nav();$('app').className='app v-'+S.v+(S.zKop?' zk':'');document.body.classList.toggle('v-start',S.v==='start');zkopPasek();
   var v=$('view'),sc=v.scrollTop;
-  v.innerHTML=S.v==='dzis'?widokDzis():S.v==='lista'?widokLista():S.v==='kal'?widokKal():S.v==='graf'?widokGraf():widokSzuk();
+  v.innerHTML=S.v==='start'?widokStart():S.v==='dzis'?widokDzis():S.v==='lista'?widokLista():S.v==='kal'?widokKal():S.v==='graf'?widokGraf():widokSzuk();
   if(zach)v.scrollTop=sc;
+  homeB(v);
   if(S.v==='kal'){var tp=v.querySelector('.top');document.documentElement.style.setProperty('--toph',(tp&&getComputedStyle(tp).position==='sticky'?tp.offsetHeight:0)+'px');}
   renderDet();
   wsteczPokaz();swPrzywroc();
 }
+/* 19.11: w naglowku kazdego widoku przycisk z logo = powrot do ekranu z kafelkami */
+function homeB(v){v.querySelectorAll('.top-r>img').forEach(function(im){var b=document.createElement('button');b.type='button';b.className='home-b';b.setAttribute('data-act','v');b.setAttribute('data-v','start');b.setAttribute('aria-label','Ekran główny');b.title='Ekran główny';b.innerHTML=ik('wst')+'<img src="img/logo-96.png" alt="" width="30" height="30">';im.parentNode.replaceChild(b,im);});}
 function renderDet(){
   var d=$('det'),b=d.querySelector('.det-b'),sc=b?b.scrollTop:0,staryKlucz=d.getAttribute('data-k');
   var k=S.sel?'i'+S.sel:S.dzien?'d'+S.dzien:'';
@@ -2018,7 +2043,7 @@ function zamknijPanel(){stOczekuje();S.sel=null;S.dzien=null;render(true);}
 var HIST=[],HIST_POP=false,HIST_OST=null,COFNIJ=null,H_IGN=0;
 function histStan(){return {v:S.v,sel:S.sel,dzien:S.dzien,kt:S.kt,kd:S.kd?new Date(+S.kd):S.kd,gd:S.gd?new Date(+S.gd):S.gd,fS:S.fS,fT:S.fT};}
 function histKlucz(h){return [h.v,h.sel||'',h.dzien||'',h.v==='kal'?h.kt:''].join('|');}
-function histRoot(h){return h.v==='dzis'&&!h.sel&&!h.dzien;}
+function histRoot(h){return h.v==='start'&&!h.sel&&!h.dzien;}
 function histNotuj(){
   var t=histStan();
   if(HIST_POP){HIST_POP=false;HIST_OST=t;if(histRoot(t))HIST=[];return;}
@@ -2026,7 +2051,7 @@ function histNotuj(){
     COFNIJ=null;
     if(HIST.length&&histKlucz(HIST[HIST.length-1])===histKlucz(t))HIST.pop();/* powrot (np. przyciskiem Wróć) = zdjecie ze stosu */
     else{HIST.push(HIST_OST);if(HIST.length>40)HIST.shift();}}
-  if(histRoot(t))HIST=[];/* Dzis = ekran startowy, dalej juz tylko wyjscie z aplikacji */
+  if(histRoot(t))HIST=[];/* 19.11: ekran z kafelkami = ekran startowy, dalej juz tylko wyjscie z aplikacji */
   HIST_OST=t;
 }
 function moznaWstecz(){return !!(document.querySelector('.okno,.gal')||palEl||COFNIJ||S.zKop||HIST.length||!histRoot(S));}
@@ -2048,7 +2073,7 @@ function wsteczWykonaj(){
   if(COFNIJ){var f=COFNIJ;COFNIJ=null;f();return;}
   if(S.zKop){S.zKop=null;S.kalWst=null;S.wyb=null;S.gwyb=null;}
   var h=HIST.pop();
-  if(!h){if(histRoot(S)){render(true);return;}h={v:'dzis',sel:null,dzien:null,kt:S.kt,fS:S.fS,fT:S.fT};}
+  if(!h){if(histRoot(S)){render(true);return;}h={v:'start',sel:null,dzien:null,kt:S.kt,fS:S.fS,fT:S.fT};}
   if(S.sel&&h.sel!==S.sel)stOczekuje();
   S.v=h.v;S.sel=h.sel&&item(h.sel)?h.sel:null;S.dzien=h.dzien;S.kt=h.kt;if(h.kd)S.kd=h.kd;if(h.gd)S.gd=h.gd;S.fS=h.fS;S.fT=h.fT;
   S.wyb=null;S.gwyb=null;S.kop=null;S.kalWst=null;
@@ -2607,5 +2632,48 @@ html[data-motyw="ciemny"] .gtyd{background:#2C2C2E}
 <style id="artur-1811i">/* 18.11 Artur WA 22:48-22:50: w Terminie zamiast pola Godzina klawisz "Kopiuj do Grafika" */.term .t-graf{display:flex;flex-direction:column;gap:4px}.term .t-graf button{display:flex;align-items:center;justify-content:center;gap:6px;min-height:48px;width:100%;padding:0 8px;border:0;border-radius:10px;background:#1F8A4C;color:#fff;font:inherit;font-weight:700;font-size:14px;cursor:pointer}.term .t-graf button svg{width:18px;height:18px;flex:none;stroke:#fff;color:#fff}</style>
 <style id="artur-1811j">/* 18.11 Artur WA 23:05: Do rozplanowania = pomaranczowy kafelek, klik otwiera liste Zlecenia */.gtray h4 .gdr-kaf{margin-left:0;flex:1 1 auto;justify-content:flex-start;gap:8px;height:44px;padding:0 12px;border-radius:10px;background:#FF6A13;color:#fff;font-size:15px;font-weight:750}.gtray h4 .gdr-kaf b{background:#fff;color:#C2410C}.gtray h4 .gdr-kaf .gdr-s{margin-left:auto;font-size:12px;font-weight:650;opacity:.92}.gtray h4 button[data-act=gnowy]{margin-left:0;flex:none;height:44px}.gtray.zw>*:not(h4){display:none!important}.gtray .gdr-tyt{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin:2px 0 6px}.gtray.ot .chips{display:flex!important;flex-direction:column;flex-wrap:nowrap;gap:6px;max-height:55vh;overflow-y:auto;overflow-x:hidden;margin:0;padding:0 0 4px}.gtray.ot .chips .ch{width:100%;max-width:none;flex:none;white-space:normal;text-align:left}</style>
 <style id="artur-1911a">/* 19.11 Artur WA 23:37-00:07: karta zapytania na jeden ekran telefonu, STATUS wersalikami + pomaranczowy ZATWIERDZ obok, wezsze kafelki na liscie Zapytania, lista Zlecenia i zapytania w Grafiku w kolorach statusu */.gtray .chips .ch.chst{background:var(--kst);color:var(--kstt)}.gtray .chips .ch.chst *{color:inherit!important}.gtray .chips .ch.chst::before{background:rgba(0,0,0,.25)}@media(max-width:900px){.det-b .hd h2{font-size:21px;line-height:1.15;margin:0}.det-b .hd .adr{font-size:13px}.det-b .kw b{font-size:24px}.det-b .sek{margin-top:10px}.det-b .sek h3{font-size:13px;margin:0 0 6px}.det-b .hd-inf{padding:6px 10px;font-size:12.5px;margin-top:6px}.det-b .hd-inf dt,.det-b .hd-inf dd{padding:1px 0}.det-b .akcje{gap:6px;margin-top:8px}.det-b .akcje>a,.det-b .akcje>button{min-height:44px;padding:5px 4px;font-size:12px;gap:2px}.det-b .akcje svg{width:17px;height:17px}.det-b .tel-n{margin:4px 0 0;font-size:13px}.det-b .stg{gap:5px}.det-b .stg button{min-height:34px;padding:4px 10px;font-size:13px;line-height:1.15}}.sek-st .st-h{display:grid;grid-template-columns:1fr 1fr;gap:5px;align-items:center;margin:0 0 6px}.sek-st .st-h h3{margin:0;display:flex;align-items:center;gap:8px;letter-spacing:.06em}.sek-st .st-h .st-an{border:0;background:none;color:var(--ink3);font:inherit;font-size:12px;font-weight:600;text-decoration:underline;padding:0;cursor:pointer;letter-spacing:0}.sek-st .st-h .st-ok{min-height:34px;padding:4px 8px;border:0;border-radius:10px;background:#FF6A13;color:#fff;font:inherit;font-size:12.5px;font-weight:800;letter-spacing:.02em;line-height:1.15;cursor:pointer;text-transform:uppercase}.lista .karta{padding-top:7px;padding-bottom:7px}.lista .karta .k1{font-size:14px}.lista .karta .k2{font-size:12.5px;margin-top:1px}.lista .karta .k3{margin-top:4px;gap:4px}.lista .karta .k3 .st,.lista .karta .k3 span{font-size:11.5px;padding-top:2px;padding-bottom:2px}</style>
+<style id="kafelki-1911">
+/* 19.11 Artur: ekran glowny SMART OFFICE z kafelkami - dolny pasek schowany, nawigacja z kafelkow */
+:root{--tab:0px}
+.tabs{display:none!important}
+body.v-start .wstecz{display:none!important}
+.st-top{background:var(--graf)!important;border-bottom:0!important;padding:12px 16px!important;color:#fff;position:relative!important}
+.st-top .top-r{gap:12px;min-height:48px}
+.st-logo{width:46px;height:46px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 0 0 2px rgba(255,106,19,.55)}
+.st-logo img{width:40px;height:40px;display:block!important;border-radius:50%}
+.st-top h1.st-nazwa{flex:1 1 auto;margin:0;font-family:"Helvetica Neue",Helvetica,Inter,Arial,sans-serif;font-weight:700;letter-spacing:.14em;font-size:19px;line-height:1;color:#fff;white-space:nowrap;text-transform:uppercase}
+.st-top .top-r .motyw-b{margin-left:auto;background:rgba(255,255,255,.1);color:#fff}
+.st-w{padding:14px 14px calc(24px + var(--sb));max-width:760px}
+.kaf{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:12px;min-height:122px;padding:14px;border-radius:18px;background:var(--karta);box-shadow:0 1px 0 var(--linia2),0 2px 10px rgba(23,19,15,.06);text-align:left;text-decoration:none;color:var(--ink);transition:transform .16s var(--ease),box-shadow .16s var(--ease)}
+.kaf:active{transform:scale(.97)}
+.kaf-i{width:50px;height:50px;border-radius:14px;background:var(--kc,#FF6A13);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:inset 0 -2px 0 rgba(0,0,0,.14)}
+.kaf-i svg.i{width:28px;height:28px;stroke-width:2}
+.kaf-t{display:flex;flex-direction:column;gap:3px;min-width:0;width:100%}
+.kaf-t b{font-size:17px;font-weight:700;letter-spacing:.005em;line-height:1.15}
+.kaf-t small{font-size:12.5px;color:var(--ink3);line-height:1.3;font-weight:500}
+.kaf .kaf-bdg{position:absolute;left:auto;top:12px;right:12px;margin:0;min-width:24px;height:24px;border-radius:12px;font-size:13px;padding:0 6px}
+.kaf-dod{flex-direction:row;align-items:center;justify-content:flex-start;min-height:0;padding:12px 14px;margin-bottom:12px;width:100%;background:#FF6A13;color:#fff;box-shadow:0 4px 14px rgba(255,106,19,.32)}
+.kaf-dod .kaf-i{background:rgba(255,255,255,.22);box-shadow:none}
+.kaf-dod .kaf-i svg.i{stroke-width:2.6}
+.kaf-dod .kaf-t small{color:rgba(255,255,255,.88)}
+.st-siatka{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:370px){.kaf{min-height:112px;padding:12px}.kaf-t b{font-size:16px}.kaf-t small{font-size:12px}.st-top h1.st-nazwa{font-size:17px;letter-spacing:.12em}}
+@media(max-width:599px){.st-siatka .kaf{min-height:clamp(112px,calc((100vh - 300px) / 3),168px);min-height:clamp(112px,calc((100dvh - 300px) / 3),168px)}}
+@media(min-width:600px){.st-siatka{grid-template-columns:repeat(3,minmax(0,1fr))}.st-siatka .kaf{min-height:140px}}
+@media(min-width:960px){.st-w{padding:24px}.st-top{padding:16px 24px!important}}
+@media(hover:hover){.kaf:hover{box-shadow:0 1px 0 var(--linia2),0 6px 18px rgba(23,19,15,.12)}}
+.kaf.kaf-dod{min-height:0}
+.home-b{display:flex;align-items:center;gap:0;height:40px;padding:0 6px 0 0;margin-left:-6px;border-radius:12px;flex:none;color:var(--ink2)}
+.home-b svg.i{width:20px;height:20px;stroke-width:2.6;color:#FF6A13}
+.home-b img{width:30px;height:30px;display:block;border-radius:50%}
+.home-b:active{transform:scale(.94)}
+.side .nv-start svg.i{color:#FF6A13}
+html[data-motyw="ciemny"] .kaf{background:#1C1C1E;color:#F2EEE9;box-shadow:0 0 0 .5px rgba(255,255,255,.08)}
+html[data-motyw="ciemny"] .kaf-dod{background:#FF6A13;color:#fff}
+html[data-motyw="ciemny"] .kaf-t small{color:#A39D96}
+html[data-motyw="ciemny"] .kaf-dod .kaf-t small{color:rgba(255,255,255,.88)}
+html[data-motyw="ciemny"] .kaf-i[style*="#16120F"]{background:#3A3532}
+html[data-motyw="ciemny"] .st-top{background:#000!important}
+</style>
 </body>
 </html>
