@@ -1936,7 +1936,7 @@ window.spTemat=function(koniec){var v=function(id){return ((document.getElementB
     /* Artur 14.10: kazda oferta PDF ma sie zapisac na jego Dysku Google (konto SMARTPARKIET).
        Skrypt ai/wyceny_dysk.gs wdrozony na jego koncie; tu adres /exec. Pusty = funkcja wylaczona.
        Ten sam skrypt wysyla klientowi potwierdzenie (autoodpowiedz FormSubmit nie dochodzi). */
-    const DYSK_URL='https://script.google.com/macros/s/AKfycbxC1j9MytYHxqD-ONdcd8Bar5SxnAVnmr8pxP1_pdEEIZzB1hbh9AXRDtXEg5hX0QXzDA/exec';
+    const DYSK_URL='https://script.google.com/macros/s/AKfycbwAsDJgviwXrymNg1QzS7dgpBAVUSFniVb0BhL2SiIO8g65ELEeftJmuq79cSsxpiMTrQ/exec';
     function naDysk(mail,plik){
       if(!DYSK_URL)return;
       const pole=id=>((document.getElementById(id)||{}).value||'').trim();
@@ -4181,7 +4181,7 @@ html.wu-kosz #wuKon #wyslij{width:100%;margin:0 0 8px}
 (function(){
   var wew=false;try{wew=!!window.SP_ANALIZATOR||/[?&#]parkieciarz/.test(location.search+location.hash)||localStorage.getItem('spParkieciarz')==='1';}catch(e){}
   var URL_W=(/(^|\.)smartparkiet\.com\.pl$/.test(location.hostname)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))?'/wyslij.php':'https://smartparkiet.com.pl/wyslij.php';
-  var ARKUSZ='https://script.google.com/macros/s/AKfycbxC1j9MytYHxqD-ONdcd8Bar5SxnAVnmr8pxP1_pdEEIZzB1hbh9AXRDtXEg5hX0QXzDA/exec'; /* ten sam Apps Script co Folder ofert (ai/wyceny_dysk.gs) */
+  var ARKUSZ='https://script.google.com/macros/s/AKfycbwAsDJgviwXrymNg1QzS7dgpBAVUSFniVb0BhL2SiIO8g65ELEeftJmuq79cSsxpiMTrQ/exec'; /* ten sam Apps Script co Folder ofert (ai/wyceny_dysk.gs) */
   var ETYK=['','Słabo','Może być','W porządku','Dobrze','Super!'];
   var GW='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.5l6-.8z"/></svg>';
   var z=null,zT=0;
