@@ -75,52 +75,107 @@ function glownyFolder() {
   return f;
 }
 
-/* osobny arkusz Google na kazda wycene, w tym samym folderze miesiaca co PDF */
+/* osobny arkusz Google na kazda wycene, w tym samym folderze miesiaca co PDF.
+   19.11 (user: "nie da sie ladniej sformatowac?"): czytelny uklad takze na telefonie - na gorze pasek marki i 4 dane klienta
+   (Data, Klient, Telefon, Adres), pod nimi zamrozony naglowek tabeli Pozycja | Ilosc | j.m. | Cena jedn. | Wartosc,
+   kwoty w formacie "1 500,00 zl", suma pogrubiona, a pozostale informacje (e-mail, obiekt, podloga...) w sekcji
+   "Szczegoly" pod suma - tylko niepuste, bez pustych wierszy. Dane i ich kolejnosc w Rejestrze bez zmian.
+   Zgodnosc: etykieta w kol. A + wartosc w kol. B, wiersz 'Pozycja' rozpoczyna tabele, 'Razem netto' ja konczy
+   (czyta to staraOferta i ramka brygady z aplikacji). */
 function arkuszWyceny(folder, nazwa, a, kiedy) {
   const ss = SpreadsheetApp.create(nazwa);
+  try { ss.setSpreadsheetLocale('pl_PL'); ss.setSpreadsheetTimeZone('Europe/Warsaw'); } catch (e) {}
   const sh = ss.getActiveSheet();
   sh.setName('Wycena');
-  const dane = [
-    ['SMARTPARKIET - wstępna oferta renowacji parkietu', ''],
-    ['Data', kiedy],
-    ['Klient', a.imie || ''],
-    ['Telefon', a.tel || ''],
-    ['E-mail', a.mail || ''],
-    ['Adres', a.adres || ''],
-    ['Obiekt', a.obiekt || ''],
-    ['Podłoga', a.rodzaj || ''],
-    ['Wykończenie', a.technika || ''],
-    ['Termin', a.termin || ''],
-    ['Informacje dodatkowe', a.info || ''], /* Artur 09.11: pietro, winda, termin - bez ceny */
-    ['Uwagi', a.uwagi || '']
-  ];
-  sh.getRange(1, 1, dane.length, 2).setValues(dane);
-  sh.getRange(1, 1).setFontWeight('bold').setFontSize(14).setFontColor('#FE6500');
-  sh.getRange(2, 1, dane.length - 1, 1).setFontWeight('bold').setFontColor('#4A5058');
-  const start = dane.length + 2;
-  /* Artur 30.10: kolumna E "Cena katalogowa" - wypelniona, gdy parkieciarz zmienil cene jednostkowa (p[3] z formularza) */
-  sh.getRange(start, 1, 1, 5).setValues([['Pozycja', 'Ilość', 'Cena jedn. (zł)', 'Wartość (zł)', 'Cena katalogowa (zł)']])
-    .setFontWeight('bold').setBackground('#FE6500').setFontColor('#FFFFFF');
-  /* Artur 30.10 16:39: pozycje do realizacji (ilosc > 0) na gorze i na ciemniejszym pomaranczowym tle, potem "do uzgodnienia" */
+  sh.setHiddenGridlines(true);
+  const ZL = '#,##0.00 "zł"';
+  const POM = '#FE6500', JASNY = '#FFF3EA', REAL = '#FFE0CB', SZARY = '#4A5058', LINIA = '#F3D2BC';
   const real = p => typeof p[1] === 'number' && p[1] > 0;
   const wszystkie = (a.poz || []).filter(p => p[1] !== 0 && p[1] !== '0');
+  /* Artur 30.10 16:39: pozycje do realizacji (ilosc > 0) na gorze i wyroznione, potem "do uzgodnienia" */
   const poz = wszystkie.filter(real).concat(wszystkie.filter(p => !real(p)));
+  /* Artur 30.10: "Cena katalogowa" tylko gdy parkieciarz zmienil cene jednostkowa (p[3]) */
+  const katalog = poz.some(p => typeof p[3] === 'number');
+  const K = katalog ? 6 : 5;
+  /* jednostka z konca nazwy pozycji, np. "Renowacja parkietu (m²)" -> "Renowacja parkietu" + "m²" */
+  const jm = n => { const m = String(n || '').match(/^(.*?)\s*\(([^()]{1,8})\)\s*$/); return m ? [m[1], m[2]] : [String(n || ''), '']; };
+
+  /* 1. pasek marki */
+  sh.getRange(1, 1, 1, K).merge().setValue('SMARTPARKIET™  |  Wstępna oferta renowacji parkietu')
+    .setBackground(POM).setFontColor('#FFFFFF').setFontWeight('bold').setFontSize(13).setVerticalAlignment('middle');
+  sh.setRowHeight(1, 34);
+  /* 2. dane klienta - jedna tabelka */
+  const klient = [['Data', kiedy], ['Klient', a.imie || '-'], ['Telefon', a.tel || '-'], ['Adres', a.adres || a.ulica || '-']];
+  klient.forEach((r, i) => {
+    const w = 2 + i;
+    sh.getRange(w, 1, 1, 2).setValues([r]);
+    sh.getRange(w, 2, 1, K - 1).merge();
+    sh.getRange(w, 1, 1, K).setBackground(i % 2 ? '#FFFFFF' : JASNY).setVerticalAlignment('middle');
+  });
+  sh.getRange(2, 1, klient.length, 1).setFontWeight('bold').setFontColor(SZARY);
+  sh.getRange(2, 2, klient.length, 1).setFontWeight('bold').setWrap(true);
+  /* 3. tabela pozycji */
+  const start = 2 + klient.length;
+  const nagl = ['Pozycja', 'Ilość', 'j.m.', 'Cena jedn.', 'Wartość'].concat(katalog ? ['Cena katalogowa'] : []);
+  sh.getRange(start, 1, 1, K).setValues([nagl]).setFontWeight('bold').setBackground(POM).setFontColor('#FFFFFF')
+    .setVerticalAlignment('middle');
+  sh.getRange(start, 2, 1, K - 1).setHorizontalAlignment('right');
+  sh.getRange(start, 3).setHorizontalAlignment('center');
+  sh.setRowHeight(start, 28);
   poz.forEach((p, i) => {
     const w = start + 1 + i;
-    sh.getRange(w, 1, 1, 3).setValues([[p[0], p[1], p[2] === null ? '' : p[2]]]);
-    sh.getRange(w, 4).setFormula('=IF(AND(ISNUMBER(B' + w + '),ISNUMBER(C' + w + ')),B' + w + '*C' + w + ',"")');
-    if (typeof p[3] === 'number') sh.getRange(w, 5).setValue(p[3]).setFontColor('#6B5E52');
-    if (real(p)) sh.getRange(w, 1, 1, 5).setBackground('#FFC9A3').setFontWeight('bold');
+    const [nz, j] = jm(p[0]);
+    const cena = (p[2] === null || p[2] === undefined) ? '' : p[2];
+    sh.getRange(w, 1, 1, 4).setValues([[nz, p[1], j, cena]]);
+    sh.getRange(w, 5).setFormula('=IF(AND(ISNUMBER(B' + w + '),ISNUMBER(D' + w + ')),B' + w + '*D' + w + ',"")');
+    if (katalog && typeof p[3] === 'number') sh.getRange(w, 6).setValue(p[3]).setFontColor('#6B5E52');
+    const r = sh.getRange(w, 1, 1, K).setVerticalAlignment('middle')
+      .setBorder(null, null, true, null, null, null, LINIA, SpreadsheetApp.BorderStyle.SOLID);
+    if (real(p)) r.setBackground(REAL).setFontWeight('bold');
+    else r.setFontColor('#6B6560');
   });
-  const wSuma = start + 1 + poz.length;
-  sh.getRange(wSuma, 3).setValue('Razem netto').setFontWeight('bold');
-  sh.getRange(wSuma, 4).setFormula('=SUM(D' + (start + 1) + ':D' + (wSuma - 1) + ')').setFontWeight('bold');
-  if (a.rabat > 0) {
-    sh.getRange(wSuma + 1, 3).setValue('w tym upust').setFontColor('#B03C0A');
-    sh.getRange(wSuma + 1, 4).setValue(-a.rabat).setFontColor('#B03C0A').setNumberFormat('#,##0.00');
+  if (poz.length) {
+    sh.getRange(start + 1, 1, poz.length, 1).setWrap(true);
+    sh.getRange(start + 1, 2, poz.length, 1).setNumberFormat('#,##0.##').setHorizontalAlignment('right');
+    sh.getRange(start + 1, 3, poz.length, 1).setHorizontalAlignment('center');
+    sh.getRange(start + 1, 4, poz.length, K - 3).setNumberFormat(ZL).setHorizontalAlignment('right');
   }
-  sh.getRange(start + 1, 3, poz.length + 1, 3).setNumberFormat('#,##0.00');
-  sh.setColumnWidth(1, 330); sh.setColumnWidth(2, 90); sh.setColumnWidth(3, 130); sh.setColumnWidth(4, 130); sh.setColumnWidth(5, 150);
+  /* 4. suma (+ upust) */
+  const wSuma = start + 1 + poz.length;
+  sh.getRange(wSuma, 1, 1, 4).merge().setValue('Razem netto').setHorizontalAlignment('right');
+  sh.getRange(wSuma, 5).setFormula(poz.length ? '=SUM(E' + (start + 1) + ':E' + (wSuma - 1) + ')' : '=0')
+    .setNumberFormat(ZL).setHorizontalAlignment('right');
+  sh.getRange(wSuma, 1, 1, K).setFontWeight('bold').setFontSize(12).setBackground(JASNY).setVerticalAlignment('middle')
+    .setBorder(true, null, true, null, null, null, POM, SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  sh.setRowHeight(wSuma, 30);
+  let w = wSuma + 1;
+  if (a.rabat > 0) {
+    sh.getRange(w, 1, 1, 4).merge().setValue('w tym upust').setHorizontalAlignment('right');
+    sh.getRange(w, 5).setValue(-a.rabat).setNumberFormat(ZL).setHorizontalAlignment('right');
+    sh.getRange(w, 1, 1, K).setFontColor('#B03C0A');
+    w++;
+  }
+  /* 5. szczegoly - tylko niepuste */
+  const szcz = [['E-mail', a.mail], ['Obiekt', a.obiekt], ['Podłoga', a.rodzaj], ['Wykończenie', a.technika],
+    ['Termin', a.termin], ['Informacje dodatkowe', a.info], /* Artur 09.11: pietro, winda, termin - bez ceny */
+    ['Uwagi', a.uwagi]].filter(r => String(r[1] || '').trim());
+  if (szcz.length) {
+    w++;
+    sh.getRange(w, 1, 1, K).merge().setValue('Szczegóły').setFontWeight('bold').setFontColor(POM)
+      .setBorder(null, null, true, null, null, null, POM, SpreadsheetApp.BorderStyle.SOLID);
+    szcz.forEach((r, i) => {
+      const x = w + 1 + i;
+      sh.getRange(x, 1, 1, 2).setValues([[r[0], String(r[1])]]);
+      sh.getRange(x, 2, 1, K - 1).merge().setWrap(true);
+      sh.getRange(x, 1, 1, K).setBackground(i % 2 ? '#FFFFFF' : JASNY).setVerticalAlignment('top');
+    });
+    sh.getRange(w + 1, 1, szcz.length, 1).setFontWeight('bold').setFontColor(SZARY);
+  }
+  /* 6. szerokosci (telefon ~390 px: kolumna Pozycja zawija tekst) i zamrozony naglowek tabeli */
+  [230, 62, 48, 104, 112, 120].slice(0, K).forEach((px, i) => sh.setColumnWidth(i + 1, px));
+  sh.getRange(1, 1, sh.getMaxRows(), K).setFontFamily('Arial');
+  sh.setFrozenRows(start);
+  const zb = sh.getMaxColumns(); if (zb > K) sh.deleteColumns(K + 1, zb - K);
   SpreadsheetApp.flush();
   DriveApp.getFileById(ss.getId()).moveTo(folder);
   return ss.getUrl();
@@ -563,7 +618,12 @@ function staraOferta(id) {
   let wTabeli = false;
   v.forEach(function (w) {
     if (w[0] === 'Pozycja') { wTabeli = true; return; }
-    if (wTabeli) { if (w[0] && w[2] !== 'Razem netto') poz.push(w[0] + (w[1] ? ' - ' + w[1] : '')); return; }
+    /* 19.11: nowy uklad - 'Razem netto' w kol. A (scalone A:D) i jednostka w kol. C; potem sekcja Szczegoly (etykieta/wartosc) */
+    if (wTabeli) {
+      if (w.indexOf('Razem netto') >= 0) { wTabeli = false; return; }
+      if (w[0]) poz.push(w[0] + (w[1] ? ' - ' + w[1] : '') + (/^(m²|m2|mb|szt\.|usł\.|kpl\.)$/.test(w[2]) ? ' ' + w[2] : ''));
+      return;
+    }
     if (w[0]) d[w[0]] = w[1];
   });
   const m2 = poz.filter(function (p) { return /m²|m2/i.test(p); })[0] || '';
