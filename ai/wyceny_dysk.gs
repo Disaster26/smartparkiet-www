@@ -459,6 +459,8 @@ function doPost(e) {
     }
     const mail = String(d.mailKlienta || '').trim();
     const mailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail);
+    /* 19.11: test (d.testKopia) - kopie i bcc ida na adres testowy z wlasciwosci TEST_KOPIA zamiast do Artura */
+    const doArtura = d.testKopia ? (PropertiesService.getScriptProperties().getProperty('TEST_KOPIA') || '') : ARTUR;
     let wyslanoBcc = false; /* Artur 09.11: czy Artur dostal juz ten mail w ukrytej kopii */
     if (d.ofertaKlientowi && mailOk && d.pdf) {
       const akapity = ['w załączniku przesyłamy ofertę renowacji parkietu przygotowaną na podstawie przesłanych informacji i zdjęć. Na ostatniej stronie znajdą Państwo zasady renowacji.',
@@ -468,7 +470,7 @@ function doPost(e) {
       if (info) akapity.splice(1, 0, 'Informacje dodatkowe: ' + info + '.');
       const opcjeOferty = {
         to: mail,
-        bcc: ARTUR, /* Artur 22.10: kopia maila do klienta w jego skrzynce; 09.11: bez bcc, gdy ta wersja juz poszla do Artura z podgladu */
+        bcc: doArtura, /* Artur 22.10: kopia maila do klienta w jego skrzynce; 09.11: bez bcc, gdy ta wersja juz poszla do Artura z podgladu */
         replyTo: ARTUR,
         name: 'SMARTPARKIET',
         subject: d.temat || 'Oferta renowacji parkietu - SMARTPARKIET', /* Artur 26.10 21:57: temat od adresu (budowany w wycena.html) */
@@ -487,7 +489,7 @@ function doPost(e) {
       const m = mailPotwierdzenie(!!d.zamowienie, numer);
       MailApp.sendEmail({
         to: mail,
-        bcc: ARTUR, /* Artur 22.10: kopia maila do klienta w jego skrzynce */
+        bcc: doArtura, /* Artur 22.10: kopia maila do klienta w jego skrzynce */
         replyTo: ARTUR,
         name: 'SMARTPARKIET',
         subject: (d.temat && numer && d.temat.indexOf(numer) < 0 ? d.temat.replace(' - Wstępna wycena', ' - ' + numer + ' - Wstępna wycena') : d.temat) || 'Wstępna wycena renowacji parkietu - SMARTPARKIET', /* Artur 26.10 21:57: temat od adresu; 27.10: z numerem */
@@ -513,7 +515,7 @@ function doPost(e) {
         if (urlArkusza) ak.push('Arkusz: ' + urlArkusza);
         MailApp.sendEmail({
           /* 19.11: testKopia = kopia na adres testowy z wlasciwosci skryptu TEST_KOPIA (nie do Artura); bez wlasciwosci test nic nie wysyla */
-          to: d.testKopia ? (PropertiesService.getScriptProperties().getProperty('TEST_KOPIA') || '') : ARTUR,
+          to: doArtura,
           name: 'SMARTPARKIET wyceny',
           subject: 'Kopia: ' + (d.temat || 'Wycena SMARTPARKIET'),
           body: ak.join('\n\n'),
