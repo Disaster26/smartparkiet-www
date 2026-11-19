@@ -956,7 +956,7 @@ function skrNt(it){var t=String(it.nt||'').split(String.fromCharCode(10))[0].tri
 function pillIt(it){var o=ST[it.st],t=skrNt(it);return '<span class="st'+(t?' st-nt':'')+'" style="--sc:'+o.c+';--sb2:'+o.b+'" title="'+esc(o.n)+'">'+(t?esc(t):o.n)+'</span>';}
 
 /* ---------- dane z serwera (Apps Script katalog.gs) ---------- */
-var API=(function(){var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'){var q=new URLSearchParams(location.search).get('api');return q||location.origin+'/api';}return 'https://script.google.com/macros/s/AKfycbxC1j9MytYHxqD-ONdcd8Bar5SxnAVnmr8pxP1_pdEEIZzB1hbh9AXRDtXEg5hX0QXzDA/exec';})();
+var API=(function(){var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'){var q=new URLSearchParams(location.search).get('api');return q||location.origin+'/api';}return 'https://script.google.com/macros/s/AKfycbwAsDJgviwXrymNg1QzS7dgpBAVUSFniVb0BhL2SiIO8g65ELEeftJmuq79cSsxpiMTrQ/exec';})();
 var KL_TOK='spk-app-token',KL_KESZ='spk-app-stan',KL_OST='spk-app-ostatnie';
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}

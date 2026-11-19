@@ -15,7 +15,7 @@ import os, re, sys
 TU = os.path.dirname(os.path.abspath(__file__))
 MAKIETA = os.path.join(os.path.dirname(TU), 'smartparkiet-katalog-podglad', 'index.html')
 CEL = os.path.join(TU, 'aplikacja', 'index.html')
-API_PROD = 'https://script.google.com/macros/s/AKfycbxC1j9MytYHxqD-ONdcd8Bar5SxnAVnmr8pxP1_pdEEIZzB1hbh9AXRDtXEg5hX0QXzDA/exec'
+API_PROD = 'https://script.google.com/macros/s/AKfycbwAsDJgviwXrymNg1QzS7dgpBAVUSFniVb0BhL2SiIO8g65ELEeftJmuq79cSsxpiMTrQ/exec'
 
 s = open(MAKIETA, encoding='utf-8').read()
 
