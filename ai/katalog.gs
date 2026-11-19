@@ -15,7 +15,7 @@
    -> w edytorze wybierz funkcję katalogUstawHaslo i Uruchom. Funkcja zapisze skrót i usunie jawne hasło.
    Aplikacja po zalogowaniu dostaje losowy token sesji (ważny 180 dni, na serwerze trzymany tylko jego skrót). */
 
-const KAT_WERSJA = '2026-11-16g';
+const KAT_WERSJA = '2026-11-18b';
 const KAT_ARK = { status: 'Katalog_status', sprawy: 'Katalog_sprawy', grafik: 'Grafik', ust: 'Ustawienia_katalog', kal: 'Kalendarz' };
 const KAT_NAGL = ['ID', 'Opis', 'Dane (zapis aplikacji - nie edytować)', 'Zmieniono'];
 const KAT_TOKEN_DNI = 180;
@@ -35,7 +35,7 @@ const KAT_STATUSY = [
   { id: 'awaria', n: 'Awaria', c: '#6B2A5E' }, { id: 'gotowe', n: 'Zrobione', c: '#B6FF1A' }, { id: 'inne', n: 'Inne', c: '#FF6FAE' }];
 /* 15.11 Artur: kalendarz godzinowy (kafelki ruchome, godziny stałe) - kolumny edytowalne */
 const KAT_KAL_KOL = [{ id: 'c1', n: 'KONTAKT' }, { id: 'c2', n: 'OGLĘDZINY' }, { id: 'c3', n: 'ZLECENIA' }];
-const KAT_ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'zatw', 'wtoku', 'zrobione', 'asap', 'odpadlo'];
+const KAT_ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'zatw', 'wtoku', 'zrobione', 'asap', 'odpadlo', 'zakonczone'];
 
 /* ------------------------------------------------------------------ wejście */
 function katalogObsluz(d) {
@@ -355,11 +355,13 @@ function katCzyscZap(d, reczne) {
   return o;
 }
 function katCzyscKaf(d) {
-  return {
+  const o = {
     ul: katTxt(d.ul, 160).toUpperCase(), mies: katTxt(d.mies, 20).toUpperCase(), m2: katTxt(d.m2, 10), info: katTxt(d.info, 200).toUpperCase(),
     tel: katTxt(d.tel, 40), kol: katTxt(d.kol, 40), c: katKolor(d.c), br: katTxt(d.br, 40), od: katDzien(d.od),
     dni: Math.min(30, Math.max(1, Math.round(Number(d.dni) || 1))), zid: d.zid ? katTxt(d.zid, 80) : null
   };
+  if (d.rez) o.rez = 1; /* 18.11: kafelek w kratce 'rezerwa' pod sobotą */
+  return o;
 }
 function katCzyscSprawa(d) {
   const o = { dz: katDzien(d.dz) || Utilities.formatDate(new Date(), 'Europe/Warsaw', 'yyyy-MM-dd'), g: katGodz(d.g), x: katTxt(d.x, 200), prv: !!d.prv };

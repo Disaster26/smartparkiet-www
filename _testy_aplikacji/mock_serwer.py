@@ -17,7 +17,9 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 KORZEN = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HASLO = os.environ.get('MOCK_HASLO', 'test-haslo-123')
 LOCK = threading.Lock()
-ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'zatw', 'wtoku', 'zrobione', 'asap', 'odpadlo']
+STARY = bool(os.environ.get('MOCK_STARY'))  # 18.11: udaje katalog.gs sprzed 2026-11-18b (bez 'zakonczone' i rez)
+ST_ZAP = ['luzne', 'rozmowa', 'ogledziny', 'termin', 'zatw', 'wtoku', 'zrobione', 'asap', 'odpadlo'] + ([] if STARY else ['zakonczone'])
+WERSJA = os.environ.get('MOCK_WERSJA') or ('2026-11-16g' if STARY else 'mock')
 BRYGADY = [{'id': 'b1', 'n': 'JARO.2'}, {'id': 'b2', 'n': 'JAREK'}, {'id': 'b3', 'n': 'MACIEK'}]
 STATUSY = [{'id': 'ok', 'n': 'Potwierdzone', 'c': '#2E9E3A'}, {'id': 'mysli', 'n': 'Zastanawia się', 'c': '#FF8A00'},
            {'id': 'wst', 'n': 'Wstępnie', 'c': '#FFD60A'}, {'id': 'ogl', 'n': 'Oględziny / pomiar', 'c': '#A8D8F5'},
@@ -136,9 +138,11 @@ def czysc_zap(d, reczne):
 
 
 def czysc_kaf(d):
-    return {'ul': txt(d.get('ul'), 160).upper(), 'mies': txt(d.get('mies'), 20).upper(), 'm2': txt(d.get('m2'), 10), 'info': txt(d.get('info'), 200).upper(),
+    o = {'ul': txt(d.get('ul'), 160).upper(), 'mies': txt(d.get('mies'), 20).upper(), 'm2': txt(d.get('m2'), 10), 'info': txt(d.get('info'), 200).upper(),
             'tel': txt(d.get('tel'), 40), 'kol': txt(d.get('kol'), 40), 'c': d.get('c') if re.match(r'^#[0-9A-Fa-f]{6}$', str(d.get('c') or '')) else '',
             'br': txt(d.get('br'), 40), 'od': dzien(d.get('od')), 'dni': min(30, max(1, int(round(liczba(d.get('dni')) or 1)))), 'zid': txt(d.get('zid'), 80) if d.get('zid') else None}
+    if d.get('rez') and not STARY: o['rez'] = 1
+    return o
 
 
 KAL_KOL = [{'id': 'c1', 'n': 'KONTAKT'}, {'id': 'c2', 'n': 'OGLĘDZINY'}, {'id': 'c3', 'n': 'ZLECENIA'}]
@@ -169,7 +173,7 @@ def stan():
     for i, o in st.items():
         if o.get('reczne'):
             items.append(dict(o, id=i))
-    return {'ok': True, 'wersja': 'mock', 'rev': DB['rev'], 'czas': int(time.time() * 1000), 'items': items,
+    return {'ok': True, 'wersja': WERSJA, 'rev': DB['rev'], 'czas': int(time.time() * 1000), 'items': items,
             'wpisy': [dict(v, id=k) for k, v in DB['sprawy'].items()],
             'graf': {'v': 2, 'br': DB['ust'].get('brygady', BRYGADY), 'kol': DB['ust'].get('statusy', STATUSY),
                      'k': [dict(v, id=k) for k, v in DB['grafik'].items()]},
@@ -311,6 +315,8 @@ class H(SimpleHTTPRequestHandler):
                 r = rejestr_poczatkowy()[0]
                 r.update({'id': 'a_MOCKNOWY%s' % uuid.uuid4().hex[:16], 'ts': int(time.time() * 1000), 'kl': d.get('kl', 'Nowy Klient'),
                           'tel': '700 000 001', 'typ': 'k', 'nr': 'SMART/2026/1114/009'})
+                for k in ('typ', 'kwota', 'm2', 'analizator', 'tel', 'ul', 'st', 'ts'):
+                    if k in d: r[k] = d[k]
                 DB['rejestr'].insert(0, r)
                 return self._json({'ok': True, 'id': r['id']})
             if self.path == '/mock/mail':
