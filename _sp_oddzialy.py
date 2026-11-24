@@ -33,7 +33,7 @@ import re
 
 KAT = os.path.dirname(os.path.abspath(__file__))
 WZOR = os.path.join(KAT, 'oddzialy.html')
-BAZA = 'https://disaster26.github.io/smartparkiet-www'
+BAZA = 'https://wylinka-podglad.pl/smartparkiet-www'
 
 ODDZIALY = [
     {

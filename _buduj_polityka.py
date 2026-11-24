@@ -100,8 +100,8 @@ s = re.sub(r'<meta property="og:image:alt" content="[^"]*">', '<meta property="o
 # dane strukturalne poradnika -> tylko okruszki
 s = re.sub(r'<script type="application/ld\+json"[^>]*>\s*\{"@context": "https://schema.org", "@type": "Article".*?</script>\s*', '', s, flags=re.S)
 s = re.sub(r'(<script type="application/ld\+json"[^>]*>\s*\{"@context": "https://schema.org", "@type": "BreadcrumbList").*?(</script>)',
-           lambda m: m.group(1) + ', "itemListElement": [{"@type": "ListItem", "position": 1, "name": "SMARTPARKIET", "item": "https://disaster26.github.io/smartparkiet-www/"}, '
-                     '{"@type": "ListItem", "position": 2, "name": "Polityka prywatności", "item": "https://disaster26.github.io/smartparkiet-www/' + CEL + '"}]}' + m.group(2), s, flags=re.S)
+           lambda m: m.group(1) + ', "itemListElement": [{"@type": "ListItem", "position": 1, "name": "SMARTPARKIET", "item": "https://wylinka-podglad.pl/smartparkiet-www/"}, '
+                     '{"@type": "ListItem", "position": 2, "name": "Polityka prywatności", "item": "https://wylinka-podglad.pl/smartparkiet-www/' + CEL + '"}]}' + m.group(2), s, flags=re.S)
 assert '"@type": "Article"' not in s
 assert '—' not in TRESC
 open(os.path.join(HERE, CEL), 'w', encoding='utf-8', newline='\n').write(s)

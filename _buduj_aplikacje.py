@@ -225,7 +225,7 @@ ZAMIEN('function detZapytanie(it){', 'function detDzien(s){', r'''function bezpL
 function detZapytanie(it){
   var T=TYPY[it.typ]||TYPY.w,q=[],d1=plus(DZIS,1),pn=pon(plus(DZIS,7)),reczne=it.typ==='r';
   q.push(['Dziś',DZIS_I],['Jutro',iso(d1)],[krotko(iso(pn)),iso(pn)]);
-  var ark=bezpLink(it.arkusz,/^https:\/\/(docs|drive)\.google\.com\//),anl=bezpLink(it.analizator,/^https:\/\/(smartparkiet\.com\.pl|disaster26\.github\.io)\//);
+  var ark=bezpLink(it.arkusz,/^https:\/\/(docs|drive)\.google\.com\//),anl=bezpLink(it.analizator,/^https:\/\/(smartparkiet\.com\.pl|wylinka-podglad\.pl)\//);
   var mapa=String(it.ul||'').replace(/ m\. \d+/,'');if(mapa.indexOf(',')<0)mapa+=', Warszawa';
   var h='<div class="det-h"><button type="button" class="wst" data-act="zamknij">'+ik('wst')+'Wróć</button><span class="t">'+esc(it.nr||T.k)+' · '+kiedy(it.ts)+'</span></div><div class="det-b">';
   h+='<div class="hd"><span class="typ" style="--tc:'+T.c+'">'+T.n+'</span><h2>'+esc(it.kl||'Bez nazwiska')+'</h2><div class="adr">'+esc(adrTxt(it))+'</div>'+

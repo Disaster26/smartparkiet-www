@@ -1396,11 +1396,11 @@ function krok(){
 function detPusty(){return '<div class="det-pusto">'+ik('lista')+'<div>Wybierz zapytanie z listy<br>albo dzień w kalendarzu.</div></div>';}
 function bezpLink(u,re){return re.test(String(u||''))?String(u):'';}
 /* 18.11 Artur WA 13:32-13:34: oferta w otwartej formie (analizator z wczytana oferta do poprawki) zamiast PDF */
-function anlEdyt(it){it=wer(it);var m=/#oferta=([\w-]+)/.exec(bezpLink(it&&it.analizator,/^https:\/\/(smartparkiet\.com\.pl|disaster26\.github\.io)\//));return m?'/analizator.html#oferta='+m[1]:'';}
+function anlEdyt(it){it=wer(it);var m=/#oferta=([\w-]+)/.exec(bezpLink(it&&it.analizator,/^https:\/\/(smartparkiet\.com\.pl|wylinka-podglad\.pl)\//));return m?'/analizator.html#oferta='+m[1]:'';}
 function detZapytanie(it){
   var T=TYPY[it.typ]||TYPY.w,q=[],d1=plus(DZIS,1),pn=pon(plus(DZIS,7)),reczne=it.typ==='r';
   q.push(['Dziś',DZIS_I],['Jutro',iso(d1)],[krotko(iso(pn)),iso(pn)]);
-  var ark=bezpLink(it.arkusz,/^https:\/\/(docs|drive)\.google\.com\//),anl=bezpLink(it.analizator,/^https:\/\/(smartparkiet\.com\.pl|disaster26\.github\.io)\//);
+  var ark=bezpLink(it.arkusz,/^https:\/\/(docs|drive)\.google\.com\//),anl=bezpLink(it.analizator,/^https:\/\/(smartparkiet\.com\.pl|wylinka-podglad\.pl)\//);
   var mapa=String(it.ul||it.ds||'').replace(/ m\. \d+/,'');if(mapa.indexOf(',')<0)mapa+=', Warszawa';var eMail=it.typ==='e';
   var h='<div class="det-h"><button type="button" class="wst" data-act="zamknij">'+ik('wst')+'Wróć</button><span class="t">'+esc(it.nr||T.k)+' · '+kiedy(it.ts)+'</span></div><div class="det-b">';
   h+='<div class="hd"><h2>'+esc(it.kl||'Bez nazwiska')+'</h2><div class="adr">'+esc(adrTxt(it))+'</div><div class="src">'+(it.typ==='r'?'<button type="button" class="typ zr-ed" style="--tc:'+T.c+'" data-act="zrEd" data-id="'+it.id+'">'+(it.zr?esc(it.zr):T.n)+' '+ik('olowek')+'</button>':'<span class="typ" style="--tc:'+T.c+'">'+T.n+'</span>')+(it.ts?'<span class="kd-ts"> · '+pelnaData(it.ts)+'</span>':'')+'</div>'+
